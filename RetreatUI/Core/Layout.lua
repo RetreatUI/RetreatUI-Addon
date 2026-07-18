@@ -1,0 +1,182 @@
+local RUI = RetreatUI
+
+RUI.layout = {
+  -- Final 1920x1080 on-screen coordinates for the native RetreatUI HUD.
+  power = {x=0, y=-152, width=360, height=16},
+  custom = {y=-183},
+  counters = {imp={x=-105, y=-118}, blood={x=105, y=-118}},
+  core = {x=0, y=-183},
+  utility = {x=0, y=-224},
+  targetDebuffs = {x=310, y=-59},
+  demonfire = {x=0, y=-118},
+  auraTrackers = {x=0, y=-83, size=30, spacing=3},
+  stanceTracker = {size=38, gap=6},
+}
+
+local powerFrame
+local powerDriver
+local powerElapsed = 0
+local lastPowerCurrent, lastPowerMaximum
+
+local function PowerTexture()
+  if ElvUI then
+    local E = unpack(ElvUI)
+    if E and E.media and E.media.normTex then return E.media.normTex end
+  end
+  return "Interface\\TargetingFrame\\UI-StatusBar"
+end
+
+local function CreatePowerFrame()
+  if powerFrame then return powerFrame end
+  local layout = RUI.layout.power
+  local frame = CreateFrame("StatusBar", "RetreatUIPrimaryPowerBar", UIParent)
+  frame:SetSize(layout.width, layout.height)
+  frame:SetPoint("CENTER", UIParent, "CENTER", layout.x, layout.y)
+  frame:SetStatusBarTexture(PowerTexture())
+  frame:SetMinMaxValues(0, 100)
+  frame:SetValue(0)
+  RUI:SkinFrame(frame, {0.018,0.018,0.022,0.96}, {0,0,0,1})
+
+  frame.text = frame:CreateFontString(nil, "OVERLAY")
+  frame.text:SetPoint("CENTER")
+  RUI:ApplyFont(frame.text, 10, "OUTLINE")
+  frame.text:SetTextColor(1,1,1,1)
+  frame:Hide()
+  powerFrame = frame
+  return frame
+end
+
+local POWER_NAMES = {
+  [0]="MANA", [1]="RAGE", [2]="FOCUS", [3]="ENERGY", [6]="RUNIC POWER",
+}
+
+local function ReadPrimaryPower()
+  local powerType = 0
+  if UnitPowerType then
+    local ok, value = pcall(UnitPowerType, "player")
+    if ok and type(value) == "number" then powerType = value end
+  end
+
+  local current, maximum
+  if UnitPower and UnitPowerMax then
+    local okCurrent, valueCurrent = pcall(UnitPower, "player", powerType)
+    local okMaximum, valueMaximum = pcall(UnitPowerMax, "player", powerType)
+    if okCurrent then current = valueCurrent end
+    if okMaximum then maximum = valueMaximum end
+  end
+
+  -- Ascension's classless resource layer does not consistently fire retail
+  -- power events, and some builds expose the active resource through the
+  -- legacy UnitMana API. Keep this fallback, but only read it once per poll.
+  if not maximum or tonumber(maximum) == nil or maximum <= 0 then
+    if UnitMana then
+      local ok, value = pcall(UnitMana, "player")
+      if ok then current = value end
+    end
+    if UnitManaMax then
+      local ok, value = pcall(UnitManaMax, "player")
+      if ok then maximum = value end
+    end
+  end
+
+  current = math.max(0, tonumber(current) or 0)
+  maximum = math.max(1, tonumber(maximum) or 100)
+  if current > maximum then current = maximum end
+  return math.floor(current + 0.5), math.floor(maximum + 0.5)
+end
+
+function RUI:UpdatePrimaryPower(force)
+  if not powerFrame or not powerFrame:IsShown() then return end
+  local current, maximum = ReadPrimaryPower()
+  if not force and current == lastPowerCurrent and maximum == lastPowerMaximum then return end
+  lastPowerCurrent, lastPowerMaximum = current, maximum
+
+  local theme = self:GetTheme()
+  powerFrame:SetStatusBarColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
+  powerFrame:SetMinMaxValues(0, maximum)
+  powerFrame:SetValue(current)
+  powerFrame.text:SetText(string.format("%d / %d", current, maximum))
+end
+
+function RUI:ActivatePrimaryPower()
+  if type(self.IsSupportedCharacter) == "function" and not self:IsSupportedCharacter() then
+    self:DeactivatePrimaryPower()
+    return false
+  end
+  local frame = CreatePowerFrame()
+  frame:Show()
+  lastPowerCurrent, lastPowerMaximum = nil, nil
+  self:UpdatePrimaryPower(true)
+  if not powerDriver then
+    powerDriver = CreateFrame("Frame")
+    powerDriver:RegisterEvent("UNIT_POWER")
+    powerDriver:RegisterEvent("UNIT_POWER_FREQUENT")
+    powerDriver:RegisterEvent("UNIT_DISPLAYPOWER")
+    powerDriver:RegisterEvent("PLAYER_ENTERING_WORLD")
+    powerDriver:SetScript("OnEvent", function(_, event, unit)
+      if unit and unit ~= "player" then return end
+      RUI:UpdatePrimaryPower(true)
+    end)
+    powerDriver:SetScript("OnUpdate", function(_, elapsed)
+      powerElapsed = powerElapsed + elapsed
+      if powerElapsed < 0.12 then return end
+      powerElapsed = 0
+      RUI:UpdatePrimaryPower(false)
+    end)
+  end
+  powerDriver:Show()
+  return true
+end
+
+function RUI:DeactivatePrimaryPower()
+  if powerFrame then powerFrame:Hide() end
+  if powerDriver then powerDriver:Hide() end
+  powerElapsed = 0
+end
+
+function RUI:GetPrimaryPowerFrame()
+  return powerFrame
+end
+
+function RUI:DeactivateAllHUD()
+  if self.activeModule and self.activeModule.deactivate then
+    pcall(self.activeModule.deactivate, self.activeModule)
+  end
+  self.activeModule = nil
+  self.activeClass = nil
+  self:DeactivatePrimaryPower()
+end
+
+function RUI:ActivateClassHUD(force)
+  if type(self.IsSupportedCharacter) == "function" and not self:IsSupportedCharacter() then
+    self:DeactivateAllHUD()
+    return false, "unsupported"
+  end
+
+  local className = self:GetDetectedClass()
+  local module = self.GetClassModule and self:GetClassModule(className) or self.classModules[className]
+  if not module or type(module.activate) ~= "function" then
+    self:DeactivateAllHUD()
+    return false, "missing-module"
+  end
+
+  if self.activeModule and self.activeClass ~= className and self.activeModule.deactivate then
+    pcall(self.activeModule.deactivate, self.activeModule)
+  end
+
+  if module.usesPrimaryPower ~= false then
+    if not self:ActivatePrimaryPower() then return false, "unsupported" end
+  else
+    self:DeactivatePrimaryPower()
+  end
+
+  local ok, result = pcall(module.activate, module, force)
+  if not ok then
+    self:Print(className .. " HUD failed: " .. tostring(result))
+    self:DeactivateAllHUD()
+    return false, "error"
+  end
+  self.activeClass = className
+  self.activeModule = module
+  return result ~= false, "complete"
+end

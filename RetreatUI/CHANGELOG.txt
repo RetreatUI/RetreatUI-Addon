@@ -1,0 +1,18 @@
+RETREATUI v1.0.0
+=================
+
+FIRST PUBLIC RELEASE
+
+- Added the complete RetreatUI one-click installer for Project Ascension: Conquest of Azeroth.
+- Added the first public class module: Knight of Xoroth (Tank).
+- Split the package into RetreatUI Core and RetreatUI_Classes for future class expansion.
+- Added the shared HUD engine, class registration and loadout detection systems.
+- Added the Knight of Xoroth rotation, utility, resource, proc and uptime tracking.
+- Added ElvUI, TurboPlates, MobSpells and Details! profile integration.
+- Added automatic ElvUI NamePlates deactivation to prevent nameplate conflicts.
+- Added safe cleanup of conflicting Blizzard and Ascension UI frames.
+- Added matching-version validation between the Core and Classes packages.
+- Optimized HUD and NPC cooldown updates for stable gameplay performance.
+
+Supported layout: 1920 x 1080
+Author: Retreat

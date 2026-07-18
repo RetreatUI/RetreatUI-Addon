@@ -1,0 +1,21 @@
+RETREATUI INSTALLATION
+======================
+
+Before installing:
+- Close Project Ascension completely.
+- Back up the full Interface and WTF folders.
+- Install ElvUI, TurboPlates v1.4.5, MobSpells v1.3 and Details!.
+
+Clean installation:
+1. Delete Interface\AddOns\RetreatUI and Interface\AddOns\RetreatUI_Classes if they already exist.
+2. Extract the RetreatUI release into the Project Ascension game folder.
+3. Verify that both files exist:
+   - Interface\AddOns\RetreatUI\RetreatUI.toc
+   - Interface\AddOns\RetreatUI_Classes\RetreatUI_Classes.toc
+4. Enable RetreatUI, RetreatUI Classes and all required addons at character selection.
+5. Log into a supported character. v1.0.0 supports Knight of Xoroth.
+6. Complete the installer and press FINISH & RELOAD.
+
+Both bundled RetreatUI addon folders must use the same version. The installer validates this automatically.
+The installer disables ElvUI NamePlates so TurboPlates remains the only active nameplate system after reload.
+Details! is required. DBM remains optional. WeakAuras is independent and is never managed by RetreatUI.

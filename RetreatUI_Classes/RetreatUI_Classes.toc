@@ -1,0 +1,13 @@
+## Interface: 30300
+## Title: RetreatUI Classes
+## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
+## Author: Retreat
+## Version: 1.0.0
+## Dependencies: RetreatUI
+## DefaultState: Enabled
+
+Loader.lua
+Registry.lua
+KnightOfXoroth\Definition.lua
+KnightOfXoroth\Data.lua
+KnightOfXoroth\HUD.lua
