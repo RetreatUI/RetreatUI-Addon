@@ -1,16 +1,24 @@
-## Hi there 👋
+# RetreatUI
 
-<!--
-**RetreatUI/RetreatUI** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+A complete UI package built exclusively for Project Ascension.
 
-Here are some ideas to get you started:
+## Features
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+- Clean and modern interface
+- Optimized for tanks
+- TurboPlates integration
+- Custom HUD
+- One-click installer
+- Performance focused
+
+## Installation
+
+Download the latest release from the Releases page.
+
+## Discord
+
+(Discord invite)
+
+## License
+
+All Rights Reserved.
