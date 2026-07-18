@@ -1,0 +1,23 @@
+# Release archives
+*.zip
+*.rar
+*.7z
+
+# Backups and temporary files
+*.bak
+*.backup
+*.tmp
+*~
+Backup/
+Backups/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
