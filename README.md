@@ -17,7 +17,7 @@ Download the latest release from the Releases page.
 
 ## Discord
 
-[(RetreatUI Public Discord)](https://discord.gg/4St2AXGSxd)
+[(RetreatUI Official Discord)](https://discord.gg/4St2AXGSxd)
 
 ## License
 
