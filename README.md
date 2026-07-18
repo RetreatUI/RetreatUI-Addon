@@ -17,7 +17,7 @@ Download the latest release from the Releases page.
 
 ## Discord
 
-(Discord invite)
+[(Discord invite)](https://discord.gg/4St2AXGSxd)
 
 ## License
 
