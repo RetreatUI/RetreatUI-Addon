@@ -195,13 +195,32 @@ end
 
 function RUI:GetClassInfo(className)
   className = self:NormalizeClassName(className or self:GetDetectedClass())
-  return registry[className] or {
+  local definition = registry[className]
+  if definition then
+    return setmetatable({
+      name = definition.name or className,
+      definition = definition,
+      colors = {
+        accent = definition.accent,
+        accent2 = definition.accent2,
+        background = definition.background,
+      },
+    }, {__index = definition})
+  end
+  local fallback = {
     name=className or "Unknown CoA Class",
     theme="Conquest",
     accent={1.00,0.32,0.06},
     accent2={0.32,0.60,1.00},
+    background={0.025,0.018,0.018},
     roles="Unknown",
     ready=false,
+  }
+  return {
+    name=fallback.name,
+    definition=fallback,
+    colors={accent=fallback.accent, accent2=fallback.accent2, background=fallback.background},
+    theme=fallback.theme, roles=fallback.roles, ready=fallback.ready,
   }
 end
 

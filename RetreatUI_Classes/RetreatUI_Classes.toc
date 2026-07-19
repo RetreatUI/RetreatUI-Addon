@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.0.0
+## Version: 1.0.1
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -11,3 +11,10 @@ Registry.lua
 KnightOfXoroth\Definition.lua
 KnightOfXoroth\Data.lua
 KnightOfXoroth\HUD.lua
+Venomancer\Definition.lua
+Venomancer\Data.lua
+Venomancer\HUD.lua
+
+Cultist\Definition.lua
+Cultist\Data.lua
+Cultist\HUD.lua

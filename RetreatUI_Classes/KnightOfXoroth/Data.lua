@@ -20,8 +20,9 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
     {name="Burning Rage", id=34112, category="offensive", hudRow="core", order=70, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
     {name="Legion's Presence", id=30428, category="offensive", hudRow="core", order=80, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
     {name="Juggernaut", id=520294, category="defensive", hudRow="core", order=85, talent=true, trackCooldown=true, buff="Juggernaut", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
-    {name="Call: Hellfire Imp", category="summon", hudRow="core", order=90, trackCooldown=true, hideIfSpellIDLearned=706755},
+    {name="Call: Hellfire Imp", category="summon", hudRow="core", order=90, trackCooldown=true, becomesPassiveWhen={{name="Impcaller", id=706755}}, hideWhen={{name="Impcaller", id=706755}}},
     {name="Hellish Rebuke", id=503310, category="proc", hudRow="core", order=100, trackCooldown=true, buff="Hellish Rebuke"},
+    {name="Impcaller", id=706755, category="talent", trackHUD=false, auditType="active-to-passive conversion", modifies={"Call: Hellfire Imp","Shieldgore"}, effect="Call: Hellfire Imp is transformed; Shieldgore summons the imp passively"},
 
     -- Utility/defensive row. Chains and displacement tools stay adjacent.
     {name="Demon Heart", id=31701, category="defensive", hudRow="utility", order=10, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="defensive"},

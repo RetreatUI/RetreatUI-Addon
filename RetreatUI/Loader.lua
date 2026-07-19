@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
 local RUI = RetreatUI
 
 RUI.name = "RetreatUI"
-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.0"
+RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.1"
 RUI._loaderLoaded = true
 
 local function Chat(message)

@@ -2,6 +2,18 @@
 
 All notable changes to RetreatUI will be documented in this file.
 
+## [1.0.1] - 2026-07-19
+
+### Class Framework & Themed Installer
+
+- Added the complete class-aware themed installer, including class-specific artwork, icons, and colors for Knight of Xoroth, Venomancer, and Cultist.
+- Added the shared Theme Manager, resource-color framework, and HUD widgets for consistent counter, cooldown, timer, and charge presentation.
+- Added **Venomancer Fortitude Tank** beta support.
+- Added **Cultist Dreadnought Tank** beta support.
+- Kept **Knight of Xoroth Tank** stable and included its complete module.
+- Added installer, media, icon, class-module, and integration updates for the complete v1.0.1 release.
+- Fixed installer placement, dependency refresh, and logo integration issues.
+
 ## [1.0.0] - 2026-07-18
 
 ### First Public Release
