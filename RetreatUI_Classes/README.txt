@@ -1,14 +1,20 @@
-RETREATUI CLASSES v1.0.0
+RETREATUI CLASSES v1.0.1
 =======================
 
-This addon is bundled with RetreatUI and must remain the same version as Core.
+This addon is bundled with RetreatUI and must always use the same version as Core.
 
-Each Conquest of Azeroth class receives one folder. Shared class metadata and
-future role/loadout definitions stay inside that class folder rather than being
-split into Tank, Healer, Melee or Ranged addon folders.
-
-Current module:
-- KnightOfXoroth
+CURRENT MODULES
+- KnightOfXoroth — Tank — STABLE
   - Definition.lua: metadata, supported loadouts and detection
   - Data.lua: spells, auras, resources and row assignment
   - HUD.lua: class-specific runtime logic
+
+- Venomancer — Fortitude Tank — BETA
+  - Includes Exposed Flesh, Carapace and form tracking
+  - Continues to receive talent and priority-logic updates
+
+- Cultist — Dreadnought Tank — BETA
+  - Includes Mana, Insanity, Total Madness, shield and transformation tracking
+  - Continues to receive talent and priority-logic updates
+
+Shared layout, theme, counter and cooldown behavior is provided by RetreatUI Core.

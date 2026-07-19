@@ -18,6 +18,29 @@ local powerDriver
 local powerElapsed = 0
 local lastPowerCurrent, lastPowerMaximum
 
+local RESOURCE_COLORS = RUI.resourceColors or {
+  MANA = {0.10, 0.42, 0.95}, RAGE = {0.95, 0.20, 0.06}, FURY = {1.00, 0.34, 0.04},
+  ENERGY = {0.95, 0.82, 0.08}, FOCUS = {0.28, 0.82, 0.22}, RUNICPOWER = {0.10, 0.78, 0.92},
+}
+
+function RUI:GetPrimaryResourceToken()
+  local info = self:GetClassInfo()
+  local definition = info and info.definition or {}
+  local configured = definition and definition.primaryResource
+  if configured and configured ~= "" then return string.upper(tostring(configured)):gsub("[^A-Z]", "") end
+  if UnitPowerType then
+    local ok, _, token = pcall(UnitPowerType, "player")
+    if ok and token then return string.upper(tostring(token)):gsub("[^A-Z]", "") end
+  end
+  return "MANA"
+end
+
+function RUI:GetPrimaryResourceColor()
+  local token = self:GetPrimaryResourceToken()
+  if self.GetResourceColor then return self:GetResourceColor(token) end
+  return RESOURCE_COLORS[token] or RESOURCE_COLORS.MANA
+end
+
 local function PowerTexture()
   if ElvUI then
     local E = unpack(ElvUI)
@@ -91,8 +114,8 @@ function RUI:UpdatePrimaryPower(force)
   if not force and current == lastPowerCurrent and maximum == lastPowerMaximum then return end
   lastPowerCurrent, lastPowerMaximum = current, maximum
 
-  local theme = self:GetTheme()
-  powerFrame:SetStatusBarColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
+  local color = self:GetPrimaryResourceColor()
+  powerFrame:SetStatusBarColor(color[1], color[2], color[3], 1)
   powerFrame:SetMinMaxValues(0, maximum)
   powerFrame:SetValue(current)
   powerFrame.text:SetText(string.format("%d / %d", current, maximum))

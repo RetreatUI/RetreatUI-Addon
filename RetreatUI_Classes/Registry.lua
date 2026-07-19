@@ -5,7 +5,7 @@ local RUI = RetreatUI
 local definitions = {
   ["Necromancer"] = {theme="Graveborn", accent={0.42,0.82,0.20}, accent2={0.18,0.45,0.12}, roles="Damage / Healer"},
   ["Pyromancer"] = {theme="Living Flame", accent={1.00,0.28,0.04}, accent2={1.00,0.68,0.10}, roles="Damage"},
-  ["Cultist"] = {theme="Forbidden Rite", accent={0.62,0.20,0.82}, accent2={0.92,0.18,0.48}, roles="Damage / Healer"},
+  ["Cultist"] = {theme="Forbidden Rite", accent={0.62,0.20,0.82}, accent2={0.92,0.18,0.48}, roles="Tank / Damage / Healer"},
   ["Starcaller"] = {theme="Astral Convergence", accent={0.34,0.55,1.00}, accent2={0.78,0.52,1.00}, roles="Damage / Healer"},
   ["Sun Cleric"] = {theme="Solar Grace", accent={1.00,0.72,0.18}, accent2={1.00,0.94,0.58}, roles="Healer / Damage", aliases={"SunCleric"}},
   ["Tinker"] = {theme="Machinist", accent={0.08,0.62,1.00}, accent2={0.95,0.60,0.12}, roles="Damage / Tank / Healer"},

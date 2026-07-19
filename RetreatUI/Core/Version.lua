@@ -2,16 +2,15 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "First Public Release",
-  summary = "RetreatUI launches with its modular Core, one-click installer and Knight of Xoroth tank module.",
+  title = "RetreatUI v1.0.1",
+  summary = "The class-aware framework, themed installer and first beta class modules are now part of the public release.",
   changes = {
-    "Released the complete RetreatUI one-click installer for Project Ascension: Conquest of Azeroth.",
-    "Added the first public class module: Knight of Xoroth (Tank).",
-    "Separated the shared RetreatUI engine from class modules for future class expansion.",
-    "Added ElvUI, TurboPlates, MobSpells and Details! profile integration.",
-    "Added automatic ElvUI NamePlates deactivation and safe conflicting-frame cleanup.",
-    "Added matching-version validation between RetreatUI Core and RetreatUI Classes.",
-    "Optimized HUD and NPC cooldown updates for stable gameplay performance.",
+    "Released the redesigned class-aware installer with full-page artwork for Knight of Xoroth, Venomancer and Cultist.",
+    "Kept Knight of Xoroth Tank as the stable and fully supported class module.",
+    "Added beta HUD support for Venomancer Fortitude Tank and Cultist Dreadnought Tank.",
+    "Added shared counter, form, cooldown, charge and dynamic-centering widgets across class HUDs.",
+    "Added talent-aware spell replacements, passive conversions and resource colors based on resource type.",
+    "Fixed installer dependency refresh, module placement, completion layout and integrated logo presentation.",
   },
 }
 local updateFrame

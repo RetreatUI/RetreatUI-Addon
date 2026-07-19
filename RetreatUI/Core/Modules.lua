@@ -182,6 +182,7 @@ end
 
 RUI:RegisterInstallerModule("elvui", {
   label="ElvUI Profile",
+  icon="Interface\\Icons\\INV_Misc_Note_05",
   required=true,
   available=function(self) return self:IsAddOnAvailable("ElvUI") end,
   missing="ElvUI is not installed",
@@ -199,6 +200,7 @@ RUI:RegisterInstallerModule("elvui", {
 
 RUI:RegisterInstallerModule("classHUD", {
   label="Class HUD",
+  icon=function(self) return self:GetTheme().installer.icon end,
   required=true,
   install=function(self)
     local className = self:GetDetectedClass()
@@ -218,6 +220,7 @@ RUI:RegisterInstallerModule("classHUD", {
 
 RUI:RegisterInstallerModule("turboplates", {
   label="TurboPlates Profile",
+  icon="Interface\\Icons\\Ability_Warrior_BattleShout",
   required=true,
   available=function(self) return self:IsAddOnAvailable("TurboPlates") end,
   missing="TurboPlates is not installed",
@@ -232,6 +235,7 @@ RUI:RegisterInstallerModule("turboplates", {
 
 RUI:RegisterInstallerModule("mobspells", {
   label="NPC Ability Tracking",
+  icon="Interface\\Icons\\Spell_Arcane_Arcane01",
   required=true,
   available=function(self) return self:IsAddOnAvailable("MobSpells") end,
   missing="MobSpells v1.3 is not installed",
@@ -255,18 +259,21 @@ RUI:RegisterInstallerModule("mobspells", {
 
 RUI:RegisterInstallerModule("cvars", {
   label="Game Settings",
+  icon="Interface\\Icons\\INV_Misc_Gear_01",
   required=true,
   install=function(self) return self:ApplyCVars() end,
 })
 
 RUI:RegisterInstallerModule("fonts", {
   label="Fonts & Theme",
+  icon="Interface\\Icons\\INV_Inscription_Tradeskill01",
   required=true,
   install=function(self) return self:SyncThemeFonts() end,
 })
 
 RUI:RegisterInstallerModule("cleanup", {
   label="Ascension Frame Cleanup",
+  icon="Interface\\Icons\\INV_Misc_Broom_01",
   required=true,
   install=function(self) return self:HideDuplicateFrames() end,
   validate=function(self)
@@ -278,6 +285,7 @@ RUI:RegisterInstallerModule("cleanup", {
 
 RUI:RegisterInstallerModule("details", {
   label="Details! Profile",
+  icon="Interface\\Icons\\INV_Misc_Book_09",
   required=true,
   available=function(self) return self:IsAddOnAvailable("Details") end,
   missing="Details! is required and is not installed",
@@ -287,6 +295,7 @@ RUI:RegisterInstallerModule("details", {
 
 RUI:RegisterInstallerModule("dbm", {
   label="DBM Theme",
+  icon="Interface\\Icons\\Ability_Warrior_RallyingCry",
   required=false,
   available=function(self) return self:IsAddOnAvailable("DBM-Core") or self:IsAddOnAvailable("DBM") end,
   missing="DBM is not installed; integration skipped",

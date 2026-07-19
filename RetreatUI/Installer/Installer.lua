@@ -3,283 +3,323 @@ local Installer = {}
 RUI.Installer = Installer
 
 local frame, currentPage
-local pageFrames, navButtons = {}, {}
+local pages, navButtons = {}, {}
 local PAGE_DEFS = {
-  {key="welcome", title="SYSTEM CHECK", subtitle="Requirements"},
-  {key="install", title="INSTALL", subtitle="One complete setup"},
-  {key="complete", title="COMPLETE", subtitle="Validation"},
+  {title="WELCOME", subtitle="System check"},
+  {title="INSTALL", subtitle="Apply setup"},
+  {title="COMPLETE", subtitle="Validation"},
 }
 
-local function Text(parent, text, size, accent)
+local function Theme() return RUI:GetTheme() end
+local function Text(parent, value, size, color)
   local fs = parent:CreateFontString(nil, "OVERLAY")
-  RUI:ApplyFont(fs, size or 12, "OUTLINE")
-  fs:SetText(text or "")
-  local theme = RUI:GetTheme()
-  local color = accent and theme.accent or theme.text
+  RUI:ApplyFont(fs, size or 11, "OUTLINE")
+  fs:SetText(value or "")
+  color = color or Theme().text
   fs:SetTextColor(color[1], color[2], color[3], color[4] or 1)
   return fs
 end
-
-local function Panel(parent, background, border)
+local function Panel(parent, bg, border)
   local panel = CreateFrame("Frame", nil, parent)
-  RUI:SkinFrame(panel, background, border)
+  RUI:SkinFrame(panel, bg or Theme().panel, border or {0,0,0,1})
   return panel
 end
-
-local function Button(parent, label, width, height, onClick)
+local function Button(parent, label, width, height, callback)
+  local theme = Theme()
   local button = CreateFrame("Button", nil, parent)
-  RUI:SkinFrame(button, RUI:GetTheme().panel, {0, 0, 0, 1})
+  RUI:SkinFrame(button, theme.panelStrong, {theme.accent[1]*0.55, theme.accent[2]*0.55, theme.accent[3]*0.55, 1})
   button:SetSize(width or 130, height or 32)
+  button:EnableMouse(true)
   button:RegisterForClicks("LeftButtonUp")
-  button.text = Text(button, label, 11, false)
-  button.text:SetPoint("CENTER")
-  button:SetScript("OnClick", function(self)
-    if not self.disabled and onClick then onClick(self) end
-  end)
+  button.label = Text(button, label, 10)
+  button.label:SetPoint("CENTER")
+  button:SetScript("OnClick", function(self) if not self.disabled and callback then callback(self) end end)
   button:SetScript("OnEnter", function(self)
-    if self.disabled then return end
-    local theme = RUI:GetTheme()
-    self:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
+    if not self.disabled then self:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 1) end
   end)
   button:SetScript("OnLeave", function(self)
-    local theme = RUI:GetTheme()
-    self:SetBackdropBorderColor(theme.accent[1] * 0.45, theme.accent[2] * 0.45, theme.accent[3] * 0.45, 1)
+    self:SetBackdropBorderColor(theme.accent[1]*0.55, theme.accent[2]*0.55, theme.accent[3]*0.55, 1)
   end)
-  function button:SetLabel(value) self.text:SetText(value) end
-  function button:SetEnabled(value)
-    self.disabled = not value
-    self:SetAlpha(value and 1 or 0.38)
-    if value then self:Enable() else self:Disable() end
+  function button:SetLabel(value) self.label:SetText(value) end
+  function button:SetEnabled(enabled)
+    self.disabled = not enabled
+    self:SetAlpha(enabled and 1 or 0.34)
+    self:EnableMouse(enabled)
   end
-  local theme = RUI:GetTheme()
-  button:SetBackdropBorderColor(theme.accent[1] * 0.45, theme.accent[2] * 0.45, theme.accent[3] * 0.45, 1)
   return button
 end
-
-local function SetStatusText(fontString, state, label)
-  local theme = RUI:GetTheme()
-  if state == "success" or state == "ready" then
-    fontString:SetTextColor(theme.accent2[1], theme.accent2[2], theme.accent2[3], 1)
-  elseif state == "skipped" or state == "optional" then
-    fontString:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
-  elseif state == "running" then
-    fontString:SetTextColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
-  else
-    fontString:SetTextColor(1, 0.28, 0.18, 1)
-  end
-  fontString:SetText(label)
+local function SetStatus(fs, state, label)
+  local theme = Theme()
+  local color = theme.danger
+  if state == "success" or state == "ready" then color = theme.success
+  elseif state == "optional" or state == "skipped" then color = theme.muted
+  elseif state == "running" then color = theme.accent end
+  fs:SetTextColor(color[1], color[2], color[3], color[4] or 1)
+  fs:SetText(label or "")
 end
 
-local function CreateDependencyRow(parent, index)
-  local row = CreateFrame("Frame", nil, parent)
-  row:SetSize(620, 28)
-  row:SetPoint("TOPLEFT", 22, -50 - (index - 1) * 34)
-  row.label = Text(row, "", 11, false)
-  row.label:SetPoint("LEFT", 0, 0)
-  row.status = Text(row, "", 10, false)
-  row.status:SetPoint("RIGHT", 0, 0)
-  return row
+local function Artwork(parent)
+  local theme = Theme()
+  local visual = theme.installer
+  local art = parent:CreateTexture(nil, "BACKGROUND")
+  art:SetTexture(visual.artwork)
+  art:SetAllPoints(parent)
+  local crop = visual.artworkCrop or {0,1,0,1}
+  art:SetTexCoord(crop[1] or 0, crop[2] or 1, crop[3] or 0, crop[4] or 1)
+  art:SetAlpha(visual.artworkAlpha or 0.92)
+
+  -- The class artwork now fills the entire installer page. A single even tint
+  -- preserves readability without hiding the artwork behind a directional fade.
+  local tint = parent:CreateTexture(nil, "BORDER")
+  tint:SetTexture("Interface\\Buttons\\WHITE8X8")
+  tint:SetAllPoints(parent)
+  tint:SetVertexColor(theme.background[1], theme.background[2], theme.background[3], 0.32)
+  return art
+end
+
+local function ClassCard(parent)
+  local theme, info = Theme(), RUI:GetClassInfo()
+  local visual = theme.installer
+
+  -- Open class identity layout. The artwork remains visible behind the class
+  -- information instead of being covered by a large framed card.
+  local card = CreateFrame("Frame", nil, parent)
+  card:SetSize(455, 100)
+
+  local icon = card:CreateTexture(nil, "ARTWORK")
+  icon:SetTexture(visual.icon)
+  icon:SetSize(74, 74)
+  icon:SetPoint("LEFT", 14, 0)
+  icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
+
+  local function IconEdge(width, height, point, relativePoint, x, y)
+    local edge = card:CreateTexture(nil, "OVERLAY")
+    edge:SetTexture("Interface\\Buttons\\WHITE8X8")
+    edge:SetSize(width, height)
+    edge:SetPoint(point, icon, relativePoint, x, y)
+    edge:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.75)
+  end
+  IconEdge(76, 1, "TOP", "TOP", 0, 1)
+  IconEdge(76, 1, "BOTTOM", "BOTTOM", 0, -1)
+  IconEdge(1, 76, "LEFT", "LEFT", -1, 0)
+  IconEdge(1, 76, "RIGHT", "RIGHT", 1, 0)
+
+  local title = Text(card, visual.title or info.name, 18, theme.accent)
+  title:SetPoint("TOPLEFT", 108, -10)
+  local subtitle = Text(card, visual.subtitle or visual.loadout, 10, theme.accent2)
+  subtitle:SetPoint("TOPLEFT", 108, -38)
+  local description = Text(card, visual.description, 9, theme.muted)
+  description:SetPoint("TOPLEFT", 108, -64)
+  description:SetPoint("RIGHT", -14, 0)
+  description:SetJustifyH("LEFT")
+  return card
+end
+
+local function DependencyTile(parent, dependency, index)
+  local theme = Theme()
+
+  -- Dependency entries are intentionally unboxed so the class artwork remains
+  -- visible across the full welcome page.
+  local tile = CreateFrame("Frame", nil, parent)
+  tile:SetSize(205, 34)
+  tile:SetPoint("TOPLEFT", ((index-1)%2)*215, -30 - math.floor((index-1)/2)*42)
+
+  local marker = tile:CreateTexture(nil, "ARTWORK")
+  marker:SetTexture("Interface\\Buttons\\WHITE8X8")
+  marker:SetSize(2, 18)
+  marker:SetPoint("LEFT", 0, 0)
+  marker:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.8)
+
+  tile.name = Text(tile, dependency.label, 9)
+  tile.name:SetPoint("LEFT", 10, 0)
+  tile.status = Text(tile, "CHECKING", 8, theme.muted)
+  tile.status:SetPoint("RIGHT", -6, 0)
+  return tile
 end
 
 local function CreateWelcomePage()
-  local page = CreateFrame("Frame", nil, frame.content)
-  page:SetAllPoints(); page:Hide()
+  local theme = Theme()
+  local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
+  Artwork(page)
 
-  local title = Text(page, "WELCOME TO RETREATUI", 26, true)
-  title:SetPoint("TOPLEFT", 34, -30)
-  local subtitle = Text(page, "One complete interface. Core and class modules are installed together with no manual profile imports.", 13, false)
-  subtitle:SetPoint("TOPLEFT", 34, -68)
-  subtitle:SetPoint("TOPRIGHT", -34, -68)
-  subtitle:SetJustifyH("LEFT")
+  local eyebrow = Text(page, "RETREATUI  •  CONQUEST OF AZEROTH", 9, theme.accent2)
+  eyebrow:SetPoint("TOPLEFT", 30, -26)
+  local title = Text(page, "WELCOME", 30, theme.text)
+  title:SetPoint("TOPLEFT", 30, -48)
+  local subtitle = Text(page, "One framework. Class-aware HUDs. One complete setup.", 12, theme.muted)
+  subtitle:SetPoint("TOPLEFT", 30, -87)
 
-  local scope = Panel(page, RUI:GetTheme().panelSoft, RUI:GetTheme().accent)
-  scope:SetPoint("TOPLEFT", 34, -112)
-  scope:SetPoint("TOPRIGHT", -34, -112)
-  scope:SetHeight(78)
-  local scopeTitle = Text(scope, "SUPPORTED SETUP", 11, true)
-  scopeTitle:SetPoint("TOPLEFT", 18, -15)
-  local detectedClass = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or "Supported class"
-  local scopeText = Text(scope, tostring(detectedClass) .. "  •  Primary resolution: 1920 × 1080  •  Native RetreatUI class HUD", 11, false)
-  scopeText:SetPoint("TOPLEFT", 18, -43)
+  page.classCard = ClassCard(page)
+  page.classCard:SetPoint("TOPLEFT", 30, -120)
 
-  local requiredCount, optionalCount = 0, 0
-  for _, dependency in ipairs(RUI.installerDependencies or {}) do
-    if not dependency.hidden then
-      if dependency.required then requiredCount = requiredCount + 1 else optionalCount = optionalCount + 1 end
-    end
-  end
+  -- Supported setup is now presented directly on the artwork without an
+  -- enclosing panel.
+  local setup = CreateFrame("Frame", nil, page)
+  setup:SetSize(455, 48)
+  setup:SetPoint("TOPLEFT", 30, -226)
+  Text(setup, "SUPPORTED SETUP", 9, theme.accent):SetPoint("TOPLEFT", 0, -2)
+  local info = RUI:GetClassInfo(); local visual = theme.installer
+  local setupText = Text(setup, tostring(info.name) .. "  •  1920 × 1080  •  " .. tostring(visual.loadout), 9, theme.text)
+  setupText:SetPoint("TOPLEFT", 0, -27)
 
-  local required = Panel(page, RUI:GetTheme().panel, {0.14, 0.10, 0.10, 1})
-  required:SetPoint("TOPLEFT", 34, -212)
-  required:SetPoint("TOPRIGHT", -34, -212)
-  required:SetHeight(58 + requiredCount * 34)
-  local requiredTitle = Text(required, "REQUIRED ADDONS", 13, true)
-  requiredTitle:SetPoint("TOPLEFT", 20, -18)
-  page.requiredRows = {}
-  for index = 1, requiredCount do page.requiredRows[index] = CreateDependencyRow(required, index) end
+  local deps = {}
+  for _, dependency in ipairs(RUI.installerDependencies or {}) do if not dependency.hidden then deps[#deps+1] = dependency end end
 
-  local optionalTop = -212 - (58 + requiredCount * 34) - 16
-  local optional = Panel(page, RUI:GetTheme().panel, {0.14, 0.10, 0.10, 1})
-  optional:SetPoint("TOPLEFT", 34, optionalTop)
-  optional:SetPoint("TOPRIGHT", -34, optionalTop)
-  optional:SetHeight(58 + optionalCount * 34)
-  local optionalTitle = Text(optional, "OPTIONAL INTEGRATION", 13, true)
-  optionalTitle:SetPoint("TOPLEFT", 20, -18)
-  page.optionalRows = {}
-  for index = 1, optionalCount do page.optionalRows[index] = CreateDependencyRow(optional, index) end
+  -- Addon status uses an open two-column list, matching the installer module
+  -- page and leaving the class background fully visible.
+  local dependencyPanel = CreateFrame("Frame", nil, page)
+  dependencyPanel:SetSize(430, 172)
+  dependencyPanel:SetPoint("TOPLEFT", 30, -286)
+  Text(dependencyPanel, "ADDON STATUS", 10, theme.accent):SetPoint("TOPLEFT", 0, -2)
+  page.dependencyRows = {}
+  for index, dependency in ipairs(deps) do page.dependencyRows[index] = DependencyTile(dependencyPanel, dependency, index) end
 
-  page.refresh = Button(page, "CHECK AGAIN", 132, 30, function() page.Refresh() end)
-  page.refresh:SetPoint("BOTTOMLEFT", 34, 26)
-  page.notice = Text(page, "", 11, false)
-  page.notice:SetPoint("BOTTOMRIGHT", -34, 32)
-  page.notice:SetJustifyH("RIGHT")
+  page.notice = Text(page, "", 9, theme.muted)
+  page.notice:SetPoint("BOTTOMLEFT", 30, 25)
+  page.refresh = Button(dependencyPanel, "CHECK AGAIN", 118, 28, function() page.Refresh() end)
+  page.refresh:SetPoint("BOTTOMRIGHT", 0, 4)
 
   page.Refresh = function()
-    local requiredIndex, optionalIndex = 0, 0
     local ready = true
-    for _, dependency in ipairs(RUI.installerDependencies or {}) do
-      if not dependency.hidden then
-        local available, status = RUI:GetDependencyStatus(dependency, false)
-      local rows
-      local index
-      if dependency.required then
-        requiredIndex = requiredIndex + 1
-        rows, index = page.requiredRows, requiredIndex
-        if not available then ready = false end
-      else
-        optionalIndex = optionalIndex + 1
-        rows, index = page.optionalRows, optionalIndex
-      end
-      local row = rows[index]
-      row.label:SetText(dependency.label)
-      if available then
-        SetStatusText(row.status, "ready", status == "Loaded" and "LOADED" or "READY")
-      elseif dependency.required then
-        if status == "Version mismatch" then
-          SetStatusText(row.status, "error", "VERSION MISMATCH")
-        else
-          SetStatusText(row.status, "error", "MISSING")
-        end
-      else
-        SetStatusText(row.status, "optional", "NOT INSTALLED")
-      end
-      end
+    for index, dependency in ipairs(deps) do
+      local available, status = RUI:GetDependencyStatus(dependency, false)
+      local row = page.dependencyRows[index]
+      if available then SetStatus(row.status, "ready", status == "Loaded" and "LOADED" or "READY")
+      elseif dependency.required then ready = false; SetStatus(row.status, "error", status == "Version mismatch" and "MISMATCH" or "MISSING")
+      else SetStatus(row.status, "optional", "OPTIONAL") end
     end
-
     if type(RUI.IsSupportedCharacter) == "function" and not RUI:IsSupportedCharacter() then ready = false end
-    if ready then
-      SetStatusText(page.notice, "ready", "All required components are ready.")
-    else
-      SetStatusText(page.notice, "error", "Install the missing required addons, then restart the game.")
-    end
+    SetStatus(page.notice, ready and "ready" or "error", ready and "All required components are ready." or "A required component is missing or unsupported.")
     if frame and frame.next then frame.next:SetEnabled(ready) end
   end
   return page
 end
 
-local function CreateInstallRow(parent, index, key)
+local function ResolveModuleIcon(definition)
+  local icon = definition and definition.icon
+  if type(icon) == "function" then
+    local ok, value = pcall(icon, RUI)
+    icon = ok and value or nil
+  end
+  if type(icon) ~= "string" or icon == "" then
+    icon = "Interface\\Icons\\INV_Misc_Gear_01"
+  end
+  return icon
+end
+
+local function CreateInstallModuleRow(parent, key, definition, index)
+  local theme = Theme()
   local row = CreateFrame("Frame", nil, parent)
-  row:SetSize(650, 29)
-  row:SetPoint("TOPLEFT", 24, -56 - (index - 1) * 34)
-  row.key = key
-  row.label = Text(row, "", 11, false)
-  row.label:SetPoint("LEFT", 0, 0)
-  row.status = Text(row, "WAITING", 10, false)
-  row.status:SetPoint("RIGHT", 0, 0)
+  row:SetSize(510, 34)
+  row:SetPoint("TOPLEFT", 30, -146 - (index-1)*39)
+
+  -- A very light row shade keeps the list readable while allowing the class
+  -- artwork to remain visible. There is deliberately no enclosing panel.
+  local shade = row:CreateTexture(nil, "BACKGROUND")
+  shade:SetTexture("Interface\\Buttons\\WHITE8X8")
+  shade:SetAllPoints(row)
+  shade:SetVertexColor(0, 0, 0, 0.34)
+
+  local accent = row:CreateTexture(nil, "BORDER")
+  accent:SetTexture("Interface\\Buttons\\WHITE8X8")
+  accent:SetSize(2, 22)
+  accent:SetPoint("LEFT", 0, 0)
+  accent:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.9)
+
+  row.icon = row:CreateTexture(nil, "ARTWORK")
+  row.icon:SetTexture(ResolveModuleIcon(definition))
+  row.icon:SetSize(24, 24)
+  row.icon:SetPoint("LEFT", 9, 0)
+  row.icon:SetTexCoord(0.07, 0.93, 0.07, 0.93)
+
+  row.label = Text(row, definition.label .. (definition.required and "" or "  (optional)"), 9)
+  row.label:SetPoint("LEFT", 43, 0)
+
+  row.status = Text(row, "WAITING", 8, theme.muted)
+  row.status:SetPoint("RIGHT", -12, 0)
   return row
 end
 
 local function CreateInstallPage()
-  local page = CreateFrame("Frame", nil, frame.content)
-  page:SetAllPoints(); page:Hide()
-
-  local title = Text(page, "INSTALL RETREATUI", 25, true)
-  title:SetPoint("TOPLEFT", 34, -30)
-  local description = Text(page, "The installer applies the full supported setup and validates every required component before completion.", 13, false)
-  description:SetPoint("TOPLEFT", 34, -70)
-  description:SetPoint("TOPRIGHT", -34, -70)
-
-  local card = Panel(page, RUI:GetTheme().panelSoft, RUI:GetTheme().accent)
-  card:SetPoint("TOPLEFT", 34, -112)
-  card:SetPoint("TOPRIGHT", -34, -112)
-  card:SetHeight(360)
+  local theme = Theme()
+  local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
+  Artwork(page)
+  Text(page, "INSTALL RETREATUI", 28, theme.text):SetPoint("TOPLEFT", 30, -34)
+  local intro = Text(page, "Apply every supported profile and integration in one pass.", 11, theme.muted)
+  intro:SetPoint("TOPLEFT", 30, -74)
+  Text(page, "INSTALLATION MODULES", 10, theme.accent):SetPoint("TOPLEFT", 30, -112)
 
   page.rows = {}
-  for index, key in ipairs(RUI.moduleOrder) do
-    local row = CreateInstallRow(card, index, key)
+  for index, key in ipairs(RUI.moduleOrder or {}) do
     local definition = RUI.moduleInstallers[key]
-    row.label:SetText(definition.label .. (definition.required and "" or "  (optional)"))
-    page.rows[key] = row
+    page.rows[key] = CreateInstallModuleRow(page, key, definition, index)
   end
 
-  page.result = Text(page, "Ready to install.", 12, false)
-  page.result:SetPoint("TOPLEFT", 40, -500)
-  page.result:SetPoint("TOPRIGHT", -220, -500)
+  page.refresh = Button(page, "CHECK AGAIN", 132, 30, function()
+    if page.Refresh then page.Refresh() end
+  end)
+  page.refresh:SetPoint("BOTTOMLEFT", 30, 22)
+
+  page.refreshHint = Text(page, "Re-scan addon and module status.", 8, theme.muted)
+  page.refreshHint:SetPoint("LEFT", page.refresh, "RIGHT", 14, 0)
+
+  page.result = Text(page, "Ready to install.", 9, theme.muted)
+  page.result:SetPoint("BOTTOMLEFT", 30, 61)
+  page.result:SetWidth(580)
   page.result:SetJustifyH("LEFT")
 
-  page.install = Button(page, "INSTALL RETREATUI", 176, 34, function(button)
-    button:SetEnabled(false)
-    button:SetLabel("INSTALLING")
-    for _, row in pairs(page.rows) do SetStatusText(row.status, "optional", "WAITING") end
-
+  page.install = Button(page, "INSTALL RETREATUI", 172, 32, function(button)
+    button:SetEnabled(false); button:SetLabel("INSTALLING")
+    for _, row in pairs(page.rows) do SetStatus(row.status, "optional", "WAITING") end
     local valid, problems = RUI:InstallAllModules(function(key, state)
-      local row = page.rows[key]
-      if not row then return end
-      if state == "running" then
-        SetStatusText(row.status, "running", "INSTALLING")
-      elseif state == "success" then
-        SetStatusText(row.status, "success", "INSTALLED")
-      elseif state == "skipped" then
-        SetStatusText(row.status, "skipped", "SKIPPED")
-      else
-        SetStatusText(row.status, "error", "FAILED")
-      end
+      local row = page.rows[key]; if not row then return end
+      local labels = {running="INSTALLING", success="INSTALLED", skipped="SKIPPED", error="FAILED"}
+      SetStatus(row.status, state, labels[state] or "FAILED")
     end)
-
     if valid then
       local warnings = RUI:GetOptionalIntegrationWarnings()
-      if #warnings > 0 then
-        SetStatusText(page.result, "optional", "Required setup installed. Optional warning: " .. table.concat(warnings, "  •  "))
-      else
-        SetStatusText(page.result, "success", "Installation validated successfully.")
-      end
+      SetStatus(page.result, #warnings > 0 and "optional" or "success", #warnings > 0 and ("Installed. Optional: " .. table.concat(warnings, " • ")) or "Installation validated successfully.")
       button:SetLabel("INSTALLED")
-      if frame and frame.next then frame.next:SetEnabled(true) end
     else
-      SetStatusText(page.result, "error", table.concat(problems or {"Installation failed."}, "  •  "))
-      button:SetLabel("RETRY INSTALLATION")
-      button:SetEnabled(true)
-      if frame and frame.next then frame.next:SetEnabled(false) end
+      SetStatus(page.result, "error", table.concat(problems or {"Installation failed."}, " • "))
+      button:SetLabel("RETRY INSTALLATION"); button:SetEnabled(true)
     end
+    if frame and frame.next then frame.next:SetEnabled(valid) end
   end)
-  page.install:SetPoint("BOTTOMRIGHT", -34, 24)
+  page.install:SetPoint("BOTTOMRIGHT", -30, 22)
 
   page.Refresh = function()
     local valid = RUI:ValidateInstallation()
-    for _, key in ipairs(RUI.moduleOrder) do
+    local ready = select(1, RUI:GetInstallerReadiness(false))
+
+    for _, key in ipairs(RUI.moduleOrder or {}) do
       local row = page.rows[key]
+      local definition = RUI.moduleInstallers[key]
       local record = RUI:GetModuleStatus(key)
+
       if record and record.version == RUI.version then
-        if record.state == "success" then SetStatusText(row.status, "success", "INSTALLED")
-        elseif record.state == "skipped" then SetStatusText(row.status, "skipped", "SKIPPED")
-        else SetStatusText(row.status, "error", "FAILED") end
+        local label = record.state == "success" and "INSTALLED" or string.upper(record.state or "FAILED")
+        SetStatus(row.status, record.state, label)
+      elseif definition and definition.available then
+        local ok, available = pcall(definition.available, RUI)
+        if not ok or not available then
+          SetStatus(row.status, definition.required and "error" or "optional", definition.required and "MISSING" or "OPTIONAL")
+        else
+          SetStatus(row.status, "ready", "READY")
+        end
       else
-        SetStatusText(row.status, "optional", "WAITING")
+        SetStatus(row.status, "ready", "READY")
       end
     end
+
+    page.install:SetLabel(valid and "INSTALLED" or "INSTALL RETREATUI")
+    page.install:SetEnabled(not valid and ready)
     if valid then
-      page.install:SetLabel("INSTALLED")
-      page.install:SetEnabled(false)
-      local warnings = RUI:GetOptionalIntegrationWarnings()
-      if #warnings > 0 then
-        SetStatusText(page.result, "optional", "Required setup installed. Optional warning: " .. table.concat(warnings, "  •  "))
-      else
-        SetStatusText(page.result, "success", "Installation validated successfully.")
-      end
+      SetStatus(page.result, "success", "Installation validated successfully.")
+    elseif ready then
+      SetStatus(page.result, "optional", "Ready to install.")
     else
-      page.install:SetLabel("INSTALL RETREATUI")
-      page.install:SetEnabled(true)
-      SetStatusText(page.result, "optional", "Ready to install.")
+      SetStatus(page.result, "error", "A required addon or class module is missing.")
     end
     if frame and frame.next then frame.next:SetEnabled(valid) end
   end
@@ -287,204 +327,114 @@ local function CreateInstallPage()
 end
 
 local function CreateCompletePage()
-  local page = CreateFrame("Frame", nil, frame.content)
-  page:SetAllPoints(); page:Hide()
+  local theme = Theme()
+  local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
+  Artwork(page)
+  Text(page, "RETREATUI IS READY", 30, theme.text):SetPoint("TOPLEFT", 54, -76)
+  local subtitle = Text(page, "Your class-aware setup has been installed and validated.", 12, theme.muted)
+  subtitle:SetPoint("TOPLEFT", 54, -118)
 
-  local title = Text(page, "RETREATUI IS READY", 27, true)
-  title:SetPoint("TOP", 0, -48)
-  local subtitle = Text(page, "The complete supported setup has been installed and validated.", 13, false)
-  subtitle:SetPoint("TOP", 0, -92)
-
-  local card = Panel(page, RUI:GetTheme().panelSoft, RUI:GetTheme().accent)
-  card:SetPoint("TOPLEFT", 92, -150)
-  card:SetPoint("TOPRIGHT", -92, -150)
-  card:SetHeight(220)
-
-  local check = card:CreateTexture(nil, "ARTWORK")
+  -- The completion state is shown directly on the class artwork. No large
+  -- confirmation card is used on the final page.
+  local check = page:CreateTexture(nil, "ARTWORK")
   check:SetTexture("Interface\\Buttons\\UI-CheckBox-Check")
-  check:SetSize(52, 52)
-  check:SetPoint("TOP", 0, -28)
-  check:SetVertexColor(0.25, 1, 0.25, 1)
+  check:SetSize(58, 58)
+  check:SetPoint("TOP", 0, -184)
+  check:SetVertexColor(theme.success[1], theme.success[2], theme.success[3], 1)
 
-  page.message = Text(card, "", 13, false)
-  page.message:SetPoint("TOPLEFT", 30, -100)
-  page.message:SetPoint("TOPRIGHT", -30, -100)
+  page.message = Text(page, "", 11, theme.text)
+  page.message:SetPoint("TOP", 0, -264)
+  page.message:SetWidth(560)
+  page.message:SetHeight(72)
   page.message:SetJustifyH("CENTER")
-  page.message:SetSpacing(8)
+  page.message:SetJustifyV("TOP")
 
-  page.reload = Button(page, "FINISH & RELOAD", 172, 36, function()
+  page.reload = Button(page, "FINISH & RELOAD", 174, 34, function()
     local valid, problems = RUI:ValidateInstallation()
-    if not valid then
-      SetStatusText(page.message, "error", table.concat(problems or {"Validation failed."}, "\n"))
-      page.reload:SetEnabled(false)
-      return
-    end
-    local db = RUI:EnsureDB()
-    db.installer.completedVersion = RUI.version
-    db.installer.initialCompleted = true
-    db.installer.lastAttemptOK = true
+    if not valid then SetStatus(page.message, "error", table.concat(problems or {"Validation failed."}, "\n")); return end
+    local db = RUI:EnsureDB(); db.installer.completedVersion = RUI.version; db.installer.initialCompleted = true; db.installer.lastAttemptOK = true
     ReloadUI()
   end)
-  page.reload:SetPoint("BOTTOM", 0, 52)
-
+  page.reload:SetPoint("TOP", 0, -370)
   page.Refresh = function()
-    local valid, problems = RUI:ValidateInstallation()
-    page.reload:SetEnabled(valid)
-    if valid then
-      local warnings = RUI:GetOptionalIntegrationWarnings()
-      if #warnings > 0 then
-        SetStatusText(page.message, "optional", "The required RetreatUI setup is ready.\nOptional integration warning: " .. table.concat(warnings, "  •  "))
-      else
-        SetStatusText(page.message, "success", "ElvUI, the class HUD, TurboPlates, NPC tracking and Details! are ready.\nDBM styling was applied when available.")
-      end
-    else
-      SetStatusText(page.message, "error", table.concat(problems or {"Validation failed."}, "\n"))
-    end
+    local valid, problems = RUI:ValidateInstallation(); page.reload:SetEnabled(valid)
+    SetStatus(page.message, valid and "success" or "error", valid and "Core, class HUD and supported integrations are ready." or table.concat(problems or {"Validation failed."}, "\n"))
   end
   return page
 end
 
 function Installer:ShowPage(index)
-  index = tonumber(index) or 1
-  if index < 1 then index = 1 elseif index > #PAGE_DEFS then index = #PAGE_DEFS end
-
-  if index == 2 then
-    local ready = RUI:GetInstallerReadiness(false)
-    if not ready then index = 1 end
-  elseif index == 3 then
-    local valid = RUI:ValidateInstallation()
-    if not valid then index = 2 end
-  end
-
+  index = math.max(1, math.min(#PAGE_DEFS, tonumber(index) or 1))
+  if index == 2 and not select(1, RUI:GetInstallerReadiness(false)) then index = 1 end
+  if index == 3 and not select(1, RUI:ValidateInstallation()) then index = 2 end
   currentPage = index
-  for pageIndex = 1, #PAGE_DEFS do
-    if pageFrames[pageIndex] then
-      if pageIndex == index then pageFrames[pageIndex]:Show() else pageFrames[pageIndex]:Hide() end
-    end
-    local nav = navButtons[pageIndex]
+  local theme = Theme()
+  for i=1,#PAGE_DEFS do
+    if pages[i] then if i == index then pages[i]:Show() else pages[i]:Hide() end end
+    local nav = navButtons[i]
     if nav then
-      local theme = RUI:GetTheme()
-      if pageIndex == index then
-        nav:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
-        nav:SetBackdropColor(theme.accent[1] * 0.12, theme.accent[2] * 0.12, theme.accent[3] * 0.12, 1)
-      else
-        nav:SetBackdropBorderColor(0.14, 0.10, 0.10, 1)
-        nav:SetBackdropColor(theme.sidebar[1], theme.sidebar[2], theme.sidebar[3], 1)
-      end
+      if i == index then nav:SetBackdropColor(theme.accent[1]*0.12, theme.accent[2]*0.12, theme.accent[3]*0.12, 1); nav:SetBackdropBorderColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
+      else nav:SetBackdropColor(theme.sidebar[1],theme.sidebar[2],theme.sidebar[3],1); nav:SetBackdropBorderColor(0,0,0,0.75) end
     end
   end
-
-  local targetPage = pageFrames[index]
-  if targetPage and type(targetPage.Refresh) == "function" then
-    local ok, err = pcall(targetPage.Refresh)
-    if not ok then RUI:Print("Installer refresh failed: " .. tostring(err)) end
-  end
-
+  if pages[index] and pages[index].Refresh then pcall(pages[index].Refresh) end
   frame.back:SetEnabled(index > 1)
-  frame.next:Show()
   frame.next:SetLabel(index == 1 and "CONTINUE" or "NEXT")
-  if index == 3 then
-    frame.next:Hide()
-  elseif index == 1 then
-    frame.next:SetEnabled(select(1, RUI:GetInstallerReadiness(false)))
-  elseif index == 2 then
-    frame.next:SetEnabled(select(1, RUI:ValidateInstallation()))
-  end
+  if index == 3 then frame.next:Hide() else frame.next:Show() end
   frame.progress:SetText(index .. " / " .. #PAGE_DEFS)
-  return true
 end
 
 local function BuildInstaller()
   if frame then return frame end
-  local theme = RUI:GetTheme()
-  frame = Panel(UIParent, theme.background, {theme.accent[1], theme.accent[2], theme.accent[3], 1})
-  frame:SetSize(980, 630)
-  frame:SetPoint("CENTER")
-  frame:SetFrameStrata("DIALOG")
-  frame:SetClampedToScreen(true)
-  frame:EnableMouse(true)
-  frame:SetMovable(true)
-  frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", frame.StartMoving)
-  frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
+  local theme = Theme()
+  frame = Panel(UIParent, theme.background, theme.accent)
+  frame:SetSize(1040, 640); frame:SetPoint("CENTER"); frame:SetFrameStrata("DIALOG"); frame:SetClampedToScreen(true)
+  frame:EnableMouse(true); frame:SetMovable(true); frame:RegisterForDrag("LeftButton")
+  frame:SetScript("OnDragStart", frame.StartMoving); frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
 
-  frame.sidebar = Panel(frame, theme.sidebar, {0, 0, 0, 1})
-  frame.sidebar:SetPoint("TOPLEFT", 4, -4)
-  frame.sidebar:SetPoint("BOTTOMLEFT", 4, 4)
-  frame.sidebar:SetWidth(220)
+  frame.sidebar = Panel(frame, theme.sidebar, {0,0,0,1}); frame.sidebar:SetPoint("TOPLEFT",4,-4); frame.sidebar:SetPoint("BOTTOMLEFT",4,4); frame.sidebar:SetWidth(194)
+  frame.content = Panel(frame, theme.background, {0,0,0,1}); frame.content:SetPoint("TOPLEFT",202,-4); frame.content:SetPoint("BOTTOMRIGHT",-4,58)
+  frame.footer = Panel(frame, theme.sidebar, {0,0,0,1}); frame.footer:SetPoint("BOTTOMLEFT",202,4); frame.footer:SetPoint("BOTTOMRIGHT",-4,4); frame.footer:SetHeight(50)
 
-  frame.content = Panel(frame, theme.background, {0, 0, 0, 1})
-  frame.content:SetPoint("TOPLEFT", 228, -4)
-  frame.content:SetPoint("BOTTOMRIGHT", -4, 58)
-
-  frame.footer = Panel(frame, theme.sidebar, {0, 0, 0, 1})
-  frame.footer:SetPoint("BOTTOMLEFT", 228, 4)
-  frame.footer:SetPoint("BOTTOMRIGHT", -4, 4)
-  frame.footer:SetHeight(50)
+  -- The logo uses a transparent, feathered texture so it blends into the sidebar
+  -- instead of appearing as a square image placed on top of it.
+  local logoGlow = frame.sidebar:CreateTexture(nil, "BORDER")
+  logoGlow:SetTexture("Interface\\Buttons\\WHITE8X8")
+  logoGlow:SetSize(124, 96)
+  logoGlow:SetPoint("TOP", 0, -12)
+  logoGlow:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.055)
 
   local logo = frame.sidebar:CreateTexture(nil, "ARTWORK")
   logo:SetTexture("Interface\\AddOns\\RetreatUI\\Media\\RetreatUI_Logo.tga")
-  logo:SetSize(112, 92)
-  logo:SetPoint("TOP", 0, -12)
-  local heading = Text(frame.sidebar, "RETREATUI", 16, true)
-  heading:SetPoint("TOP", 0, -103)
-  local version = Text(frame.sidebar, "VERSION " .. tostring(RUI.version), 9, false)
-  version:SetPoint("TOP", 0, -126)
+  logo:SetSize(126, 104)
+  logo:SetPoint("TOP", 0, -8)
+  logo:SetTexCoord(0.025, 0.975, 0.025, 0.975)
 
+  Text(frame.sidebar, "RETREATUI", 16, theme.accent):SetPoint("TOP",0,-108)
+  Text(frame.sidebar, "VERSION " .. tostring(RUI.version), 8, theme.muted):SetPoint("TOP",0,-133)
   for index, def in ipairs(PAGE_DEFS) do
-    local nav = CreateFrame("Frame", nil, frame.sidebar)
-    RUI:SkinFrame(nav, theme.sidebar, {0.14, 0.10, 0.10, 1})
-    nav:SetSize(192, 48)
-    nav:SetPoint("TOP", 0, -168 - (index - 1) * 58)
-    local number = Text(nav, tostring(index), 13, true)
-    number:SetPoint("LEFT", 14, 0)
-    local title = Text(nav, def.title, 10, false)
-    title:SetPoint("TOPLEFT", 44, -9)
-    local subtitle = Text(nav, def.subtitle, 8, false)
-    subtitle:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
-    subtitle:SetPoint("BOTTOMLEFT", 44, 9)
+    local nav = Panel(frame.sidebar, theme.sidebar, {0,0,0,0.75}); nav:SetSize(166,52); nav:SetPoint("TOP",0,-172-(index-1)*62)
+    Text(nav, string.format("0%d", index), 12, theme.accent):SetPoint("LEFT",12,0)
+    Text(nav, def.title, 10, theme.text):SetPoint("TOPLEFT",44,-10)
+    Text(nav, def.subtitle, 8, theme.muted):SetPoint("BOTTOMLEFT",44,10)
     navButtons[index] = nav
   end
+  local className = Text(frame.sidebar, tostring(RUI:GetDetectedClass()), 9, theme.accent2); className:SetPoint("BOTTOM",0,34); className:SetWidth(164); className:SetJustifyH("CENTER")
 
-  pageFrames[1] = CreateWelcomePage()
-  pageFrames[2] = CreateInstallPage()
-  pageFrames[3] = CreateCompletePage()
-
-  frame.back = Button(frame.footer, "BACK", 100, 30, function() Installer:ShowPage(currentPage - 1) end)
-  frame.back:SetPoint("LEFT", 18, 0)
-  frame.close = Button(frame.footer, "CLOSE", 100, 30, function() frame:Hide() end)
-  frame.close:SetPoint("LEFT", 128, 0)
-  frame.next = Button(frame.footer, "CONTINUE", 112, 30, function() Installer:ShowPage(currentPage + 1) end)
-  frame.next:SetPoint("RIGHT", -18, 0)
-  frame.progress = Text(frame.footer, "", 9, false)
-  frame.progress:SetPoint("CENTER")
+  pages[1], pages[2], pages[3] = CreateWelcomePage(), CreateInstallPage(), CreateCompletePage()
+  frame.back = Button(frame.footer,"BACK",96,28,function() Installer:ShowPage(currentPage-1) end); frame.back:SetPoint("LEFT",16,0)
+  frame.close = Button(frame.footer,"CLOSE",96,28,function() frame:Hide() end); frame.close:SetPoint("LEFT",120,0)
+  frame.next = Button(frame.footer,"CONTINUE",112,28,function() Installer:ShowPage(currentPage+1) end); frame.next:SetPoint("RIGHT",-16,0)
+  frame.progress = Text(frame.footer,"",9,theme.muted); frame.progress:SetPoint("CENTER")
   return frame
 end
 
-function RUI:HideInstaller()
-  if frame then frame:Hide() end
-end
-
+function RUI:HideInstaller() if frame then frame:Hide() end end
 function RUI:ShowInstaller(force)
-  if type(self.IsSupportedCharacter) == "function" and not self:IsSupportedCharacter() then
-    self:HideInstaller()
-    self:Print(self:GetUnsupportedMessage())
-    return false
-  end
-  BuildInstaller()
-  frame:Show()
-  Installer:ShowPage(1)
-  return true
+  if type(self.IsSupportedCharacter) == "function" and not self:IsSupportedCharacter() then self:HideInstaller(); self:Print(self:GetUnsupportedMessage()); return false end
+  BuildInstaller(); frame:Show(); Installer:ShowPage(1); return true
 end
-
 function RUI:RefreshInstallerTheme()
-  if frame then
-    frame:Hide()
-    frame = nil
-    pageFrames = {}
-    navButtons = {}
-    currentPage = 1
-  end
+  if frame then frame:Hide(); frame=nil; pages={}; navButtons={}; currentPage=1 end
 end
-
 RUI._installerLoaded = true

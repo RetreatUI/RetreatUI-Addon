@@ -92,20 +92,56 @@ function RUI:GetSpellRecordRuntimeID(record)
   return tonumber(record.id)
 end
 
+
+
+-- Talent-aware visibility helpers. These rules are deliberately data-driven so
+-- class modules can describe replacements and passive conversions without
+-- adding one-off conditionals to their HUD files.
+local function AnyConditionLearned(self, values)
+  if values == nil then return false end
+  if type(values) ~= "table" then values = {values} end
+  for _, value in ipairs(values) do
+    if type(value) == "number" and self.IsSpellIDLearned and self:IsSpellIDLearned(value) then return true end
+    if type(value) == "string" and self.IsSpellLearned and self:IsSpellLearned(value) then return true end
+    if type(value) == "table" then
+      if value.id and self.IsSpellIDLearned and self:IsSpellIDLearned(value.id) then return true end
+      if value.name and self.IsSpellLearned and self:IsSpellLearned(value.name) then return true end
+    end
+  end
+  return false
+end
+
+function RUI:IsSpellRecordPassive(record)
+  if type(record) ~= "table" then return false end
+  local spellID = self.GetSpellRecordRuntimeID and self:GetSpellRecordRuntimeID(record) or tonumber(record.id)
+  if spellID and IsPassiveSpell then
+    local ok, passive = pcall(IsPassiveSpell, spellID)
+    if ok and passive then return true end
+  end
+  return record.passive == true
+end
+
+function RUI:IsSpellRecordCastable(record)
+  if type(record) ~= "table" then return false end
+  if self:IsSpellRecordPassive(record) then return false end
+  if AnyConditionLearned(self, record.becomesPassiveWhen) then return false end
+  return self:IsSpellRecordLearned(record)
+end
+
 function RUI:ShouldShowSpellRecord(record)
   if type(record) ~= "table" or record.disabled == true then return false end
-  if record.hideIfSpellIDLearned and self.IsSpellIDLearned and self:IsSpellIDLearned(record.hideIfSpellIDLearned) then
-    return false
+  if record.hideIfSpellIDLearned and self.IsSpellIDLearned and self:IsSpellIDLearned(record.hideIfSpellIDLearned) then return false end
+  if record.hideIfSpellLearned and self.IsSpellLearned and self:IsSpellLearned(record.hideIfSpellLearned) then return false end
+  if AnyConditionLearned(self, record.hideWhen) then return false end
+  if record.requiresSpellID and self.IsSpellIDLearned and not self:IsSpellIDLearned(record.requiresSpellID) then return false end
+  if record.requiresSpell and self.IsSpellLearned and not self:IsSpellLearned(record.requiresSpell) then return false end
+  if record.requiresAny and not AnyConditionLearned(self, record.requiresAny) then return false end
+  if record.requiresAll then
+    local values = type(record.requiresAll) == "table" and record.requiresAll or {record.requiresAll}
+    for _, value in ipairs(values) do if not AnyConditionLearned(self, {value}) then return false end end
   end
-  if record.hideIfSpellLearned and self.IsSpellLearned and self:IsSpellLearned(record.hideIfSpellLearned) then
-    return false
-  end
-  if record.requiresSpellID and self.IsSpellIDLearned and not self:IsSpellIDLearned(record.requiresSpellID) then
-    return false
-  end
-  if record.requiresSpell and self.IsSpellLearned and not self:IsSpellLearned(record.requiresSpell) then
-    return false
-  end
+  if record.hudRow and record.allowPassiveOnHUD ~= true and self:IsSpellRecordPassive(record) then return false end
+  if record.hudRow and AnyConditionLearned(self, record.becomesPassiveWhen) then return false end
   return true
 end
 
