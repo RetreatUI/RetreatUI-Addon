@@ -1,0 +1,38 @@
+name: Build RetreatUI Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out preview branch
+        uses: actions/checkout@v4
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+
+      - name: Apply preview package patches
+        run: python3 tools/build_preview.py
+
+      - name: Validate Lua syntax
+        run: |
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Upload RetreatUI preview
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI_v1.0.2-dev.10
+          path: dist/RetreatUI_v1.0.2-dev.10.zip
+          if-no-files-found: error
+          retention-days: 7
