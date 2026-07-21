@@ -1,9 +1,9 @@
-name: Build RetreatUI dev21 patch
+name: Build RetreatUI dev22 patch
 
 on:
   push:
     branches:
-      - build/dev21-venomancer-cleanup-final
+      - build/dev22-venomancer-cleanup
   pull_request:
     branches:
       - main
@@ -20,10 +20,12 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          ROOT="dev21_overlay/Interface/AddOns/RetreatUI_Dev21Patch"
-          test -f "$ROOT/RetreatUI_Dev21Patch.toc"
+          ROOT="dev22_overlay/package/Interface/AddOns/RetreatUI_Dev22Patch"
+          test -f "$ROOT/RetreatUI_Dev22Patch.toc"
           test -f "$ROOT/Patch.lua"
-          grep -F '## Version: 1.0.2-dev.21' "$ROOT/RetreatUI_Dev21Patch.toc"
+          grep -F '## Version: 1.0.2-dev.22' "$ROOT/RetreatUI_Dev22Patch.toc"
+          grep -F 'function W:BuildSpellRow' "$ROOT/Patch.lua"
+          grep -F 'local MAIN_ORDER' "$ROOT/Patch.lua"
           grep -F '"Chitin Rush"' "$ROOT/Patch.lua"
           grep -F '"Expulsion"' "$ROOT/Patch.lua"
           grep -F '"Barbed Stinger"' "$ROOT/Patch.lua"
@@ -32,9 +34,10 @@ jobs:
           grep -F '"Lifeblood"' "$ROOT/Patch.lua"
           grep -F '"Vile Sting"' "$ROOT/Patch.lua"
           grep -F '"Nullifying Toxin"' "$ROOT/Patch.lua"
-          grep -F '["beetleform"] = true' "$ROOT/Patch.lua"
-          grep -F '["spiderlord"] = true' "$ROOT/Patch.lua"
-          grep -F '["carapaceregeneration"] = true' "$ROOT/Patch.lua"
+          grep -F 'venomtippoison = true' "$ROOT/Patch.lua"
+          grep -F 'hivebreak = true' "$ROOT/Patch.lua"
+          grep -F 'carapacecrash = true' "$ROOT/Patch.lua"
+          grep -F 'clawstrike = true' "$ROOT/Patch.lua"
 
       - name: Lua 5.1 syntax validation
         shell: bash
@@ -42,21 +45,23 @@ jobs:
           set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-          luac5.1 -p dev21_overlay/Interface/AddOns/RetreatUI_Dev21Patch/Patch.lua
+          luac5.1 -p dev22_overlay/package/Interface/AddOns/RetreatUI_Dev22Patch/Patch.lua
 
       - name: Validate extractable layout
         shell: bash
         run: |
           set -euo pipefail
-          cd dev21_overlay
-          zip -r -9 ../layout-test.zip Interface
-          cd ..
+          cd dev22_overlay/package
+          zip -r -9 ../../layout-test.zip Interface
+          cd ../..
           unzip -t layout-test.zip
+          unzip -l layout-test.zip | grep -F 'Interface/AddOns/RetreatUI_Dev22Patch/RetreatUI_Dev22Patch.toc'
+          unzip -l layout-test.zip | grep -F 'Interface/AddOns/RetreatUI_Dev22Patch/Patch.lua'
 
       - name: Upload extractable package
         uses: actions/upload-artifact@v4
         with:
-          name: RetreatUI_v1.0.2-dev.21
-          path: dev21_overlay
+          name: RetreatUI_v1.0.2-dev.22
+          path: dev22_overlay/package
           if-no-files-found: error
           retention-days: 7
