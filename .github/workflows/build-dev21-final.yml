@@ -44,19 +44,19 @@ jobs:
           sudo apt-get install -y -qq lua5.1
           luac5.1 -p dev21_overlay/Interface/AddOns/RetreatUI_Dev21Patch/Patch.lua
 
-      - name: Build update ZIP
+      - name: Validate extractable layout
         shell: bash
         run: |
           set -euo pipefail
           cd dev21_overlay
-          zip -r -9 ../RetreatUI_v1.0.2-dev.21.zip Interface
+          zip -r -9 ../layout-test.zip Interface
           cd ..
-          unzip -t RetreatUI_v1.0.2-dev.21.zip
+          unzip -t layout-test.zip
 
-      - name: Upload update package
+      - name: Upload extractable package
         uses: actions/upload-artifact@v4
         with:
           name: RetreatUI_v1.0.2-dev.21
-          path: RetreatUI_v1.0.2-dev.21.zip
+          path: dev21_overlay/Interface
           if-no-files-found: error
           retention-days: 7
