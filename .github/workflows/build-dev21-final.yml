@@ -57,6 +57,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: RetreatUI_v1.0.2-dev.21
-          path: dev21_overlay/Interface
+          path: dev21_overlay
           if-no-files-found: error
           retention-days: 7
