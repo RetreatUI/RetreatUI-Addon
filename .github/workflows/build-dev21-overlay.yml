@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - build/dev21-venomancer-cleanup
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
