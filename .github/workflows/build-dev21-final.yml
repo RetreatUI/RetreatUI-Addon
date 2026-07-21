@@ -1,0 +1,62 @@
+name: Build RetreatUI dev21 patch
+
+on:
+  push:
+    branches:
+      - build/dev21-venomancer-cleanup-final
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate package layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="dev21_overlay/Interface/AddOns/RetreatUI_Dev21Patch"
+          test -f "$ROOT/RetreatUI_Dev21Patch.toc"
+          test -f "$ROOT/Patch.lua"
+          grep -F '## Version: 1.0.2-dev.21' "$ROOT/RetreatUI_Dev21Patch.toc"
+          grep -F '"Chitin Rush"' "$ROOT/Patch.lua"
+          grep -F '"Expulsion"' "$ROOT/Patch.lua"
+          grep -F '"Barbed Stinger"' "$ROOT/Patch.lua"
+          grep -F '"Regrow Exoskeleton"' "$ROOT/Patch.lua"
+          grep -F '"Harden"' "$ROOT/Patch.lua"
+          grep -F '"Lifeblood"' "$ROOT/Patch.lua"
+          grep -F '"Vile Sting"' "$ROOT/Patch.lua"
+          grep -F '"Nullifying Toxin"' "$ROOT/Patch.lua"
+          grep -F '["beetleform"] = true' "$ROOT/Patch.lua"
+          grep -F '["spiderlord"] = true' "$ROOT/Patch.lua"
+          grep -F '["carapaceregeneration"] = true' "$ROOT/Patch.lua"
+
+      - name: Lua 5.1 syntax validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          luac5.1 -p dev21_overlay/Interface/AddOns/RetreatUI_Dev21Patch/Patch.lua
+
+      - name: Build update ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dev21_overlay
+          zip -r -9 ../RetreatUI_v1.0.2-dev.21.zip Interface
+          cd ..
+          unzip -t RetreatUI_v1.0.2-dev.21.zip
+
+      - name: Upload update package
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI_v1.0.2-dev.21
+          path: RetreatUI_v1.0.2-dev.21.zip
+          if-no-files-found: error
+          retention-days: 7
