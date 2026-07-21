@@ -1,0 +1,75 @@
+name: Build RetreatUI v1.0.2
+
+on:
+  push:
+    branches:
+      - release/v1.0.2
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate official addon layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -d RetreatUI
+          test -d RetreatUI_Classes
+          test -f RetreatUI/RetreatUI.toc
+          test -f RetreatUI_Classes/RetreatUI_Classes.toc
+
+          grep -F '## Version: 1.0.2' RetreatUI/RetreatUI.toc
+          grep -F '## Version: 1.0.2' RetreatUI_Classes/RetreatUI_Classes.toc
+
+          if find . -maxdepth 2 -type d -iname '*dev*patch*' | grep -q .; then
+            echo 'Temporary dev patch addon detected.' >&2
+            exit 1
+          fi
+
+          if grep -R -n -E '1\.0\.2-dev|preview mode|cleanup loaded|dev\.[0-9]+' RetreatUI RetreatUI_Classes; then
+            echo 'Development-only text remains in the public package.' >&2
+            exit 1
+          fi
+
+      - name: Validate Lua 5.1 syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          while IFS= read -r -d '' file; do
+            luac5.1 -p "$file"
+          done < <(find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0)
+
+      - name: Build clean public archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf package RetreatUI_v1.0.2.zip
+          mkdir -p package/Interface/AddOns
+          cp -a RetreatUI package/Interface/AddOns/
+          cp -a RetreatUI_Classes package/Interface/AddOns/
+          cd package
+          zip -r -9 ../RetreatUI_v1.0.2.zip Interface
+          cd ..
+          unzip -t RetreatUI_v1.0.2.zip
+
+          mapfile -t addon_roots < <(unzip -Z1 RetreatUI_v1.0.2.zip | awk -F/ '$1=="Interface" && $2=="AddOns" && $3!="" {print $3}' | sort -u)
+          test "${#addon_roots[@]}" -eq 2
+          printf '%s\n' "${addon_roots[@]}" | grep -Fx 'RetreatUI'
+          printf '%s\n' "${addon_roots[@]}" | grep -Fx 'RetreatUI_Classes'
+
+      - name: Upload official release candidate
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI_v1.0.2
+          path: RetreatUI_v1.0.2.zip
+          if-no-files-found: error
+          retention-days: 14
