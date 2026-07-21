@@ -11,4 +11,5 @@ Install:
 Change:
 Venomancer's main HUD row is locked to Chitin Rush, Expulsion, Barbed Stinger, Regrow Exoskeleton, Harden, Lifeblood, Vile Sting and Nullifying Toxin.
 
+Removed from the main HUD row: Venomtip Poison, Hivebreak, Carapace Crash and Claw Strike.
 Build validation: Lua 5.1 syntax and strict whitelist checks.
