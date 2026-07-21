@@ -1,0 +1,140 @@
+name: Build RetreatUI dev23 patch
+
+on:
+  push:
+    branches:
+      - build/dev23-venomancer-postfilter
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate package layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          ROOT="dev23_overlay/package/Interface/AddOns/RetreatUI_Dev22Patch"
+          test -f "$ROOT/RetreatUI_Dev22Patch.toc"
+          test -f "$ROOT/Patch.lua"
+          grep -F '## Version: 1.0.2-dev.23' "$ROOT/RetreatUI_Dev22Patch.toc"
+          grep -F 'venomtippoison = true' "$ROOT/Patch.lua"
+          grep -F 'hivebreak = true' "$ROOT/Patch.lua"
+          grep -F 'carapacecrash = true' "$ROOT/Patch.lua"
+          grep -F 'clawstrike = true' "$ROOT/Patch.lua"
+          ! grep -F 'function RUI:GetHUDSpellDefinitions' "$ROOT/Patch.lua"
+
+      - name: Lua 5.1 syntax validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          luac5.1 -p dev23_overlay/package/Interface/AddOns/RetreatUI_Dev22Patch/Patch.lua
+
+      - name: Runtime row-filter test
+        shell: bash
+        run: |
+          set -euo pipefail
+          lua5.1 - <<'LUA'
+          local function NewIcon(definition)
+            local icon = {definition=definition, shown=true}
+            function icon:IsShown() return self.shown end
+            function icon:Hide() self.shown = false end
+            function icon:Show() self.shown = true end
+            function icon:ClearAllPoints() self.point = nil end
+            function icon:SetPoint(...) self.point = {...} end
+            return icon
+          end
+
+          local root = {}
+          function root:GetName() return "RetreatUIVenomancerHUD" end
+          function root:GetParent() return nil end
+
+          local function NewRow()
+            local row = {icons={}}
+            function row:GetName() return nil end
+            function row:GetParent() return root end
+            return row
+          end
+
+          RetreatUI = {HUDWidgets={}}
+          DEFAULT_CHAT_FRAME = {AddMessage=function() end}
+          function RetreatUI.HUDWidgets:BuildSpellRow(row, definitions, size, spacing)
+            row.icons = {}
+            for _, definition in ipairs(definitions or {}) do
+              row.icons[#row.icons + 1] = NewIcon(definition)
+            end
+          end
+
+          dofile("dev23_overlay/package/Interface/AddOns/RetreatUI_Dev22Patch/Patch.lua")
+
+          local main = {
+            {name="Chitin Rush"},
+            {name="Venomtip Poison"},
+            {name="Hivebreak"},
+            {name="Carapace Crash"},
+            {name="Claw Strike"},
+            {name="Expulsion"},
+            {name="Barbed Stinger"},
+            {name="Regrow Exoskeleton"},
+            {name="Harden"},
+            {name="Lifeblood"},
+            {name="Vile Sting"},
+            {name="Nullifying Toxin"},
+          }
+          local mainRow = NewRow()
+          RetreatUI.HUDWidgets:BuildSpellRow(mainRow, main, 38, 1)
+
+          local shown = {}
+          for _, icon in ipairs(mainRow.icons) do
+            if icon:IsShown() then shown[icon.definition.name] = true end
+          end
+          local expected = {
+            "Chitin Rush", "Expulsion", "Barbed Stinger", "Regrow Exoskeleton",
+            "Harden", "Lifeblood", "Vile Sting", "Nullifying Toxin",
+          }
+          local count = 0
+          for name in pairs(shown) do count = count + 1 end
+          assert(count == 8, "expected 8 visible main icons, got " .. tostring(count))
+          for _, name in ipairs(expected) do assert(shown[name], "missing " .. name) end
+          assert(not shown["Venomtip Poison"], "Venomtip Poison was not removed")
+          assert(not shown["Hivebreak"], "Hivebreak was not removed")
+          assert(not shown["Carapace Crash"], "Carapace Crash was not removed")
+          assert(not shown["Claw Strike"], "Claw Strike was not removed")
+
+          local utility = {{name="Catalyst"}, {name="Molt"}, {name="Locust Swarm"}}
+          local utilityRow = NewRow()
+          RetreatUI.HUDWidgets:BuildSpellRow(utilityRow, utility, 32, 1)
+          local utilityCount = 0
+          for _, icon in ipairs(utilityRow.icons) do
+            if icon:IsShown() then utilityCount = utilityCount + 1 end
+          end
+          assert(utilityCount == 3, "utility row was modified")
+          print("dev23 runtime row-filter test passed")
+          LUA
+
+      - name: Validate extractable layout
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dev23_overlay/package
+          zip -r -9 ../../../layout-test.zip Interface
+          cd ../../..
+          unzip -t layout-test.zip
+          unzip -Z1 layout-test.zip | grep -F 'Interface/AddOns/RetreatUI_Dev22Patch/Patch.lua'
+          unzip -Z1 layout-test.zip | grep -F 'Interface/AddOns/RetreatUI_Dev22Patch/RetreatUI_Dev22Patch.toc'
+
+      - name: Upload extractable package
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI_v1.0.2-dev.23
+          path: dev23_overlay/package
+          if-no-files-found: error
+          retention-days: 7
