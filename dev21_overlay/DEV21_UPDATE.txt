@@ -1,0 +1,12 @@
+RETREATUI v1.0.2-dev.21 UPDATE
+
+This package is an overlay update for RetreatUI v1.0.2-dev.20.
+
+Install:
+1. Close the Ascension client.
+2. Extract the package into the game folder and allow it to overwrite the existing Registry.lua file.
+3. Do NOT delete the existing RetreatUI or RetreatUI_Classes folders for this overlay update.
+4. Log in normally. No slash command is required.
+
+Change:
+Venomancer's main HUD row is locked to Chitin Rush, Expulsion, Barbed Stinger, Regrow Exoskeleton, Harden, Lifeblood, Vile Sting and Nullifying Toxin.
