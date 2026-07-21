@@ -124,3 +124,4 @@ if widgets and type(widgets.BuildSpellRow) == "function" and not widgets._dev21O
 end
 
 RUI._dev21VenomancerCleanupLoaded = true
+-- Rebuilt to regenerate the downloadable dev.21 artifact.
