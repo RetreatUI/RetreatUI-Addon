@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: RetreatUI dev.22 Patch
+## Notes: Final Venomancer HUD row cleanup for RetreatUI v1.0.2-dev.20.
+## Author: Retreat
+## Version: 1.0.2-dev.22
+## Dependencies: RetreatUI, RetreatUI_Classes
+## DefaultState: Enabled
+
+Patch.lua
