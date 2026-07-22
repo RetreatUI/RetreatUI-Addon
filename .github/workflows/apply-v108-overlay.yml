@@ -1,0 +1,48 @@
+name: Apply RetreatUI v1.0.8 overlay
+
+on:
+  push:
+    branches:
+      - release/v1.0.8
+    paths:
+      - ".github/workflows/apply-v108-overlay.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apply-overlay:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/v1.0.8
+          fetch-depth: 0
+
+      - name: Restore v1.0.8 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .release-upload/overlay.b64.* > /tmp/overlay.b64
+          base64 --decode /tmp/overlay.b64 > /tmp/overlay.tar.gz
+          tar -tzf /tmp/overlay.tar.gz
+          tar -xzf /tmp/overlay.tar.gz
+          rm -rf .release-upload
+
+          grep -F '## Version: 1.0.8' RetreatUI/RetreatUI.toc
+          grep -F '## Version: 1.0.8' RetreatUI_Classes/RetreatUI_Classes.toc
+          test -f RetreatUI_Classes/Bloodmage/HUD.lua
+          test -f RetreatUI_Classes/Venomancer/HUD.lua
+          test -f RetreatUI_Classes/Cultist/HUD.lua
+
+      - name: Commit RetreatUI v1.0.8
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release RetreatUI v1.0.8"
+          git push origin HEAD:release/v1.0.8
