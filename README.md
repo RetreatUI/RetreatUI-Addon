@@ -1,46 +1,107 @@
 # RetreatUI
 
-A complete UI package built exclusively for **Project Ascension: Conquest of Azeroth**.
+A modern, class-aware UI package built exclusively for **Project Ascension: Conquest of Azeroth**.
 
-## RetreatUI v1.0.1
+RetreatUI dynamically adapts to your class, talents, buffs, cooldowns and resources, allowing you to focus on gameplay instead of your action bars.
 
-This release delivers the complete class framework and themed installer, including the core addon, class modules, Theme Manager, installer assets, icons, and media.
-
-### Class status
-
-| Class | Role | Status |
-| --- | --- | --- |
-| Knight of Xoroth | Tank | **Stable** |
-| Venomancer | Fortitude Tank | **Beta** |
-| Cultist | Dreadnought Tank | **Beta** |
+---
 
 ## Features
 
-- Class-aware themed installer with artwork, icons, and colors for every included class.
-- Shared Theme Manager and resource-color framework.
-- Shared HUD widgets for counters, cooldowns, timers, and charges.
-- ElvUI, Details!, TurboPlates, DBM, combat-text, CVar, and NPC spell-cooldown integrations.
-- Complete Knight of Xoroth Tank module and Venomancer Fortitude and Cultist Dreadnought beta modules.
+- Dynamic class-specific HUDs
+- Talent-aware spell tracking
+- Buff, debuff and cooldown tracking
+- Resource counters and timers
+- Shared installer with automatic profile setup
+- ElvUI integration
+- TurboPlates integration
+- Lightweight and modular design
 
-## Installation
+---
 
-1. Close Project Ascension completely.
-2. Delete the existing `RetreatUI` and `RetreatUI_Classes` folders.
-3. Extract the release archive into the Project Ascension game folder.
-4. Enable both addons and their required dependencies.
-5. Complete the normal ElvUI setup, then use `/rui install` if the installer does not open automatically.
+# Supported Classes
 
-Always replace both bundled addon folders together; do not mix versions.
+| Class | Status |
+|------|--------|
+| Knight of Xoroth | ✅ Stable |
+| Bloodmage | 🧪 Public Testing |
+| Cultist | 🧪 Public Testing |
+| Venomancer | 🧪 Public Testing |
 
-## Discord
+Additional classes are added continuously.
 
-[Join the RetreatUI Discord](https://discord.gg/P2J6xHHb9X)
+---
 
-## Documentation
+# Installation
 
-- [v1.0.1 release notes](RELEASE_NOTES_v1.0.1.md)
-- [Complete addon changelog](RetreatUI/CHANGELOG.txt)
+1. Download the latest release from the **Releases** page.
+2. Close World of Warcraft.
+3. Delete your existing:
+   - `RetreatUI`
+   - `RetreatUI_Classes`
+4. Extract both folders into:
+   ```
+   Interface/AddOns
+   ```
+5. Launch the game.
 
-## License
+Always replace both addon folders together.
 
-All Rights Reserved.
+---
+
+# Downloads
+
+Latest release:
+
+https://github.com/RetreatUI/RetreatUI-Addon/releases/latest
+
+---
+
+# Discord
+
+Join the community for:
+
+- Bug reports
+- Feature requests
+- Tester applications
+- Development updates
+- Class discussions
+
+Discord invite:
+
+*[(RetreatUi Official Discord)](https://discord.gg/uzZFrtbVab)*
+
+---
+
+# Current Status
+
+RetreatUI is under active development.
+
+Current focus:
+
+- Improving Bloodmage
+- Improving Cultist
+- Improving Venomancer
+- Expanding support for additional classes
+- UI polish and quality-of-life improvements
+
+---
+
+# Contributing
+
+Community feedback is always welcome.
+
+You can help by:
+
+- Reporting bugs
+- Suggesting features
+- Testing new builds
+- Sharing class knowledge
+
+---
+
+# License
+
+This project is proprietary.
+
+All rights reserved unless otherwise stated.
