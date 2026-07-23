@@ -114,8 +114,23 @@ function RUI:ApplyTurboPlatesRuntime()
   auras.iconSpacing = 2
   auras.debuffSortMode = "LEAST_TIME"
 
-  for _, spellName in ipairs(PLAYER_DEBUFFS) do
-    local spellID = self:GetSpellID(spellName)
+  local playerDebuffs, seenDebuffs = {}, {}
+  local function AddPlayerDebuff(name, id)
+    local key = tostring(id or name or "")
+    if key == "" or seenDebuffs[key] then return end
+    seenDebuffs[key] = true
+    playerDebuffs[#playerDebuffs + 1] = {name=name, id=tonumber(id)}
+  end
+
+  for _, spellName in ipairs(PLAYER_DEBUFFS) do AddPlayerDebuff(spellName, nil) end
+  if self.GetTargetDebuffDefinitions then
+    for _, definition in ipairs(self:GetTargetDebuffDefinitions(self:GetDetectedClass()) or {}) do
+      AddPlayerDebuff(definition.name, definition.id)
+    end
+  end
+
+  for _, record in ipairs(playerDebuffs) do
+    local spellID = record.id or self:GetSpellID(record.name)
     if spellID then auras.whitelist[spellID] = true end
   end
 

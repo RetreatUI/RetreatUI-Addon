@@ -81,35 +81,17 @@ local function ClassCard(parent)
   local theme, info = Theme(), RUI:GetClassInfo()
   local visual = theme.installer
 
-  -- Open class identity layout. The artwork remains visible behind the class
-  -- information instead of being covered by a large framed card.
+  -- Permanent installer rule: class artwork is used once as the page background.
+  -- No class thumbnail/icon is rendered here for any current or future class.
   local card = CreateFrame("Frame", nil, parent)
-  card:SetSize(455, 100)
-
-  local icon = card:CreateTexture(nil, "ARTWORK")
-  icon:SetTexture(visual.icon)
-  icon:SetSize(74, 74)
-  icon:SetPoint("LEFT", 14, 0)
-  icon:SetTexCoord(0.05, 0.95, 0.05, 0.95)
-
-  local function IconEdge(width, height, point, relativePoint, x, y)
-    local edge = card:CreateTexture(nil, "OVERLAY")
-    edge:SetTexture("Interface\\Buttons\\WHITE8X8")
-    edge:SetSize(width, height)
-    edge:SetPoint(point, icon, relativePoint, x, y)
-    edge:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.75)
-  end
-  IconEdge(76, 1, "TOP", "TOP", 0, 1)
-  IconEdge(76, 1, "BOTTOM", "BOTTOM", 0, -1)
-  IconEdge(1, 76, "LEFT", "LEFT", -1, 0)
-  IconEdge(1, 76, "RIGHT", "RIGHT", 1, 0)
+  card:SetSize(455, 88)
 
   local title = Text(card, visual.title or info.name, 18, theme.accent)
-  title:SetPoint("TOPLEFT", 108, -10)
+  title:SetPoint("TOPLEFT", 14, -7)
   local subtitle = Text(card, visual.subtitle or visual.loadout, 10, theme.accent2)
-  subtitle:SetPoint("TOPLEFT", 108, -38)
+  subtitle:SetPoint("TOPLEFT", 14, -35)
   local description = Text(card, visual.description, 9, theme.muted)
-  description:SetPoint("TOPLEFT", 108, -64)
+  description:SetPoint("TOPLEFT", 14, -61)
   description:SetPoint("RIGHT", -14, 0)
   description:SetJustifyH("LEFT")
   return card
@@ -142,7 +124,7 @@ local function CreateWelcomePage()
   local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
   Artwork(page)
 
-  local eyebrow = Text(page, "RETREATUI  •  CONQUEST OF AZEROTH", 9, theme.accent2)
+  local eyebrow = Text(page, "CONQUEST OF AZEROTH", 9, theme.accent2)
   eyebrow:SetPoint("TOPLEFT", 30, -26)
   local title = Text(page, "WELCOME", 30, theme.text)
   title:SetPoint("TOPLEFT", 30, -48)
@@ -244,7 +226,7 @@ local function CreateInstallPage()
   local theme = Theme()
   local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
   Artwork(page)
-  Text(page, "INSTALL RETREATUI", 28, theme.text):SetPoint("TOPLEFT", 30, -34)
+  Text(page, "INSTALL SETUP", 28, theme.text):SetPoint("TOPLEFT", 30, -34)
   local intro = Text(page, "Apply every supported profile and integration in one pass.", 11, theme.muted)
   intro:SetPoint("TOPLEFT", 30, -74)
   Text(page, "INSTALLATION MODULES", 10, theme.accent):SetPoint("TOPLEFT", 30, -112)
@@ -268,7 +250,7 @@ local function CreateInstallPage()
   page.result:SetWidth(580)
   page.result:SetJustifyH("LEFT")
 
-  page.install = Button(page, "INSTALL RETREATUI", 172, 32, function(button)
+  page.install = Button(page, "INSTALL", 172, 32, function(button)
     button:SetEnabled(false); button:SetLabel("INSTALLING")
     for _, row in pairs(page.rows) do SetStatus(row.status, "optional", "WAITING") end
     local valid, problems = RUI:InstallAllModules(function(key, state)
@@ -312,7 +294,7 @@ local function CreateInstallPage()
       end
     end
 
-    page.install:SetLabel(valid and "INSTALLED" or "INSTALL RETREATUI")
+    page.install:SetLabel(valid and "INSTALLED" or "INSTALL")
     page.install:SetEnabled(not valid and ready)
     if valid then
       SetStatus(page.result, "success", "Installation validated successfully.")
@@ -330,7 +312,7 @@ local function CreateCompletePage()
   local theme = Theme()
   local page = CreateFrame("Frame", nil, frame.content); page:SetAllPoints(); page:Hide()
   Artwork(page)
-  Text(page, "RETREATUI IS READY", 30, theme.text):SetPoint("TOPLEFT", 54, -76)
+  Text(page, "SETUP IS READY", 30, theme.text):SetPoint("TOPLEFT", 54, -76)
   local subtitle = Text(page, "Your class-aware setup has been installed and validated.", 12, theme.muted)
   subtitle:SetPoint("TOPLEFT", 54, -118)
 
@@ -396,24 +378,33 @@ local function BuildInstaller()
   frame.content = Panel(frame, theme.background, {0,0,0,1}); frame.content:SetPoint("TOPLEFT",202,-4); frame.content:SetPoint("BOTTOMRIGHT",-4,58)
   frame.footer = Panel(frame, theme.sidebar, {0,0,0,1}); frame.footer:SetPoint("BOTTOMLEFT",202,4); frame.footer:SetPoint("BOTTOMRIGHT",-4,4); frame.footer:SetHeight(50)
 
-  -- The logo uses a transparent, feathered texture so it blends into the sidebar
-  -- instead of appearing as a square image placed on top of it.
+  -- Permanent installer rule: exactly one visible RetreatUI brand mark.
+  -- Class artwork appears only as the full-page background; class thumbnails
+  -- are never rendered in the welcome card.
+  local logoArtwork = "Interface\\AddOns\\RetreatUI\\Media\\RetreatUI_Logo.tga"
+
+  -- The logo texture already has feathered transparency. A slightly larger,
+  -- class-tinted copy underneath creates a subtle glow without a visible box.
   local logoGlow = frame.sidebar:CreateTexture(nil, "BORDER")
-  logoGlow:SetTexture("Interface\\Buttons\\WHITE8X8")
-  logoGlow:SetSize(124, 96)
-  logoGlow:SetPoint("TOP", 0, -12)
-  logoGlow:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.055)
+  logoGlow:SetTexture(logoArtwork)
+  logoGlow:SetSize(154, 154)
+  logoGlow:SetPoint("TOP", 0, 1)
+  logoGlow:SetTexCoord(0, 1, 0, 1)
+  logoGlow:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
+  logoGlow:SetAlpha(0.14)
 
   local logo = frame.sidebar:CreateTexture(nil, "ARTWORK")
-  logo:SetTexture("Interface\\AddOns\\RetreatUI\\Media\\RetreatUI_Logo.tga")
-  logo:SetSize(126, 104)
-  logo:SetPoint("TOP", 0, -8)
-  logo:SetTexCoord(0.025, 0.975, 0.025, 0.975)
+  logo:SetTexture(logoArtwork)
+  logo:SetSize(146, 146)
+  logo:SetPoint("TOP", 0, -3)
+  logo:SetTexCoord(0, 1, 0, 1)
+  logo:SetAlpha(1)
 
-  Text(frame.sidebar, "RETREATUI", 16, theme.accent):SetPoint("TOP",0,-108)
-  Text(frame.sidebar, "VERSION " .. tostring(RUI.version), 8, theme.muted):SetPoint("TOP",0,-133)
+  -- Permanent branding rule: the RetreatUI logo texture already contains the
+  -- brand name. Never draw a second RETREATUI text label above or below it.
+  Text(frame.sidebar, "VERSION " .. tostring(RUI.version), 8, theme.muted):SetPoint("TOP",0,-132)
   for index, def in ipairs(PAGE_DEFS) do
-    local nav = Panel(frame.sidebar, theme.sidebar, {0,0,0,0.75}); nav:SetSize(166,52); nav:SetPoint("TOP",0,-172-(index-1)*62)
+    local nav = Panel(frame.sidebar, theme.sidebar, {0,0,0,0.75}); nav:SetSize(166,52); nav:SetPoint("TOP",0,-178-(index-1)*62)
     Text(nav, string.format("0%d", index), 12, theme.accent):SetPoint("LEFT",12,0)
     Text(nav, def.title, 10, theme.text):SetPoint("TOPLEFT",44,-10)
     Text(nav, def.subtitle, 8, theme.muted):SetPoint("BOTTOMLEFT",44,10)

@@ -30,7 +30,7 @@ local function ScheduleInstaller()
       local ok, err = pcall(RUI.ShowInstaller, RUI, false)
       if not ok then RUI:Print("Installer startup failed: " .. tostring(err)) end
     else
-      RUI:Print("Installer module did not load. Use /rui report.")
+      RUI:Print("Installer module did not load. Reload the UI and try /rui install.")
     end
   end)
 end

@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
 local RUI = RetreatUI
 
 RUI.name = "RetreatUI"
-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.1"
+RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.8"
 RUI._loaderLoaded = true
 
 local function Chat(message)
@@ -80,15 +80,6 @@ local function ShowStatus()
     .. " | installed: " .. tostring(installed))
 end
 
-local function ShowReport()
-  ShowStatus()
-  if type(RUI.ShowSpellDatabaseReport) == "function" and IsSupported() then
-    local ok, err = pcall(RUI.ShowSpellDatabaseReport, RUI, RUI:GetDetectedClass())
-    if not ok then Chat("The support report could not open: " .. tostring(err)) end
-  else
-    Chat("No detailed report is available for this character.")
-  end
-end
 
 _G["SLASH_RETREATUI1"] = "/rui"
 _G["SLASH_RETREATUI2"] = "/retreatui"
@@ -114,7 +105,6 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
   if command == "repair" then RunRepair(); return end
-  if command == "report" or command == "debug" then ShowReport(); return end
 
   if command == "reset" and type(RUI.EnsureDB) == "function" then
     if not RequireSupportedClass() then return end
@@ -126,5 +116,5 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
-  Chat("Commands: /rui | /rui status | /rui changelog | /rui repair | /rui report | /rui reset")
+  Chat("Commands: /rui | /rui status | /rui changelog | /rui repair | /rui reset")
 end

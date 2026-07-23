@@ -2,17 +2,18 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.0.1",
-  summary = "The class-aware framework, themed installer and first beta class modules are now part of the public release.",
+  title = "RetreatUI v1.0.8",
+  summary = "RetreatUI 1.0.8 makes Bloodmage combat-lockdown safe and hides the gameplay HUD behind the World Map.",
   changes = {
-    "Released the redesigned class-aware installer with full-page artwork for Knight of Xoroth, Venomancer and Cultist.",
-    "Kept Knight of Xoroth Tank as the stable and fully supported class module.",
-    "Added beta HUD support for Venomancer Fortitude Tank and Cultist Dreadnought Tank.",
-    "Added shared counter, form, cooldown, charge and dynamic-centering widgets across class HUDs.",
-    "Added talent-aware spell replacements, passive conversions and resource colors based on resource type.",
-    "Fixed installer dependency refresh, module placement, completion layout and integrated logo presentation.",
+    "Bloodmage no longer rebuilds spell rows while combat lockdown is active.",
+    "Spellbook and Eternal Curse refreshes are deferred until combat ends.",
+    "Target-debuff bars are pre-created and only anchored outside combat.",
+    "Class HUD icons, trackers and the power bar are hidden while the World Map is open.",
+    "Animated Blood and the Eternal Curse Lunge fix remain included.",
+    "RetreatUI and RetreatUI_Classes are version-locked at 1.0.8.",
   },
 }
+
 local updateFrame
 local pendingPopup
 local loginHandled = false

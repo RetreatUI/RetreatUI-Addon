@@ -223,12 +223,16 @@ function RUI:ScanRacialSpells(force)
             seen[lower] = true
             found[#found + 1] = {
               name = name,
+              id = spellID,
               spellID = spellID,
               bookIndex = index,
               racial = true,
               raceKey = raceKey,
               raceName = raceDisplay or raceKey,
               buff = name,
+              trackCooldown = true,
+              trackCharges = true,
+              trackDuration = true,
             }
           end
         end
@@ -246,12 +250,16 @@ function RUI:GetRacialSpellDefinitions(force)
   for _, racial in ipairs(self:ScanRacialSpells(force)) do
     output[#output + 1] = {
       name = racial.name,
+      id = racial.id or racial.spellID,
       spellID = racial.spellID,
       bookIndex = racial.bookIndex,
       racial = true,
       raceKey = racial.raceKey,
       raceName = racial.raceName,
       buff = racial.buff,
+      trackCooldown = true,
+      trackCharges = true,
+      trackDuration = true,
     }
   end
   return output

@@ -27,6 +27,16 @@ function W:CreateIcon(parent, size)
   frame.texture:SetTexCoord(0.08, 0.92, 0.08, 0.92)
   self:CreateBorder(frame)
 
+  frame.glow = frame:CreateTexture(nil, "OVERLAY")
+  frame.glow:SetTexture("Interface\\Buttons\\UI-ActionButton-Border")
+  frame.glow:SetBlendMode("ADD")
+  frame.glow:SetPoint("CENTER", frame, "CENTER", 0, 0)
+  frame.glow:SetWidth(size * 1.75)
+  frame.glow:SetHeight(size * 1.75)
+  frame.glow:SetVertexColor(1, 1, 1, 1)
+  frame.glow:SetAlpha(0)
+  frame.glow:Hide()
+
   frame.cooldownShade = frame:CreateTexture(nil, "ARTWORK")
   frame.cooldownShade:SetPoint("TOPLEFT", frame.texture, "TOPLEFT", 0, 0)
   frame.cooldownShade:SetPoint("BOTTOMRIGHT", frame.texture, "BOTTOMRIGHT", 0, 0)
@@ -60,6 +70,20 @@ function W:SetIconInactive(frame, inactive)
   if frame.texture and frame.texture.SetDesaturated then
     frame.texture:SetDesaturated(inactive == true)
   end
+end
+
+function W:SetGlow(frame, color, alpha)
+  if not frame or not frame.glow then return end
+  alpha = tonumber(alpha) or 0
+  if alpha <= 0 then
+    frame.glow:SetAlpha(0)
+    frame.glow:Hide()
+    return
+  end
+  local r, g, b = CopyColor(color, {1, 1, 1, 1})
+  frame.glow:SetVertexColor(r, g, b, 1)
+  frame.glow:SetAlpha(math.min(1, alpha))
+  frame.glow:Show()
 end
 
 function W:FormatCooldown(remaining)
@@ -97,6 +121,58 @@ local function AddCandidate(candidates, seen, value)
   candidates[#candidates + 1] = value
 end
 
+
+local function NormalizeSpellName(value)
+  if type(value) ~= "string" then return "" end
+  local normalized = value:gsub("’", "'")
+  normalized = normalized:gsub("%s+", " ")
+  normalized = normalized:gsub("^%s+", "")
+  normalized = normalized:gsub("%s+$", "")
+  return string.lower(normalized)
+end
+
+function W:ResolveStrictSpellTexture(definition)
+  if type(definition) ~= "table" or not GetSpellInfo then return nil end
+
+  local names, seenNames, expectedNames = {}, {}, {}
+  local function AddName(value)
+    local key = NormalizeSpellName(value)
+    if key ~= "" and not seenNames[key] then
+      seenNames[key] = true
+      expectedNames[key] = true
+      names[#names + 1] = value
+    end
+  end
+  AddName(definition.name)
+  for _, value in ipairs(definition.aliases or {}) do AddName(value) end
+
+  local ids, seenIDs = {}, {}
+  local function AddID(value)
+    value = tonumber(value)
+    if value and value > 0 and not seenIDs[value] then
+      seenIDs[value] = true
+      ids[#ids + 1] = value
+    end
+  end
+  AddID(definition.id)
+
+  for _, spellID in ipairs(ids) do
+    local resolvedName, _, texture = GetSpellInfo(spellID)
+    local resolvedKey = NormalizeSpellName(resolvedName)
+    if resolvedName and texture and expectedNames[resolvedKey] then
+      return texture, spellID, resolvedName
+    end
+  end
+
+  for _, requestedName in ipairs(names) do
+    local resolvedName, _, texture = GetSpellInfo(requestedName)
+    if resolvedName and texture and NormalizeSpellName(resolvedName) == NormalizeSpellName(requestedName) then
+      return texture, nil, resolvedName
+    end
+  end
+  return nil
+end
+
 function W:ReadSpellCooldown(definition)
   if not GetSpellCooldown or type(definition) ~= "table" then return 0, 0, 0 end
 
@@ -125,7 +201,8 @@ function W:ReadSpellCooldown(definition)
 end
 
 function W:ReadSpellCharges(definition)
-  if not GetSpellCharges or type(definition) ~= "table" then return nil end
+  if type(definition) ~= "table" or not GetSpellCharges then return nil end
+
   local candidates, seen = {}, {}
   AddCandidate(candidates, seen, RUI.GetSpellRecordRuntimeID and RUI:GetSpellRecordRuntimeID(definition))
   AddCandidate(candidates, seen, definition.id)
@@ -150,7 +227,10 @@ function W:BuildSpellRow(row, definitions, size, spacing, learnedCallback, textu
       local ok, result = pcall(definition.show)
       allowed = ok and result ~= false
     end
-    if allowed and learnedCallback(definition) then visible[#visible + 1] = definition end
+    if allowed and learnedCallback(definition) then
+      definition.__ruiResolvedRowTexture = textureCallback and textureCallback(definition) or nil
+      visible[#visible + 1] = definition
+    end
   end
 
   local count = #visible
@@ -164,7 +244,11 @@ function W:BuildSpellRow(row, definitions, size, spacing, learnedCallback, textu
       row.icons[index] = icon
     end
     icon.definition = definition
-    icon.texture:SetTexture(textureCallback(definition) or select(3, GetSpellInfo(definition.name or "")) or "Interface\\Icons\\INV_Misc_QuestionMark")
+    local texture = definition.__ruiResolvedRowTexture or (textureCallback and textureCallback(definition))
+    if not texture then
+      texture = select(3, GetSpellInfo(definition.name or "")) or "Interface\\Icons\\INV_Misc_QuestionMark"
+    end
+    icon.texture:SetTexture(texture)
     icon:ClearAllPoints()
     icon:SetPoint("CENTER", row, "CENTER", -total / 2 + size / 2 + (index - 1) * (size + spacing), 0)
     icon:Show()
@@ -204,8 +288,22 @@ function W:UpdateSpellRow(row, auraCallback)
         if not (chargeCurrent and chargeMaximum) and aura.count and aura.count > 1 then
           icon.stackText:SetText(tostring(aura.count))
         end
+
+        if definition.trackDuration and aura.expires and aura.expires > 0 then
+          local auraRemaining = math.max(0, aura.expires - GetTime())
+          if auraRemaining > 0.05 then
+            if icon.cooldownShade then icon.cooldownShade:Hide() end
+            if icon.texture and icon.texture.SetDesaturated then icon.texture:SetDesaturated(false) end
+            icon.cooldownText:SetText(self:FormatCooldown(auraRemaining))
+            icon.cooldownText:SetTextColor(0.72, 1.00, 0.42, 1)
+          end
+        end
       else
         self:SetBorder(icon, {0, 0, 0, 1}, 1)
+      end
+
+      if RUI.ApplyTankUtilityHighlight then
+        RUI:ApplyTankUtilityHighlight(icon, definition)
       end
     end
   end
@@ -242,12 +340,18 @@ function W:CreateCounter(parent, options)
   frame.fallback = options.fallback
   frame.key = options.key
   frame.maxValue = options.maxValue
+  frame.hideWhenInactive = options.hideWhenInactive == true
   frame:Show()
   return frame
 end
 
 function W:SetCounter(frame, texture, value, active, color, pulseSpeed)
   if not frame or not frame.icon then return end
+  if frame.hideWhenInactive and active == false then
+    frame:Hide()
+    return
+  end
+  frame:Show()
   frame.icon.texture:SetTexture(texture or frame.fallback or "Interface\\Icons\\INV_Misc_QuestionMark")
   frame.valueText:SetText(tostring(value or "0"))
   frame.icon:SetAlpha(active == false and 0.46 or 1)

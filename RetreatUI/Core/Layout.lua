@@ -5,18 +5,29 @@ RUI.layout = {
   power = {x=0, y=-152, width=360, height=16},
   custom = {y=-183},
   counters = {imp={x=-105, y=-118}, blood={x=105, y=-118}},
+  -- Secondary class counters use ICON / NAME / VALUE. Their text extends
+  -- below the icon, so this higher row keeps the value clear of the power bar.
+  secondaryCounters = {left={x=-105, y=-96}, right={x=105, y=-96}},
   core = {x=0, y=-183},
   utility = {x=0, y=-224},
   targetDebuffs = {x=310, y=-59},
   demonfire = {x=0, y=-118},
   auraTrackers = {x=0, y=-83, size=30, spacing=3},
   stanceTracker = {size=38, gap=6},
+  tankFramework = {
+    build={x=-105, y=-96},
+    core={x=105, y=-96},
+    state={x=-167, y=-96},
+  },
 }
 
 local powerFrame
 local powerDriver
 local powerElapsed = 0
-local lastPowerCurrent, lastPowerMaximum
+local lastPowerCurrent, lastPowerMaximum, lastPowerToken
+local hudVisibilityDriver
+local hudVisibilityElapsed = 0
+local hudOverlaySuppressed
 
 local RESOURCE_COLORS = RUI.resourceColors or {
   MANA = {0.10, 0.42, 0.95}, RAGE = {0.95, 0.20, 0.06}, FURY = {1.00, 0.34, 0.04},
@@ -27,6 +38,16 @@ function RUI:GetPrimaryResourceToken()
   local info = self:GetClassInfo()
   local definition = info and info.definition or {}
   local configured = definition and definition.primaryResource
+
+  -- Form-driven classes such as Venomancer must follow the power token exposed
+  -- by the live player unit. The configured token is only a safe fallback.
+  if definition and definition.dynamicPrimaryResource and UnitPowerType then
+    local ok, _, token = pcall(UnitPowerType, "player")
+    if ok and token and token ~= "" then
+      return string.upper(tostring(token)):gsub("[^A-Z]", "")
+    end
+  end
+
   if configured and configured ~= "" then return string.upper(tostring(configured)):gsub("[^A-Z]", "") end
   if UnitPowerType then
     local ok, _, token = pcall(UnitPowerType, "player")
@@ -111,8 +132,9 @@ end
 function RUI:UpdatePrimaryPower(force)
   if not powerFrame or not powerFrame:IsShown() then return end
   local current, maximum = ReadPrimaryPower()
-  if not force and current == lastPowerCurrent and maximum == lastPowerMaximum then return end
-  lastPowerCurrent, lastPowerMaximum = current, maximum
+  local token = self:GetPrimaryResourceToken()
+  if not force and current == lastPowerCurrent and maximum == lastPowerMaximum and token == lastPowerToken then return end
+  lastPowerCurrent, lastPowerMaximum, lastPowerToken = current, maximum, token
 
   local color = self:GetPrimaryResourceColor()
   powerFrame:SetStatusBarColor(color[1], color[2], color[3], 1)
@@ -128,13 +150,15 @@ function RUI:ActivatePrimaryPower()
   end
   local frame = CreatePowerFrame()
   frame:Show()
-  lastPowerCurrent, lastPowerMaximum = nil, nil
+  lastPowerCurrent, lastPowerMaximum, lastPowerToken = nil, nil, nil
   self:UpdatePrimaryPower(true)
   if not powerDriver then
     powerDriver = CreateFrame("Frame")
     powerDriver:RegisterEvent("UNIT_POWER")
     powerDriver:RegisterEvent("UNIT_POWER_FREQUENT")
     powerDriver:RegisterEvent("UNIT_DISPLAYPOWER")
+    powerDriver:RegisterEvent("UPDATE_SHAPESHIFT_FORM")
+    powerDriver:RegisterEvent("UPDATE_SHAPESHIFT_FORMS")
     powerDriver:RegisterEvent("PLAYER_ENTERING_WORLD")
     powerDriver:SetScript("OnEvent", function(_, event, unit)
       if unit and unit ~= "player" then return end
@@ -161,6 +185,62 @@ function RUI:GetPrimaryPowerFrame()
   return powerFrame
 end
 
+local function FrameIsShown(frame)
+  if not frame then return false end
+  if type(frame.IsShown) == "function" then
+    local ok, shown = pcall(frame.IsShown, frame)
+    if ok and shown then return true end
+  end
+  if type(frame.IsVisible) == "function" then
+    local ok, visible = pcall(frame.IsVisible, frame)
+    if ok and visible then return true end
+  end
+  return false
+end
+
+function RUI:IsHUDOverlaySuppressed()
+  -- RetreatUI should behave like a normal gameplay HUD, not like a top-layer
+  -- WeakAura. The world map must fully cover class icons, trackers and power.
+  return FrameIsShown(_G.WorldMapFrame)
+end
+
+function RUI:UpdateHUDOverlayVisibility(force)
+  local suppressed = self:IsHUDOverlaySuppressed()
+  if not force and suppressed == hudOverlaySuppressed then return not suppressed end
+  hudOverlaySuppressed = suppressed
+
+  local alpha = suppressed and 0 or 1
+  if powerFrame and powerFrame.SetAlpha then powerFrame:SetAlpha(alpha) end
+
+  local module = self.activeModule
+  local root = module and module.frameName and _G[module.frameName]
+  if root and root.SetAlpha then root:SetAlpha(alpha) end
+  return not suppressed
+end
+
+function RUI:StartHUDVisibilityDriver()
+  if not hudVisibilityDriver then
+    hudVisibilityDriver = CreateFrame("Frame")
+    hudVisibilityDriver:SetScript("OnUpdate", function(_, elapsed)
+      hudVisibilityElapsed = hudVisibilityElapsed + elapsed
+      if hudVisibilityElapsed < 0.10 then return end
+      hudVisibilityElapsed = 0
+      RUI:UpdateHUDOverlayVisibility(false)
+    end)
+  end
+  hudVisibilityElapsed = 0
+  hudOverlaySuppressed = nil
+  hudVisibilityDriver:Show()
+  self:UpdateHUDOverlayVisibility(true)
+end
+
+function RUI:StopHUDVisibilityDriver()
+  if hudVisibilityDriver then hudVisibilityDriver:Hide() end
+  hudVisibilityElapsed = 0
+  hudOverlaySuppressed = nil
+  if powerFrame and powerFrame.SetAlpha then powerFrame:SetAlpha(1) end
+end
+
 function RUI:DeactivateAllHUD()
   if self.activeModule and self.activeModule.deactivate then
     pcall(self.activeModule.deactivate, self.activeModule)
@@ -168,6 +248,7 @@ function RUI:DeactivateAllHUD()
   self.activeModule = nil
   self.activeClass = nil
   self:DeactivatePrimaryPower()
+  self:StopHUDVisibilityDriver()
 end
 
 function RUI:ActivateClassHUD(force)
@@ -201,5 +282,6 @@ function RUI:ActivateClassHUD(force)
   end
   self.activeClass = className
   self.activeModule = module
+  self:StartHUDVisibilityDriver()
   return result ~= false, "complete"
 end

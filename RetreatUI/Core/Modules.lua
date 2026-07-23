@@ -202,10 +202,34 @@ RUI:RegisterInstallerModule("classHUD", {
   label="Class HUD",
   icon=function(self) return self:GetTheme().installer.icon end,
   required=true,
+  available=function(self)
+    -- The HUD is an internal RetreatUI module, not an external addon. Check the
+    -- complete class registration chain directly so a valid Bloodmage module is
+    -- never reported as UNAVAILABLE merely because an optional API is missing.
+    if type(self.ScanSpellbook) == "function" then pcall(self.ScanSpellbook, self) end
+    local className = type(self.GetDetectedClass) == "function" and self:GetDetectedClass() or nil
+    local definition = className and self.classRegistry and self.classRegistry[className]
+    local database = className and self.spellDatabase and self.spellDatabase[className]
+    local module = className and self.classModules and self.classModules[className]
+    return definition ~= nil
+      and definition.ready == true
+      and database ~= nil
+      and module ~= nil
+      and module.ready ~= false
+      and type(module.activate) == "function"
+  end,
+  missing="The detected RetreatUI class HUD module did not finish loading",
   install=function(self)
+    if type(self.ScanSpellbook) == "function" then pcall(self.ScanSpellbook, self) end
     local className = self:GetDetectedClass()
+    local module = self.GetClassModule and self:GetClassModule(className) or (self.classModules and self.classModules[className])
+    if not module or type(module.activate) ~= "function" then
+      return false, tostring(className) .. " HUD module is not registered"
+    end
     local ok, mode = self:ActivateClassHUD(true)
-    if not ok or mode ~= "complete" then return false, tostring(className) .. " HUD could not be activated" end
+    if not ok or mode ~= "complete" then
+      return false, tostring(className) .. " HUD could not be activated (" .. tostring(mode or "unknown") .. ")"
+    end
     return true, tostring(className) .. " HUD activated"
   end,
   validate=function(self)

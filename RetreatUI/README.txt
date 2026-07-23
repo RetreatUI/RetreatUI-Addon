@@ -1,24 +1,23 @@
-RETREATUI v1.0.1
+RETREATUI v1.0.8
 =================
 
 RetreatUI is a modular interface package for Project Ascension: Conquest of Azeroth.
 
-PACKAGE STRUCTURE
-- RetreatUI: Core, installer, profiles, integrations, media and the shared HUD engine.
+PACKAGE CONTENTS
+- RetreatUI: Core, installer, profiles, integrations, media and shared HUD engine.
 - RetreatUI_Classes: Class metadata, spell data and class-specific HUD logic.
 
 SUPPORTED CLASS MODULES
-- Knight of Xoroth — Tank — STABLE
-- Venomancer — Fortitude Tank — BETA
-- Cultist — Dreadnought Tank — BETA
-
-Knight of Xoroth is the fully supported release module. Venomancer and Cultist are included so they can be improved continuously through public testing and feedback.
+- Knight of Xoroth — Tank
+- Venomancer — Fortitude Tank
+- Cultist — Dreadnought Tank
+- Bloodmage — Eternal Tank
 
 PRIMARY RESOLUTION
 - 1920 x 1080
 
 REQUIRED ADDONS
-- RetreatUI_Classes (bundled in the same release)
+- RetreatUI_Classes
 - ElvUI
 - TurboPlates v1.4.5
 - MobSpells v1.3
@@ -32,12 +31,12 @@ INSTALLATION
 2. Back up the Interface and WTF folders.
 3. Install and complete the normal ElvUI setup first.
 4. Delete old RetreatUI and RetreatUI_Classes addon folders.
-5. Extract this release into the Project Ascension game folder.
+5. Extract both folders into Interface\AddOns.
 6. Enable both RetreatUI addon entries and all required addons.
 7. Log into a supported class and complete the RetreatUI installer.
-8. If the installer does not open automatically, use /rui install.
+8. Use /rui install only if the installer does not open automatically.
 
-Always replace both bundled RetreatUI folders together. Do not mix versions.
+Always replace both bundled folders together. Do not mix versions.
 RetreatUI does not import, edit, delete or style personal WeakAuras.
 
 Author: Retreat
