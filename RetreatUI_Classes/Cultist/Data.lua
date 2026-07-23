@@ -5,7 +5,7 @@ local RUI = RetreatUI
 -- share the same ID. The HUD therefore follows learned castable entries and
 -- keeps passive talent effects attached to the ability they modify.
 RUI:RegisterClassSpellDatabase("Cultist", {
-  version = 3,
+  version = 4,
   source = "Cultist class tree + Dreadnought tree audit + live spellbook discovery",
   loadout = "Dreadnought",
   resources = {
@@ -17,21 +17,21 @@ RUI:RegisterClassSpellDatabase("Cultist", {
     {name="Twilight Shieldtoss", id=804208, category="rotation", tankSlot="builder", hudRow="core", order=10, trackCooldown=true, insanityScaling=true, aliases={"Twilight Shield Toss"}},
     {name="Entropic Slam", id=804152, category="rotation", hudRow="core", order=20, trackCooldown=true, requiresInsanity=60, spendsInsanity=40},
     {name="Gaze of C'Thun", id=500110, category="rotation", hudRow="core", order=30, trackCooldown=true, tentacleSynergy=true, aliases={"Gaze of C’Thun"}},
-    {name="Sermon of Dread", id=620610, category="maintenance", hudRow="utility", order=10, targetDebuff=true, maintenanceDebuff=true, debuffDuration=30},
-    {name="Test of Pride", id=804412, category="taunt", tankSlot="taunt", hudRow="core", order=40, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
-    {name="Horrifying Presence", id=500723, category="taunt", tankSlot="aoeTaunt", hudRow="core", order=50, trackCooldown=true, buff="Horrifying Presence", trackDuration=true, partyCooldown=true, cooldownCategory="taunt"},
-    {name="Crushing Dissonance", category="interrupt", tankSlot="interrupt", hudRow="core", order=60, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
-
-    -- Secondary decision row: selected defensives, stops, movement and summons.
     {name="Dreadfall", category="movement", hudRow="core", order=70, trackCooldown=true, aliases={"Dread Fall"}},
     {name="Void-Enhanced Shield", category="defensive", hudRow="core", order=80, trackCooldown=true, buff="Void-Enhanced Shield", auraNames={"Void-Enhanced Shield","Void Enhanced Shield","Void Shield"}, auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive", aliases={"Void Enhanced Shield","Void Shield"}, blockedByDebuff="Wracked Mind"},
     {name="Abyssal Ward", category="defensive", hudRow="core", order=90, trackCooldown=true, buff="Abyssal Ward", auraTracker=true, trackDuration=true, trackStacks=true, partyCooldown=true, cooldownCategory="defensive"},
     {name="Embrace the Void", category="defensive", hudRow="core", order=100, trackCooldown=true, buff="Embrace the Void", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
-    {name="Mass Nightmare", category="control", hudRow="utility", order=40, trackCooldown=true, conditionalHighlight="insanity80", partyCooldown=true, cooldownCategory="interrupt"},
-    {name="Entropic Singularity", category="control", hudRow="utility", order=50, trackCooldown=true},
-    {name="Tentacle of Yogg-Saron", id=802042, category="summon", hudRow="utility", order=60, trackCooldown=true, auraTracker=true, trackDuration=true, summonDuration=30, talentName="Tentacle of Y'Shaarj", aliases={"Tentacle of Yogg-Saron","Tentacle of Yogg Saron","Tentacle of Y'Shaarj","Tentacle of Y'shaarj","Tentacle of Y’Shaarj"}},
-    {name="Satiate", id=804275, category="resource", hudRow="utility", order=70, trackCooldown=true, channelDuration=6, generatesInsanity=60, damageTakenPenalty=20},
-    {name="Presence of Y'Shaarj", id=803035, category="stance", hudRow="utility", order=20, buff="Presence of Y'Shaarj", missingBuffWarning=true, aliases={"Presence of Y'shaarj","Presence of Y’Shaarj"}},
+
+    -- Secondary decision row: taunts, interrupt, selected stops, movement and summons.
+    {name="Sermon of Dread", id=620610, category="maintenance", hudRow="utility", order=10, targetDebuff=true, maintenanceDebuff=true, debuffDuration=30},
+    {name="Test of Pride", id=804412, category="taunt", tankSlot="taunt", hudRow="utility", order=20, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
+    {name="Horrifying Presence", id=500723, category="taunt", tankSlot="aoeTaunt", hudRow="utility", order=30, trackCooldown=true, buff="Horrifying Presence", trackDuration=true, partyCooldown=true, cooldownCategory="taunt"},
+    {name="Crushing Dissonance", category="interrupt", tankSlot="interrupt", hudRow="utility", order=40, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
+    {name="Mass Nightmare", category="control", hudRow="utility", order=50, trackCooldown=true, conditionalHighlight="insanity80", partyCooldown=true, cooldownCategory="interrupt"},
+    {name="Entropic Singularity", category="control", hudRow="utility", order=60, trackCooldown=true},
+    {name="Tentacle of Yogg-Saron", id=802042, category="summon", hudRow="utility", order=70, trackCooldown=true, auraTracker=true, trackDuration=true, summonDuration=30, talentName="Tentacle of Y'Shaarj", aliases={"Tentacle of Yogg-Saron","Tentacle of Yogg Saron","Tentacle of Y'Shaarj","Tentacle of Y'shaarj","Tentacle of Y’Shaarj"}},
+    {name="Satiate", id=804275, category="resource", hudRow="utility", order=80, trackCooldown=true, channelDuration=6, generatesInsanity=60, damageTakenPenalty=20},
+    {name="Presence of Y'Shaarj", id=803035, category="stance", hudRow="utility", order=90, buff="Presence of Y'Shaarj", missingBuffWarning=true, aliases={"Presence of Y'shaarj","Presence of Y’Shaarj"}},
 
     -- Other relevant Cultist/Dreadnought abilities. They appear automatically
     -- when actually learned, but are not forced into the selected build.
@@ -40,9 +40,9 @@ RUI:RegisterClassSpellDatabase("Cultist", {
     {name="Bulwark of Shadow", category="defensive", hudRow="core", order=170, trackCooldown=true, buff="Bulwark of Shadow", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
     {name="Eldritch Bastion", category="defensive", hudRow="core", order=180, trackCooldown=true, buff="Eldritch Bastion", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
     {name="Voidwarding", category="defensive", hudRow="core", order=190, trackCooldown=true, buff="Voidwarding", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
-    {name="Devour Magic", category="dispel", tankSlot="dispel", hudRow="utility", order=30, trackCooldown=true, aliases={"Devourer"}},
+    {name="Devour Magic", category="dispel", tankSlot="dispel", hudRow="utility", order=100, trackCooldown=true, aliases={"Devourer"}},
     {name="Twisted Seal", category="defensive", hudRow="core", order=200, trackCooldown=true, buff="Twisted Seal", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
-    {name="Grasp of Zek'voz", category="control", hudRow="utility", order=80, trackCooldown=true, aliases={"Grasp of Zek’voz"}},
+    {name="Grasp of Zek'voz", category="control", hudRow="utility", order=110, trackCooldown=true, aliases={"Grasp of Zek’voz"}},
 
     -- Known basic builders/fillers kept for spellbook auditing, not HUD space.
     {name="Void Strikes", category="rotation", trackHUD=false, aliases={"Void Strike"}},
