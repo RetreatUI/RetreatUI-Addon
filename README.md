@@ -5,19 +5,6 @@ A modern, class-aware UI package built exclusively for **Project Ascension: Conq
 RetreatUI dynamically adapts to your class, talents, buffs, cooldowns and resources, allowing you to focus on gameplay instead of your action bars.
 
 ---
-## Screenshots
-
-> *(Screenshots of the UI in action.)*
-
-![Knight of Xoroth](images/knightofxoroth.jpg)
-
-![Bloodmage](images/bloodmage.jpg)
-
-![Cultist](images/cultist.jpg)
-
-![Venomancer](images/venomancer.jpg)
-
----
 
 ## Features
 
