@@ -21,72 +21,53 @@ jobs:
           ref: release/v1.0.8
           fetch-depth: 0
 
-      - name: Restore v1.0.8 source
+      - name: Rebuild v1.0.8 source
         shell: bash
         run: |
-          set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          import base64
-          import shutil
-          import tarfile
-          import tempfile
-          import zipfile
+          set -euxo pipefail
 
-          repo = Path.cwd()
-          parts = sorted((repo / ".release-upload").glob("overlay.b64.*"))
-          if not parts:
-              raise SystemExit("No overlay upload parts were found")
+          test -d .release-upload
+          ls -lah .release-upload
+          find .release-upload -maxdepth 1 -type f -name 'overlay.b64.*' -print | sort
 
-          encoded = "".join(part.read_text(encoding="utf-8") for part in parts)
-          encoded = "".join(encoded.split())
-          archive = base64.b64decode(encoded, validate=True)
-          archive_path = Path("/tmp/retreatui-v108-upload.bin")
-          archive_path.write_bytes(archive)
+          cat .release-upload/overlay.b64.* | tr -d '[:space:]' | base64 --decode > /tmp/retreatui-v108.tar.gz
+          file /tmp/retreatui-v108.tar.gz
+          gzip -t /tmp/retreatui-v108.tar.gz
+          tar -tzf /tmp/retreatui-v108.tar.gz | head -100
 
-          extract_root = Path(tempfile.mkdtemp(prefix="retreatui-v108-"))
-          if tarfile.is_tarfile(archive_path):
-              with tarfile.open(archive_path, "r:*") as source:
-                  source.extractall(extract_root)
-          elif zipfile.is_zipfile(archive_path):
-              with zipfile.ZipFile(archive_path) as source:
-                  source.extractall(extract_root)
-          else:
-              raise SystemExit("Uploaded source is neither a tar archive nor a ZIP archive")
+          rm -rf /tmp/retreatui-v108
+          mkdir -p /tmp/retreatui-v108
+          tar -xzf /tmp/retreatui-v108.tar.gz -C /tmp/retreatui-v108
 
-          def locate(name: str) -> Path:
-              matches = [p for p in extract_root.rglob(name) if p.is_dir()]
-              valid = []
-              toc = f"{name}.toc"
-              for path in matches:
-                  if (path / toc).is_file():
-                      valid.append(path)
-              if len(valid) != 1:
-                  raise SystemExit(f"Expected exactly one {name} folder, found {len(valid)}: {valid}")
-              return valid[0]
+          CORE_DIR="$(find /tmp/retreatui-v108 -type f -path '*/RetreatUI/RetreatUI.toc' -printf '%h\n' | head -1)"
+          CLASSES_DIR="$(find /tmp/retreatui-v108 -type f -path '*/RetreatUI_Classes/RetreatUI_Classes.toc' -printf '%h\n' | head -1)"
 
-          for addon in ("RetreatUI", "RetreatUI_Classes"):
-              source = locate(addon)
-              target = repo / addon
-              if target.exists():
-                  shutil.rmtree(target)
-              shutil.copytree(source, target)
+          test -n "$CORE_DIR"
+          test -n "$CLASSES_DIR"
+          echo "Core source: $CORE_DIR"
+          echo "Classes source: $CLASSES_DIR"
 
-          shutil.rmtree(repo / ".release-upload")
-          PY
+          grep -F '## Version: 1.0.8' "$CORE_DIR/RetreatUI.toc"
+          grep -F '## Version: 1.0.8' "$CLASSES_DIR/RetreatUI_Classes.toc"
+          test -f "$CLASSES_DIR/Bloodmage/HUD.lua"
+          test -f "$CLASSES_DIR/Venomancer/HUD.lua"
+          test -f "$CLASSES_DIR/Cultist/HUD.lua"
+
+          rm -rf RetreatUI RetreatUI_Classes
+          cp -a "$CORE_DIR" RetreatUI
+          cp -a "$CLASSES_DIR" RetreatUI_Classes
+          rm -rf .release-upload
 
           grep -F '## Version: 1.0.8' RetreatUI/RetreatUI.toc
           grep -F '## Version: 1.0.8' RetreatUI_Classes/RetreatUI_Classes.toc
-          test -f RetreatUI_Classes/Bloodmage/HUD.lua
-          test -f RetreatUI_Classes/Venomancer/HUD.lua
-          test -f RetreatUI_Classes/Cultist/HUD.lua
 
       - name: Commit RetreatUI v1.0.8
         shell: bash
         run: |
-          set -euo pipefail
+          set -euxo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
+          git status --short
           git commit -m "Release RetreatUI v1.0.8"
           git push origin HEAD:release/v1.0.8
