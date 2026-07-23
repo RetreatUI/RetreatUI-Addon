@@ -16,6 +16,7 @@ RUI:RegisterClassDefinition("Venomancer", {
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Venomancer_Installer.tga",
   },
   primaryResource = "RAGE",
+  dynamicPrimaryResource = true,
   supportedLoadouts = {TANK=true},
   detectionPriority = 20,
   detectionThreshold = 1,
@@ -25,5 +26,18 @@ RUI:RegisterClassDefinition("Venomancer", {
     "Chitin Rush",
     "Regrow Exoskeleton",
   },
+  tankFramework = {
+    buildMechanic="Exposed Flesh",
+    combatState={"Spider Lord","Beetle Form"},
+    coreMechanic="Carapace",
+    taunt="Vile Sting",
+    interrupt="Nullifying Toxin",
+    combatBuffs={"Harden","Regrow Exoskeleton","Catalyst","Lifeblood"},
+  },
   hudFrameName = "RetreatUIVenomancerHUD",
 })
+
+local definition = RUI:GetClassInfo("Venomancer")
+if definition and definition.tankFramework then
+  RUI:RegisterTankProfile("Venomancer", definition.tankFramework)
+end

@@ -1,8 +1,7 @@
 local RUI = RetreatUI
 
 -- Fortitude tank data. Spell IDs are intentionally discovered from the live
--- Ascension spellbook so the first development branch cannot bind to stale or
--- guessed IDs. Verified IDs can be pinned after the first in-game test pass.
+-- Ascension spellbook so the addon cannot bind to stale or guessed IDs. Verified IDs can be pinned after the first in-game test pass.
 RUI:RegisterClassSpellDatabase("Venomancer", {
   version = 2,
   source = "Ascension Sidekick Fortitude talent audit + Ascension DB + live spellbook discovery",
@@ -14,25 +13,25 @@ RUI:RegisterClassSpellDatabase("Venomancer", {
   },
   spells = {
     -- Same primary HUD row and ordering model as Knight of Xoroth.
-    {name="Chitin Rush", category="rotation", hudRow="core", order=10, trackCooldown=true},
-    {name="Venomtip Poison", category="rotation", hudRow="core", order=20, trackCooldown=true, targetDebuff=true},
-    {name="Hivebreak", category="rotation", hudRow="core", order=30, trackCooldown=true},
-    {name="Carapace Crash", category="rotation", hudRow="core", order=40, trackCooldown=true},
-    {name="Claw Strike", category="rotation", hudRow="core", order=50, trackCooldown=true},
-    {name="Expulsion", category="rotation", hudRow="core", order=60, trackCooldown=true, shed=true},
-    {name="Barbed Stinger", category="rotation", hudRow="core", order=70, trackCooldown=true, shed=true, targetDebuff=true},
-    {name="Regrow Exoskeleton", category="defensive", hudRow="core", order=80, trackCooldown=true, shed=true, partyCooldown=true, cooldownCategory="defensive"},
+    {name="Chitin Rush", category="rotation", tankSlot="builder", hudRow="core", order=10, trackCooldown=true},
+    {name="Venomtip Poison", category="rotation", hudRow="utility", order=10, trackCooldown=true, targetDebuff=true},
+    {name="Hivebreak", category="rotation", hudRow="core", order=20, trackCooldown=true},
+    {name="Carapace Crash", category="rotation", hudRow="core", order=30, trackCooldown=true},
+    {name="Claw Strike", category="rotation", trackHUD=false},
+    {name="Expulsion", category="rotation", tankSlot="spender", hudRow="core", order=40, trackCooldown=true, shed=true},
+    {name="Barbed Stinger", category="rotation", tankSlot="spender", hudRow="core", order=50, trackCooldown=true, shed=true, targetDebuff=true},
+    {name="Regrow Exoskeleton", category="defensive", tankSlot="defensive", hudRow="core", order=60, trackCooldown=true, shed=true, buff="Regrow Exoskeleton", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
 
     -- Same secondary row position, icon size and dynamic centering as Xoroth.
-    {name="Harden", category="defensive", hudRow="utility", order=10, trackCooldown=true, buff="Harden", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive", requiresForm="Beetle Form"},
-    {name="Lifeblood", category="defensive", hudRow="utility", order=20, trackCooldown=true, buff="Lifeblood", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
-    {name="Catalyst", category="offensive", hudRow="utility", order=30, trackCooldown=true, buff="Catalyst", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="offensive"},
+    {name="Harden", category="defensive", hudRow="core", order=70, trackCooldown=true, buff="Harden", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive", requiresForm="Beetle Form"},
+    {name="Lifeblood", category="defensive", hudRow="core", order=80, trackCooldown=true, buff="Lifeblood", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive"},
+    {name="Catalyst", category="offensive", hudRow="utility", order=20, trackCooldown=true, buff="Catalyst", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="offensive"},
     {name="Molt", category="utility", hudRow="utility", order=40, trackCooldown=true},
-    {name="Carapace Regeneration", category="defensive", hudRow="utility", order=50, trackCooldown=true, trackCharges=true, buff="Carapace Regeneration", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive", baseMaxStacks=3, maxStacksTalent="Fortify Carapace", talentMaxStacks=5},
-    {name="Vile Sting", category="taunt", hudRow="utility", order=60, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
-    {name="Nullifying Toxin", category="interrupt", hudRow="utility", order=70, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
-    {name="Locust Swarm", category="offensive", hudRow="utility", order=80, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
-    {name="Toxic Sludge", category="control", hudRow="utility", order=90, trackCooldown=true, targetDebuff=true},
+    {name="Carapace Regeneration", category="resource", trackHUD=false, counterTracker=true, trackCooldown=true, trackCharges=true, buff="Carapace Regeneration", auraTracker=true, trackDuration=true, baseMaxStacks=3, maxStacksTalent="Fortify Carapace", talentMaxStacks=5},
+    {name="Vile Sting", category="taunt", tankSlot="taunt", hudRow="core", order=110, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
+    {name="Nullifying Toxin", category="interrupt", tankSlot="interrupt", hudRow="core", order=120, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
+    {name="Locust Swarm", category="offensive", hudRow="utility", order=30, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
+    {name="Toxic Sludge", category="control", hudRow="utility", order=50, trackCooldown=true, targetDebuff=true},
 
     -- Active form/mechanic trackers.
     {name="Beetle Form", category="form", order=5, stanceTracker=true, trackDuration=false, transformedBy="Spider Lord", aliases={"Spider Lord"}},

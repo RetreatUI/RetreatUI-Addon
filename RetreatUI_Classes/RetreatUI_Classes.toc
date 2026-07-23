@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.0.1
+## Version: 1.0.8
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -18,3 +18,7 @@ Venomancer\HUD.lua
 Cultist\Definition.lua
 Cultist\Data.lua
 Cultist\HUD.lua
+
+Bloodmage\Definition.lua
+Bloodmage\Data.lua
+Bloodmage\HUD.lua

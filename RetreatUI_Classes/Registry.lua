@@ -14,7 +14,7 @@ local definitions = {
   ["Reaper"] = {theme="Soul Hunger", accent={0.50,0.15,0.70}, accent2={0.12,0.85,0.72}, roles="Damage"},
   ["Venomancer"] = {theme="Venom Bloom", accent={0.45,0.90,0.12}, accent2={0.70,0.18,0.80}, roles="Damage / Healer"},
   ["Chronomancer"] = {theme="Timeweaver", accent={0.96,0.72,0.12}, accent2={0.20,0.70,1.00}, roles="Damage / Healer"},
-  ["Bloodmage"] = {theme="Crimson Covenant", accent={0.90,0.08,0.12}, accent2={0.40,0.02,0.06}, roles="Damage / Healer"},
+  ["Bloodmage"] = {theme="Crimson Covenant", accent={0.90,0.08,0.12}, accent2={0.40,0.02,0.06}, roles="Tank / Damage / Healer"},
   ["Guardian"] = {theme="Ancient Bulwark", accent={0.28,0.78,0.38}, accent2={0.68,0.52,0.20}, roles="Tank / Healer"},
   ["Stormbringer"] = {theme="Tempest", accent={0.18,0.62,1.00}, accent2={0.80,0.92,1.00}, roles="Damage / Tank"},
   ["Felsworn"] = {theme="Fel Dominion", accent={0.30,0.92,0.12}, accent2={0.66,0.16,0.86}, roles="Damage / Tank"},

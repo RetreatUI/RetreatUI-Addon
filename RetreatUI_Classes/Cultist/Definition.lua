@@ -27,5 +27,19 @@ RUI:RegisterClassDefinition("Cultist", {
     "Dreadfall",
     "Inner Darkness",
   },
+  tankFramework = {
+    buildMechanic="Insanity",
+    combatState={"Strength of the Black Empire","Void Monstrosity","Dreadnought"},
+    coreMechanic="Total Madness",
+    taunt={"Horrifying Presence","Test of Pride"},
+    interrupt={"Mass Nightmare","Crushing Dissonance"},
+    dispel="Devour Magic",
+    combatBuffs={"Void-Enhanced Shield","Abyssal Ward","Embrace the Void","Tentacle of Yogg-Saron","Armageddon","Doomcloak","Bulwark of Shadow","Eldritch Bastion","Voidwarding","Twisted Seal"},
+  },
   hudFrameName = "RetreatUICultistHUD",
 })
+
+local definition = RUI:GetClassInfo("Cultist")
+if definition and definition.tankFramework then
+  RUI:RegisterTankProfile("Cultist", definition.tankFramework)
+end

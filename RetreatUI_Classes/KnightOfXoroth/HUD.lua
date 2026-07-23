@@ -50,22 +50,25 @@ local function HasImpcaller()
 end
 
 local function CoreDefinitions()
-  return RUI:GetHUDSpellDefinitions(CLASS_NAME, "core")
+  return RUI:GetTankHUDDefinitions(CLASS_NAME, "core")
 end
 
 local function UtilityDefinitions(forceRacialScan)
   local definitions, seen = {}, {}
-  for _, definition in ipairs(RUI:GetHUDSpellDefinitions(CLASS_NAME, "utility")) do
+  for _, definition in ipairs(RUI:GetTankHUDDefinitions(CLASS_NAME, "utility") or {}) do
     definitions[#definitions + 1] = definition
     seen[string.lower(definition.name or "")] = true
   end
 
+  -- Racials are useful but not part of the core tank rotation. They use the
+  -- smaller utility row while retaining cooldown, charge and duration tracking.
   if RUI.GetRacialSpellDefinitions then
     for _, racial in ipairs(RUI:GetRacialSpellDefinitions(forceRacialScan)) do
       local key = string.lower(racial.name or "")
       if key ~= "" and not seen[key] then
-        racial.category = racial.category or "racial"
-        racial.trackCooldown = true
+        racial.category = "racial"
+        racial.hudRow = "utility"
+        racial.order = 900
         definitions[#definitions + 1] = racial
         seen[key] = true
       end
@@ -311,17 +314,34 @@ local function UpdateSpellRow(row, cooldownOnly, auraState)
         if onCooldown then activeCooldown = true end
       end
 
-      -- Buff borders/stacks only need an aura event refresh. Do not rescan all
-      -- player auras for every countdown tick.
+      -- Buff borders/stacks only need a full aura lookup on aura events. The
+      -- resolved aura is cached on the icon so active-duration text can continue
+      -- ticking in the lightweight cooldown loop.
+      local buff = frame.activeBuff
       if not cooldownOnly then
-        local buff
+        buff = nil
         if definition.buff then
           buff = auraState and (auraState.byName[definition.buff] or auraState.byLower[string.lower(definition.buff)])
             or Aura("player", definition.buff, false)
         end
+        frame.activeBuff = buff
         SetBorder(frame, buff ~= nil)
         if not (chargeCurrent and chargeMaximum) then
           frame.stackText:SetText(buff and buff.count and buff.count > 1 and tostring(buff.count) or "")
+        end
+      elseif buff and buff.expires and buff.expires > 0 and buff.expires <= GetTime() then
+        frame.activeBuff = nil
+        buff = nil
+      end
+
+      if definition.trackDuration and buff and buff.expires and buff.expires > 0 then
+        local auraRemaining = math.max(0, buff.expires - GetTime())
+        if auraRemaining > 0.05 then
+          if frame.cooldownShade then frame.cooldownShade:Hide() end
+          if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
+          frame.cooldownText:SetText(FormatCooldown(auraRemaining))
+          frame.cooldownText:SetTextColor(0.72, 1.00, 0.42, 1)
+          activeCooldown = true
         end
       end
     end
@@ -1042,37 +1062,6 @@ local function UpdateAll()
   RefreshTimerDriver()
 end
 
-
-function RUI:DebugBlackShieldAbsorb()
-  local aura = Aura("player", "Black Shield", false)
-  if not aura then
-    self:Print("Black Shield is not active. Use the command again while the shield is running.")
-    return false
-  end
-
-  local value = ReadBlackShieldAbsorb(aura, true)
-  self:Print("Black Shield absorb: " .. (value and FormatAmount(value) or "not detected")
-    .. " | source: " .. tostring(absorbCache.source or "none")
-    .. " | aura index: " .. tostring(aura.index)
-    .. " | spell ID: " .. tostring(aura.spellID or "unknown"))
-
-  local extra = {}
-  for index = 12, #(aura.raw or {}) do
-    local rawValue = aura.raw[index]
-    if rawValue ~= nil then extra[#extra + 1] = tostring(index) .. "=" .. tostring(rawValue) end
-  end
-  if #extra > 0 then self:Print("Black Shield aura values: " .. table.concat(extra, ", ")) end
-
-  local _, _, lines = ReadTooltipAbsorb(aura)
-  if lines and #lines > 0 then
-    for index, line in ipairs(lines) do
-      self:Print("Shield tooltip " .. tostring(index) .. ": " .. tostring(line))
-    end
-  else
-    self:Print("No readable Black Shield tooltip lines were returned by the Ascension client.")
-  end
-  return value ~= nil
-end
 
 local function Build()
   if root then return end

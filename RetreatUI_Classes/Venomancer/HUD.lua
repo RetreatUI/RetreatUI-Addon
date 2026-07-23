@@ -13,6 +13,12 @@ local module = {
 local root, driver, timerDriver
 local elapsed = 0
 
+
+local function StrictTexture(definition)
+  if not definition then return nil end
+  return W:ResolveStrictSpellTexture(definition)
+end
+
 local function Aura(unit, wanted, debuff)
   local getter = debuff and UnitDebuff or UnitBuff
   if not getter then return nil end
@@ -35,24 +41,77 @@ local function Aura(unit, wanted, debuff)
   end
 end
 
-local function Definitions(row)
-  return RUI:GetHUDSpellDefinitions(CLASS_NAME, row)
+-- Form and mechanic trackers are never action buttons. Keep this guard in the
+-- row builder so future database edits cannot
+-- re-introduce duplicate Beetle/Spider form or Carapace counter icons.
+local VENOMANCER_ACTION_EXCLUSIONS = {
+  ["beetle form"] = true,
+  ["spider lord"] = true,
+  ["spider form"] = true,
+  ["carapace regeneration"] = true,
+  ["exposed flesh"] = true,
+}
+
+-- These abilities belong to other trackers or are intentionally omitted from
+-- Venomancer's large action row. The remaining icons are centered by the shared
+-- row builder after filtering.
+local VENOMANCER_MAIN_ROW_EXCLUSIONS = {
+  ["venomtip poison"] = true,
+  ["hivebreak"] = true,
+  ["carapace crash"] = true,
+  ["claw strike"] = true,
+  ["beetle form"] = true,
+  ["spider form"] = true,
+  ["spider lord"] = true,
+  ["carapace regeneration"] = true,
+  ["exposed flesh"] = true,
+}
+
+-- The class database is the single source of truth for row placement.
+-- Main row: rotation, taunt, interrupt, mobility/charge and defensive cooldowns.
+-- Small row: maintenance, offensive cooldowns, control, racials and niche utility.
+local function Definitions(row, forceRacialScan)
+  local definitions, seen = {}, {}
+  local source = RUI:GetTankHUDDefinitions(CLASS_NAME, row) or {}
+  for _, definition in ipairs(source) do
+    local key = string.lower(definition.name or "")
+    local excludedFromMain = row == "core" and VENOMANCER_MAIN_ROW_EXCLUSIONS[key]
+    if not VENOMANCER_ACTION_EXCLUSIONS[key] and not excludedFromMain then
+      definitions[#definitions + 1] = definition
+      seen[key] = true
+    end
+  end
+  if row == "utility" and RUI.GetRacialSpellDefinitions then
+    for _, racial in ipairs(RUI:GetRacialSpellDefinitions(forceRacialScan)) do
+      local key = string.lower(racial.name or "")
+      if key ~= "" and not seen[key] then
+        racial.category = "racial"
+        racial.hudRow = "utility"
+        racial.order = 900
+        definitions[#definitions + 1] = racial
+        seen[key] = true
+      end
+    end
+  end
+  return definitions
+end
+
+local function DefinitionTexture(definition)
+  if not definition then return nil end
+  return RUI:GetSpellRecordTexture(definition)
 end
 
 local function Learned(definition)
+  if definition and definition.racial then return true end
   if definition and definition.hudRow and RUI.IsSpellRecordCastable then
     return RUI:IsSpellRecordCastable(definition)
   end
   return RUI:IsSpellRecordLearned(definition)
 end
 
-local function DefinitionTexture(definition)
-  return RUI:GetSpellRecordTexture(definition)
-end
-
-local function BuildRows()
-  W:BuildSpellRow(root.coreRow, Definitions("core"), 38, 1, Learned, DefinitionTexture)
-  W:BuildSpellRow(root.utilityRow, Definitions("utility"), 32, 1, Learned, DefinitionTexture)
+local function BuildRows(forceRacialScan)
+  W:BuildSpellRow(root.coreRow, Definitions("core", false), 38, 1, Learned, DefinitionTexture)
+  W:BuildSpellRow(root.utilityRow, Definitions("utility", forceRacialScan), 32, 1, Learned, DefinitionTexture)
 end
 
 local function UpdateRows()
@@ -80,9 +139,10 @@ local function UpdateExposedFlesh()
   local aura = Aura("player", "Exposed Flesh", false) or Aura("player", "Exposed Flesh", true)
   local count = aura and tonumber(aura.count) or 0
   local color, pulse = ExposedColor(count)
+  local texture = (aura and aura.icon) or root.exposed.fallback
   W:SetCounter(
     root.exposed,
-    aura and aura.icon or root.exposed.fallback,
+    texture,
     tostring(math.floor(count + 0.5)),
     aura ~= nil or count > 0,
     color,
@@ -95,9 +155,10 @@ local function UpdateCarapace()
   local count = aura and tonumber(aura.count) or 0
   local maximum = TalentLearned("Fortify Carapace") and 5 or 3
   local color = count >= maximum and RUI:GetTheme().accent2 or nil
+  local texture = (aura and aura.icon) or root.carapace.fallback
   W:SetCounter(
     root.carapace,
-    aura and aura.icon or root.carapace.fallback,
+    texture,
     string.format("%d / %d", math.floor(count + 0.5), maximum),
     aura ~= nil or count > 0,
     color,
@@ -109,6 +170,7 @@ local function ActiveVenomancerForm()
   local wanted = {
     ["beetle form"] = true,
     ["spider lord"] = true,
+  ["spider form"] = true,
   }
 
   if GetNumShapeshiftForms and GetShapeshiftFormInfo then
@@ -132,12 +194,7 @@ end
 
 local function UpdateFormTracker()
   local name, texture = ActiveVenomancerForm()
-  W:SetFormTracker(
-    root.formTracker,
-    name,
-    texture or (name and select(3, GetSpellInfo(name))) or "Interface\\Icons\\INV_Misc_MonsterScales_15",
-    RUI:GetTheme().accent2
-  )
+  W:SetFormTracker(root.formTracker, name, texture, RUI:GetTheme().accent2)
 end
 
 local function CreateAuraTracker(definition)
@@ -173,7 +230,7 @@ local function UpdateAuraTrackers()
     tracker:ClearAllPoints()
     tracker:SetPoint("CENTER", UIParent, "CENTER",
       (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing), y)
-    tracker.texture:SetTexture(aura.icon or DefinitionTexture(tracker.definition) or "Interface\\Icons\\INV_Misc_QuestionMark")
+    tracker.texture:SetTexture(aura.icon or DefinitionTexture(tracker.definition))
     tracker:SetAlpha(1)
     tracker.stackText:SetText(aura.count and aura.count > 1 and tostring(aura.count) or "")
     if aura.expires and aura.expires > 0 then
@@ -203,29 +260,33 @@ local function Build()
   root:SetAllPoints(UIParent)
   root:SetFrameStrata("MEDIUM")
 
-  local counters = RUI.layout.counters or {}
-  local left = counters.imp or {x = -105, y = -118}
-  local right = counters.blood or {x = 105, y = -118}
+
+  local framework = RUI:GetTankMechanicLayout()
+  local left = framework.build or {x = -105, y = -96}
+  local right = framework.core or {x = 105, y = -96}
+  local state = framework.state or {x = -167, y = -96}
 
   root.exposed = W:CreateCounter(root, {
     label = "EXPOSED FLESH",
     key = "exposedFlesh",
-    fallback = "Interface\\Icons\\Ability_Creature_Poison_03",
+    fallback = StrictTexture({name="Exposed Flesh"}),
     x = left.x,
     y = left.y,
     width = 104,
+    hideWhenInactive = true,
   })
   root.carapace = W:CreateCounter(root, {
     label = "CARAPACE",
     key = "carapace",
-    fallback = "Interface\\Icons\\INV_Misc_MonsterScales_15",
+    fallback = StrictTexture({name="Carapace Regeneration"}),
     x = right.x,
     y = right.y,
     width = 104,
+    hideWhenInactive = true,
   })
   root.formTracker = W:CreateFormTracker(root, {
-    x = left.x - 62,
-    y = left.y,
+    x = state.x,
+    y = state.y,
     width = 98,
     size = 38,
   })
@@ -240,9 +301,15 @@ local function Build()
   BuildRows()
 
   root.trackers = {}
+  local allowedBuffs = {
+      ["Harden"] = true,
+      ["Regrow Exoskeleton"] = true,
+      ["Catalyst"] = true,
+      ["Lifeblood"] = true,
+  }
   for _, definition in ipairs(RUI:GetAuraTrackerDefinitions(CLASS_NAME) or {}) do
     local name = definition.buff or definition.name
-    if name ~= "Carapace Regeneration" then
+    if allowedBuffs[name] then
       root.trackers[#root.trackers + 1] = CreateAuraTracker(definition)
     end
   end
@@ -262,7 +329,8 @@ local function Build()
     if event == "SPELLS_CHANGED" or event == "PLAYER_LEVEL_UP" or event == "CHARACTER_POINTS_CHANGED" then
       RUI:After(0.15, function()
         if RUI.ScanSpellbook then RUI:ScanSpellbook() end
-        BuildRows()
+        if RUI.InvalidateRacialCache then RUI:InvalidateRacialCache() end
+        BuildRows(true)
         UpdateAll()
       end)
     else

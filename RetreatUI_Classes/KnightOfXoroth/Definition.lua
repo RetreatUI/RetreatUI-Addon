@@ -25,5 +25,17 @@ RUI:RegisterClassDefinition("Knight of Xoroth", {
     "Call: Hellfire Imp",
     "Black Shield",
   },
+  tankFramework = {
+    buildMechanic="Demonfire",
+    combatState={"Pestilence of Famine","Pestilence of War","Pestilence of Conquest"},
+    coreMechanic="Demon's Blood",
+    taunt="Torment",
+    interrupt="Shadowfury",
+  },
   hudFrameName = "RetreatUIKnightOfXorothHUD",
 })
+
+local definition = RUI:GetClassInfo("Knight of Xoroth")
+if definition and definition.tankFramework then
+  RUI:RegisterTankProfile("Knight of Xoroth", definition.tankFramework)
+end
