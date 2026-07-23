@@ -21,45 +21,45 @@ jobs:
           ref: release/v1.0.8
           fetch-depth: 0
 
-      - name: Rebuild v1.0.8 source
+      - name: Restore v1.0.8 source
         shell: bash
         run: |
           set -euxo pipefail
 
-          test -d .release-upload
-          ls -lah .release-upload
-          find .release-upload -maxdepth 1 -type f -name 'overlay.b64.*' -print | sort
+          cat .release-upload/overlay.b64.* | tr -d '\r\n\t ' > /tmp/overlay.b64
+          base64 --decode /tmp/overlay.b64 > /tmp/overlay.tar.gz
+          gzip -t /tmp/overlay.tar.gz
 
-          cat .release-upload/overlay.b64.* | tr -d '[:space:]' | base64 --decode > /tmp/retreatui-v108.tar.gz
-          file /tmp/retreatui-v108.tar.gz
-          gzip -t /tmp/retreatui-v108.tar.gz
-          tar -tzf /tmp/retreatui-v108.tar.gz | head -100
+          rm -rf /tmp/retreatui-upload
+          mkdir -p /tmp/retreatui-upload
+          tar -xzf /tmp/overlay.tar.gz -C /tmp/retreatui-upload
+          find /tmp/retreatui-upload -maxdepth 4 -type f -print
 
-          rm -rf /tmp/retreatui-v108
-          mkdir -p /tmp/retreatui-v108
-          tar -xzf /tmp/retreatui-v108.tar.gz -C /tmp/retreatui-v108
+          nested_zip="$(find /tmp/retreatui-upload -type f -name 'RetreatUI_v1.0.8.zip' -print -quit)"
+          if [ -n "$nested_zip" ]; then
+            rm -rf /tmp/retreatui-source
+            mkdir -p /tmp/retreatui-source
+            unzip -q "$nested_zip" -d /tmp/retreatui-source
+          else
+            rm -rf /tmp/retreatui-source
+            mv /tmp/retreatui-upload /tmp/retreatui-source
+          fi
 
-          CORE_DIR="$(find /tmp/retreatui-v108 -type f -path '*/RetreatUI/RetreatUI.toc' -printf '%h\n' | head -1)"
-          CLASSES_DIR="$(find /tmp/retreatui-v108 -type f -path '*/RetreatUI_Classes/RetreatUI_Classes.toc' -printf '%h\n' | head -1)"
+          core_dir="$(find /tmp/retreatui-source -type f -path '*/RetreatUI/RetreatUI.toc' -printf '%h\n' | head -n 1)"
+          classes_dir="$(find /tmp/retreatui-source -type f -path '*/RetreatUI_Classes/RetreatUI_Classes.toc' -printf '%h\n' | head -n 1)"
 
-          test -n "$CORE_DIR"
-          test -n "$CLASSES_DIR"
-          echo "Core source: $CORE_DIR"
-          echo "Classes source: $CLASSES_DIR"
+          test -n "$core_dir"
+          test -n "$classes_dir"
+          grep -F '## Version: 1.0.8' "$core_dir/RetreatUI.toc"
+          grep -F '## Version: 1.0.8' "$classes_dir/RetreatUI_Classes.toc"
 
-          grep -F '## Version: 1.0.8' "$CORE_DIR/RetreatUI.toc"
-          grep -F '## Version: 1.0.8' "$CLASSES_DIR/RetreatUI_Classes.toc"
-          test -f "$CLASSES_DIR/Bloodmage/HUD.lua"
-          test -f "$CLASSES_DIR/Venomancer/HUD.lua"
-          test -f "$CLASSES_DIR/Cultist/HUD.lua"
+          rm -rf RetreatUI RetreatUI_Classes .release-upload
+          cp -a "$core_dir" RetreatUI
+          cp -a "$classes_dir" RetreatUI_Classes
 
-          rm -rf RetreatUI RetreatUI_Classes
-          cp -a "$CORE_DIR" RetreatUI
-          cp -a "$CLASSES_DIR" RetreatUI_Classes
-          rm -rf .release-upload
-
-          grep -F '## Version: 1.0.8' RetreatUI/RetreatUI.toc
-          grep -F '## Version: 1.0.8' RetreatUI_Classes/RetreatUI_Classes.toc
+          test -f RetreatUI_Classes/Bloodmage/HUD.lua
+          test -f RetreatUI_Classes/Venomancer/HUD.lua
+          test -f RetreatUI_Classes/Cultist/HUD.lua
 
       - name: Commit RetreatUI v1.0.8
         shell: bash
@@ -68,6 +68,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git status --short
           git commit -m "Release RetreatUI v1.0.8"
           git push origin HEAD:release/v1.0.8
