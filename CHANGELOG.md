@@ -6,6 +6,23 @@ The format is based on **Keep a Changelog** and follows semantic versioning wher
 
 ---
 
+## [1.0.9] - 2026-07-23
+
+### Changed
+
+- Moved interrupt and taunt abilities to the Utility Bar across all supported classes
+- Moved Bloodmage Lunge from the Main Rotation Bar to the Utility Bar
+- Removed Bloodfang Bite from the Bloodmage Main Rotation Bar while retaining target debuff tracking
+- Removed Moon Gaze from the Bloodmage HUD
+- Updated both RetreatUI and RetreatUI Classes to version 1.0.9
+
+### Fixed
+
+- Corrected the Bloodmage Bloodfang Bite spell ID used by the class data and detection logic
+- Improved consistency between Main Rotation and Utility Bar layouts across supported classes
+
+---
+
 ## [1.0.8] - 2026-07-23
 
 ### Added
