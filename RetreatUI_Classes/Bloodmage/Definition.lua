@@ -23,7 +23,7 @@ RUI:RegisterClassDefinition("Bloodmage", {
   detectionThreshold = 1,
   detectionSpells = {
     {name="Blood Curse", id=562720},
-    {name="Bloodfang Bite", id=806156},
+    {name="Bloodfang Bite", id=501696},
     {name="Bare Fangs", id=801957},
     "Eternal Resolve",
     "Rotclaw",
