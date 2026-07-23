@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 
 RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
-  version = 3,
+  version = 4,
   source = "Ascension DB + RetreatUI runtime discovery",
   resources = {
     {key="rage", name="Rage", type="primary", position="power"},
@@ -13,8 +13,6 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
     -- Main combat row. The order is stable; unlearned records are omitted.
     {name="Sever", category="rotation", hudRow="core", order=10, trackCooldown=true},
     {name="Unleash Pestilence", category="rotation", hudRow="core", order=20, trackCooldown=true},
-    {name="Chainwhip", category="interrupt", hudRow="core", order=30, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
-    {name="Snarl", category="taunt", hudRow="core", order=40, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
     {name="Implosion", id=34132, category="rotation", hudRow="core", order=50, talent=true, trackCooldown=true},
     {name="Xorothian Sigil", id=30696, category="offensive", hudRow="core", order=60, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
     {name="Burning Rage", id=34112, category="offensive", hudRow="core", order=70, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
@@ -24,18 +22,20 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
     {name="Hellish Rebuke", id=503310, category="proc", hudRow="core", order=100, trackCooldown=true, buff="Hellish Rebuke"},
     {name="Impcaller", id=706755, category="talent", trackHUD=false, auditType="active-to-passive conversion", modifies={"Call: Hellfire Imp","Shieldgore"}, effect="Call: Hellfire Imp is transformed; Shieldgore summons the imp passively"},
 
-    -- Utility/defensive row. Chains and displacement tools stay adjacent.
+    -- Utility/defensive row. Interrupt, taunt, chains and displacement tools stay here.
     {name="Demon Heart", id=31701, category="defensive", hudRow="core", order=110, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="defensive"},
     {name="Black Shield", id=30701, category="defensive", hudRow="core", order=120, talent=true, trackCooldown=true, buff="Black Shield", auraTracker=true, trackAbsorb=true, partyCooldown=true, cooldownCategory="defensive"},
     {name="Infernal Shield", category="defensive", hudRow="core", order=130, trackCooldown=true, buff="Infernal Shield", partyCooldown=true, cooldownCategory="defensive"},
     {name="Hellbound Charge", id=807247, category="mobility", hudRow="core", order=140, talent=true, trackCooldown=true, trackCharges=true},
-    {name="Flesh Hook", category="control", hudRow="utility", order=10, group="chains", trackCooldown=true},
-    {name="Chains of Xoroth", id=30699, category="control", hudRow="utility", order=20, group="chains", talent=true, trackCooldown=true},
-    {name="Chains of Malice", id=803185, category="control", hudRow="utility", order=30, group="chains", talent=true, trackCooldown=true},
-    {name="Hellfire Bellows", category="utility", hudRow="utility", order=40, trackCooldown=true},
-    {name="Sacrificial Circle", category="utility", hudRow="utility", order=50, trackCooldown=true},
-    {name="Create: Hellgate", category="utility", hudRow="utility", order=60, trackCooldown=true},
-    {name="Call: Hellfire Abyssal", id=30498, category="summon", hudRow="utility", order=70, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
+    {name="Chainwhip", category="interrupt", hudRow="utility", order=10, trackCooldown=true, partyCooldown=true, cooldownCategory="interrupt"},
+    {name="Snarl", category="taunt", hudRow="utility", order=20, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
+    {name="Flesh Hook", category="control", hudRow="utility", order=30, group="chains", trackCooldown=true},
+    {name="Chains of Xoroth", id=30699, category="control", hudRow="utility", order=40, group="chains", talent=true, trackCooldown=true},
+    {name="Chains of Malice", id=803185, category="control", hudRow="utility", order=50, group="chains", talent=true, trackCooldown=true},
+    {name="Hellfire Bellows", category="utility", hudRow="utility", order=60, trackCooldown=true},
+    {name="Sacrificial Circle", category="utility", hudRow="utility", order=70, trackCooldown=true},
+    {name="Create: Hellgate", category="utility", hudRow="utility", order=80, trackCooldown=true},
+    {name="Call: Hellfire Abyssal", id=30498, category="summon", hudRow="utility", order=90, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
 
     -- Active aura trackers; not shown as duplicate rotational buttons.
     {name="Suffuse", category="buff", order=10, auraTracker=true, trackDuration=true},
