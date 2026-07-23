@@ -25,11 +25,55 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .release-upload/overlay.b64.* > /tmp/overlay.b64
-          base64 --decode /tmp/overlay.b64 > /tmp/overlay.tar.gz
-          tar -tzf /tmp/overlay.tar.gz
-          tar -xzf /tmp/overlay.tar.gz
-          rm -rf .release-upload
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          import shutil
+          import tarfile
+          import tempfile
+          import zipfile
+
+          repo = Path.cwd()
+          parts = sorted((repo / ".release-upload").glob("overlay.b64.*"))
+          if not parts:
+              raise SystemExit("No overlay upload parts were found")
+
+          encoded = "".join(part.read_text(encoding="utf-8") for part in parts)
+          encoded = "".join(encoded.split())
+          archive = base64.b64decode(encoded, validate=True)
+          archive_path = Path("/tmp/retreatui-v108-upload.bin")
+          archive_path.write_bytes(archive)
+
+          extract_root = Path(tempfile.mkdtemp(prefix="retreatui-v108-"))
+          if tarfile.is_tarfile(archive_path):
+              with tarfile.open(archive_path, "r:*") as source:
+                  source.extractall(extract_root)
+          elif zipfile.is_zipfile(archive_path):
+              with zipfile.ZipFile(archive_path) as source:
+                  source.extractall(extract_root)
+          else:
+              raise SystemExit("Uploaded source is neither a tar archive nor a ZIP archive")
+
+          def locate(name: str) -> Path:
+              matches = [p for p in extract_root.rglob(name) if p.is_dir()]
+              valid = []
+              toc = f"{name}.toc"
+              for path in matches:
+                  if (path / toc).is_file():
+                      valid.append(path)
+              if len(valid) != 1:
+                  raise SystemExit(f"Expected exactly one {name} folder, found {len(valid)}: {valid}")
+              return valid[0]
+
+          for addon in ("RetreatUI", "RetreatUI_Classes"):
+              source = locate(addon)
+              target = repo / addon
+              if target.exists():
+                  shutil.rmtree(target)
+              shutil.copytree(source, target)
+
+          shutil.rmtree(repo / ".release-upload")
+          PY
 
           grep -F '## Version: 1.0.8' RetreatUI/RetreatUI.toc
           grep -F '## Version: 1.0.8' RetreatUI_Classes/RetreatUI_Classes.toc
