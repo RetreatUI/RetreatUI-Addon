@@ -1,34 +1,44 @@
 # Changelog
 
-All notable changes to RetreatUI will be documented in this file.
+All notable changes to RetreatUI are documented in this file.
 
-## [1.0.1] - 2026-07-19
+The format is based on **Keep a Changelog** and follows semantic versioning where possible.
 
-### Class Framework & Themed Installer
+---
 
-- Added the complete class-aware themed installer, including class-specific artwork, icons, and colors for Knight of Xoroth, Venomancer, and Cultist.
-- Added the shared Theme Manager, resource-color framework, and HUD widgets for consistent counter, cooldown, timer, and charge presentation.
-- Added **Venomancer Fortitude Tank** beta support.
-- Added **Cultist Dreadnought Tank** beta support.
-- Kept **Knight of Xoroth Tank** stable and included its complete module.
-- Added installer, media, icon, class-module, and integration updates for the complete v1.0.1 release.
-- Fixed installer placement, dependency refresh, and logo integration issues.
+## [1.0.8] - 2026-07-23
 
-## [1.0.0] - 2026-07-18
+### Added
 
-### First Public Release
+- Animated Blood support for Bloodmage
+- Bloodmage target debuff tracking
+- Eternal Curse support
+- Additional talent-aware spell tracking
 
-- Added complete Knight of Xoroth support
-- Added modular `RetreatUI` and `RetreatUI_Classes` structure
-- Added one-click installer
-- Added complete ElvUI profile and layout
-- Added TurboPlates integration
-- Added Details! profile
-- Added custom Knight of Xoroth combat HUD
-- Added Rage and Demonfire stack tracking
-- Added Juggernaut cooldown and uptime tracking
-- Added Hellbound Charge charge and recharge tracking
-- Added NPC ability and cooldown tracking
-- Added automatic removal of conflicting default UI elements
-- Added automatic disabling of ElvUI NamePlates
-- Improved performance and reduced unnecessary polling
+### Changed
+
+- Major Bloodmage HUD overhaul
+- Improved Cultist HUD and spell tracking
+- Improved Venomancer HUD and spell tracking
+- Updated class framework for improved flexibility
+- Improved installer and UI integration
+
+### Fixed
+
+- Lunge tracking
+- Combat lockdown issues
+- HUD visibility while the World Map is open
+- Multiple UI alignment issues
+- Various bug fixes and quality-of-life improvements
+
+---
+
+## [1.0.1] - 2026-07-20
+
+### Initial Public Release
+
+- Initial release of RetreatUI
+- Knight of Xoroth support
+- Installer
+- ElvUI integration
+- TurboPlates integration
