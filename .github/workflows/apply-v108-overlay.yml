@@ -25,38 +25,72 @@ jobs:
         shell: bash
         run: |
           set -euxo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          import re
+          import shutil
+          import tarfile
+          import tempfile
+          import zipfile
 
-          cat .release-upload/overlay.b64.* | tr -d '\r\n\t ' > /tmp/overlay.b64
-          base64 --decode /tmp/overlay.b64 > /tmp/overlay.tar.gz
-          gzip -t /tmp/overlay.tar.gz
+          repo = Path.cwd()
+          parts = sorted((repo / ".release-upload").glob("overlay.b64.*"))
+          if not parts:
+              raise SystemExit("No upload chunks found")
 
-          rm -rf /tmp/retreatui-upload
-          mkdir -p /tmp/retreatui-upload
-          tar -xzf /tmp/overlay.tar.gz -C /tmp/retreatui-upload
-          find /tmp/retreatui-upload -maxdepth 4 -type f -print
+          raw = "".join(p.read_text(encoding="utf-8", errors="ignore") for p in parts)
+          cleaned = re.sub(r"[^A-Za-z0-9+/=]", "", raw)
+          cleaned = cleaned.rstrip("=")
+          cleaned += "=" * ((4 - len(cleaned) % 4) % 4)
+          print(f"Base64 characters: {len(cleaned)} from {len(parts)} chunks")
 
-          nested_zip="$(find /tmp/retreatui-upload -type f -name 'RetreatUI_v1.0.8.zip' -print -quit)"
-          if [ -n "$nested_zip" ]; then
-            rm -rf /tmp/retreatui-source
-            mkdir -p /tmp/retreatui-source
-            unzip -q "$nested_zip" -d /tmp/retreatui-source
-          else
-            rm -rf /tmp/retreatui-source
-            mv /tmp/retreatui-upload /tmp/retreatui-source
-          fi
+          archive_bytes = base64.b64decode(cleaned, validate=False)
+          archive = Path("/tmp/retreatui-upload.tar.gz")
+          archive.write_bytes(archive_bytes)
+          print(f"Decoded bytes: {archive.stat().st_size}")
 
-          core_dir="$(find /tmp/retreatui-source -type f -path '*/RetreatUI/RetreatUI.toc' -printf '%h\n' | head -n 1)"
-          classes_dir="$(find /tmp/retreatui-source -type f -path '*/RetreatUI_Classes/RetreatUI_Classes.toc' -printf '%h\n' | head -n 1)"
+          outer = Path(tempfile.mkdtemp(prefix="retreatui-outer-"))
+          with tarfile.open(archive, "r:gz") as tf:
+              tf.extractall(outer)
+          print("Outer archive files:")
+          for p in sorted(outer.rglob("*")):
+              if p.is_file():
+                  print(p.relative_to(outer))
 
-          test -n "$core_dir"
-          test -n "$classes_dir"
-          grep -F '## Version: 1.0.8' "$core_dir/RetreatUI.toc"
-          grep -F '## Version: 1.0.8' "$classes_dir/RetreatUI_Classes.toc"
+          roots = [outer]
+          nested_zips = sorted(outer.rglob("*.zip"))
+          for nested in nested_zips:
+              nested_root = Path(tempfile.mkdtemp(prefix="retreatui-zip-"))
+              with zipfile.ZipFile(nested) as zf:
+                  zf.extractall(nested_root)
+              roots.append(nested_root)
+              print(f"Extracted nested ZIP: {nested}")
 
-          rm -rf RetreatUI RetreatUI_Classes .release-upload
-          cp -a "$core_dir" RetreatUI
-          cp -a "$classes_dir" RetreatUI_Classes
+          def find_addon(name):
+              toc = f"{name}.toc"
+              matches = []
+              for root in roots:
+                  for p in root.rglob(name):
+                      if p.is_dir() and (p / toc).is_file():
+                          matches.append(p)
+              if len(matches) != 1:
+                  raise SystemExit(f"Expected one {name} folder, found {matches}")
+              return matches[0]
 
+          for name in ("RetreatUI", "RetreatUI_Classes"):
+              source = find_addon(name)
+              target = repo / name
+              if target.exists():
+                  shutil.rmtree(target)
+              shutil.copytree(source, target)
+              print(f"Copied {source} -> {target}")
+
+          shutil.rmtree(repo / ".release-upload")
+          PY
+
+          grep -F '## Version: 1.0.8' RetreatUI/RetreatUI.toc
+          grep -F '## Version: 1.0.8' RetreatUI_Classes/RetreatUI_Classes.toc
           test -f RetreatUI_Classes/Bloodmage/HUD.lua
           test -f RetreatUI_Classes/Venomancer/HUD.lua
           test -f RetreatUI_Classes/Cultist/HUD.lua
