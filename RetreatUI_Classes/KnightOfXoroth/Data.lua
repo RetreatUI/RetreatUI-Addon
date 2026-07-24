@@ -1,8 +1,8 @@
 local RUI = RetreatUI
 
 RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
-  version = 4,
-  source = "Ascension DB + RetreatUI runtime discovery",
+  version = 5,
+  source = "Ascension DB + RetreatUI runtime discovery + Knight of Xoroth group-buff audit",
   resources = {
     {key="rage", name="Rage", type="primary", position="power"},
     {key="demonfire", name="Demonfire", type="stacks", max=6, position="resource"},
@@ -36,6 +36,14 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
     {name="Sacrificial Circle", category="utility", hudRow="utility", order=70, trackCooldown=true},
     {name="Create: Hellgate", category="utility", hudRow="utility", order=80, trackCooldown=true},
     {name="Call: Hellfire Abyssal", id=30498, category="summon", hudRow="utility", order=90, talent=true, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive"},
+
+    -- Castable 30-minute party/raid marks for RetreatUI's buff manager.
+    {name="Greater Mark of Korth'azz", aliases={"Greater Mark of Korth’azz"}, id=680300, category="groupBuff", groupBuff=true, trackHUD=false, order=10, spec="War", buff="Greater Mark of Korth'azz", duration=1800, targetMode="PARTY_RAID", buffCategory="strength_fire_resistance", effect="Strength and Fire Resistance", verified="ascension-db"},
+    {name="Greater Mark of Blaumeux", id=712460, category="groupBuff", groupBuff=true, trackHUD=false, order=20, spec="Hellfire", buff="Greater Mark of Blaumeux", duration=1800, targetMode="PARTY_RAID", buffCategory="spell_power_shadow_resistance", effect="Spell Power and Shadow Resistance", verified="ascension-db"},
+
+    -- Defiance marks are catalogued by name but excluded from normal results until their live IDs are verified.
+    {name="Greater Mark of Rivendare", category="groupBuff", groupBuff=true, trackHUD=false, order=30, spec="Defiance", buff="Greater Mark of Rivendare", duration=1800, targetMode="PARTY_RAID", buffCategory="stamina_frost_resistance", effect="Stamina and Frost Resistance", review=true},
+    {name="Greater Mark of Zeliek", category="groupBuff", groupBuff=true, trackHUD=false, order=40, spec="Defiance", buff="Greater Mark of Zeliek", duration=1800, targetMode="PARTY_RAID", buffCategory="resource_cost_arcane_resistance", effect="Resource cost reduction and Arcane Resistance", review=true},
 
     -- Active aura trackers; not shown as duplicate rotational buttons.
     {name="Suffuse", category="buff", order=10, auraTracker=true, trackDuration=true},
