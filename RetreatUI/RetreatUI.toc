@@ -10,7 +10,6 @@
 Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
-Data\BuffDatabase.lua
 Core\ClassRegistry.lua
 Core\Racials.lua
 Core\Theme.lua
