@@ -1,8 +1,8 @@
 local RUI = RetreatUI
 
 RUI:RegisterClassSpellDatabase("Bloodmage", {
-  version = 2,
-  source = "User-verified Eternal talent and spell tooltips; live spellbook discovery for unpinned IDs",
+  version = 3,
+  source = "User-verified Eternal talent/spell tooltips and Bloodmage group-buff tooltips; live spellbook discovery for unpinned IDs",
   loadout = "Eternal",
   resources = {
     {key="rage", name="Rage", type="primary", position="power"},
@@ -35,6 +35,11 @@ RUI:RegisterClassSpellDatabase("Bloodmage", {
     {name="Fleshcraft", id=801952, category="utility", hudRow="utility", order=90, trackCooldown=true},
     {name="Scarlet Delirium", id=801074, category="control", hudRow="utility", order=100, trackCooldown=true, requiresForm="Mortal Form"},
     {name="Blood Feast", id=706605, category="utility", hudRow="utility", order=110, trackCooldown=true, requiresForm="Mortal Form", hideInCombat=true},
+
+    -- Castable 30-minute party/raid buffs for RetreatUI's buff manager.
+    {name="Greater Sanguinary Offering", id=680299, category="groupBuff", groupBuff=true, trackHUD=false, order=10, spec="Sanguine", buff="Greater Sanguinary Offering", duration=1800, targetMode="PARTY_RAID", buffCategory="stamina", effect="Stamina", verified="user-tooltip"},
+    {name="Greater Bloodsoaked Offering", id=572406, category="groupBuff", groupBuff=true, trackHUD=false, order=20, spec="Sanguine", buff="Greater Bloodsoaked Offering", duration=1800, targetMode="PARTY_RAID", buffCategory="spirit", effect="Spirit", verified="user-tooltip"},
+    {name="Greater Bloodthorns", id=572116, category="groupBuff", groupBuff=true, trackHUD=false, order=30, spec="Fleshweaver", buff="Greater Bloodthorns", duration=1800, targetMode="PARTY_RAID", buffCategory="thorns", effect="Retaliatory Shadow damage", verified="user-tooltip"},
 
     -- Buff/proc row. Passive talents never become action buttons.
     {name="Saturating Sutures", category="proc", trackHUD=false, auraTracker=true, buff="Saturating Sutures", trackDuration=true, talent=true},
