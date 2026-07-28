@@ -1,11 +1,12 @@
 name: Publish RetreatUI v1.0.11-beta.4
 
 on:
-  push:
+  pull_request:
     branches:
       - main
     paths:
-      - ".github/workflows/publish-v1.0.11-beta.4.yml"
+      - ".release-v1.0.11-beta.4/trigger"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -21,8 +22,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Download beta.3 source package
         shell: bash
@@ -109,22 +108,6 @@ jobs:
                   raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
           PY
 
-      - name: Commit beta.4 source
-        shell: bash
-        run: |
-          set -euo pipefail
-          rm -rf RetreatUI RetreatUI_Classes
-          cp -a build/source/RetreatUI .
-          cp -a build/source/RetreatUI_Classes .
-
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .release-v1.0.11-beta.4/witchdoctor-beta4.patch
-          git rm .github/workflows/publish-v1.0.11-beta.4.yml
-          git add RetreatUI RetreatUI_Classes
-          git commit -m 'Release RetreatUI v1.0.11-beta.4'
-          git push origin HEAD:main
-
       - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
@@ -135,6 +118,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha || github.sha }}
         run: |
           set -euo pipefail
           cat > release-notes.md <<'EOF'
@@ -155,11 +139,10 @@ jobs:
           EOF
 
           tag='v1.0.11-beta.4'
-          release_sha="$(git rev-parse HEAD)"
           if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release edit "$tag" \
               --repo "$GITHUB_REPOSITORY" \
-              --target "$release_sha" \
+              --target "$RELEASE_TARGET" \
               --title 'RetreatUI v1.0.11-beta.4 — Witch Doctor Voodoo Tracking Test' \
               --notes-file release-notes.md \
               --prerelease
@@ -169,7 +152,7 @@ jobs:
           else
             gh release create "$tag" RetreatUI_v1.0.11-beta.4.zip \
               --repo "$GITHUB_REPOSITORY" \
-              --target "$release_sha" \
+              --target "$RELEASE_TARGET" \
               --title 'RetreatUI v1.0.11-beta.4 — Witch Doctor Voodoo Tracking Test' \
               --notes-file release-notes.md \
               --prerelease
