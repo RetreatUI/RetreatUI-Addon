@@ -1,0 +1,218 @@
+diff --git a/RetreatUI/CHANGELOG.txt b/RetreatUI/CHANGELOG.txt
+index f567f2f..f1a1345 100644
+--- a/RetreatUI/CHANGELOG.txt
++++ b/RetreatUI/CHANGELOG.txt
+@@ -1,3 +1,15 @@
++RetreatUI v1.0.11-beta.4
++============================
++
++WITCH DOCTOR — VOODOO TRACKING TEST
++- Added high-priority Hex of Malice and Zalazane's Malice target-debuff tracking.
++- Corrected Puppeteer's Threads to track on the target rather than as a player proc.
++- Added a dedicated Loa/Loa Spirits state icon with live stack count.
++- Added Drakkari Barrier cooldown and active-duration tracking.
++- Added learned-only Voodoo Strings, Shadowflare and Voodoo Idol coverage.
++- Added learned-only Healing Ward and Cleansing Idol utility coverage.
++- New uncertain live aura names use safe aliases and only appear when the client reports the matching spell or aura.
++
+ RetreatUI v1.0.11-beta.3
+ - Target-frame debuff tracking now shows every debuff applied by the player, pet, or vehicle across all classes.
+ - Added safer handling for Ascension class debuffs that do not report a caster.
+diff --git a/RetreatUI/Core/Version.lua b/RetreatUI/Core/Version.lua
+index 23e8649..2f9ee78 100644
+--- a/RetreatUI/Core/Version.lua
++++ b/RetreatUI/Core/Version.lua
+@@ -2,15 +2,16 @@ local RUI = RetreatUI
+ 
+ RUI.changelog = {
+   version = RUI.version,
+-  title = "RetreatUI v1.0.11-beta.3",
+-  summary = "Global target-debuff tracking, Valkyr cooldown coverage and ElvUI right-panel fixes.",
++  title = "RetreatUI v1.0.11-beta.4",
++  summary = "Witch Doctor Voodoo tracking test: Malice, Threads, Loa stacks, key wards and missing Voodoo abilities.",
+   changes = {
+-    "Target-frame bars now show player, pet and vehicle-applied debuffs for every supported class.",
+-    "Casterless Ascension class debuffs are accepted when they match the active class spell database.",
+-    "Added Champion of the Sun cooldown tracking for Valkyr Sun Cleric.",
+-    "Cooldown timer text now refreshes more closely with ElvUI without restoring expensive full-HUD polling.",
+-    "Preserved ElvUI's right chat panel and data-text strip while still removing unwanted Loot/Trade chat windows.",
+-    "Retained the Sun Cleric Beta 2 layout, uptime separation and performance improvements.",
++    "Added high-priority Hex of Malice and Zalazane's Malice target tracking with expiry warnings.",
++    "Moved Puppeteer's Threads from the player-proc row to the target-debuff tracker.",
++    "Added a dedicated active Loa/Loa Spirits state tracker with live stack display.",
++    "Added Drakkari Barrier cooldown and active-duration tracking.",
++    "Added learned-only Voodoo Strings, Shadowflare and Voodoo Idol coverage.",
++    "Added learned-only Healing Ward and Cleansing Idol utility tracking.",
++    "Kept all new candidate effects active-only or learned-only for safe live testing.",
+   },
+ }
+ local updateFrame
+diff --git a/RetreatUI/Loader.lua b/RetreatUI/Loader.lua
+index 21370d8..547f9d5 100644
+--- a/RetreatUI/Loader.lua
++++ b/RetreatUI/Loader.lua
+@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
+ local RUI = RetreatUI
+ 
+ RUI.name = "RetreatUI"
+-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.11-beta.3"
++RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.11-beta.4"
+ RUI._loaderLoaded = true
+ 
+ RUI.defaults = {
+diff --git a/RetreatUI/README.txt b/RetreatUI/README.txt
+index 2a881d6..5b58775 100644
+--- a/RetreatUI/README.txt
++++ b/RetreatUI/README.txt
+@@ -1,4 +1,4 @@
+-RETREATUI v1.0.11-beta.3
++RETREATUI v1.0.11-beta.4
+ ===================
+ 
+ RetreatUI is a compact Conquest of Azeroth interface package built around ElvUI, TurboPlates, Details! and class-specific combat HUDs.
+diff --git a/RetreatUI/RetreatUI.toc b/RetreatUI/RetreatUI.toc
+index d01bf51..a34c355 100644
+--- a/RetreatUI/RetreatUI.toc
++++ b/RetreatUI/RetreatUI.toc
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI
+ ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
+ ## Author: Retreat
+-## Version: 1.0.11-beta.3
++## Version: 1.0.11-beta.4
+ ## SavedVariables: RetreatUIDB
+ ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core
+ ## DefaultState: Enabled
+diff --git a/RetreatUI_Classes/Loader.lua b/RetreatUI_Classes/Loader.lua
+index 7dbff1f..75e5d94 100644
+--- a/RetreatUI_Classes/Loader.lua
++++ b/RetreatUI_Classes/Loader.lua
+@@ -3,7 +3,7 @@ local RUI = RetreatUI
+ if not RUI then return end
+ 
+ RUI.classesAddonName = ADDON_NAME or "RetreatUI_Classes"
+-RUI.classesVersion = (GetAddOnMetadata and GetAddOnMetadata(RUI.classesAddonName, "Version")) or "1.0.11-beta.3"
++RUI.classesVersion = (GetAddOnMetadata and GetAddOnMetadata(RUI.classesAddonName, "Version")) or "1.0.11-beta.4"
+ RUI.classesLoaded = true
+ RUI.classPackage = RUI.classPackage or {}
+ RUI.classPackage.name = RUI.classesAddonName
+diff --git a/RetreatUI_Classes/README.txt b/RetreatUI_Classes/README.txt
+index 9bfb8f2..75465fa 100644
+--- a/RetreatUI_Classes/README.txt
++++ b/RetreatUI_Classes/README.txt
+@@ -1,4 +1,4 @@
+-RETREATUI CLASSES v1.0.11-beta.3
++RETREATUI CLASSES v1.0.11-beta.4
+ ==========================
+ 
+ This addon is bundled with RetreatUI and must always use the same version as Core.
+diff --git a/RetreatUI_Classes/RetreatUI_Classes.toc b/RetreatUI_Classes/RetreatUI_Classes.toc
+index c581a64..0c3d0fa 100644
+--- a/RetreatUI_Classes/RetreatUI_Classes.toc
++++ b/RetreatUI_Classes/RetreatUI_Classes.toc
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI Classes
+ ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
+ ## Author: Retreat
+-## Version: 1.0.11-beta.3
++## Version: 1.0.11-beta.4
+ ## Dependencies: RetreatUI
+ ## DefaultState: Enabled
+ 
+diff --git a/RetreatUI_Classes/StateTracker.lua b/RetreatUI_Classes/StateTracker.lua
+index ccd7bad..a86a7a7 100644
+--- a/RetreatUI_Classes/StateTracker.lua
++++ b/RetreatUI_Classes/StateTracker.lua
+@@ -301,7 +301,18 @@ local CLASS_STATE_GROUPS = {
+     },
+   },
+ 
+-  ["Witch Doctor"] = {},
++  ["Witch Doctor"] = {
++    {
++      key="LOA",
++      prefixes={"Loa: ", "Presence of the Loa: "},
++      labelFromName=true,
++      members={
++        Member("Loa Spirits", "LOA", nil, {"Loa Spirit"}, "Interface\\Icons\\achievement_boss_zuldazar_loacouncil"),
++        Member("Voodoo Spirits", "LOA", 704511, nil, "Interface\\Icons\\achievement_jadeserpent_2"),
++        Member("Presence of the Loa", "LOA", 572871, nil, "Interface\\icons\\nhi_earthmask_Border"),
++      },
++    },
++  },
+ 
+   ["Witch Hunter"] = {
+     {
+diff --git a/RetreatUI_Classes/WitchDoctor/Data.lua b/RetreatUI_Classes/WitchDoctor/Data.lua
+index 6a811e7..960a54f 100644
+--- a/RetreatUI_Classes/WitchDoctor/Data.lua
++++ b/RetreatUI_Classes/WitchDoctor/Data.lua
+@@ -1,14 +1,18 @@
+ local RUI = RetreatUI
+ 
+ RUI:RegisterClassSpellDatabase("Witch Doctor", {
+-  version = 3,
+-  source = "RetreatUI Data Collector 1.0.0 — complete class/spec tree, resolved spell catalogue and tooltip relationships",
++  version = 4,
++  source = "RetreatUI Data Collector 1.0.0 plus Witch Doctor Voodoo live-test coverage",
+   collectorClassFile = "WITCHDOCTOR",
+   tabs = {"Brewing","Shadowhunting","Voodoo"},
+   resources = {{key="primary", name="Primary Power", type="primary", position="power"}},
+   nativeResource = {title="VOODOO HUNGER",keywords={"voodoo hunger","soul marionette"},auraNames={"Voodoo Hunger","Soul Marionette"},spellID=705942,maxByName={["voodoo hunger"]=10,["soul marionette"]=20},mode="segments",icon="Interface\\Icons\\Spell_Shadow_ShadowWordDominate"},
+   spells = {
+     {name="Hexfire", id=807042, category="rotation", hudRow="core", order=20, trackCooldown=true, glowWhenAura={"Hexfire Adept","Viper Ward","Jin'do's Wrath"}, talent=true, fallbackIcon="Interface\\icons\\nhi_nightmarepuppet_Border", sourceTab="Voodoo", collectorEntryID=7157, cooldownHint=10},
++    {name="Hex of Malice", category="rotation", hudRow="core", order=21, trackCooldown=true, targetDebuff=true, auraBar=true, talent=true, aliases={"Zalazane's Malice","Zalazane’s Malice","Hex of Malice"}, fallbackIcon="Interface\\Icons\\Spell_Shadow_CurseOfSargeras", sourceTab="Voodoo"},
++    {name="Shadowflare", id=501148, category="rotation", hudRow="core", order=22, trackCooldown=true, targetDebuff=true, auraBar=true, glowWhenAura={"Dambala's Lethality"}, fallbackIcon="Interface\\Icons\\Spell_Shadow_Shadowfury", sourceTab="Voodoo"},
++    {name="Voodoo Strings", category="rotation", hudRow="core", order=23, trackCooldown=true, targetDebuff=true, auraBar=true, talent=true, aliases={"Voodoo String","Voodoo Strings"}, fallbackIcon="Interface\\Icons\\trade_archaeology_troll_voodoodoll", sourceTab="Voodoo"},
+     {name="Mojo Beam", id=500950, category="rotation", hudRow="core", order=20, trackCooldown=true, talent=true, fallbackIcon="Interface\\icons\\nhi_unholybeam_Border", sourceTab="Brewing", collectorEntryID=30823, cooldownHint=10},
+     {name="Spirit Eclipse", id=801607, category="rotation", hudRow="core", order=20, trackCooldown=true, glowWhenAura={"The True Spirit","A Price To Pay","Dambala's Lethality"}, talent=true, fallbackIcon="Interface\\Icons\\spiriteclipse", sourceTab="Shadowhunting", collectorEntryID=7086, cooldownHint=10},
+     {name="Bad Juju", id=802087, category="rotation", hudRow="core", order=25, trackCooldown=true, targetDebuff=true, glowWhenAura={"Juju Spirits"}, talent=true, fallbackIcon="Interface\\icons\\skill_icon_skill5_Border", sourceTab="Voodoo", collectorEntryID=29928, cooldownHint=15},
+@@ -17,6 +21,7 @@ RUI:RegisterClassSpellDatabase("Witch Doctor", {
+     {name="Frenzied Spirits", id=560748, category="rotation", hudRow="core", order=30, trackCooldown=true, buff="Frenzied Spirits", trackDuration=true, talent=true, fallbackIcon="Interface\\Icons\\Ability_Warlock_Eradication", sourceTab="Shadowhunting", collectorEntryID=7355, cooldownHint=20},
+     {name="Spirit Glaive", id=806289, category="rotation", hudRow="core", order=30, trackCooldown=true, targetDebuff=true, glowWhenAura={"Spirit Volley","The True Spirit","A Price To Pay"}, talent=true, fallbackIcon="Interface\\Icons\\Godslayer", sourceTab="Shadowhunting", collectorEntryID=8574, cooldownHint=20},
+     {name="Shadow Puppets", id=500015, category="offensive", hudRow="core", order=138, trackCooldown=true, targetDebuff=true, glowWhenAura={"De Other Side"}, talent=true, fallbackIcon="Interface\\icons\\custom_45_voodoo_Border", sourceTab="Voodoo", collectorEntryID=31154, cooldownHint=18},
++    {name="Voodoo Idol", category="offensive", hudRow="core", order=140, trackCooldown=true, talent=true, fallbackIcon="Interface\\Icons\\INV_Misc_Idol_05", sourceTab="Voodoo"},
+     {name="Death Draught", id=602220, category="offensive", hudRow="core", order=150, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive", fallbackIcon="Interface\\icons\\nhi_arcanepotion_Border", sourceTab="Class", collectorEntryID=31118, cooldownHint=30},
+     {name="Call of Sseratus", id=681222, category="offensive", hudRow="core", order=160, trackCooldown=true, glowWhenAura={"Viper Ward"}, partyCooldown=true, cooldownCategory="offensive", talent=true, fallbackIcon="Interface\\icons\\5_sumsnakearmy_Border", sourceTab="Shadowhunting", collectorEntryID=30892, cooldownHint=40},
+     {name="Mojo: Fish Bones", id=705850, category="offensive", hudRow="core", order=165, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive", talent=true, fallbackIcon="Interface\\Icons\\INV_Ascend_fish_bone", sourceTab="Brewing", collectorEntryID=6015, cooldownHint=45},
+@@ -41,7 +46,10 @@ RUI:RegisterClassSpellDatabase("Witch Doctor", {
+     {name="War Golem", id=800330, category="offensive", hudRow="core", order=300, trackCooldown=true, partyCooldown=true, cooldownCategory="offensive", talent=true, fallbackIcon="Interface\\Icons\\inv_misc_archaeology_trollgolem", sourceTab="Voodoo", collectorEntryID=31349, cooldownHint=180},
+     {name="Spirit Shock", id=807743, category="interrupt", hudRow="utility", order=38, trackCooldown=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\Icons\\inv_helm_mail_raidshaman_m_01", sourceTab="Shadowhunting", collectorEntryID=29977, cooldownHint=28},
+     {name="Amphibimorph", id=500952, category="interrupt", hudRow="utility", order=130, trackCooldown=true, buff="Amphibimorph", trackDuration=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\icons\\nhi_hypnotoad_Border", sourceTab="Class", collectorEntryID=6031, cooldownHint=120},
++    {name="Drakkari Barrier", id=501124, category="defensive", hudRow="utility", order=210, trackCooldown=true, buff="Drakkari Barrier", auraTracker=true, trackDuration=true, partyCooldown=true, cooldownCategory="defensive", fallbackIcon="Interface\\Icons\\Spell_Shadow_AntiShadow", sourceTab="Class", cooldownHint=120},
+     {name="Soul Marionette", id=704497, category="control", hudRow="utility", order=230, trackCooldown=true, buff="Soul Marionette", trackDuration=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\Icons\\_D3bigbadvoodoo", sourceTab="Voodoo", collectorEntryID=6055, cooldownHint=90},
++    {name="Healing Ward", id=500957, category="healing", hudRow="utility", order=240, trackCooldown=true, fallbackIcon="Interface\\Icons\\Spell_Nature_HealingWay", sourceTab="Class"},
++    {name="Cleansing Idol", id=804051, category="utility", hudRow="utility", order=250, trackCooldown=true, fallbackIcon="Interface\\Icons\\INV_Misc_Idol_03", sourceTab="Class"},
+     {name="Mimic Ward", id=707162, category="defensive", hudRow="utility", order=260, trackCooldown=true, targetDebuff=true, partyCooldown=true, cooldownCategory="defensive", fallbackIcon="Interface\\icons\\5_deadshadow_Border", sourceTab="Class", collectorEntryID=29301, cooldownHint=60},
+     {name="Puppeteer's Grasp", id=707209, category="control", hudRow="utility", order=260, trackCooldown=true, buff="Puppeteer's Grasp", trackDuration=true, talent=true, fallbackIcon="Interface\\icons\\nhi_unholyspirit_Border", sourceTab="Voodoo", collectorEntryID=30596, cooldownHint=180},
+     {name="Vol'jin's Vigil", id=504465, category="defensive", hudRow="utility", order=320, trackCooldown=true, buff="Vol'jin's Vigil", trackDuration=true, partyCooldown=true, cooldownCategory="defensive", fallbackIcon="Interface\\Icons\\inv_hand_1h_trollshaman_c_01", sourceTab="Class", collectorEntryID=6042, cooldownHint=120},
+@@ -65,7 +73,8 @@ RUI:RegisterClassSpellDatabase("Witch Doctor", {
+     {name="Hexfire Mass", id=807450, category="proc", order=180, buff="Hexfire Mass", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\spell_fireresistancetotem_01", sourceTab="Shadowhunting", collectorEntryID=11164},
+     {name="Viper Ward", id=707329, category="proc", order=190, buff="Viper Ward", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\inv_staff_2h_snakeman_c_01", sourceTab="Shadowhunting", collectorEntryID=5235},
+     {name="Hollow Spirit", id=705917, category="proc", order=200, buff="Hollow Spirit", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\_InstableAffliction_Purple", sourceTab="Voodoo", collectorEntryID=6045},
+-    {name="Puppeteer's Threads", id=92084, category="proc", order=210, buff="Puppeteer's Threads", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\Icons\\trade_archaeology_troll_voodoodoll", sourceTab="Voodoo", collectorEntryID=4004},
++    {name="Puppeteer's Threads", id=92084, category="debuff", order=10, targetDebuff=true, auraBar=true, trackDuration=true, trackHUD=false, aliases={"Puppeteer’s Threads"}, fallbackIcon="Interface\\Icons\\trade_archaeology_troll_voodoodoll", sourceTab="Voodoo", collectorEntryID=4004},
++    {name="Loa Spirits", category="proc", order=215, buff="Loa Spirits", trackDuration=true, auraTracker=true, trackHUD=false, maxStacks=5, talent=true, aliases={"Loa Spirit"}, fallbackIcon="Interface\\Icons\\achievement_boss_zuldazar_loacouncil", sourceTab="Voodoo"},
+     {name="Voodoo Spirits", id=704511, category="proc", order=220, buff="Voodoo Spirits", trackDuration=true, auraTracker=true, trackHUD=false, maxStacks=5, talent=true, fallbackIcon="Interface\\Icons\\achievement_jadeserpent_2", sourceTab="Voodoo", collectorEntryID=5333},
+     {name="Mixologist", id=561069, category="proc", order=230, buff="Mixologist", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\INV_Potion_119", sourceTab="Brewing", collectorEntryID=6645},
+     {name="Spirit Out Of The Bottle", id=301175, category="proc", order=240, buff="Spirit Out Of The Bottle", trackDuration=true, auraTracker=true, trackHUD=false, maxStacks=5, talent=true, fallbackIcon="Interface\\Icons\\ability_monk_soothingmists", sourceTab="Brewing", collectorEntryID=6013},
+@@ -77,6 +86,8 @@ RUI:RegisterClassSpellDatabase("Witch Doctor", {
+     {name="Growing Malice", id=706551, category="proc", order=300, buff="Growing Malice", trackDuration=true, auraTracker=true, trackHUD=false, maxStacks=10, talent=true, fallbackIcon="Interface\\icons\\nhi_skullofhate_Border", sourceTab="Voodoo", collectorEntryID=31348},
+     {name="Stranglethorn Style", id=705877, category="proc", order=310, buff="Stranglethorn Style", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\achievement_zone_tanaanjungle", sourceTab="Voodoo", collectorEntryID=31344},
+     {name="Bwonsamdi's Edge", id=712435, category="proc", order=320, buff="Bwonsamdi's Edge", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\Icons\\Spell_Ice_Lament", sourceTab="Shadowhunting", collectorEntryID=11330},
++    {name="Zalazane's Malice", category="debuff", order=5, targetDebuff=true, auraBar=true, trackHUD=false, aliases={"Zalazane’s Malice","Hex of Malice"}, fallbackIcon="Interface\\Icons\\Spell_Shadow_CurseOfSargeras", sourceTab="Voodoo"},
++    {name="Voodoo Strings", category="debuff", order=15, targetDebuff=true, auraBar=true, trackHUD=false, aliases={"Voodoo String"}, fallbackIcon="Interface\\Icons\\trade_archaeology_troll_voodoodoll", sourceTab="Voodoo"},
+     {name="Dark Loa's Incantation", id=525377, category="debuff", order=500, targetDebuff=true, trackHUD=false, fallbackIcon="Interface\\Icons\\inv_chest_cloth_zandalarquest_b_01", sourceTab="Shadowhunting", collectorEntryID=6073},
+     {name="For Da Loa!", id=705906, category="debuff", order=500, targetDebuff=true, trackHUD=false, fallbackIcon="Interface\\Icons\\achievement_boss_zuldazar_loacouncil", sourceTab="Class", collectorEntryID=6049},
+     {name="Latent Curse", id=806283, category="debuff", order=500, targetDebuff=true, trackHUD=false, fallbackIcon="Interface\\Icons\\ability_warlock_jinx", sourceTab="Class", collectorEntryID=29743},
+diff --git a/RetreatUI_Classes/WitchDoctor/HUD.lua b/RetreatUI_Classes/WitchDoctor/HUD.lua
+index 803d8d4..57c4eec 100644
+--- a/RetreatUI_Classes/WitchDoctor/HUD.lua
++++ b/RetreatUI_Classes/WitchDoctor/HUD.lua
+@@ -4,4 +4,6 @@ RUI:RegisterAdvancedClassHUD("Witch Doctor", {
+   frameName = "RetreatUIWitchDoctorHUD",
+   usesPrimaryPower = true,
+   supportedLoadouts = {BREWING=true,SHADOWHUNTING=true,VOODOO=true},
++  maxStates = 1,
++  stanceTracker = {x=-195, y=-118, size=38, width=90, height=58, nameSize=8},
+ })
