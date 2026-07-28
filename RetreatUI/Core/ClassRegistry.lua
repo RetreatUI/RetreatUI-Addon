@@ -88,9 +88,9 @@ function RUI:ScanSpellbook()
         local link = GetSpellLink(index, BOOKTYPE_SPELL or "spell")
         spellID = link and tonumber(string.match(link, "spell:(%d+)"))
       end
-      if not spellID and GetSpellInfo then
-        local _, _, _, _, _, _, infoID = GetSpellInfo(name)
-        spellID = tonumber(infoID)
+      if not spellID and GetSpellLink then
+        local ok, link = pcall(GetSpellLink, name)
+        spellID = ok and link and tonumber(string.match(link, "spell:(%d+)")) or nil
       end
       if spellID then
         spellbook.ids[normalized] = spellID
@@ -164,6 +164,20 @@ local function DetectionMatches(self, definition)
   return false
 end
 
+function RUI:DetectClassFromSpellTabs()
+  if type(GetNumSpellTabs) ~= "function" or type(GetSpellTabInfo) ~= "function" then return nil end
+  local ok, count = pcall(GetNumSpellTabs)
+  if not ok or type(count) ~= "number" then return nil end
+  for index = 1, count do
+    local tabOK, name = pcall(GetSpellTabInfo, index)
+    if tabOK and type(name) == "string" and name ~= "" then
+      local className = aliases[NormalizeKey(name)]
+      if className and registry[className] then return className end
+    end
+  end
+  return nil
+end
+
 function RUI:DetectClassFromSpellbook()
   local candidates = {}
   for className, definition in pairs(registry) do
@@ -184,13 +198,22 @@ function RUI:DetectClassFromSpellbook()
 end
 
 function RUI:GetDetectedClass()
-  local localized = UnitClass and select(1, UnitClass("player"))
-  localized = self:NormalizeClassName(localized)
-  if localized and registry[localized] then return localized end
+  local localized, token
+  if UnitClass then localized, token = UnitClass("player") end
+  local unitClassCandidates = {}
+  if localized and localized ~= "" then unitClassCandidates[#unitClassCandidates + 1] = localized end
+  if token and token ~= "" then unitClassCandidates[#unitClassCandidates + 1] = token end
+  for _, value in ipairs(unitClassCandidates) do
+    local className = self:NormalizeClassName(value)
+    if className and registry[className] then return className end
+  end
+
+  local tabDetected = self:DetectClassFromSpellTabs()
+  if tabDetected then return tabDetected end
 
   local detected = self:DetectClassFromSpellbook()
   if detected then return detected end
-  return localized or "Unknown CoA Class"
+  return self:NormalizeClassName(localized or token) or "Unknown CoA Class"
 end
 
 function RUI:GetClassInfo(className)

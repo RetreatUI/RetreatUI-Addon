@@ -5,7 +5,7 @@ local RUI = RetreatUI
 
 RUI.name = RUI.name or "RetreatUI"
 RUI.author = "Retreat"
-RUI.schema = 3
+RUI.schema = 4
 RUI.modules = RUI.modules or {}
 RUI.classModules = RUI.classModules or {}
 RUI.providers = RUI.providers or {}
@@ -83,6 +83,15 @@ function RUI:EnsureDB()
   if db.installer.initialCompleted == nil and db.installer.completedVersion then
     db.installer.initialCompleted = true
   end
+  db.installer.classes = db.installer.classes or {}
+  -- Older builds stored installer completion globally. That made every newly
+  -- visited class look preinstalled and forced testers to use /rui reset before
+  -- seeing the correct class installer. Schema 4 intentionally starts a clean
+  -- per-class completion map while preserving profiles and all other settings.
+  if previousSchema < 4 then
+    db.installer.classes = {}
+    db.installer.classStateMigrationVersion = self.version
+  end
   db.version = db.version or {}
   db.moduleStatus = db.moduleStatus or {}
   db.class = db.class or {}
@@ -93,6 +102,53 @@ function RUI:EnsureDB()
   if previousSchema < 3 then RemoveRetiredData(db) end
   db.schema = self.schema
   return db
+end
+
+
+function RUI:GetInstallerClassKey(className)
+  className = className or (type(self.GetDetectedClass) == "function" and self:GetDetectedClass()) or "Unknown"
+  if type(self.NormalizeClassName) == "function" then className = self:NormalizeClassName(className) or className end
+  return tostring(className)
+end
+
+function RUI:GetClassInstallRecord(className, create)
+  local db = self:EnsureDB()
+  db.installer.classes = db.installer.classes or {}
+  local key = self:GetInstallerClassKey(className)
+  local record = db.installer.classes[key]
+  if not record and create then
+    record = {}
+    db.installer.classes[key] = record
+  end
+  return record, key
+end
+
+function RUI:IsClassInstallCompleted(className)
+  local record = self:GetClassInstallRecord(className, false)
+  return record ~= nil and record.initialCompleted == true
+end
+
+function RUI:MarkClassInstallCompleted(className)
+  local record, key = self:GetClassInstallRecord(className, true)
+  record.initialCompleted = true
+  record.completedVersion = self.version
+  record.lastCompletedAt = date and date("%Y-%m-%d %H:%M:%S") or tostring(time and time() or 0)
+  local db = self:EnsureDB()
+  db.installer.initialCompleted = true
+  db.installer.completedVersion = self.version
+  db.installer.lastCompletedClass = key
+  db.version = db.version or {}
+  db.version.lastPopupVersion = self.version
+  db.version.lastSeenVersion = self.version
+  return record
+end
+
+function RUI:ResetClassInstallation(className)
+  local db = self:EnsureDB()
+  local key = self:GetInstallerClassKey(className)
+  if db.installer.classes then db.installer.classes[key] = nil end
+  if db.moduleStatus then db.moduleStatus["classHUD:" .. key] = nil end
+  return true
 end
 
 function RUI:IsAddOnAvailable(name)

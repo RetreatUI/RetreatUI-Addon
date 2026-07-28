@@ -259,6 +259,7 @@ local function CreateInstallPage()
       SetStatus(row.status, state, labels[state] or "FAILED")
     end)
     if valid then
+      if type(RUI.MarkClassInstallCompleted) == "function" then RUI:MarkClassInstallCompleted() end
       local warnings = RUI:GetOptionalIntegrationWarnings()
       SetStatus(page.result, #warnings > 0 and "optional" or "success", #warnings > 0 and ("Installed. Optional: " .. table.concat(warnings, " • ")) or "Installation validated successfully.")
       button:SetLabel("INSTALLED")
@@ -334,7 +335,8 @@ local function CreateCompletePage()
   page.reload = Button(page, "FINISH & RELOAD", 174, 34, function()
     local valid, problems = RUI:ValidateInstallation()
     if not valid then SetStatus(page.message, "error", table.concat(problems or {"Validation failed."}, "\n")); return end
-    local db = RUI:EnsureDB(); db.installer.completedVersion = RUI.version; db.installer.initialCompleted = true; db.installer.lastAttemptOK = true
+    local db = RUI:EnsureDB(); db.installer.lastAttemptOK = true
+    if type(RUI.MarkClassInstallCompleted) == "function" then RUI:MarkClassInstallCompleted() end
     ReloadUI()
   end)
   page.reload:SetPoint("TOP", 0, -370)

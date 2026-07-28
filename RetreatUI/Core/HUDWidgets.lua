@@ -267,7 +267,11 @@ function W:UpdateSpellRow(row, auraCallback)
         chargeCurrent, chargeMaximum, chargeStart, chargeDuration = self:ReadSpellCharges(definition)
       end
 
-      if chargeCurrent and chargeMaximum then
+      if definition.trackCooldown == false then
+        self:SetCooldownDisplay(icon, 0, false)
+        if icon.texture and icon.texture.SetDesaturated then icon.texture:SetDesaturated(false) end
+        icon.stackText:SetText("")
+      elseif chargeCurrent and chargeMaximum then
         local remaining = chargeDuration > 0 and math.max(0, chargeStart + chargeDuration - GetTime()) or 0
         local recharging = chargeCurrent < chargeMaximum and remaining > 0.05
         self:SetCooldownDisplay(icon, remaining, recharging)
@@ -283,6 +287,8 @@ function W:UpdateSpellRow(row, auraCallback)
       end
 
       local aura = definition.buff and auraCallback and auraCallback(definition.buff) or nil
+      if not aura and definition.buffID and auraCallback then aura = auraCallback(definition.buffID) end
+      if not aura and definition.auraID and auraCallback then aura = auraCallback(definition.auraID) end
       if aura then
         self:SetBorder(icon, theme.accent2, 1)
         if not (chargeCurrent and chargeMaximum) and aura.count and aura.count > 1 then

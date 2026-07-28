@@ -2,18 +2,18 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.0.8",
-  summary = "RetreatUI 1.0.8 makes Bloodmage combat-lockdown safe and hides the gameplay HUD behind the World Map.",
+  title = "RetreatUI v1.0.10",
+  summary = "A major 21-class HUD, class-state, Buff Manager and Necromancer Guardian release.",
   changes = {
-    "Bloodmage no longer rebuilds spell rows while combat lockdown is active.",
-    "Spellbook and Eternal Curse refreshes are deferred until combat ends.",
-    "Target-debuff bars are pre-created and only anchored outside combat.",
-    "Class HUD icons, trackers and the power bar are hidden while the World Map is open.",
-    "Animated Blood and the Eternal Curse Lunge fix remain included.",
-    "RetreatUI and RetreatUI_Classes are version-locked at 1.0.8.",
+    "Expanded learned-only HUD coverage and spell sorting across all 21 Conquest of Azeroth classes.",
+    "Added dedicated active-state tracking for stances, forms, vows, aspects, oaths, formations and similar class systems.",
+    "Expanded the Buff Manager to 58 visible families with automatic Greater selection, equivalent coverage and exclusive-family handling.",
+    "Improved Knight of Xoroth Pestilences and Marks, Bloodmage ability handling, Sun Cleric Vows and Templar Oaths.",
+    "Added a movable and lockable Necromancer Guardian HUD with individual minion health bars and Zombie tracking.",
+    "Improved live spellbook detection, proc handling, target-debuff tracking and refreshes after talent or specialization changes.",
+    "Existing RetreatUI settings and assignments migrate automatically; no manual reset is required.",
   },
 }
-
 local updateFrame
 local pendingPopup
 local loginHandled = false
@@ -139,7 +139,7 @@ function RUI:HandleVersionLogin()
   if loginHandled then return end
   loginHandled = true
   local db = self:EnsureDB()
-  local installedBefore = db.installer.initialCompleted == true or (db.installer.completedVersion and db.installer.completedVersion ~= "")
+  local installedBefore = type(self.IsClassInstallCompleted) == "function" and self:IsClassInstallCompleted()
   local previous = db.version.lastPopupVersion or db.version.lastSeenVersion or db.installer.completedVersion
   if installedBefore and previous and self:CompareVersions(self.version, previous) > 0 then
     self:ShowUpdatePopup(previous)

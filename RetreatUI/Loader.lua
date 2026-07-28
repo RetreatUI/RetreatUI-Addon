@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
 local RUI = RetreatUI
 
 RUI.name = "RetreatUI"
-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.8"
+RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.10"
 RUI._loaderLoaded = true
 
 local function Chat(message)
@@ -68,11 +68,7 @@ end
 
 local function ShowStatus()
   local className = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or "not detected"
-  local installed = false
-  if type(RUI.EnsureDB) == "function" then
-    local db = RUI:EnsureDB()
-    installed = db.installer and db.installer.completedVersion == RUI.version
-  end
+  local installed = type(RUI.IsClassInstallCompleted) == "function" and RUI:IsClassInstallCompleted(className) or false
   Chat("Core " .. tostring(RUI.version)
     .. " | Classes " .. tostring(RUI.classesVersion or "not loaded")
     .. " | class: " .. tostring(className)
@@ -108,10 +104,8 @@ SlashCmdList["RETREATUI"] = function(message)
 
   if command == "reset" and type(RUI.EnsureDB) == "function" then
     if not RequireSupportedClass() then return end
-    local db = RUI:EnsureDB()
-    db.installer.completedVersion = nil
-    db.installer.initialCompleted = nil
-    db.moduleStatus = {}
+    if type(RUI.ResetClassInstallation) == "function" then RUI:ResetClassInstallation() end
+    if type(RUI.DeactivateAllHUD) == "function" then RUI:DeactivateAllHUD() end
     if type(RUI.ShowInstaller) == "function" then RUI:ShowInstaller(true) end
     return
   end

@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.0.9
+## Version: 1.0.10
 ## SavedVariables: RetreatUIDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core
 ## DefaultState: Enabled
@@ -15,9 +15,11 @@ Core\Racials.lua
 Core\Theme.lua
 Core\Version.lua
 Core\Layout.lua
+Core\AscensionResources.lua
 Core\HUDWidgets.lua
 Core\TankFramework.lua
 Core\Modules.lua
+Core\BuffManager.lua
 Profiles\ElvUI.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua

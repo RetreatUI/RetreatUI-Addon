@@ -327,7 +327,8 @@ RUI.ElvUIProfile = {
           width = 260,
         },
         classbar = {
-          height = 6,
+          enable = false,
+          height = 0,
         },
         debuffs = {
           enable = false,
@@ -353,6 +354,9 @@ RUI.ElvUIProfile = {
           attachTextTo = "Power",
           enable = false,
           height = 5,
+          position = "CENTER",
+          text_format = "",
+          xOffset = 0,
         },
         width = 260,
       },

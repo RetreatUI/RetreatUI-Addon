@@ -2,7 +2,7 @@ local RUI = RetreatUI
 
 RUI:RegisterClassDefinition("Bloodmage", {
   ready = true,
-  releaseStatus = "beta",
+  releaseStatus = "all-spec",
   roles = "Tank / Damage / Healer",
   theme = "Crimson Covenant",
   accent = {0.94, 0.10, 0.15},
@@ -10,20 +10,20 @@ RUI:RegisterClassDefinition("Bloodmage", {
   background = {0.040, 0.006, 0.010},
   installerTheme = {
     title = "BLOODMAGE",
-    subtitle = "Eternal Tank • Crimson Covenant",
+    subtitle = "Blood • Ferocity • Fleshweaver • Packleader",
     description = "Spend blood. Command rage. Refuse death.",
-    loadout = "Eternal Tank",
+    loadout = "All Specializations",
     icon = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Bloodmage_Icon.tga",
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Bloodmage_Installer.tga",
     artworkAlpha = 0.94,
   },
   primaryResource = "RAGE",
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {BLOOD=true, FEROCITY=true, FLESHWEAVER=true, PACKLEADER=true},
   detectionPriority = 24,
   detectionThreshold = 1,
   detectionSpells = {
     {name="Blood Curse", id=562720},
-    {name="Bloodfang Bite", id=501696},
+    {name="Bloodfang Bite", id=806156},
     {name="Bare Fangs", id=801957},
     "Eternal Resolve",
     "Rotclaw",

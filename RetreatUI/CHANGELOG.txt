@@ -1,10 +1,50 @@
-RETREATUI v1.0.8
-=================
+RetreatUI v1.0.10
+====================
 
-COMBAT SAFETY AND UI LAYER FIX
-- Prevented Bloodmage spell-row rebuilds during combat lockdown.
-- Spellbook and Eternal Curse updates are deferred until combat ends.
-- Target-debuff bars are created and anchored outside combat only.
-- RetreatUI class icons, trackers and the power bar now disappear while the World Map is open.
-- Animated Blood and Lunge tracking from v1.0.7 remain included.
-- RetreatUI and RetreatUI_Classes both report version 1.0.8.
+MAJOR CLASS HUD UPDATE
+- Expanded learned-only HUD coverage across all 21 Conquest of Azeroth classes and every collected specialization.
+- Improved sorting between Main Rotation, Utility, Defensives, racials, procs and target debuffs.
+- Added a live spellbook safety net so newly learned class abilities, cooldowns and charge-based spells are detected after talent or specialization changes.
+- Main Rotation remains focused on meaningful rotational abilities, cooldowns, recharges, charges and actionable proc interactions.
+- Utility keeps interrupts, taunts, control, movement and defensive abilities separate from the rotational row.
+
+DEDICATED CLASS-STATE TRACKING
+- Added active-only tracking for class-owned stances, forms, vows, aspects, oaths, formations, inscriptions, modes, augmentations and similar systems.
+- Each curated state family displays only its currently active member and updates automatically when the active state changes.
+- Class states are excluded from Main Rotation and ordinary proc tracking.
+- Generic server, PvE/PvP and unrelated auras are not promoted into the state tracker.
+- Sun Cleric Vows, Templar Oaths and Knight of Xoroth Pestilences use dedicated active-state displays.
+- Bloodmage form detection remains internal for spell eligibility and no longer creates an unwanted Mortal/Cursed tracker.
+
+BUFF MANAGER
+- Expanded the visible catalogue to 58 buff families across 20 Conquest of Azeroth classes.
+- Automatically selects the Greater version when learned and falls back to the normal version when necessary.
+- Normal and Greater versions both count as valid coverage.
+- Preserves learned-only visibility, assignment persistence, multi-row layout and equivalent-buff detection.
+- Bloodmage Offerings and Knight of Xoroth Marks are handled as exclusive families so only one choice is assigned per target.
+- Existing assignments migrate automatically without requiring a reset command.
+
+CLASS-SPECIFIC IMPROVEMENTS
+- Knight of Xoroth: refined Pestilence tracking, target debuffs and exclusive Mark handling.
+- Bloodmage: restored Eternal Resolve to Main Rotation, corrected Eternal Curse eligibility and removed the visible form tracker.
+- Sun Cleric: added an active-only Vow tracker separate from Main Rotation.
+- Templar: added active Oath tracking, including Oath: Righteous Lunge, and aligned the tracker with the Energy bar.
+- Felsworn: retained dedicated Felfury, Chaos Rush and Inner Demon tracking within the shared class HUD framework.
+
+NECROMANCER GUARDIAN HUD
+- Added a RetreatUI-native Guardian HUD for Animation Necromancer.
+- Tracks active permanent Guardians, temporary Animates and Unrelenting Army Zombies.
+- Displays an individual live health bar for every detected Guardian, including numbered rows for duplicate minions.
+- The HUD can be moved while unlocked, stores its position and includes the same L/U lock control used by the Buff Manager.
+- Uses correct singular and plural status wording for Guardians and Zombies.
+- Guardian unit support restores the player's previous nameplate settings when the tracker is no longer active.
+- Includes MIT attribution for Guardian classification data and selected runtime concepts derived from Libellus Leti by Mortuus.
+
+INSTALLATION AND MIGRATION
+- Always replace both RetreatUI and RetreatUI_Classes together.
+- Existing profiles, Buff Manager assignments and RetreatUI-managed positions are preserved and migrated automatically.
+- No custom reset or repair slash command is required after updating.
+- TurboPlates, MobSpells, ElvUI and Details! remain separate required addons and are not bundled.
+- Personal WeakAuras remain independent and are never imported, edited or removed by RetreatUI.
+
+This release contains a broad amount of new class coverage. Players are encouraged to report missing abilities, incorrect icons, wrong bar placement or class-state detection issues with a screenshot and the affected class/ability.

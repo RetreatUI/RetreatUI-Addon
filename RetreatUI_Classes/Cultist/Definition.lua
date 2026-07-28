@@ -2,22 +2,22 @@ local RUI = RetreatUI
 
 RUI:RegisterClassDefinition("Cultist", {
   ready = true,
-  releaseStatus = "beta",
+  releaseStatus = "all-spec",
   theme = "Insanity",
   accent = {0.55, 0.16, 0.92},
   accent2 = {0.86, 0.25, 1.00},
   background = {0.018, 0.008, 0.048},
   installerTheme = {
     title = "Cultist",
-    subtitle = "Dreadnought Tank • Forbidden Rite",
+    subtitle = "Forbidden Rite • All Specializations",
     description = "Embrace the void. Bend insanity. Become unstoppable.",
-    loadout = "Dreadnought Tank",
+    loadout = "All Specializations",
     icon = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Cultist_Icon.tga",
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Cultist_Installer.tga",
   },
   primaryResource = "MANA",
   roles = "Tank / Damage / Healer",
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {BULWARK=true,CORRUPTION=true,GODBLADE=true,INFLUENCE=true},
   detectionPriority = 25,
   detectionThreshold = 2,
   detectionSpells = {

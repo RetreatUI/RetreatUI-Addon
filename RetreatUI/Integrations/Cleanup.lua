@@ -44,6 +44,20 @@ local function InCombat()
   return type(InCombatLockdown) == "function" and InCombatLockdown() == true
 end
 
+local function HasCompleteClassResourceReplacement()
+  local module = RUI.activeModule
+  if not module and type(RUI.GetClassModule) == "function" then
+    local className = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or nil
+    module = className and RUI:GetClassModule(className) or nil
+  end
+  if not module then return false end
+  if type(module.customResourcesComplete) == "function" then
+    local ok, complete = pcall(module.customResourcesComplete, module)
+    return ok and complete == true
+  end
+  return module.customResourcesComplete == true
+end
+
 local function LooksLikeResourceFrameName(name)
   if type(name) ~= "string" or name == "" then return false end
   local lower = string.lower(name)
@@ -54,6 +68,18 @@ local function LooksLikeResourceFrameName(name)
     or string.find(lower, "heroarchitect", 1, true)
   if not hasNamespace then return false end
 
+  return string.find(lower, "resource", 1, true)
+    or string.find(lower, "powerbar", 1, true)
+    or string.find(lower, "powerframe", 1, true)
+    or string.find(lower, "segmentbar", 1, true)
+    or string.find(lower, "segmenttemplate", 1, true)
+    or string.find(lower, "classbar", 1, true)
+end
+
+local function IsNativeClassResourceName(name)
+  if LooksLikeResourceFrameName(name) then return true end
+  if type(name) ~= "string" or name == "" then return false end
+  local lower = string.lower(name)
   return string.find(lower, "resource", 1, true)
     or string.find(lower, "powerbar", 1, true)
     or string.find(lower, "powerframe", 1, true)
@@ -105,10 +131,11 @@ local function GuardResourceFrame(frame, name)
   if not LooksLikeResourceFrameName(name) or not frame.HookScript then return end
 
   local ok = pcall(frame.HookScript, frame, "OnShow", function(shownFrame)
-    if InCombat() then return end
+    if InCombat() or not HasCompleteClassResourceReplacement() then return end
+    local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function" and RUI:IsNativeResourceMirrorSource(shownFrame)
     if shownFrame.SetAlpha then pcall(shownFrame.SetAlpha, shownFrame, 0) end
     if shownFrame.EnableMouse then pcall(shownFrame.EnableMouse, shownFrame, false) end
-    if shownFrame.Hide then pcall(shownFrame.Hide, shownFrame) end
+    if not mirrored and shownFrame.Hide then pcall(shownFrame.Hide, shownFrame) end
   end)
   if ok then guardedResourceFrames[frame] = true end
 end
@@ -117,11 +144,12 @@ local function HideCosmeticFrame(frame, name)
   if not frame or InCombat() then return false end
 
   local protected = IsProtectedFrame(frame)
+  local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function" and RUI:IsNativeResourceMirrorSource(frame)
   if frame.SetAlpha then pcall(frame.SetAlpha, frame, 0) end
   if frame.EnableMouse then pcall(frame.EnableMouse, frame, false) end
   if frame.SetMouseClickEnabled then pcall(frame.SetMouseClickEnabled, frame, false) end
   if frame.SetMouseMotionEnabled then pcall(frame.SetMouseMotionEnabled, frame, false) end
-  if not protected and frame.Hide then pcall(frame.Hide, frame) end
+  if not protected and not mirrored and frame.Hide then pcall(frame.Hide, frame) end
 
   if not protected then GuardResourceFrame(frame, name) end
   local db = RUI:EnsureDB()
@@ -155,6 +183,7 @@ local function RunLightweightCleanup(forceDiscovery)
   local function TryHide(name)
     if not name or seen[name] then return end
     seen[name] = true
+    if IsNativeClassResourceName(name) and not HasCompleteClassResourceReplacement() then return end
     local frame = _G[name]
     if frame and IsFrameLike(frame) and HideCosmeticFrame(frame, name) then
       hidden = hidden + 1

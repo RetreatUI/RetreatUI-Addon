@@ -2,23 +2,96 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.0.9
+## Version: 1.0.10
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
 Loader.lua
 Registry.lua
-KnightOfXoroth\Definition.lua
-KnightOfXoroth\Data.lua
-KnightOfXoroth\HUD.lua
-Venomancer\Definition.lua
-Venomancer\Data.lua
-Venomancer\HUD.lua
+StateTracker.lua
+BaselineHUD.lua
+AdvancedHUD.lua
+Necromancer\Definition.lua
+Necromancer\Data.lua
+Necromancer\GuardianHUD.lua
+Necromancer\HUD.lua
+
+Pyromancer\Definition.lua
+Pyromancer\Data.lua
+Pyromancer\HUD.lua
 
 Cultist\Definition.lua
 Cultist\Data.lua
 Cultist\HUD.lua
 
+Starcaller\Definition.lua
+Starcaller\Data.lua
+Starcaller\HUD.lua
+
+SunCleric\Definition.lua
+SunCleric\Data.lua
+SunCleric\HUD.lua
+
+Tinker\Definition.lua
+Tinker\Data.lua
+Tinker\HUD.lua
+
+Runemaster\Definition.lua
+Runemaster\Data.lua
+Runemaster\HUD.lua
+
+Primalist\Definition.lua
+Primalist\Data.lua
+Primalist\HUD.lua
+
+Reaper\Definition.lua
+Reaper\Data.lua
+Reaper\HUD.lua
+
+Venomancer\Definition.lua
+Venomancer\Data.lua
+Venomancer\HUD.lua
+
+Chronomancer\Definition.lua
+Chronomancer\Data.lua
+Chronomancer\HUD.lua
+
 Bloodmage\Definition.lua
 Bloodmage\Data.lua
 Bloodmage\HUD.lua
+
+Guardian\Definition.lua
+Guardian\Data.lua
+Guardian\HUD.lua
+
+Stormbringer\Definition.lua
+Stormbringer\Data.lua
+Stormbringer\HUD.lua
+
+Felsworn\Definition.lua
+Felsworn\Data.lua
+Felsworn\HUD.lua
+
+Barbarian\Definition.lua
+Barbarian\Data.lua
+Barbarian\HUD.lua
+
+WitchDoctor\Definition.lua
+WitchDoctor\Data.lua
+WitchDoctor\HUD.lua
+
+WitchHunter\Definition.lua
+WitchHunter\Data.lua
+WitchHunter\HUD.lua
+
+KnightOfXoroth\Definition.lua
+KnightOfXoroth\Data.lua
+KnightOfXoroth\HUD.lua
+
+Templar\Definition.lua
+Templar\Data.lua
+Templar\HUD.lua
+
+Ranger\Definition.lua
+Ranger\Data.lua
+Ranger\HUD.lua

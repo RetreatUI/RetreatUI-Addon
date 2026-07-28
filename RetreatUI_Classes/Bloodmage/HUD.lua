@@ -6,15 +6,15 @@ local module = {
   ready = true,
   className = CLASS_NAME,
   frameName = "RetreatUIBloodmageHUD",
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {BLOOD=true, FEROCITY=true, FLESHWEAVER=true, PACKLEADER=true},
   usesPrimaryPower = true,
+  customResourcesComplete = true,
 }
 
 local root, driver, timerDriver
 local targetAuraBars = {}
 local elapsed = 0
 local lastFormKey, lastCombatState
-local eternalCurseLearned = false
 local pendingRowRefresh = false
 local pendingSpellbookRefresh = false
 local targetBarsPositioned = false
@@ -27,15 +27,18 @@ end
 local function Aura(unit, wanted, debuff)
   local getter = debuff and UnitDebuff or UnitBuff
   if not getter or not unit or not wanted then return nil end
+  local wantedName = type(wanted) == "string" and wanted or nil
+  local wantedID = tonumber(wanted)
   for index = 1, 40 do
     local values = {getter(unit, index)}
     local name = values[1]
     if not name then break end
-    if name == wanted then
+    local spellID = tonumber(values[11])
+    if (wantedName and name == wantedName) or (wantedID and spellID == wantedID) then
       return {
         name=name, icon=values[3], count=values[4] or 0,
         duration=values[6] or 0, expires=values[7] or 0,
-        caster=values[8], spellID=values[11], raw=values,
+        caster=values[8], spellID=spellID, raw=values,
       }
     end
   end
@@ -54,39 +57,59 @@ local function SpellTexture(name, exactID, aliases)
   return StrictTexture({name=name, id=exactID, aliases=aliases})
 end
 
-local function RefreshEternalCurseState()
-  local learned = false
-  if RUI.IsSpellIDLearned then learned = RUI:IsSpellIDLearned(800157) == true end
-  if not learned and RUI.IsSpellLearned then learned = RUI:IsSpellLearned("Eternal Curse") == true end
-  eternalCurseLearned = learned
-  return learned
-end
+local ETERNAL_CURSE_ID = 800157
+local MORTAL_FORM_ICON = "Interface\\Icons\\Spell_Shadow_LifeDrain"
+local CURSED_FORM_ICON = "Interface\\Icons\\Ability_Racial_Cannibalize"
+local ETERNAL_CURSE_RECORD = {name="Eternal Curse", id=ETERNAL_CURSE_ID}
 
 local function HasEternalCurse()
-  return eternalCurseLearned == true
+  -- Eternal Curse is not a third display state. It permanently locks the
+  -- Bloodmage into Cursed Form, so it is used only as authoritative evidence
+  -- for CURSED while the tracker still exposes exactly Mortal/Cursed Form.
+  if PlayerAura(ETERNAL_CURSE_ID) or PlayerAura("Eternal Curse") then return true end
+
+  if RUI.IsSpellRecordLearned then
+    local ok, learned = pcall(RUI.IsSpellRecordLearned, RUI, ETERNAL_CURSE_RECORD)
+    if ok and learned then return true end
+  end
+  if RUI.IsSpellIDLearned then
+    local ok, learned = pcall(RUI.IsSpellIDLearned, RUI, ETERNAL_CURSE_ID)
+    if ok and learned then return true end
+  end
+  if RUI.IsSpellLearned then
+    local ok, learned = pcall(RUI.IsSpellLearned, RUI, "Eternal Curse")
+    if ok and learned then return true end
+  end
+  if IsSpellKnown then
+    local ok, learned = pcall(IsSpellKnown, ETERNAL_CURSE_ID)
+    if ok and learned then return true end
+  end
+  return false
 end
 
 local function ActiveForm()
-  -- Eternal Curse permanently locks Bloodmage into Cursed Form. Ascension does
-  -- not expose a normal stance aura in that state, so detect the talent first.
-  if HasEternalCurse() then return "Cursed Form", nil, nil end
+  -- The display has only two possible states. Blood Curse/Cursed Form and the
+  -- Eternal Curse talent all resolve to Cursed Form; Eternal Curse itself is
+  -- never displayed as a separate stance.
   if GetNumShapeshiftForms and GetShapeshiftFormInfo then
     local current = GetShapeshiftForm and GetShapeshiftForm() or 0
     local count = GetNumShapeshiftForms() or 0
     for index = 1, count do
-      local texture, name, active = GetShapeshiftFormInfo(index)
+      local _, name, active = GetShapeshiftFormInfo(index)
       local lower = name and string.lower(name) or ""
-      if lower == "cursed form" or lower == "blood curse" then
+      if lower == "cursed form" or lower == "blood curse" or lower == "eternal curse" then
         if active == true or active == 1 or index == current then
-          return "Cursed Form", texture, PlayerAura("Cursed Form") or PlayerAura("Blood Curse")
+          local cursed = PlayerAura("Cursed Form")
+          return "Cursed Form", (cursed and cursed.icon) or CURSED_FORM_ICON, cursed
         end
       end
     end
   end
 
-  local cursed = PlayerAura("Cursed Form") or PlayerAura("Blood Curse")
-  if cursed then return "Cursed Form", cursed.icon, cursed end
-  return "Mortal Form", SpellTexture("Blood Curse", 562720), nil
+  local cursed = PlayerAura("Cursed Form")
+  if cursed then return "Cursed Form", cursed.icon or CURSED_FORM_ICON, cursed end
+  if HasEternalCurse() then return "Cursed Form", CURSED_FORM_ICON, nil end
+  return "Mortal Form", MORTAL_FORM_ICON, nil
 end
 
 local function InCursedForm()
@@ -235,8 +258,7 @@ end
 
 local function CreateBondTracker(x, iconY)
   local frame = CreateFrame("Frame", nil, root)
-  -- Blood Bond and Mortal/Cursed Form are a matched resource pair: identical
-  -- icon size, identical height and equal distance from the screen centre.
+  -- Blood Bond remains a standalone class resource tracker.
   frame:SetSize(116, 64)
   frame:SetPoint("CENTER", UIParent, "CENTER", x or -70, (iconY or -118) - 10)
   frame.icon = W:CreateIcon(frame, 38)
@@ -269,22 +291,39 @@ local function CreateAuraTracker(definition)
   return frame
 end
 
+local function AuraIdentity(aura)
+  if not aura then return nil end
+  local spellID = tonumber(aura.spellID)
+  if spellID and spellID > 0 then return "id:" .. tostring(spellID) end
+  local name = aura.name and string.lower(aura.name) or ""
+  if name ~= "" then return "name:" .. name end
+  return nil
+end
+
 local function UpdateAuraTrackers()
-  local active = {}
+  local active, activeAuraKeys = {}, {}
   for _, tracker in ipairs(root.trackers or {}) do
     local definition = tracker.definition or {}
     local name = definition.buff or definition.name
     local aura = PlayerAura(name)
+    -- Ascension can expose a localized or slightly different aura name. Prefer
+    -- a verified aura spell ID, then any explicit aliases.
+    if not aura and definition.id then aura = PlayerAura(definition.id) end
     if not aura and type(definition.auraNames) == "table" then
       for _, auraName in ipairs(definition.auraNames) do
         aura = PlayerAura(auraName)
         if aura then break end
       end
     end
-    if aura then
+
+    local auraKey = AuraIdentity(aura)
+    if aura and (not auraKey or not activeAuraKeys[auraKey]) then
+      if auraKey then activeAuraKeys[auraKey] = true end
       tracker.aura = aura
       active[#active + 1] = tracker
     else
+      -- Never display the same live proc twice, even when multiple database
+      -- definitions or aliases resolve to the same Ascension aura.
       tracker.aura = nil
       tracker:Hide()
     end
@@ -557,7 +596,6 @@ local function Build()
 
   local resourceTrackerY = (RUI.layout and RUI.layout.demonfire and RUI.layout.demonfire.y) or -118
   root.bondTracker = CreateBondTracker(0, resourceTrackerY)
-
   root.coreRow = CreateFrame("Frame", nil, root)
   root.coreRow:SetSize(620, 38)
   root.coreRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.core.x, RUI.layout.core.y)
@@ -574,11 +612,18 @@ local function Build()
       ["Call of the Darkwing"]=true,
       ["Monstrous Hunger"]=true,
   }
+  local trackerDefinitionsSeen = {}
   for _, definition in ipairs(RUI:GetAuraTrackerDefinitions(CLASS_NAME) or {}) do
-    if allowed[definition.name] then root.trackers[#root.trackers + 1] = CreateAuraTracker(definition) end
+    if allowed[definition.name] then
+      local definitionKey = tonumber(definition.id) and ("id:" .. tostring(tonumber(definition.id)))
+        or ("name:" .. string.lower(definition.buff or definition.name or ""))
+      if definitionKey ~= "name:" and not trackerDefinitionsSeen[definitionKey] then
+        trackerDefinitionsSeen[definitionKey] = true
+        root.trackers[#root.trackers + 1] = CreateAuraTracker(definition)
+      end
+    end
   end
 
-  RefreshEternalCurseState()
   PositionAllTargetAuraBars()
   BuildRows(true)
 
@@ -608,8 +653,7 @@ local function Build()
 
     if event == "PLAYER_REGEN_ENABLED" then
       if pendingSpellbookRefresh and RUI.ScanSpellbook then RUI:ScanSpellbook() end
-      RefreshEternalCurseState()
-      if pendingSpellbookRefresh and RUI.InvalidateRacialCache then RUI:InvalidateRacialCache() end
+          if pendingSpellbookRefresh and RUI.InvalidateRacialCache then RUI:InvalidateRacialCache() end
       pendingSpellbookRefresh = false
       lastFormKey, lastCombatState = nil, nil
       targetBarsPositioned = false
@@ -627,8 +671,7 @@ local function Build()
           return
         end
         if RUI.ScanSpellbook then RUI:ScanSpellbook() end
-        RefreshEternalCurseState()
-        if RUI.InvalidateRacialCache then RUI:InvalidateRacialCache() end
+              if RUI.InvalidateRacialCache then RUI:InvalidateRacialCache() end
         pendingSpellbookRefresh = false
         lastFormKey, lastCombatState = nil, nil
         RefreshConditionalRows(true)
@@ -661,7 +704,6 @@ function module:activate()
   lastFormKey, lastCombatState = nil, nil
   pendingRowRefresh = false
   pendingSpellbookRefresh = false
-  RefreshEternalCurseState()
   targetBarsPositioned = false
   PositionAllTargetAuraBars()
   RefreshConditionalRows(true)

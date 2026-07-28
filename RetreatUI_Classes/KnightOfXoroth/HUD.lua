@@ -4,8 +4,9 @@ local module = {
   ready = true,
   className = CLASS_NAME,
   frameName = "RetreatUIKnightOfXorothHUD",
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {WAR=true, HELLFIRE=true, DEFIANCE=true},
   usesPrimaryPower = true,
+  customResourcesComplete = true,
 }
 
 local root, driver, timerDriver, demonfireDriver
@@ -38,9 +39,23 @@ local STANCE_DEFINITIONS = {
     effect = "Slow",
     fallback = "Interface\\Icons\\Spell_Frost_FrostShock",
   },
+  ["pestilence of death"] = {
+    name = "Pestilence of Death",
+    effect = "Crit Dmg",
+    fallback = "Interface\\Icons\\KoX_Death",
+  },
+  ["pestilence of apocalypse"] = {
+    name = "Pestilence of Apocalypse",
+    effect = "Fire Dmg",
+    fallback = "Interface\\Icons\\KoX_Apoc",
+  },
 }
 
 local function HasImpcaller()
+  if RUI.IsAdvancementEntryLearned then
+    local known = RUI:IsAdvancementEntryLearned(34085)
+    if known ~= nil then return known end
+  end
   if RUI:IsSpellLearned("Impcaller") then return true end
   if IsSpellKnown then
     local ok, known = pcall(IsSpellKnown, 706755)
@@ -1019,6 +1034,7 @@ local function UpdatePlayerAuras()
   root.blood.cooldownText:SetText(tostring(auraState.blood or 0))
   UpdateDemonfireDisplay(false, auraState)
   UpdateStanceTracker(auraState)
+  if root.classStateTracker then root.classStateTracker:Update(auraState) end
   hasAuraTimers = UpdateAuraTrackers(auraState)
   local coreActive = UpdateSpellRow(root.coreRow, false, auraState)
   local utilityActive = UpdateSpellRow(root.utilityRow, false, auraState)
@@ -1039,7 +1055,8 @@ local function UpdateTargetState()
 end
 
 local function TimersNeeded()
-  return hasCooldownTimers or hasAuraTimers or hasTargetTimers or next(impGUIDs) ~= nil
+  local stateTimers = root and root.classStateTracker and root.classStateTracker:HasTimers()
+  return hasCooldownTimers or hasAuraTimers or hasTargetTimers or stateTimers or next(impGUIDs) ~= nil
 end
 
 local function RefreshTimerDriver()
@@ -1076,12 +1093,22 @@ local function Build()
   root.blood=CreateCounter("DB","Demon's Blood","Interface\\Icons\\Spell_Shadow_LifeDrain",bloodLayout.x,bloodLayout.y)
   CreateDemonfire()
   CreateStanceTracker()
+  if RUI.CreateClassStateTracker then
+    root.classStateTracker = RUI:CreateClassStateTracker(root, CLASS_NAME, {
+      x=-295, y=RUI.layout.demonfire.y, size=38, width=90, height=58, maxStates=4,
+      excludePrefixes={"Pestilence of "},
+    })
+  end
 
   root.auraTrackers = {}
   for _, definition in ipairs(RUI:GetAuraTrackerDefinitions(CLASS_NAME)) do
-    local tracker = CreateAuraTracker(definition.name, definition.fallbackIcon)
-    tracker.definition = definition
-    root.auraTrackers[#root.auraTrackers + 1] = tracker
+    local isClassState = RUI.IsClassStateAuraDefinition
+      and RUI:IsClassStateAuraDefinition(CLASS_NAME, definition)
+    if not isClassState then
+      local tracker = CreateAuraTracker(definition.name, definition.fallbackIcon)
+      tracker.definition = definition
+      root.auraTrackers[#root.auraTrackers + 1] = tracker
+    end
   end
 
   root.coreRow=CreateFrame("Frame",nil,root)
@@ -1132,7 +1159,8 @@ local function Build()
     end
 
     if event=="UPDATE_SHAPESHIFT_FORM" or event=="UPDATE_SHAPESHIFT_FORMS" or event=="UPDATE_SHAPESHIFT_USABLE" then
-      UpdateStanceTracker()
+      UpdatePlayerAuras()
+      RefreshTimerDriver()
       return
     end
 
@@ -1182,6 +1210,7 @@ local function Build()
 
     if hasCooldownTimers then hasCooldownTimers = UpdateCooldowns(true) end
     if hasAuraTimers then hasAuraTimers = UpdateAuraTrackerTimers() end
+    if root and root.classStateTracker then root.classStateTracker:UpdateTimers() end
     if hasTargetTimers then hasTargetTimers = UpdateTargetDebuffTimers() end
 
     if impTimerElapsed >= 1.0 then
@@ -1218,6 +1247,7 @@ function module:activate()
 end
 
 function module:deactivate()
+  if root and root.classStateTracker then root.classStateTracker:Hide() end
   if root then root:Hide() end
   if driver then driver:Hide() end
   if timerDriver then timerDriver:Hide() end

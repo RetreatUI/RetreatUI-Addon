@@ -95,11 +95,13 @@ local POWER_NAMES = {
 }
 
 local function ReadPrimaryPower()
-  local powerType = 0
-  if UnitPowerType then
+  local token = RUI:GetPrimaryResourceToken()
+  local powerType = type(RUI.GetPowerTypeForToken) == "function" and RUI:GetPowerTypeForToken(token) or nil
+  if powerType == nil and UnitPowerType then
     local ok, value = pcall(UnitPowerType, "player")
     if ok and type(value) == "number" then powerType = value end
   end
+  powerType = tonumber(powerType) or 0
 
   local current, maximum
   if UnitPower and UnitPowerMax then

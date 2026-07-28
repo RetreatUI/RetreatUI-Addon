@@ -9,14 +9,14 @@ RUI:RegisterClassDefinition("Knight of Xoroth", {
   background = {0.055, 0.014, 0.006},
   installerTheme = {
     title = "KNIGHT OF XOROTH",
-    subtitle = "Xoroth Tank • Hellfire",
+    subtitle = "War • Hellfire • Defiance",
     description = "Burn your enemies. Feed the flames. Serve Xoroth.",
-    loadout = "Xoroth Tank",
+    loadout = "All Specializations",
     icon = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\KnightOfXoroth_Icon.tga",
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\KnightOfXoroth_Installer.tga",
   },
   primaryResource = "RAGE",
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {WAR=true, HELLFIRE=true, DEFIANCE=true},
   detectionPriority = 10,
   detectionThreshold = 1,
   detectionSpells = {

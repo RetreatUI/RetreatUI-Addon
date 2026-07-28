@@ -2,6 +2,24 @@ local RUI = RetreatUI
 local events = CreateFrame("Frame")
 local autoScheduled = false
 local runtimeApplied = false
+local hudRefreshSerial = 0
+local playerLoggedIn = false
+
+-- Ascension does not consistently emit the stock WotLK talent events when a
+-- Character Advancement specialization is changed. Keep one global refresh
+-- path for every RetreatUI class HUD so all modules rebuild from the actual
+-- learned spellbook instead of remaining on the layout that was active at
+-- login.
+local HUD_REFRESH_EVENTS = {
+  SPELLS_CHANGED = true,
+  PLAYER_TALENT_UPDATE = true,
+  CHARACTER_POINTS_CHANGED = true,
+  ACTIVE_TALENT_GROUP_CHANGED = true,
+  LEARNED_SPELL_IN_TAB = true,
+  PLAYER_LEVEL_UP = true,
+  ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED = true,
+  ASCENSION_KNOWN_ENTRIES_UPDATED = true,
+}
 
 local function IsSupported()
   return type(RUI.IsSupportedCharacter) == "function" and RUI:IsSupportedCharacter()
@@ -14,10 +32,7 @@ end
 
 local function ScheduleInstaller()
   if autoScheduled or not IsSupported() then return end
-  local db = RUI:EnsureDB()
-  local hasCompletedInitialInstall = db.installer.initialCompleted == true
-    or (db.installer.completedVersion and db.installer.completedVersion ~= "")
-  if hasCompletedInitialInstall then return end
+  if type(RUI.IsClassInstallCompleted) == "function" and RUI:IsClassInstallCompleted() then return end
 
   autoScheduled = true
   RUI:After(1.0, function()
@@ -33,6 +48,63 @@ local function ScheduleInstaller()
       RUI:Print("Installer module did not load. Reload the UI and try /rui install.")
     end
   end)
+end
+
+local function RefreshInstalledHUD(reason, serial, pass)
+  if serial ~= hudRefreshSerial then return end
+  local changed = true
+  if type(RUI.ScanSpellbook) == "function" then
+    local _, scanChanged = RUI:ScanSpellbook()
+    changed = scanChanged == true
+  end
+
+  -- Stock SPELLS_CHANGED is noisy (opening the spellbook can fire it). Only
+  -- rebuild for that event when the learned spell signature actually changed.
+  -- Talent/spec events force the first pass, then later passes rebuild only if
+  -- the replacement spellbook arrives asynchronously.
+  local forceThisPass = reason ~= "SPELLS_CHANGED" and pass == 1
+  if not changed and not forceThisPass then return end
+
+  if not IsSupported() then
+    DisableUnsupportedUI()
+    return
+  end
+
+  local detectedClass = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or nil
+  local classInstalled = type(RUI.IsClassInstallCompleted) == "function" and RUI:IsClassInstallCompleted(detectedClass)
+  if not classInstalled then return end
+
+  if type(RUI.InvalidateRacialCache) == "function" then RUI:InvalidateRacialCache() end
+  if type(RUI.ActivateClassHUD) == "function" then
+    local ok, activated, mode = pcall(RUI.ActivateClassHUD, RUI, true)
+    if not ok then
+      RUI:Print("HUD refresh failed after " .. tostring(reason) .. ": " .. tostring(activated))
+      return
+    end
+    if activated and type(RUI.SetModuleStatus) == "function" and pass == 1 then
+      RUI:SetModuleStatus("classHUD", "success", tostring(detectedClass or "Class") .. " HUD refreshed")
+    elseif not activated and pass == 1 then
+      RUI:Print(tostring(detectedClass or "Class") .. " HUD could not refresh (" .. tostring(mode or "unknown") .. ").")
+    end
+  end
+
+  if pass == 1 and type(RUI.ScheduleFrameCleanupPasses) == "function" then
+    RUI:ScheduleFrameCleanupPasses(true)
+  end
+end
+
+local function ScheduleHUDRefresh(reason)
+  hudRefreshSerial = hudRefreshSerial + 1
+  local serial = hudRefreshSerial
+
+  -- The CA event can fire before the replacement specialization spells have
+  -- reached the spellbook. Re-scan a few times, but cancel older batches as
+  -- soon as a newer build-change event arrives.
+  for pass, delay in ipairs({0.05, 0.30, 0.80, 1.60}) do
+    RUI:After(delay, function()
+      RefreshInstalledHUD(reason, serial, pass)
+    end)
+  end
 end
 
 local function ApplyRuntimeOnce()
@@ -54,6 +126,15 @@ local function ApplyRuntimeOnce()
     end)
   end
 
+  -- Refresh only RetreatUI's lightweight ElvUI unitframe settings on login.
+  -- This clears Ascension classbar/power percentage text such as the stray
+  -- Necromancer "100%" without requiring the installer or resetting movers.
+  if type(RUI.ApplyElvUIHUDPolish) == "function" then
+    RUI:After(0.45, function()
+      if IsSupported() then RUI:ApplyElvUIHUDPolish(false) end
+    end)
+  end
+
   local elvuiStatus = RUI:GetModuleStatus("elvui")
   if elvuiStatus and elvuiStatus.ok and type(RUI.RemoveRightLootTradeChat) == "function" then
     RUI:After(0.50, function()
@@ -65,7 +146,15 @@ end
 events:RegisterEvent("ADDON_LOADED")
 events:RegisterEvent("PLAYER_LOGIN")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
+for eventName in pairs(HUD_REFRESH_EVENTS) do
+  pcall(events.RegisterEvent, events, eventName)
+end
+
 events:SetScript("OnEvent", function(_, event, addonName)
+  if HUD_REFRESH_EVENTS[event] then
+    if playerLoggedIn then ScheduleHUDRefresh(event) end
+    return
+  end
   if event == "ADDON_LOADED" then
     if addonName == "RetreatUI" or addonName == "RetreatUI_Classes" then
       RUI:EnsureDB()
@@ -78,6 +167,7 @@ events:SetScript("OnEvent", function(_, event, addonName)
   end
 
   if event == "PLAYER_LOGIN" then
+    playerLoggedIn = true
     -- Force a fresh scan now that the Ascension spellbook is fully available.
     if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
 
@@ -98,14 +188,51 @@ events:SetScript("OnEvent", function(_, event, addonName)
   end
 
   if event == "PLAYER_ENTERING_WORLD" then
+    -- Ascension can finish populating the CoA spellbook and custom class state
+    -- after PLAYER_LOGIN. Rescan here so reloads do not lose the active class,
+    -- primary resource bar or class-resource tracker.
+    if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
+
     if not IsSupported() then
       DisableUnsupportedUI()
       return
     end
 
-    local hud = RUI:GetModuleStatus("classHUD")
-    if hud and hud.ok and not RUI.activeModule then RUI:ActivateClassHUD() end
+    local detectedClass = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or nil
+    local classInstalled = type(RUI.IsClassInstallCompleted) == "function" and RUI:IsClassInstallCompleted(detectedClass)
+
+    -- A class HUD is activated only after that class has completed the installer.
+    -- Fresh characters therefore open directly into their own class-themed setup
+    -- instead of inheriting a globally preinstalled baseline HUD.
+    if not classInstalled then
+      if type(RUI.DeactivateAllHUD) == "function" then RUI:DeactivateAllHUD() end
+      ScheduleInstaller()
+      return
+    end
+
+    if not RUI.activeModule or RUI.activeClass ~= detectedClass then
+      local activated, mode = RUI:ActivateClassHUD()
+      if activated and type(RUI.SetModuleStatus) == "function" then
+        RUI:SetModuleStatus("classHUD", "success", tostring(detectedClass or "Class") .. " HUD activated")
+      elseif not activated then
+        RUI:Print(tostring(detectedClass or "Class") .. " HUD could not be activated (" .. tostring(mode or "unknown") .. ").")
+      end
+    end
     ApplyRuntimeOnce()
-    ScheduleInstaller()
+
+    -- A few Ascension resources and spellbook markers are created a fraction
+    -- of a second after entering the world. Re-detect and re-activate the same
+    -- installed class in place instead of requiring /rui reset or /rui repair.
+    for _, delay in ipairs({0.25, 1.00}) do
+      RUI:After(delay, function()
+        if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
+        if not IsSupported() then return end
+        local delayedClass = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or nil
+        local delayedInstalled = type(RUI.IsClassInstallCompleted) == "function" and RUI:IsClassInstallCompleted(delayedClass)
+        if delayedInstalled and type(RUI.ActivateClassHUD) == "function" then
+          RUI:ActivateClassHUD(true)
+        end
+      end)
+    end
   end
 end)

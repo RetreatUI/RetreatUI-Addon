@@ -367,6 +367,20 @@ local function ConfigureHUDPolish(profile, applyMovers)
   profile.unitframe.units = profile.unitframe.units or {}
   local units = profile.unitframe.units
   units.player = units.player or {}
+
+  -- Ascension/ElvUI can expose a class-resource percentage as classbar or
+  -- power text even when the visible bar is disabled. On Necromancer this
+  -- appeared as an extra "100%" directly on top of the character name.
+  -- RetreatUI owns the class resources, so explicitly disable both text paths.
+  units.player.classbar = units.player.classbar or {}
+  units.player.classbar.enable = false
+  units.player.classbar.height = 0
+  units.player.power = units.player.power or {}
+  units.player.power.enable = false
+  units.player.power.text_format = ""
+  units.player.power.position = "CENTER"
+  units.player.power.xOffset = 0
+
   units.player.castbar = units.player.castbar or {}
   ConfigureCastbar(units.player.castbar, "LEFT", true)
 

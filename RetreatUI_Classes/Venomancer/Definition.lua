@@ -2,22 +2,22 @@ local RUI = RetreatUI
 
 RUI:RegisterClassDefinition("Venomancer", {
   ready = true,
-  releaseStatus = "beta",
+  releaseStatus = "all-spec",
   theme = "Poison Jungle",
   accent = {0.28, 0.88, 0.08},
   accent2 = {0.72, 0.20, 0.92},
   background = {0.010, 0.045, 0.018},
   installerTheme = {
     title = "VENOMANCER",
-    subtitle = "Fortitude Tank • Poison Jungle",
+    subtitle = "Poison Jungle • All Specializations",
     description = "Strength grows. Poison flows. The jungle protects.",
-    loadout = "Fortitude Tank",
+    loadout = "All Specializations",
     icon = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Venomancer_Icon.tga",
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\Venomancer_Installer.tga",
   },
   primaryResource = "RAGE",
   dynamicPrimaryResource = true,
-  supportedLoadouts = {TANK=true},
+  supportedLoadouts = {FORTITUDE=true,STALKING=true,VENOM=true,VIZIER=true},
   detectionPriority = 20,
   detectionThreshold = 1,
   detectionSpells = {
