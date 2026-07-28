@@ -1,0 +1,334 @@
+name: Publish RetreatUI v1.0.10
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-v1.0.10.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.10
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download and validate release package
+        shell: bash
+        env:
+          RELEASE_URL: "https://at.adobe.com/BlDzjUdG0X2Zc2gy"
+          RELEASE_SHA256: "aa6a2f6b9b0bea6b4a90dcdc4853824c5605e481327361f53965c7d70862a446"
+        run: |
+          set -euo pipefail
+
+          RELEASE_ZIP="/tmp/RetreatUI_v1.0.10.zip"
+          RELEASE_DIR="/tmp/retreatui-v1.0.10"
+
+          curl --fail --location --retry 5 --retry-all-errors \
+            --output "$RELEASE_ZIP" "$RELEASE_URL"
+
+          echo "$RELEASE_SHA256  $RELEASE_ZIP" | sha256sum --check --strict
+          unzip -t "$RELEASE_ZIP"
+
+          rm -rf "$RELEASE_DIR"
+          mkdir -p "$RELEASE_DIR"
+          unzip -q "$RELEASE_ZIP" -d "$RELEASE_DIR"
+
+          test -f "$RELEASE_DIR/RetreatUI/RetreatUI.toc"
+          test -f "$RELEASE_DIR/RetreatUI_Classes/RetreatUI_Classes.toc"
+          grep -q '^## Version: 1.0.10$' "$RELEASE_DIR/RetreatUI/RetreatUI.toc"
+          grep -q '^## Version: 1.0.10$' "$RELEASE_DIR/RetreatUI_Classes/RetreatUI_Classes.toc"
+
+          TOP_LEVEL="$(find "$RELEASE_DIR" -mindepth 1 -maxdepth 1 -printf '%f\n' | sort)"
+          test "$TOP_LEVEL" = $'RetreatUI\nRetreatUI_Classes'
+
+      - name: Update repository and publish release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          RELEASE_ZIP="/tmp/RetreatUI_v1.0.10.zip"
+          RELEASE_DIR="/tmp/retreatui-v1.0.10"
+          RELEASE_NOTES="/tmp/RetreatUI_v1.0.10-release-notes.md"
+
+          rm -rf RetreatUI RetreatUI_Classes
+          cp -a "$RELEASE_DIR/RetreatUI" .
+          cp -a "$RELEASE_DIR/RetreatUI_Classes" .
+
+          cat > README.md <<'README_EOF'
+# RetreatUI
+
+A compact, class-aware interface package built exclusively for **Project Ascension: Conquest of Azeroth**.
+
+RetreatUI dynamically adapts to learned abilities, talents, active class states, buffs, cooldowns, target debuffs and class resources while keeping the combat area clean and readable.
+
+---
+
+## Features
+
+- Learned-only Main Rotation, Utility, Defensive and racial tracking
+- Active proc icons with actionable ability glows
+- Curated player and pet-applied target debuffs
+- Dedicated tracking for stances, forms, Vows, Oaths, Aspects, Pestilences and similar class systems
+- Class-specific resource and mechanic displays
+- Buff Manager with 58 buff families and automatic normal/Greater selection
+- Necromancer Guardian HUD with individual health bars and Zombie tracking
+- Class-specific installer with automatic profile migration
+- ElvUI, TurboPlates, MobSpells and Details! integration
+
+---
+
+## Supported Classes
+
+RetreatUI includes HUD support for all 21 Conquest of Azeroth classes:
+
+- Barbarian
+- Bloodmage
+- Chronomancer
+- Cultist
+- Felsworn
+- Guardian
+- Knight of Xoroth
+- Necromancer
+- Primalist
+- Pyromancer
+- Ranger
+- Reaper
+- Runemaster
+- Starcaller
+- Stormbringer
+- Sun Cleric
+- Templar
+- Tinker
+- Venomancer
+- Witch Doctor
+- Witch Hunter
+
+---
+
+## Requirements
+
+- RetreatUI_Classes
+- ElvUI
+- TurboPlates v1.4.5
+- MobSpells v1.3
+- Details!
+
+Deadly Boss Mods is supported as an optional integration. Personal WeakAuras remain completely independent and are never imported, edited or removed by RetreatUI.
+
+---
+
+## Installation
+
+1. Download the latest release from the **Releases** page.
+2. Close Project Ascension completely.
+3. Delete the existing `RetreatUI` and `RetreatUI_Classes` folders.
+4. Extract both new folders into `Interface/AddOns`.
+5. Enable RetreatUI, RetreatUI Classes and the required addons.
+6. Log into a supported class and complete its RetreatUI installer.
+
+Always replace both RetreatUI addon folders together. Existing RetreatUI settings, Buff Manager assignments and managed positions migrate automatically. No reset or repair command is required after updating.
+
+---
+
+## Downloads
+
+Latest release:
+
+https://github.com/RetreatUI/RetreatUI-Addon/releases/latest
+
+---
+
+## Discord
+
+Development updates, class discussions, feature requests and bug reports:
+
+https://discord.gg/uzZFrtbVab
+
+---
+
+## Reporting Issues
+
+For the fastest diagnosis, include:
+
+- Your Conquest of Azeroth class
+- The affected ability or mechanic
+- A screenshot showing the issue
+- A short description of what happened and what you expected
+
+---
+
+## License
+
+This project is proprietary. All rights reserved unless otherwise stated.
+
+Third-party components and derived runtime concepts are documented in the included notices and source files.
+README_EOF
+
+          cat > CHANGELOG.md <<'CHANGELOG_EOF'
+# Changelog
+
+All notable changes to RetreatUI are documented in this file.
+
+The format is based on **Keep a Changelog** and follows semantic versioning where possible.
+
+---
+
+## [1.0.10] - 2026-07-28
+
+### Added
+
+- Expanded learned-only HUD support across all 21 Conquest of Azeroth classes
+- Dedicated active-state tracking for stances, forms, Vows, Oaths, Aspects, Pestilences, formations, inscriptions, modes and similar class systems
+- Sun Cleric Vow tracking separate from Main Rotation
+- Templar Oath tracking, including Oath: Righteous Lunge
+- Necromancer Guardian HUD with individual Guardian health bars, active Guardian counts and Unrelenting Army Zombie tracking
+- Movable and lockable Guardian HUD controls matching the Buff Manager lock system
+- Live spellbook safety net for newly learned abilities, cooldowns and charge-based spells
+
+### Changed
+
+- Expanded the Buff Manager to 58 visible buff families across 20 classes
+- Added automatic Greater-buff selection with normal-version fallback and equivalent coverage detection
+- Improved sorting between Main Rotation, Utility, Defensives, racials, procs and target debuffs
+- Refined Knight of Xoroth Pestilence, target-debuff and exclusive Mark handling
+- Restored Bloodmage Eternal Resolve to Main Rotation
+- Kept Bloodmage form detection internal while removing the unwanted visible form tracker
+- Aligned the Templar Oath tracker with the Energy bar
+- Improved automatic migration of existing assignments and RetreatUI-managed positions
+
+### Fixed
+
+- Corrected Bloodmage Eternal Curse eligibility handling
+- Prevented class-state abilities from appearing in Main Rotation or ordinary proc tracking
+- Corrected singular and plural wording in the Necromancer Guardian HUD
+- Restored previous nameplate settings when Guardian unit support is no longer active
+- Various class-specific icon, placement, detection and quality-of-life issues
+
+---
+
+## [1.0.9] - 2026-07-23
+
+### Changed
+
+- Moved interrupt and taunt abilities to the Utility Bar across all supported classes
+- Moved Bloodmage Lunge from the Main Rotation Bar to the Utility Bar
+- Removed Bloodfang Bite from the Bloodmage Main Rotation Bar while retaining target debuff tracking
+- Removed Moon Gaze from the Bloodmage HUD
+- Updated both RetreatUI and RetreatUI Classes to version 1.0.9
+
+### Fixed
+
+- Corrected the Bloodmage Bloodfang Bite spell ID used by the class data and detection logic
+- Improved consistency between Main Rotation and Utility Bar layouts across supported classes
+
+---
+
+## [1.0.8] - 2026-07-23
+
+### Added
+
+- Animated Blood support for Bloodmage
+- Bloodmage target debuff tracking
+- Eternal Curse support
+- Additional talent-aware spell tracking
+
+### Changed
+
+- Major Bloodmage HUD overhaul
+- Improved Cultist HUD and spell tracking
+- Improved Venomancer HUD and spell tracking
+- Updated class framework for improved flexibility
+- Improved installer and UI integration
+
+### Fixed
+
+- Lunge tracking
+- Combat lockdown issues
+- HUD visibility while the World Map is open
+- Multiple UI alignment issues
+- Various bug fixes and quality-of-life improvements
+
+---
+
+## [1.0.1] - 2026-07-20
+
+### Initial Public Release
+
+- Initial release of RetreatUI
+- Knight of Xoroth support
+- Installer
+- ElvUI integration
+- TurboPlates integration
+CHANGELOG_EOF
+
+          cat > "$RELEASE_NOTES" <<'NOTES_EOF'
+# RetreatUI v1.0.10
+
+This is one of the largest RetreatUI updates so far, expanding the shared class HUD framework across all 21 Conquest of Azeroth classes.
+
+## Highlights
+
+- Expanded learned-only class HUD coverage across all 21 classes
+- Dedicated active tracking for stances, forms, Vows, Oaths, Aspects, Pestilences and similar class systems
+- Buff Manager expanded to 58 buff families with automatic normal/Greater handling
+- New Necromancer Guardian HUD with individual live health bars, active counts, Zombie tracking and movable lock controls
+- New Sun Cleric Vow and Templar Oath tracking outside the Main Rotation bar
+- Improved Knight of Xoroth Pestilence, Mark and target-debuff handling
+- Improved Bloodmage Eternal Resolve and Eternal Curse handling without an unwanted visible form tracker
+- Improved spell detection after talent, specialization and spellbook changes
+- Automatic migration of existing assignments and RetreatUI-managed positions
+
+## Installation
+
+1. Close Project Ascension completely.
+2. Delete the existing `RetreatUI` and `RetreatUI_Classes` folders.
+3. Extract both new folders into `Interface/AddOns`.
+4. Enable both RetreatUI addons and all required dependencies.
+5. Log in and complete the class-specific installer when prompted.
+
+Always replace both RetreatUI folders together. No custom reset or repair command is required.
+
+This release contains broad new class coverage. Please report missing abilities, incorrect icons, wrong bar placement or class-state detection issues with a screenshot and the affected class and ability.
+NOTES_EOF
+
+          rm -f .github/workflows/publish-v1.0.10.yml
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+
+          if ! git diff --cached --quiet; then
+            git commit -m "Release RetreatUI v1.0.10"
+            git push origin HEAD:main
+          fi
+
+          RELEASE_SHA="$(git rev-parse HEAD)"
+          git tag --force v1.0.10 "$RELEASE_SHA"
+          git push origin refs/tags/v1.0.10 --force
+
+          if gh release view v1.0.10 >/dev/null 2>&1; then
+            gh release edit v1.0.10 \
+              --title "RetreatUI v1.0.10" \
+              --notes-file "$RELEASE_NOTES" \
+              --latest
+            gh release upload v1.0.10 "$RELEASE_ZIP" --clobber
+          else
+            gh release create v1.0.10 "$RELEASE_ZIP" \
+              --verify-tag \
+              --title "RetreatUI v1.0.10" \
+              --notes-file "$RELEASE_NOTES" \
+              --latest
+          fi
