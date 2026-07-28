@@ -1,0 +1,90 @@
+name: Publish RetreatUI v1.0.10
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.10/**"
+      - ".github/workflows/publish-v1.0.10.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.10
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect staged release payload
+        id: payload
+        shell: bash
+        run: |
+          if compgen -G '.release-v1.0.10/chunk-*' > /dev/null; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish v1.0.10
+        if: steps.payload.outputs.present == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          RELEASE_ZIP="/tmp/RetreatUI_v1.0.10.zip"
+          RELEASE_DIR="/tmp/retreatui-v1.0.10"
+          RELEASE_NOTES="/tmp/RetreatUI_v1.0.10-release-notes.md"
+
+          cat .release-v1.0.10/chunk-* > "$RELEASE_ZIP"
+          unzip -t "$RELEASE_ZIP"
+
+          rm -rf "$RELEASE_DIR"
+          mkdir -p "$RELEASE_DIR"
+          unzip -q "$RELEASE_ZIP" -d "$RELEASE_DIR"
+
+          test -f "$RELEASE_DIR/RetreatUI/RetreatUI.toc"
+          test -f "$RELEASE_DIR/RetreatUI_Classes/RetreatUI_Classes.toc"
+          grep -q '^## Version: 1.0.10$' "$RELEASE_DIR/RetreatUI/RetreatUI.toc"
+          grep -q '^## Version: 1.0.10$' "$RELEASE_DIR/RetreatUI_Classes/RetreatUI_Classes.toc"
+
+          cp .release-v1.0.10/release-notes.md "$RELEASE_NOTES"
+
+          rm -rf RetreatUI RetreatUI_Classes
+          cp -a "$RELEASE_DIR/RetreatUI" .
+          cp -a "$RELEASE_DIR/RetreatUI_Classes" .
+          cp .release-v1.0.10/README.md README.md
+          cp .release-v1.0.10/CHANGELOG.md CHANGELOG.md
+          rm -rf .release-v1.0.10
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Release RetreatUI v1.0.10"
+          git push origin HEAD:main
+
+          RELEASE_SHA="$(git rev-parse HEAD)"
+
+          if gh release view v1.0.10 >/dev/null 2>&1; then
+            git tag -f v1.0.10 "$RELEASE_SHA"
+            git push origin refs/tags/v1.0.10 --force
+            gh release edit v1.0.10 \
+              --title "RetreatUI v1.0.10" \
+              --notes-file "$RELEASE_NOTES"
+            gh release upload v1.0.10 "$RELEASE_ZIP" --clobber
+          else
+            gh release create v1.0.10 "$RELEASE_ZIP" \
+              --target "$RELEASE_SHA" \
+              --title "RetreatUI v1.0.10" \
+              --notes-file "$RELEASE_NOTES"
+          fi
