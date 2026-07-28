@@ -1,0 +1,166 @@
+name: Publish RetreatUI v1.0.11-beta.4
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-v1.0.11-beta.4.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.4
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply staged Witch Doctor patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git apply --check .release-v1.0.11-beta.4/witchdoctor-beta4.patch
+          git apply .release-v1.0.11-beta.4/witchdoctor-beta4.patch
+
+      - name: Validate versions and Witch Doctor coverage
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '## Version: 1.0.11-beta.4' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.0.11-beta.4' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.11-beta.4"' RetreatUI/Loader.lua
+          grep -Fq 'or "1.0.11-beta.4"' RetreatUI_Classes/Loader.lua
+
+          for token in \
+            'Hex of Malice' \
+            "Zalazane's Malice" \
+            "Puppeteer's Threads" \
+            'Drakkari Barrier' \
+            'Voodoo Strings' \
+            'Shadowflare' \
+            'Voodoo Idol' \
+            'Healing Ward' \
+            'Cleansing Idol' \
+            'Loa Spirits'; do
+            grep -Fq "$token" RetreatUI_Classes/WitchDoctor/Data.lua
+          done
+
+          grep -Fq '["Witch Doctor"] = {' RetreatUI_Classes/StateTracker.lua
+          grep -Fq 'maxStates = 1' RetreatUI_Classes/WitchDoctor/HUD.lua
+
+      - name: Validate Lua 5.1 syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Commit beta source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .release-v1.0.11-beta.4/witchdoctor-beta4.patch
+          git rm .github/workflows/publish-v1.0.11-beta.4.yml
+          git add RetreatUI RetreatUI_Classes
+          git commit -m 'Release RetreatUI v1.0.11-beta.4'
+          git push origin HEAD:main
+
+      - name: Package release ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          output = Path('RetreatUI_v1.0.11-beta.4.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  root = Path(root_name)
+                  for path in sorted(root.rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.as_posix())
+
+          with zipfile.ZipFile(output, 'r') as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              expected_roots = {'RetreatUI', 'RetreatUI_Classes'}
+              if roots != expected_roots:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+                  'RetreatUI_Classes/WitchDoctor/Data.lua',
+                  'RetreatUI_Classes/WitchDoctor/HUD.lua',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing required ZIP entries: {sorted(missing)}')
+
+              core_toc = archive.read('RetreatUI/RetreatUI.toc').decode('utf-8')
+              classes_toc = archive.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
+              if '## Version: 1.0.11-beta.4' not in core_toc:
+                  raise RuntimeError('Core TOC version validation failed')
+              if '## Version: 1.0.11-beta.4' not in classes_toc:
+                  raise RuntimeError('Classes TOC version validation failed')
+          PY
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.4
+          path: RetreatUI_v1.0.11-beta.4.zip
+
+      - name: Publish GitHub prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag='v1.0.11-beta.4'
+          release_sha="$(git rev-parse HEAD)"
+
+          cat > release-notes.md <<'EOF'
+          ## Witch Doctor — Voodoo tracking test
+
+          This prerelease is intended for live Witch Doctor Voodoo testing.
+
+          Please verify:
+          - Hex of Malice / Zalazane's Malice target tracking and expiry warning
+          - Puppeteer's Threads target timer
+          - Active Loa / Loa Spirits state and stack display
+          - Drakkari Barrier cooldown and active duration
+          - Voodoo Strings, Shadowflare and Voodoo Idol visibility
+          - Healing Ward and Cleansing Idol utility visibility
+
+          Some Ascension aura names can differ from their spellbook names. Please report missing icons, duplicated entries, incorrect names, effects shown on the wrong unit, or trackers that never activate.
+          EOF
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --title 'RetreatUI v1.0.11-beta.4 — Witch Doctor Voodoo Tracking Test' \
+              --notes-file release-notes.md \
+              --target "$release_sha" \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.4.zip --clobber
+          else
+            gh release create "$tag" \
+              RetreatUI_v1.0.11-beta.4.zip \
+              --target "$release_sha" \
+              --title 'RetreatUI v1.0.11-beta.4 — Witch Doctor Voodoo Tracking Test' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
