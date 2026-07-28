@@ -1,107 +1,125 @@
 # RetreatUI
 
-A modern, class-aware UI package built exclusively for **Project Ascension: Conquest of Azeroth**.
+A compact, class-aware interface package built exclusively for **Project Ascension: Conquest of Azeroth**.
 
-RetreatUI dynamically adapts to your class, talents, buffs, cooldowns and resources, allowing you to focus on gameplay instead of your action bars.
+RetreatUI automatically adapts to your learned abilities, talents, active class states, buffs, cooldowns, target debuffs and class resources, keeping the important information near the centre of the screen without unnecessary clutter.
 
 ---
 
 ## Features
 
-- Dynamic class-specific HUDs
-- Talent-aware spell tracking
-- Buff, debuff and cooldown tracking
-- Resource counters and timers
-- Shared installer with automatic profile setup
-- ElvUI integration
-- TurboPlates integration
-- Lightweight and modular design
+- Learned-only **Main Rotation**, **Utility**, **Defensive** and racial tracking
+- Active proc icons with actionable ability glows
+- Curated player- and pet-applied target debuffs
+- Dedicated tracking for stances, forms, Vows, Oaths, Aspects, Pestilences and similar class systems
+- Class-specific resource counters, timers and mechanic displays
+- Buff Manager with 58 buff families and automatic normal/Greater selection
+- Necromancer Guardian HUD with individual health bars, active Guardian counts and Zombie tracking
+- Movable and lockable HUD elements with saved positioning
+- Automatic detection after talent, specialization and spellbook changes
+- Class-specific installer with automatic profile migration
+- ElvUI, TurboPlates, MobSpells and Details! integration
 
 ---
 
-# Supported Classes
+## Supported Classes
 
-| Class | Status |
-|------|--------|
-| Knight of Xoroth | ✅ Stable |
-| Bloodmage | 🧪 Public Testing |
-| Cultist | 🧪 Public Testing |
-| Venomancer | 🧪 Public Testing |
+RetreatUI v1.0.10 includes HUD support for all 21 Conquest of Azeroth classes:
 
-Additional classes are added continuously.
+- Barbarian
+- Bloodmage
+- Chronomancer
+- Cultist
+- Felsworn
+- Guardian
+- Knight of Xoroth
+- Necromancer
+- Primalist
+- Pyromancer
+- Ranger
+- Reaper
+- Runemaster
+- Starcaller
+- Stormbringer
+- Sun Cleric
+- Templar
+- Tinker
+- Venomancer
+- Witch Doctor
+- Witch Hunter
+
+Class systems are still being refined through public feedback, so missing abilities, incorrect icons and wrong bar placement should be reported.
 
 ---
 
-# Installation
+## Requirements
+
+- `RetreatUI_Classes`
+- ElvUI
+- TurboPlates v1.4.5
+- MobSpells v1.3
+- Details!
+
+Deadly Boss Mods is supported as an optional integration.
+
+Personal WeakAuras remain independent and are never imported, edited or removed by RetreatUI.
+
+---
+
+## Installation
 
 1. Download the latest release from the **Releases** page.
-2. Close World of Warcraft.
-3. Delete your existing:
-   - `RetreatUI`
-   - `RetreatUI_Classes`
-4. Extract both folders into:
-   ```
-   Interface/AddOns
-   ```
-5. Launch the game.
+2. Close Project Ascension completely.
+3. Delete the existing `RetreatUI` and `RetreatUI_Classes` folders.
+4. Extract both new folders into `Interface/AddOns`.
+5. Enable RetreatUI, RetreatUI Classes and the required addons.
+6. Log into a supported class and complete the RetreatUI installer when prompted.
 
-Always replace both addon folders together.
+Always replace both RetreatUI addon folders together.
+
+Existing RetreatUI settings, Buff Manager assignments and managed positions migrate automatically. No custom reset or repair command is required after updating.
 
 ---
 
-# Downloads
+## Downloads
 
-Latest release:
+Download the latest release here:
 
 https://github.com/RetreatUI/RetreatUI-Addon/releases/latest
 
 ---
 
-# Discord
+## Discord
 
-Join the community for:
+Development updates, test builds, class discussions and issue reports are handled through the official RetreatUI Discord:
 
-- Bug reports
-- Feature requests
-- Tester applications
-- Development updates
-- Class discussions
-
-Discord invite:
-
-*[(RetreatUi Official Discord)](https://discord.gg/uzZFrtbVab)*
+https://discord.gg/uzZFrtbVab
 
 ---
 
-# Current Status
+## Reporting Issues
 
-RetreatUI is under active development.
+Please include:
 
-Current focus:
-
-- Improving Bloodmage
-- Improving Cultist
-- Improving Venomancer
-- Expanding support for additional classes
-- UI polish and quality-of-life improvements
+- The affected class
+- The ability, buff or mechanic involved
+- A screenshot
+- A short description of the expected behaviour
 
 ---
 
-# Contributing
+## Current Release
 
-Community feedback is always welcome.
+**RetreatUI v1.0.10**
 
-You can help by:
+This release expands the shared HUD framework across all 21 classes and introduces major updates to class-state tracking, the Buff Manager, Bloodmage, Knight of Xoroth, Sun Cleric, Templar and the Necromancer Guardian HUD.
 
-- Reporting bugs
-- Suggesting features
-- Testing new builds
-- Sharing class knowledge
+See the full release notes on the **Releases** page.
 
 ---
 
-# License
+## License
 
-This project is proprietary.
+RetreatUI is proprietary. All rights reserved unless otherwise stated.
 
-All rights reserved unless otherwise stated.
+Third-party components retain their original licences and copyright notices where applicable.
