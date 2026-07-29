@@ -37,15 +37,14 @@ jobs:
           test -f build/source/RetreatUI/RetreatUI.toc
           test -f build/source/RetreatUI_Classes/RetreatUI_Classes.toc
 
-      - name: Apply beta.5 patch
+      - name: Apply beta.5 patch to extracted source
         shell: bash
         run: |
           set -euo pipefail
           patch_file="$GITHUB_WORKSPACE/.release-v1.0.11-beta.5/right-chat-class-color.patch"
           sed -i 's/^ diff --git/diff --git/' "$patch_file"
-          cd build/source
-          git apply --check "$patch_file"
-          git apply "$patch_file"
+          git apply --check --directory=build/source "$patch_file"
+          git apply --directory=build/source "$patch_file"
 
       - name: Validate beta source
         shell: bash
