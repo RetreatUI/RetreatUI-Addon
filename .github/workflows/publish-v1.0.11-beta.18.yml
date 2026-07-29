@@ -91,7 +91,7 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           import zipfile
-          archive = Path('build/RetreatUI_v1.0.11-beta.18.zip')
+          archive = Path('RetreatUI_v1.0.11-beta.18.zip')
           with zipfile.ZipFile(archive) as z:
               names = z.namelist()
               roots = sorted({name.split('/', 1)[0] for name in names if name})
