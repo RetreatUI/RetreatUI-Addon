@@ -1,0 +1,40 @@
+name: Inspect beta.16 TurboPlates
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".inspect-beta16/trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.16 package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          gh release download v1.0.11-beta.16 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.16.zip' \
+            --dir build
+          unzip -q build/RetreatUI_v1.0.11-beta.16.zip -d build/source
+
+      - name: Print TurboPlates integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo '===== TurboPlates.lua ====='
+          nl -ba build/source/RetreatUI/Integrations/TurboPlates.lua
+          echo '===== Relevant matches ====='
+          grep -nE 'ApplyBlue|RestoreColor|reserve|liveBars|CollectLiveHealthBars|UnitUsesMana|InitializeTurboManaColoring|SetStatusBarColor|overlay' build/source/RetreatUI/Integrations/TurboPlates.lua || true
