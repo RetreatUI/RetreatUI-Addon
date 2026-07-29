@@ -1,0 +1,93 @@
+name: Hotfix RetreatUI v1.0.11 Big Bad Voodoo
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.0.11-bbv-hotfix'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.0.11
+      ZIP_NAME: RetreatUI_v1.0.11.zip
+      PATCH_SHA256: 629c48e7446480c6a159d3b3e2f5ee58dcb3c8dc3a7595142170a4606c45d301
+
+    steps:
+      - name: Checkout hotfix branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download current official release
+        run: |
+          mkdir -p base work
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$ZIP_NAME" \
+            --dir base
+          test -f "base/$ZIP_NAME"
+          unzip -q "base/$ZIP_NAME" -d work
+
+      - name: Decode and apply Witch Doctor hotfix
+        run: |
+          base64 -d .hotfix-v1.0.11-bbv/payload.gz.b64 | gzip -d > /tmp/big-bad-voodoo.patch
+          echo "$PATCH_SHA256  /tmp/big-bad-voodoo.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < /tmp/big-bad-voodoo.patch
+
+      - name: Validate Big Bad Voodoo tracking
+        run: |
+          grep -Fq '## Version: 1.0.11' work/RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.0.11' work/RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'name="Big Bad Voodoo", id=802719, category="rotation", hudRow="core"' work/RetreatUI_Classes/WitchDoctor/Data.lua
+          test "$(grep -Fo 'id=802719' work/RetreatUI_Classes/WitchDoctor/Data.lua | wc -l)" -eq 1
+          test "$(grep -Fo 'name="Big Bad Voodoo"' work/RetreatUI_Classes/WitchDoctor/Data.lua | wc -l)" -eq 1
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Package official release
+        run: |
+          cd work
+          zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes
+          cd ..
+          test -f "$ZIP_NAME"
+
+      - name: Validate ZIP structure
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          name = 'RetreatUI_v1.0.11.zip'
+          with zipfile.ZipFile(name) as archive:
+              roots = sorted({entry.split('/', 1)[0] for entry in archive.namelist() if entry})
+              if roots != ['RetreatUI', 'RetreatUI_Classes']:
+                  raise SystemExit(f'Unexpected ZIP roots: {roots}')
+              data = archive.read('RetreatUI_Classes/WitchDoctor/Data.lua').decode('utf-8')
+              assert data.count('id=802719') == 1
+              assert 'name="Big Bad Voodoo", id=802719, category="rotation", hudRow="core"' in data
+          PY
+          sha256sum "$ZIP_NAME"
+
+      - name: Replace official release asset
+        run: |
+          gh release upload "$TAG" "$ZIP_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-bbv-hotfix-artifact
+          path: RetreatUI_v1.0.11.zip
+          if-no-files-found: error
