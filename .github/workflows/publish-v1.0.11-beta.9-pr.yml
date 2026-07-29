@@ -1,0 +1,171 @@
+name: Publish RetreatUI v1.0.11-beta.9 PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.9/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.9-pr
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.8 source package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/base build/source
+          gh release download v1.0.11-beta.8 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.8.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.8.zip -d build/source
+          test -f build/source/RetreatUI/RetreatUI.toc
+          test -f build/source/RetreatUI_Classes/RetreatUI_Classes.toc
+
+      - name: Decode and apply beta.9 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .release-v1.0.11-beta.9/beta9.patch.gz.b64 | gzip -dc > beta9.patch
+          git apply --check --directory=build/source beta9.patch
+          git apply --directory=build/source beta9.patch
+
+      - name: Validate beta source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('build/source')
+          expected = '1.0.11-beta.9'
+          core_toc = (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          classes_toc = (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          totem = (root / 'RetreatUI/Core/TotemBarMover.lua').read_text(encoding='utf-8')
+          turbo = (root / 'RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
+          witchdoctor = (root / 'RetreatUI_Classes/WitchDoctor/Data.lua').read_text(encoding='utf-8')
+          buff_manager = (root / 'RetreatUI/Core/BuffManager.lua').read_text(encoding='utf-8')
+          elvui = (root / 'RetreatUI/Integrations/ElvUI.lua').read_text(encoding='utf-8')
+
+          checks = {
+              'core version': f'## Version: {expected}' in core_toc,
+              'classes version': f'## Version: {expected}' in classes_toc,
+              'visible Totem Bar linked to mover': 'LinkBarToMover' in totem and 'bar.SetPoint, bar, "CENTER", mover, "CENTER", 0, 0' in totem,
+              'Totem Bar relink loop': 'relinkElapsed' in totem and 'ResolveTotemBar' in totem,
+              'TurboPlates legacy discovery': 'CollectFramesFromTable' in turbo and 'WorldFrame' in turbo,
+              'TurboPlates mana repaint loop': 'RefreshAllManaPlates' in turbo and 'UPDATE_MOUSEOVER_UNIT' in turbo,
+              'TurboPlates texture health support': 'IsTexture' in turbo and 'SetVertexColor' in turbo,
+              'Mana Jinx retained': 'id=801925' in witchdoctor,
+              'Stasis Ward retained': 'id=801678' in witchdoctor,
+              'Shadow Avatar retained': 'id=705943' in witchdoctor,
+              'Hexing Effigy retained': 'id=506634' in witchdoctor,
+              'vertical Buff Manager retained': 'local COMPACT_COLUMNS = 1' in buff_manager,
+              'class text colors retained': 'ApplyManagedUnitTextColor' in elvui,
+          }
+          failed = [name for name, passed in checks.items() if not passed]
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
+
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes \
+            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path('build/source')
+          output = Path('RetreatUI_v1.0.11-beta.9.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  for path in sorted((root / root_name).rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.relative_to(root).as_posix())
+
+          with zipfile.ZipFile(output) as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              if roots != {'RetreatUI', 'RetreatUI_Classes'}:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI/Core/TotemBarMover.lua',
+                  'RetreatUI/Integrations/TurboPlates.lua',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+                  'RetreatUI_Classes/WitchDoctor/Data.lua',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
+          PY
+          sha256sum RetreatUI_v1.0.11-beta.9.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.9
+          path: RetreatUI_v1.0.11-beta.9.zip
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # RetreatUI v1.0.11-beta.9 — Totem Bar & TurboPlates Mana Hotfix
+
+          ## Test focus
+
+          - The visible Totem Bar is explicitly attached to the same mover that is dragged
+          - Moving the Totem Bar must move the actual icons, not a detached handle
+          - The bar is re-linked when Ascension or ElvUI rebuilds it
+          - TurboPlates detects mana NPCs on Ascension's legacy nameplate system
+          - Mana NPC health bars become blue for both StatusBar- and texture-based plates
+          - Target and mouseover changes refresh the plate color immediately
+          - Witch Doctor beta.8 spells, vertical Buff Manager and class text colors remain included
+          EOF
+
+          tag='v1.0.11-beta.9'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.9 — Totem Bar & TurboPlates Mana Hotfix' \
+              --notes-file release-notes.md \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.9.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$tag" RetreatUI_v1.0.11-beta.9.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.9 — Totem Bar & TurboPlates Mana Hotfix' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
