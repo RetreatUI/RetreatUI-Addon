@@ -1,0 +1,161 @@
+name: Publish RetreatUI v1.0.11-beta.14
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.14/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.14
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.13 package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/base build/source
+          gh release download v1.0.11-beta.13 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.13.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.13.zip -d build/source
+          test -f build/source/RetreatUI/Integrations/TurboPlates.lua
+          test -f build/source/RetreatUI/Core/BuffManager.lua
+
+      - name: Apply beta.14 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .release-v1.0.11-beta.14/beta14.patch.gz.b64 > beta14.patch.gz
+          echo '8513f6ba415be316f3eca7ed3692bb28523c4e9d52250c289f8e1918354e682a  beta14.patch.gz' | sha256sum -c -
+          gzip -dc beta14.patch.gz > beta14.patch
+          git apply --check -p2 --directory=build/source beta14.patch
+          git apply -p2 --directory=build/source beta14.patch
+
+      - name: Validate beta.14 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('build/source')
+          expected = '1.0.11-beta.14'
+          turbo = (root / 'RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
+          buffs = (root / 'RetreatUI/Core/BuffManager.lua').read_text(encoding='utf-8')
+          core_toc = (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          classes_toc = (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          checks = {
+              'core version': f'## Version: {expected}' in core_toc,
+              'classes version': f'## Version: {expected}' in classes_toc,
+              'Slaughterhouse Offering Bloodmage entry': 'Slaughterhouse Offering", 1108493' in buffs,
+              'direct health-frame path': 'manaNPCDirectHealthFrame = true' in turbo,
+              'hidden plate safe': 'manaNPCHiddenPlateSafe = true' in turbo,
+              'no namespace runtime dependency': 'local namespace = ResolveTurboNamespace()' not in turbo[turbo.index('local function PaintUnitTurboPlate'):turbo.index('local function RefreshAllManaPlates')],
+              'direct diagnostic': 'nameplate=%s, plate=%s, plateShown=%s, hp=%s, hpShown=%s, overlay=%s' in turbo,
+              'valid overlay texture path': 'Interface\\\\Buttons\\\\WHITE8X8' in turbo,
+          }
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          failed = [name for name, passed in checks.items() if not passed]
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
+
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes \
+            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          root = Path('build/source')
+          output = Path('RetreatUI_v1.0.11-beta.14.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  for path in sorted((root / root_name).rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.relative_to(root).as_posix())
+          with zipfile.ZipFile(output) as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              if roots != {'RetreatUI', 'RetreatUI_Classes'}:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI/Core/BuffManager.lua',
+                  'RetreatUI/Integrations/TurboPlates.lua',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
+              if archive.testzip() is not None:
+                  raise RuntimeError('ZIP CRC validation failed')
+          PY
+          sha256sum RetreatUI_v1.0.11-beta.14.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.14
+          path: RetreatUI_v1.0.11-beta.14.zip
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # RetreatUI v1.0.11-beta.14 — TurboPlates Direct Health Frame + Bloodmage Buff
+
+          ## Changes
+
+          - Adds Slaughterhouse Offering (spell ID 1108493) to the Bloodmage Buff Manager
+          - Removes the runtime dependency on TurboPlates' inaccessible private namespace
+          - Resolves the public Ascension nameplate and writes directly to TurboPlates' live hp StatusBar
+          - Creates the blue mana overlay even when the detached custom plate temporarily reports hidden
+          - Updates the one-time diagnostic with nameplate, plate, healthbar, visibility and overlay states
+          - Retains all beta.13 Wago class tracking, Totem Bar and earlier fixes
+          EOF
+
+          tag='v1.0.11-beta.14'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.14 — TurboPlates Direct Health Frame + Bloodmage Buff' \
+              --notes-file release-notes.md \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.14.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$tag" RetreatUI_v1.0.11-beta.14.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.14 — TurboPlates Direct Health Frame + Bloodmage Buff' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
