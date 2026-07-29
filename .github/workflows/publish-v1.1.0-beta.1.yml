@@ -51,12 +51,12 @@ jobs:
           grep -Fq '## Version: 1.1.0-beta.1' work/RetreatUI_Classes/RetreatUI_Classes.toc
           test -f work/RetreatUI/Core/BuildProfiles.lua
           test -f work/RetreatUI/Core/HUDEditor.lua
-          grep -Fq 'local CURRENT_SCHEMA = 5' work/RetreatUI/Core/Init.lua
+          grep -Fq 'RUI.schema = 5' work/RetreatUI/Core/Init.lua
           grep -Fq 'function RUI:GetBuildFingerprint' work/RetreatUI/Core/BuildProfiles.lua
           grep -Fq 'function RUI:ToggleHUDEditor' work/RetreatUI/Core/HUDEditor.lua
-          grep -Fq 'elseif cmd == "hud"' work/RetreatUI/Loader.lua
-          grep -Fq 'elseif cmd == "build"' work/RetreatUI/Loader.lua
-          grep -Fq 'function module:refreshLayout' work/RetreatUI_Classes/Shared/AdvancedHUD.lua
+          grep -Fq 'if command == "hud" or command == "editor"' work/RetreatUI/Loader.lua
+          grep -Fq 'if command == "build" or command == "profile"' work/RetreatUI/Loader.lua
+          grep -Fq 'function module:refreshLayout' work/RetreatUI_Classes/AdvancedHUD.lua
           grep -Fq 'function module:refreshLayout' work/RetreatUI_Classes/Bloodmage/HUD.lua
           grep -Fq 'function module:refreshLayout' work/RetreatUI_Classes/Necromancer/HUD.lua
           grep -Fq 'function module:refreshLayout' work/RetreatUI_Classes/KnightOfXoroth/HUD.lua
@@ -113,7 +113,7 @@ jobs:
           local profile, profileKey = RetreatUI:GetActiveHUDProfile('Witch Doctor', true)
           assert(type(profile) == 'table' and type(profile.core) == 'table')
           assert(profileKey == fingerprint)
-          assert(RetreatUIDB.hudProfiles['Witch Doctor'].builds[fingerprint])
+          assert(RetreatUIDB.hudProfiles.classes['Witch Doctor'].builds[fingerprint])
           print('Build profile runtime test passed:', changed, fingerprint)
           LUA
 
