@@ -1,0 +1,166 @@
+name: Publish RetreatUI v1.0.11-beta.5 PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.5/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.5-pr
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.4 source package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/base build/source
+          gh release download v1.0.11-beta.4 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.4.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.4.zip -d build/source
+          test -f build/source/RetreatUI/RetreatUI.toc
+          test -f build/source/RetreatUI_Classes/RetreatUI_Classes.toc
+
+      - name: Apply beta.5 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          patch_file="$GITHUB_WORKSPACE/.release-v1.0.11-beta.5/right-chat-class-color.patch"
+          sed -i 's/^ diff --git/diff --git/' "$patch_file"
+          cd build/source
+          git apply --check "$patch_file"
+          git apply "$patch_file"
+
+      - name: Validate beta source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('build/source')
+          expected = '1.0.11-beta.5'
+          core_toc = (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          classes_toc = (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          elvui = (root / 'RetreatUI/Integrations/ElvUI.lua').read_text(encoding='utf-8')
+          profile = (root / 'RetreatUI/Profiles/ElvUI.lua').read_text(encoding='utf-8')
+          witchdoctor = (root / 'RetreatUI_Classes/WitchDoctor/Data.lua').read_text(encoding='utf-8')
+
+          checks = {
+              'core version': f'## Version: {expected}' in core_toc,
+              'classes version': f'## Version: {expected}' in classes_toc,
+              'right-panel chat guard': 'IsChatFrameInRightPanel' in elvui,
+              'right-panel frames skipped before close': 'frame and not IsChatFrameInRightPanel(frame)' in elvui,
+              'class-colored font defaults': 'ApplyClassFontColor' in elvui,
+              'legacy Knight-red migration': 'IsLegacyKnightFontColor' in elvui,
+              'neutral profile fallback': all(token in profile for token in ('r = 1', 'g = 1', 'b = 1')),
+              'Witch Doctor beta.4 retained': 'Hex of Malice' in witchdoctor and 'Drakkari Barrier' in witchdoctor,
+          }
+          failed = [name for name, passed in checks.items() if not passed]
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
+
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes \
+            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path('build/source')
+          output = Path('RetreatUI_v1.0.11-beta.5.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  for path in sorted((root / root_name).rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.relative_to(root).as_posix())
+
+          with zipfile.ZipFile(output) as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              if roots != {'RetreatUI', 'RetreatUI_Classes'}:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI/Integrations/ElvUI.lua',
+                  'RetreatUI/Profiles/ElvUI.lua',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+                  'RetreatUI_Classes/WitchDoctor/Data.lua',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
+          PY
+          sha256sum RetreatUI_v1.0.11-beta.5.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.5
+          path: RetreatUI_v1.0.11-beta.5.zip
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # RetreatUI v1.0.11-beta.5 — Right Chat & Class Color Test
+
+          This pre-release is intended for testing the latest ElvUI feedback while retaining all Witch Doctor Voodoo tracking from beta.4.
+
+          ## Test focus
+
+          - Chat windows and tabs placed in ElvUI's right chat panel must remain intact after login and reload
+          - The right-panel Data Text strip must remain visible and functional
+          - Standalone Loot/Trade windows outside the right panel may still be cleaned up
+          - The default ElvUI value/font accent should follow the active RetreatUI class color instead of Knight red
+          - Existing custom font colors should remain untouched
+          EOF
+
+          tag='v1.0.11-beta.5'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.5 — Right Chat & Class Color Test' \
+              --notes-file release-notes.md \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.5.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$tag" RetreatUI_v1.0.11-beta.5.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.5 — Right Chat & Class Color Test' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
