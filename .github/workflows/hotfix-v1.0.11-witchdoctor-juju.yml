@@ -1,0 +1,105 @@
+name: Hotfix RetreatUI v1.0.11 Witch Doctor Juju
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.0.11-witchdoctor-juju'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.0.11
+      ZIP_NAME: RetreatUI_v1.0.11.zip
+      PATCH_SHA256: 3672d4b723919e70bf1a5b35cf1b50a9d93fa89f7647c09a1a335fda080edde4
+
+    steps:
+      - name: Checkout hotfix branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download current official release
+        run: |
+          mkdir -p base work
+          gh release download "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern "$ZIP_NAME" \
+            --dir base
+          test -f "base/$ZIP_NAME"
+          unzip -q "base/$ZIP_NAME" -d work
+
+      - name: Verify and apply Witch Doctor Juju hotfix
+        run: |
+          echo "$PATCH_SHA256  .hotfix-v1.0.11-witchdoctor-juju/juju.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < .hotfix-v1.0.11-witchdoctor-juju/juju.patch
+
+      - name: Validate Witch Doctor tracking
+        run: |
+          DATA='work/RetreatUI_Classes/WitchDoctor/Data.lua'
+          grep -Fq 'name="Bad Juju", id=501177, category="rotation", hudRow="core"' "$DATA"
+          grep -Fq 'name="Overflowing Juju", id=705844, category="proc"' "$DATA"
+          grep -Fq 'buff="Overflowing Juju"' "$DATA"
+          grep -Fq 'auraTracker=true' "$DATA"
+          grep -Fq 'name="Big Bad Voodoo", id=802719, category="rotation", hudRow="core"' "$DATA"
+          test "$(grep -Fo 'name="Bad Juju"' "$DATA" | wc -l)" -eq 1
+          test "$(grep -Fo 'id=501177' "$DATA" | wc -l)" -eq 1
+          test "$(grep -Fo 'name="Overflowing Juju"' "$DATA" | wc -l)" -eq 1
+          test "$(grep -Fo 'id=705844' "$DATA" | wc -l)" -eq 1
+          if grep -Fq 'id=802087' "$DATA"; then
+            echo 'Obsolete Bad Juju ID is still present.' >&2
+            exit 1
+          fi
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Package official release
+        run: |
+          cd work
+          zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes
+          cd ..
+          test -f "$ZIP_NAME"
+
+      - name: Validate ZIP structure
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          name = 'RetreatUI_v1.0.11.zip'
+          with zipfile.ZipFile(name) as archive:
+              roots = sorted({entry.split('/', 1)[0] for entry in archive.namelist() if entry})
+              if roots != ['RetreatUI', 'RetreatUI_Classes']:
+                  raise SystemExit(f'Unexpected ZIP roots: {roots}')
+              data = archive.read('RetreatUI_Classes/WitchDoctor/Data.lua').decode('utf-8')
+              assert data.count('name="Bad Juju"') == 1
+              assert data.count('id=501177') == 1
+              assert 'id=802087' not in data
+              assert data.count('name="Overflowing Juju"') == 1
+              assert data.count('id=705844') == 1
+              assert data.count('name="Big Bad Voodoo", id=802719') == 1
+          PY
+          sha256sum "$ZIP_NAME"
+
+      - name: Replace official release asset
+        run: |
+          gh release upload "$TAG" "$ZIP_NAME" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-witchdoctor-juju-artifact
+          path: RetreatUI_v1.0.11.zip
+          if-no-files-found: error
