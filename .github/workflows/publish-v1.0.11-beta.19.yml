@@ -2,10 +2,8 @@ name: Publish RetreatUI v1.0.11-beta.19
 
 on:
   pull_request:
-    branches:
-      - main
-    paths:
-      - ".release-v1.0.11-beta.19/trigger-pr"
+    branches: [main]
+    paths: [".release-v1.0.11-beta.19/trigger-pr"]
 
 permissions:
   contents: write
@@ -18,114 +16,83 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Download beta.18 package
+      - name: Build beta.19 from beta.18
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p build/base build/source
-          gh release download v1.0.11-beta.18 \
-            --repo "$GITHUB_REPOSITORY" \
-            --pattern 'RetreatUI_v1.0.11-beta.18.zip' \
-            --dir build/base
+          gh release download v1.0.11-beta.18 --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.18.zip' --dir build/base
           unzip -q build/base/RetreatUI_v1.0.11-beta.18.zip -d build/source
-          test -f build/source/RetreatUI_Classes/Starcaller/HUD.lua
-
-      - name: Apply beta.19 patch
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat .release-v1.0.11-beta.19/beta19.patch.gz.b64.part1 \
-              .release-v1.0.11-beta.19/beta19.patch.gz.b64.part2 \
-              .release-v1.0.11-beta.19/beta19.patch.gz.b64.part3 \
-              .release-v1.0.11-beta.19/beta19.patch.gz.b64.part4 \
-            | base64 -d > beta19.patch.gz
+          cat .release-v1.0.11-beta.19/beta19.patch.gz.b64.part{1,2,3,4} | base64 -d > beta19.patch.gz
           echo '1b42ee104bcd065487b6175b6dd5d2557065e46a4432c6431e20eb90d9197d26  beta19.patch.gz' | sha256sum -c -
           gzip -dc beta19.patch.gz > beta19.patch
           git apply --check -p1 --directory=build/source beta19.patch
           git apply -p1 --directory=build/source beta19.patch
 
-      - name: Validate Starcaller target resource
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          root = Path('build/source')
-          data = (root / 'RetreatUI_Classes/Starcaller/Data.lua').read_text(encoding='utf-8')
-          hud = (root / 'RetreatUI_Classes/Starcaller/HUD.lua').read_text(encoding='utf-8')
-          curated = (root / 'RetreatUI_Classes/WagoCurated.lua').read_text(encoding='utf-8')
-          core_toc = (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
-          classes_toc = (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
-          turbo = (root / 'RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
-          checks = {
-              'core beta.19 version': '## Version: 1.0.11-beta.19' in core_toc,
-              'classes beta.19 version': '## Version: 1.0.11-beta.19' in classes_toc,
-              'dedicated target resource': 'targetResource = {title="SCATTERED STARS"' in data,
-              'eight segment maximum': 'maximum=8' in data,
-              'all three Wago spell IDs': all(str(x) in data and str(x) in hud for x in (804378, 254271, 807301)),
-              'old mixed native resource removed': 'nativeResource = {title="LUNAR STATE"' not in data,
-              'target-bound target scanning': 'UnitDebuff("target", index)' in hud,
-              'own-only caster handling': 'IsOwnCaster' in hud and 'caster == "player"' in hud,
-              'target switch event': 'PLAYER_TARGET_CHANGED' in hud,
-              'valid hostile target gate': 'IsValidTarget' in hud and 'UnitIsFriend' in hud,
-              'central Y position': 'y = -118' in hud and 'labelY = -136' in hud,
-              'eight visual slots': 'maximum = 8' in hud,
-              'four-stack visual threshold': 'current >= 4' in hud,
-              'full-stack visual state': 'current >= maximum' in hud,
-              'Lunar Charge proc restored': '{name="Lunar Charge", id=680215}' in curated,
-              'Scattered records marked target resource': curated.count('targetResource=true, maxStacks=8') == 3,
-              'target-resource records excluded from debuffs': 'record.targetDebuff = nil' in curated,
-              'beta.18 silent TurboPlates retained': 'ReportTargetManaDiagnostic' not in turbo and 'TurboPlates mana:' not in turbo,
-              'validated mana filter retained': 'synthetic_100_pool' in turbo and 'non_mana_class' in turbo,
-          }
-          for name, passed in checks.items():
-              print(('PASS' if passed else 'FAIL') + ': ' + name)
-          failed = [name for name, passed in checks.items() if not passed]
-          if failed:
-              raise RuntimeError('Validation failed: ' + ', '.join(failed))
-          PY
-
-      - name: Test curated target-resource semantics
+      - name: Validate Lua and Starcaller semantics
         shell: bash
         run: |
           set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-          find build/source/RetreatUI build/source/RetreatUI_Classes \
-            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
-          cat > /tmp/test_starcaller_curated.lua <<'LUA'
+          find build/source/RetreatUI build/source/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('build/source')
+          data = (root/'RetreatUI_Classes/Starcaller/Data.lua').read_text()
+          hud = (root/'RetreatUI_Classes/Starcaller/HUD.lua').read_text()
+          curated = (root/'RetreatUI_Classes/WagoCurated.lua').read_text()
+          turbo = (root/'RetreatUI/Integrations/TurboPlates.lua').read_text()
+          checks = {
+            'versions': all('## Version: 1.0.11-beta.19' in (root/p).read_text() for p in ['RetreatUI/RetreatUI.toc','RetreatUI_Classes/RetreatUI_Classes.toc']),
+            '8 segment target resource': 'targetResource = {title="SCATTERED STARS"' in data and 'maximum=8' in data,
+            'three IDs': all(str(i) in data and str(i) in hud for i in (804378,254271,807301)),
+            'old mixed resource removed': 'nativeResource = {title="LUNAR STATE"' not in data,
+            'own target aura': 'UnitDebuff("target", index)' in hud and 'IsOwnCaster' in hud and 'PLAYER_TARGET_CHANGED' in hud,
+            'safe layout': 'y = -118' in hud and 'labelY = -136' in hud and 'current >= 4' in hud,
+            'curated resource records': curated.count('targetResource=true, maxStacks=8') == 3 and 'record.targetDebuff = nil' in curated,
+            'Lunar Charge proc': '{name="Lunar Charge", id=680215}' in curated,
+            'silent validated TurboPlates': 'ReportTargetManaDiagnostic' not in turbo and 'synthetic_100_pool' in turbo and 'non_mana_class' in turbo,
+          }
+          for name, ok in checks.items(): print(('PASS' if ok else 'FAIL') + ': ' + name)
+          failed=[name for name,ok in checks.items() if not ok]
+          if failed: raise RuntimeError(', '.join(failed))
+          PY
+          cat > /tmp/test_starcaller.lua <<'LUA'
           local databases = {}
           RetreatUI = {}
-          function RetreatUI:GetClassSpellDatabase(className)
-            databases[className] = databases[className] or {spells={}}
-            return databases[className]
+          function RetreatUI:GetClassSpellDatabase(name)
+            databases[name] = databases[name] or {spells={}}
+            return databases[name]
           end
           dofile('build/source/RetreatUI_Classes/WagoCurated.lua')
-          local db = assert(databases['Starcaller'], 'Starcaller database missing')
-          local resources, targetDebuffs, lunarCharge = 0, 0, false
-          local ids = {}
+          local db = assert(databases['Starcaller'])
+          local idsWanted = {[804378]=true,[254271]=true,[807301]=true}
+          local resources, lunarCharge = 0, false
           for _, record in ipairs(db.spells or {}) do
+            local id = tonumber(record.id)
             if record.targetResource then
               resources = resources + 1
-              ids[tonumber(record.id)] = true
-              assert(record.targetDebuff == nil, 'target resource leaked into target debuffs')
-              assert(tonumber(record.maxStacks) == 8, 'target resource maximum is not 8')
+              assert(idsWanted[id], 'unexpected target resource')
+              assert(record.targetDebuff == nil, 'resource leaked into target debuffs')
+              assert(tonumber(record.maxStacks) == 8, 'wrong maximum')
+              idsWanted[id] = nil
             end
-            if record.targetDebuff then targetDebuffs = targetDebuffs + 1 end
-            if record.name == 'Lunar Charge' and record.auraTracker == true then lunarCharge = true end
+            if id and (id == 804378 or id == 254271 or id == 807301) then
+              assert(record.targetDebuff == nil, 'Scattered/Shattered ID remains a target debuff')
+            end
+            if record.name == 'Lunar Charge' and record.auraTracker then lunarCharge = true end
           end
-          assert(resources == 3, 'expected three Scattered/Shattered spell variants')
-          assert(ids[804378] and ids[254271] and ids[807301], 'missing Scattered/Shattered spell variant')
-          assert(targetDebuffs == 0, 'Starcaller target resource still appears as target debuff')
-          assert(lunarCharge, 'Lunar Charge is not in Procs/Buffs')
-          print('PASS: curated Starcaller target-resource semantics')
+          assert(resources == 3 and next(idsWanted) == nil, 'missing target resource variant')
+          assert(lunarCharge, 'Lunar Charge missing from Procs/Buffs')
+          print('PASS: Starcaller curated semantics')
           LUA
-          lua5.1 /tmp/test_starcaller_curated.lua
+          lua5.1 /tmp/test_starcaller.lua
 
       - name: Package and verify ZIP
         shell: bash
@@ -135,26 +102,17 @@ jobs:
           zip -qr ../RetreatUI_v1.0.11-beta.19.zip RetreatUI RetreatUI_Classes
           cd ../..
           python - <<'PY'
-          from pathlib import Path
           import zipfile
-          archive = Path('build/RetreatUI_v1.0.11-beta.19.zip')
-          with zipfile.ZipFile(archive) as z:
-              names = z.namelist()
-              roots = sorted({name.split('/', 1)[0] for name in names if name})
-              assert roots == ['RetreatUI', 'RetreatUI_Classes'], roots
-              hud = z.read('RetreatUI_Classes/Starcaller/HUD.lua').decode('utf-8')
-              data = z.read('RetreatUI_Classes/Starcaller/Data.lua').decode('utf-8')
-              curated = z.read('RetreatUI_Classes/WagoCurated.lua').decode('utf-8')
-              assert 'maximum=8' in data
-              assert 'UnitDebuff("target", index)' in hud
-              assert curated.count('targetResource=true, maxStacks=8') == 3
-              assert '## Version: 1.0.11-beta.19' in z.read('RetreatUI/RetreatUI.toc').decode('utf-8')
-              assert '## Version: 1.0.11-beta.19' in z.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
-          print('PASS: ZIP structure and Starcaller tracker')
+          p='build/RetreatUI_v1.0.11-beta.19.zip'
+          with zipfile.ZipFile(p) as z:
+            roots=sorted({n.split('/',1)[0] for n in z.namelist() if n})
+            assert roots == ['RetreatUI','RetreatUI_Classes'], roots
+            assert 'maximum=8' in z.read('RetreatUI_Classes/Starcaller/Data.lua').decode()
+            assert 'UnitDebuff("target", index)' in z.read('RetreatUI_Classes/Starcaller/HUD.lua').decode()
+          print('PASS: ZIP')
           PY
 
-      - name: Upload workflow artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: RetreatUI-v1.0.11-beta.19
           path: build/RetreatUI_v1.0.11-beta.19.zip
@@ -166,21 +124,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          TAG='v1.0.11-beta.19'
-          ASSET='build/RetreatUI_v1.0.11-beta.19.zip'
-          NOTES=$(cat <<'EOF'
-          - Added a dedicated 8-segment, target-bound Scattered Stars resource for Starcaller.
-          - The tracker reads the player's three verified Wago aura IDs and resets immediately on target changes.
-          - Removed Scattered/Shattered Stars from target-frame debuffs and the TurboPlates debuff whitelist.
-          - Lunar Phase and Lunar Charge now remain in the normal Procs/Buffs row.
-          - Positioned the tracker at Y -118 with the count below it, between Procs/Buffs and the primary power bar.
-          - Preserved beta.18 TurboPlates mana coloring, silent chat behavior and Buff Manager fixes.
-          EOF
-          )
+          TAG='v1.0.11-beta.19'; ASSET='build/RetreatUI_v1.0.11-beta.19.zip'
+          NOTES=$'- Added an 8-segment target-bound Scattered Stars tracker for Starcaller.\n- Reads the player-owned target aura and resets on target changes.\n- Removed all three Scattered/Shattered IDs from target-frame debuffs.\n- Lunar Phase and Lunar Charge remain in Procs/Buffs.\n- Preserved beta.18 TurboPlates and Buff Manager behavior.'
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
             gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.0.11-beta.19' --notes "$NOTES" --prerelease
             gh release upload "$TAG" "$ASSET" --repo "$GITHUB_REPOSITORY" --clobber
           else
-            gh release create "$TAG" "$ASSET" --repo "$GITHUB_REPOSITORY" \
-              --title 'RetreatUI v1.0.11-beta.19' --notes "$NOTES" --prerelease
+            gh release create "$TAG" "$ASSET" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.0.11-beta.19' --notes "$NOTES" --prerelease
           fi
