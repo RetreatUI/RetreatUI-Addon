@@ -1,0 +1,65 @@
+name: Research Wago class packs
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".research-wago-class-packs/trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch Wago pages and raw endpoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p wago-data
+          cat > wago-data/packs.tsv <<'EOF'
+          venomancer	zBApoum1h
+          reaper	wQdFYTpm6
+          starcaller	Y5UDib4zq
+          felsworn	TqH72U66p
+          primalist	hZsQ_ZVIL
+          EOF
+
+          while IFS=$'\t' read -r class id; do
+            mkdir -p "wago-data/$class"
+            urls=(
+              "https://wago.io/$id"
+              "https://wago.io/$id/1"
+              "https://wago.io/$id/download"
+              "https://data.wago.io/api/check/weakauras?ids=$id"
+              "https://data.wago.io/api/raw/encoded?id=$id"
+              "https://data.wago.io/api/raw/json?id=$id"
+              "https://data.wago.io/api/raw/lua?id=$id"
+              "https://wago.io/api/check/weakauras?ids=$id"
+              "https://wago.io/api/raw/encoded?id=$id"
+              "https://wago.io/api/raw/json?id=$id"
+              "https://wago.io/api/raw/lua?id=$id"
+            )
+            index=0
+            for url in "${urls[@]}"; do
+              index=$((index + 1))
+              body="wago-data/$class/response-$index.body"
+              headers="wago-data/$class/response-$index.headers"
+              status=$(curl -L --retry 2 --connect-timeout 15 --max-time 90 -sS -D "$headers" -o "$body" -w '%{http_code}' "$url" || true)
+              printf '%02d\t%s\t%s\t%s\n' "$index" "$status" "$url" "$(wc -c < "$body" 2>/dev/null || echo 0)" >> "wago-data/$class/index.tsv"
+            done
+          done < wago-data/packs.tsv
+
+          cat wago-data/*/index.tsv
+
+      - name: Upload raw research data
+        uses: actions/upload-artifact@v4
+        with:
+          name: wago-class-pack-research
+          path: wago-data
+          retention-days: 1
