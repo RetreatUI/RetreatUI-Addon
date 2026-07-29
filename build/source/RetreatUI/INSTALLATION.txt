@@ -1,0 +1,25 @@
+RETREATUI INSTALLATION
+======================
+
+Before installing:
+- Close Project Ascension completely.
+- Back up the full Interface and WTF folders.
+- Install ElvUI, TurboPlates v1.4.5, MobSpells v1.3 and Details!.
+- Complete the normal ElvUI installation before running RetreatUI.
+
+Clean installation or update:
+1. Delete Interface\AddOns\RetreatUI and Interface\AddOns\RetreatUI_Classes if they already exist.
+2. Extract the RetreatUI release into the Project Ascension game folder.
+3. Verify that both files exist:
+   - Interface\AddOns\RetreatUI\RetreatUI.toc
+   - Interface\AddOns\RetreatUI_Classes\RetreatUI_Classes.toc
+4. Enable RetreatUI, RetreatUI Classes and all required addons at character selection.
+5. Log into any supported Conquest of Azeroth class.
+6. Complete the class-specific installer and press FINISH & RELOAD.
+7. Repeat the installer once for each class you use.
+
+The installer opens automatically when needed. /rui install can reopen it manually.
+Both bundled RetreatUI addon folders must use the same version; the installer validates this automatically.
+Existing RetreatUI settings, Buff Manager assignments and managed positions migrate automatically. A reset command is not required.
+The installer disables ElvUI NamePlates so TurboPlates remains the active nameplate system after reload.
+Details! is required. DBM remains optional. WeakAuras is independent and is never managed by RetreatUI.
