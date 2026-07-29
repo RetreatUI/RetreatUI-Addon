@@ -41,7 +41,11 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base64 -d .release-v1.0.11-beta.9/beta9.patch.gz.b64 | gzip -dc > beta9.patch
+          cat .release-v1.0.11-beta.9/beta9.part1 \
+              .release-v1.0.11-beta.9/beta9.part2 \
+              .release-v1.0.11-beta.9/beta9.part3 \
+              .release-v1.0.11-beta.9/beta9.part4 \
+            | base64 -d | gzip -dc > beta9.patch
           git apply --check --directory=build/source beta9.patch
           git apply --directory=build/source beta9.patch
 
