@@ -1,0 +1,182 @@
+name: Publish RetreatUI v1.0.11-beta.6 PR
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.6/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.6-pr
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.5 source package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/base build/source
+          gh release download v1.0.11-beta.5 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.5.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.5.zip -d build/source
+          test -f build/source/RetreatUI/RetreatUI.toc
+          test -f build/source/RetreatUI_Classes/RetreatUI_Classes.toc
+
+      - name: Decode and apply beta.6 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          base64 -d .release-v1.0.11-beta.6/beta6.patch.gz.b64 | gzip -dc > beta6.patch
+          git apply --check --directory=build/source beta6.patch
+          git apply --directory=build/source beta6.patch
+
+      - name: Validate beta source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('build/source')
+          expected = '1.0.11-beta.6'
+          files = {
+              'core_toc': root / 'RetreatUI/RetreatUI.toc',
+              'classes_toc': root / 'RetreatUI_Classes/RetreatUI_Classes.toc',
+              'modules': root / 'RetreatUI/Core/Modules.lua',
+              'installer': root / 'RetreatUI/Installer/Installer.lua',
+              'events': root / 'RetreatUI/Core/Events.lua',
+              'buff_manager': root / 'RetreatUI/Core/BuffManager.lua',
+              'advanced_hud': root / 'RetreatUI_Classes/AdvancedHUD.lua',
+              'state_tracker': root / 'RetreatUI_Classes/StateTracker.lua',
+              'sun_cleric': root / 'RetreatUI_Classes/SunCleric/HUD.lua',
+              'witchdoctor': root / 'RetreatUI_Classes/WitchDoctor/Data.lua',
+              'elvui': root / 'RetreatUI/Integrations/ElvUI.lua',
+          }
+          text = {name: path.read_text(encoding='utf-8') for name, path in files.items()}
+          checks = {
+              'core version': f'## Version: {expected}' in text['core_toc'],
+              'classes version': f'## Version: {expected}' in text['classes_toc'],
+              'installer module selection API': 'IsInstallerModuleEnabled' in text['modules'] and 'SetInstallerModuleEnabled' in text['modules'],
+              'installer module toggles': 'toggleButton' in text['installer'] and 'REQUIRED' in text['installer'],
+              'disabled ElvUI integration respected': 'IsInstallerModuleEnabled("elvui")' in text['events'],
+              'Cultist requires live spellbook': 'GetSpellBookIndexByID' in text['buff_manager'] and 'COMPACT_COLUMNS = 8' in text['buff_manager'],
+              'Dawn resource-ready glow': 'stateGlowResourceReady' in text['advanced_hud'] and 'current=20' in text['sun_cleric'],
+              'Sun Cleric HUD lowered': 'hudYOffset = -4' in text['sun_cleric'],
+              'state row anchored to player frame': 'anchor="player"' in text['sun_cleric'] and 'ElvUF_Player' in text['state_tracker'],
+              'Sol Invictus anchored above player': 'frame:SetPoint("BOTTOM", playerFrame, "TOP", 66, 8)' in text['sun_cleric'],
+              'right chat fix retained': 'IsChatFrameInRightPanel' in text['elvui'],
+              'Witch Doctor beta retained': 'Hex of Malice' in text['witchdoctor'] and 'Drakkari Barrier' in text['witchdoctor'],
+          }
+          failed = [name for name, passed in checks.items() if not passed]
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
+
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes \
+            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          root = Path('build/source')
+          output = Path('RetreatUI_v1.0.11-beta.6.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  for path in sorted((root / root_name).rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.relative_to(root).as_posix())
+
+          with zipfile.ZipFile(output) as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              if roots != {'RetreatUI', 'RetreatUI_Classes'}:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI/Core/BuffManager.lua',
+                  'RetreatUI/Core/Modules.lua',
+                  'RetreatUI/Installer/Installer.lua',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+                  'RetreatUI_Classes/StateTracker.lua',
+                  'RetreatUI_Classes/SunCleric/HUD.lua',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
+          PY
+          sha256sum RetreatUI_v1.0.11-beta.6.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.6
+          path: RetreatUI_v1.0.11-beta.6.zip
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # RetreatUI v1.0.11-beta.6 — Installer, Cultist & Sun Cleric Layout Test
+
+          This pre-release focuses on installer control, early-level Cultist behavior, and strict Sun Cleric HUD spacing.
+
+          ## Test focus
+
+          - Installer modules can be toggled so users may skip the ElvUI profile and preserve their own changes
+          - The mandatory Class HUD module cannot be disabled
+          - Cultist's Buff the Party prompt stays hidden until a real supported party buff exists in the live spellbook
+          - The Buff Manager uses one compact horizontal row for normal buff sets
+          - Dawn readiness is highlighted at 20/20 Solar Power
+          - The Sun Cleric HUD is slightly lower and aligned more closely with the player/target frames
+          - Vow, form and Sol Invictus state icons use a protected row above the player frame
+          - State and reminder icons must never overlap the player or target health frames
+          - Right chat preservation, class-colored font defaults and Witch Doctor Voodoo tracking remain included
+          EOF
+
+          tag='v1.0.11-beta.6'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.6 — Installer, Cultist & Sun Cleric Layout Test' \
+              --notes-file release-notes.md \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.6.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$tag" RetreatUI_v1.0.11-beta.6.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.6 — Installer, Cultist & Sun Cleric Layout Test' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
