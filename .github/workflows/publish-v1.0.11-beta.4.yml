@@ -42,9 +42,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cd build/source
-          git apply --check ../../.release-v1.0.11-beta.4/witchdoctor-beta4.patch
-          git apply ../../.release-v1.0.11-beta.4/witchdoctor-beta4.patch
+          git apply --check --directory=build/source .release-v1.0.11-beta.4/witchdoctor-beta4.patch
+          git apply --directory=build/source .release-v1.0.11-beta.4/witchdoctor-beta4.patch
 
       - name: Validate beta source
         shell: bash
