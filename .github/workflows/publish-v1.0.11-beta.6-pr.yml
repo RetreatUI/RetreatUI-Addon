@@ -72,7 +72,7 @@ jobs:
               'core version': f'## Version: {expected}' in text['core_toc'],
               'classes version': f'## Version: {expected}' in text['classes_toc'],
               'installer module selection API': 'IsInstallerModuleEnabled' in text['modules'] and 'SetInstallerModuleEnabled' in text['modules'],
-              'installer module toggles': 'toggleButton' in text['installer'] and 'REQUIRED' in text['installer'],
+              'installer module toggles': 'row.toggle' in text['installer'] and 'REQUIRED' in text['installer'],
               'disabled ElvUI integration respected': 'IsInstallerModuleEnabled("elvui")' in text['events'],
               'Cultist requires live spellbook': 'GetSpellBookIndexByID' in text['buff_manager'] and 'COMPACT_COLUMNS = 8' in text['buff_manager'],
               'Dawn resource-ready glow': 'stateGlowResourceReady' in text['advanced_hud'] and 'current=20' in text['sun_cleric'],
