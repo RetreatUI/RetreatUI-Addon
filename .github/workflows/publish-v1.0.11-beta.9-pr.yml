@@ -70,7 +70,7 @@ jobs:
               'core version': f'## Version: {expected}' in core_toc,
               'classes version': f'## Version: {expected}' in classes_toc,
               'visible Totem Bar linked to mover': 'LinkBarToMover' in totem and 'bar.SetPoint, bar, "CENTER", mover, "CENTER", 0, 0' in totem,
-              'Totem Bar relink loop': 'relinkElapsed' in totem and 'ResolveTotemBar' in totem,
+              'Totem Bar relink loop': 'if elapsed < 0.35 then return end' in totem and 'Attach()' in totem,
               'TurboPlates legacy discovery': 'CollectFramesFromTable' in turbo and 'WorldFrame' in turbo,
               'TurboPlates mana repaint loop': 'RefreshAllManaPlates' in turbo and 'UPDATE_MOUSEOVER_UNIT' in turbo,
               'TurboPlates texture health support': 'IsTexture' in turbo and 'SetVertexColor' in turbo,
