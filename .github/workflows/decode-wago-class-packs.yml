@@ -1,0 +1,74 @@
+name: Decode Wago class packs
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".decode-wago-class-packs/trigger"
+
+permissions:
+  contents: read
+
+jobs:
+  decode:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Fetch and decode WeakAura packs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p decoded raw
+          git clone --depth 1 https://github.com/geexmmo/python-weakauras-tool.git wa-decoder
+          python -m pip install --upgrade pip
+          python -m pip install lupa
+
+          cat > packs.tsv <<'EOF'
+          venomancer	zBApoum1h
+          reaper	wQdFYTpm6
+          starcaller	Y5UDib4zq
+          felsworn	TqH72U66p
+          primalist	hZsQ_ZVIL
+          EOF
+
+          while IFS=$'\t' read -r class id; do
+            curl -L --retry 3 --fail --silent --show-error \
+              "https://data.wago.io/api/raw/encoded?id=$id" \
+              -o "raw/$class.txt"
+          done < packs.tsv
+
+          cat > decode_all.py <<'PY'
+          import json
+          import os
+          import sys
+          from pathlib import Path
+
+          decoder_root = Path('wa-decoder').resolve()
+          sys.path.insert(0, str(decoder_root))
+          import wa_tool
+          wa_tool.python_path = str(decoder_root)
+
+          for raw_path in sorted(Path('raw').glob('*.txt')):
+              encoded = raw_path.read_text(encoding='utf-8').strip()
+              decoded = wa_tool.run_lua('decode', encoded)
+              if not isinstance(decoded, str):
+                  raise RuntimeError(f'Unexpected decoder output for {raw_path.name}: {type(decoded)}')
+              data = json.loads(decoded)
+              out = Path('decoded') / (raw_path.stem + '.json')
+              out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding='utf-8')
+              print(raw_path.stem, len(encoded), out.stat().st_size)
+          PY
+          python decode_all.py
+
+      - name: Upload decoded packs
+        uses: actions/upload-artifact@v4
+        with:
+          name: decoded-wago-class-packs
+          path: |
+            decoded
+            raw
+            packs.tsv
+          retention-days: 1
