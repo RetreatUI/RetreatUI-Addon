@@ -46,8 +46,8 @@ jobs:
             | base64 -d > beta19.patch.gz
           echo '1b42ee104bcd065487b6175b6dd5d2557065e46a4432c6431e20eb90d9197d26  beta19.patch.gz' | sha256sum -c -
           gzip -dc beta19.patch.gz > beta19.patch
-          git apply --check -p2 --directory=build/source beta19.patch
-          git apply -p2 --directory=build/source beta19.patch
+          git apply --check -p1 --directory=build/source beta19.patch
+          git apply -p1 --directory=build/source beta19.patch
 
       - name: Validate Starcaller target resource
         shell: bash
