@@ -39,7 +39,9 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base64 -d .release-v1.0.11-beta.18/beta18.patch.gz.b64 > beta18.patch.gz
+          cat .release-v1.0.11-beta.18/beta18.patch.gz.b64 \
+              .release-v1.0.11-beta.18/beta18.patch.gz.b64.part2 \
+            | base64 -d > beta18.patch.gz
           echo '23366a8a43921c2a917af90b961c9bb50932db2b19b64de0119e712a7c89de26  beta18.patch.gz' | sha256sum -c -
           gzip -dc beta18.patch.gz > beta18.patch
           git apply --check -p2 --directory=build/source beta18.patch
