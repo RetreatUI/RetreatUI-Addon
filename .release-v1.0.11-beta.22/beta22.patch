@@ -1,0 +1,92 @@
+diff -ruN b21patchbase/RetreatUI/CHANGELOG.txt b22patchnew/RetreatUI/CHANGELOG.txt
+--- b21patchbase/RetreatUI/CHANGELOG.txt	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI/CHANGELOG.txt	2026-07-29 20:33:42.771468919 +0000
+@@ -1,3 +1,8 @@
++RetreatUI v1.0.11-beta.22
++- Added Bloodmage Trail of Blood proc tracking using verified spell ID 804859.
++- Trail of Blood now appears in the Procs/Buffs row with its remaining five-second duration.
++- Preserved Enraging Howl and all beta.21 behavior without duplicate trackers.
++
+ RetreatUI v1.0.11-beta.21
+ - Fixed Bloodmage Enraging Howl proc tracking by using the verified live aura name and spell ID 504157.
+ - Enraging Howl now appears in the Bloodmage Procs/Buffs row with its remaining duration.
+diff -ruN b21patchbase/RetreatUI/Core/Version.lua b22patchnew/RetreatUI/Core/Version.lua
+--- b21patchbase/RetreatUI/Core/Version.lua	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI/Core/Version.lua	2026-07-29 20:33:42.771468919 +0000
+@@ -2,13 +2,12 @@
+ 
+ RUI.changelog = {
+   version = RUI.version,
+-  title = "RetreatUI v1.0.11-beta.21",
+-  summary = "Correct Bloodmage Enraging Howl proc tracking.",
++  title = "RetreatUI v1.0.11-beta.22",
++  summary = "Add Bloodmage Trail of Blood proc tracking.",
+   changes = {
+-    "Corrected Bloodmage Enraging Howl from the wrong plural aura and spell ID to live spell ID 504157.",
+-    "Tracks the six-second Enraging Howl buff in the Bloodmage Procs/Buffs row with duration.",
+-    "Kept a plural aura-name alias for compatibility while using the verified live spell ID as authority.",
+-    "Preserved Auto Accept Role Checks, Vanthir's Gift, Starcaller resources, TurboPlates and Buff Manager behavior from beta.20.",
++    "Added Trail of Blood using the verified live spell ID 804859.",
++    "Tracks the five-second Trail of Blood buff in the Bloodmage Procs/Buffs row with duration.",
++    "Preserved Enraging Howl and all beta.21 behavior without duplicate trackers.",
+   },
+ }
+ 
+diff -ruN b21patchbase/RetreatUI/RetreatUI.toc b22patchnew/RetreatUI/RetreatUI.toc
+--- b21patchbase/RetreatUI/RetreatUI.toc	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI/RetreatUI.toc	2026-07-29 20:33:42.771468919 +0000
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI
+ ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
+ ## Author: Retreat
+-## Version: 1.0.11-beta.21
++## Version: 1.0.11-beta.22
+ ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
+ ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core
+ ## DefaultState: Enabled
+diff -ruN b21patchbase/RetreatUI_Classes/Bloodmage/Data.lua b22patchnew/RetreatUI_Classes/Bloodmage/Data.lua
+--- b21patchbase/RetreatUI_Classes/Bloodmage/Data.lua	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI_Classes/Bloodmage/Data.lua	2026-07-29 20:33:42.771468919 +0000
+@@ -42,6 +42,7 @@
+     {name="Saturating Sutures", category="proc", trackHUD=false, auraTracker=true, buff="Saturating Sutures", trackDuration=true, talent=true},
+     {name="Blood Rush", id=863848, category="proc", trackHUD=false, auraTracker=true, buff="Blood Rush", trackDuration=true, talent=true},
+     {name="Enraging Howl", id=504157, category="buff", trackHUD=false, auraTracker=true, buff="Enraging Howl", auraNames={"Enraging Howl","Enraging Howls"}, trackDuration=true, talent=true},
++    {name="Trail of Blood", id=804859, category="buff", trackHUD=false, auraTracker=true, buff="Trail of Blood", trackDuration=true, talent=true},
+     {name="Call of the Darkwing", category="proc", trackHUD=false, auraTracker=true, buff="Call of the Darkwing", trackDuration=true, talent=true},
+ 
+     -- Target debuff used by Eternal's auto-attack healing and TurboPlates.
+diff -ruN b21patchbase/RetreatUI_Classes/Bloodmage/Definition.lua b22patchnew/RetreatUI_Classes/Bloodmage/Definition.lua
+--- b21patchbase/RetreatUI_Classes/Bloodmage/Definition.lua	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI_Classes/Bloodmage/Definition.lua	2026-07-29 20:33:42.771468919 +0000
+@@ -32,7 +32,7 @@
+     combatState={"Cursed Form"},
+     coreMechanic="Blood Bond",
+     taunt="Bare Fangs",
+-    combatBuffs={"Saturating Sutures", "Blood Rush", "Enraging Howl", "Call of the Darkwing"},
++    combatBuffs={"Saturating Sutures", "Blood Rush", "Enraging Howl", "Trail of Blood", "Call of the Darkwing"},
+   },
+   hudFrameName = "RetreatUIBloodmageHUD",
+ })
+diff -ruN b21patchbase/RetreatUI_Classes/Bloodmage/HUD.lua b22patchnew/RetreatUI_Classes/Bloodmage/HUD.lua
+--- b21patchbase/RetreatUI_Classes/Bloodmage/HUD.lua	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI_Classes/Bloodmage/HUD.lua	2026-07-29 20:33:42.771468919 +0000
+@@ -609,6 +609,7 @@
+       ["Saturating Sutures"]=true,
+       ["Blood Rush"]=true,
+       ["Enraging Howl"]=true,
++      ["Trail of Blood"]=true,
+       ["Call of the Darkwing"]=true,
+       ["Monstrous Hunger"]=true,
+   }
+diff -ruN b21patchbase/RetreatUI_Classes/RetreatUI_Classes.toc b22patchnew/RetreatUI_Classes/RetreatUI_Classes.toc
+--- b21patchbase/RetreatUI_Classes/RetreatUI_Classes.toc	2026-07-29 20:12:01.000000000 +0000
++++ b22patchnew/RetreatUI_Classes/RetreatUI_Classes.toc	2026-07-29 20:33:42.771468919 +0000
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI Classes
+ ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
+ ## Author: Retreat
+-## Version: 1.0.11-beta.21
++## Version: 1.0.11-beta.22
+ ## Dependencies: RetreatUI
+ ## DefaultState: Enabled
+ 
