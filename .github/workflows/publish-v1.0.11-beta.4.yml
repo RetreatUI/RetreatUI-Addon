@@ -50,25 +50,42 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          grep -Fq '## Version: 1.0.11-beta.4' build/source/RetreatUI/RetreatUI.toc
-          grep -Fq '## Version: 1.0.11-beta.4' build/source/RetreatUI_Classes/RetreatUI_Classes.toc
+          python - <<'PY'
+          from pathlib import Path
 
-          for token in \
-            'Hex of Malice' \
-            "Zalazane's Malice" \
-            "Puppeteer's Threads" \
-            'Drakkari Barrier' \
-            'Voodoo Strings' \
-            'Shadowflare' \
-            'Voodoo Idol' \
-            'Healing Ward' \
-            'Cleansing Idol' \
-            'Loa Spirits'; do
-            grep -Fq "$token" build/source/RetreatUI_Classes/WitchDoctor/Data.lua
-          done
+          expected_version = '1.0.11-beta.4'
+          core_toc = Path('build/source/RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          classes_toc = Path('build/source/RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          data = Path('build/source/RetreatUI_Classes/WitchDoctor/Data.lua').read_text(encoding='utf-8')
+          states = Path('build/source/RetreatUI_Classes/StateTracker.lua').read_text(encoding='utf-8')
+          hud = Path('build/source/RetreatUI_Classes/WitchDoctor/HUD.lua').read_text(encoding='utf-8')
 
-          grep -Fq '["Witch Doctor"] = {' build/source/RetreatUI_Classes/StateTracker.lua
-          grep -Fq 'maxStates = 1' build/source/RetreatUI_Classes/WitchDoctor/HUD.lua
+          checks = {
+              'core version': f'## Version: {expected_version}' in core_toc,
+              'classes version': f'## Version: {expected_version}' in classes_toc,
+              'Witch Doctor state group': '["Witch Doctor"] = {' in states,
+              'single state display': 'maxStates = 1' in hud,
+          }
+          for token in (
+              'Hex of Malice',
+              "Zalazane's Malice",
+              "Puppeteer's Threads",
+              'Drakkari Barrier',
+              'Voodoo Strings',
+              'Shadowflare',
+              'Voodoo Idol',
+              'Healing Ward',
+              'Cleansing Idol',
+              'Loa Spirits',
+          ):
+              checks[f'Witch Doctor token: {token}'] = token in data
+
+          failed = [name for name, passed in checks.items() if not passed]
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
 
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
