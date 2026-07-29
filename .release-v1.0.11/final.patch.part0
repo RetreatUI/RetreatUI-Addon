@@ -1,0 +1,219 @@
+diff -ruN b22_base/RetreatUI/Automation/AutoRoleCheck.lua v111_final/RetreatUI/Automation/AutoRoleCheck.lua
+--- b22_base/RetreatUI/Automation/AutoRoleCheck.lua	2026-07-29 19:18:39.000000000 +0000
++++ v111_final/RetreatUI/Automation/AutoRoleCheck.lua	2026-07-29 21:34:35.815333434 +0000
+@@ -112,4 +112,30 @@
+     end
+ end
+ 
++function AutoRoleCheck:OpenOptions()
++    CreateOptionsPanel()
++
++    if _G.Settings and type(_G.Settings.OpenToCategory) == "function" and self.category then
++        local categoryID = self.category
++        if type(categoryID) == "table" then
++            if type(categoryID.GetID) == "function" then
++                categoryID = categoryID:GetID()
++            else
++                categoryID = categoryID.ID or categoryID.id or categoryID
++            end
++        end
++        _G.Settings.OpenToCategory(categoryID)
++        return true
++    end
++
++    if type(InterfaceOptionsFrame_OpenToCategory) == "function" and self.panel then
++        -- The legacy options frame occasionally needs two calls to scroll to addon panels.
++        InterfaceOptionsFrame_OpenToCategory(self.panel)
++        InterfaceOptionsFrame_OpenToCategory(self.panel)
++        return true
++    end
++
++    return false
++end
++
+ CreateOptionsPanel()
+diff -ruN b22_base/RetreatUI/CHANGELOG.txt v111_final/RetreatUI/CHANGELOG.txt
+--- b22_base/RetreatUI/CHANGELOG.txt	2026-07-29 20:36:29.000000000 +0000
++++ v111_final/RetreatUI/CHANGELOG.txt	2026-07-29 21:34:35.819333434 +0000
+@@ -1,189 +1,28 @@
+-RetreatUI v1.0.11-beta.22
+-- Added Bloodmage Trail of Blood proc tracking using verified spell ID 804859.
+-- Trail of Blood now appears in the Procs/Buffs row with its remaining five-second duration.
+-- Preserved Enraging Howl and all beta.21 behavior without duplicate trackers.
+-
+-RetreatUI v1.0.11-beta.21
+-- Fixed Bloodmage Enraging Howl proc tracking by using the verified live aura name and spell ID 504157.
+-- Enraging Howl now appears in the Bloodmage Procs/Buffs row with its remaining duration.
+-- Retained the plural aura-name alias for compatibility without creating a duplicate tracker.
+-
+-RetreatUI v1.0.11-beta.20
+-- Added native Auto Accept Role Checks automation without WeakAuras, minimap buttons or chat output.
+-- Added Bloodmage Vanthir's Gift (1219817) to Procs/Buffs tracking.
+-
+-RetreatUI v1.0.11-beta.19
+-- Starcaller: replaced Scattered/Shattered Stars target debuff bars with a dedicated 8-segment target-bound resource tracker.
+-- The tracker resets immediately on target changes, reads only the player's target aura and stays hidden without a valid hostile target.
+-- Scattered Stars now uses the central class-resource row at Y -118 with a compact STARS count below it and no HUD overlap.
+-- Lunar Phase and Lunar Charge remain in the normal Procs/Buffs row.
+-- Removed Scattered Stars variants from the target-frame debuff list and TurboPlates target-debuff whitelist.
+-
+-RetreatUI v1.0.11-beta.16
+-- Bloodmage Buff Manager: Slaughterhouse Offering is now a choice inside the single exclusive Offering family.
+-- Removed the accidental standalone Slaughterhouse Offering assignment column from beta.15.
+-- Migrates beta.15 Slaughterhouse assignments into the unified Offering family automatically.
+-- TurboPlates: mana-blue coloring now requires direct live-unit mana type plus a real mana pool.
+-- Removed broad frame/text/power heuristics that could make every recycled nameplate blue.
+-- Stale beta.15 blue overlays are restored automatically on non-mana units.
+-
+-RetreatUI v1.0.11-beta.15
+-- Rebuilt the Buff Manager around one generic coverage planner for every class buff.
+-- All player buffs are scanned by exact aura, spell ID and equivalent effect family before a buff is marked missing.
+-- Equivalent buffs supplied by other classes now satisfy the matching Buff Manager row and prevent duplicate recommendations.
+-- Exclusive multi-choice families such as Bloodmage Offerings and Marks of Xoroth keep any active family member and dynamically select the best uncovered learned choice only when none is active.
+-- Automatic assignments prefer the learned buff that fills the most currently uncovered effects, while manual assignments remain respected.
+-- Slaughterhouse Offering (spell 1108493) remains assigned to the Bloodmage Buff Manager.
+-- TurboPlates mana coloring now scans the visible nameplate tree and matches StatusBars against the unit's live health values, instead of coloring only the hidden reserve healthbar.
+-- The TurboPlates diagnostic now reports visible live healthbar and overlay counts.
+-
+-RetreatUI v1.0.11-beta.14
+-- Added Slaughterhouse Offering (spell 1108493) to the Bloodmage Buff Manager.
+-- TurboPlates mana coloring no longer depends on access to TurboPlates private namespace data.
+-- Blue mana fill is created directly on the resolved TurboPlates health StatusBar, even when the custom plate reports hidden during Ascension frame assignment.
+-- Updated the one-time diagnostic to report the direct nameplate, plate, healthbar, visibility and overlay state.
+-
+-RetreatUI v1.0.11-beta.13
+-- TurboPlates mana health bars now use TurboPlates' private exact unit-to-plate map.
+-- Blue fill overlay moved above the native StatusBar fill and is refreshed after every TurboPlates color update.
+-- Added one-time target diagnostic for mana nameplate linkage during beta testing.
+-- Added Demonfire Pact (spell 800031) to the Felsworn Buff Manager.
+-
+-RetreatUI v1.0.11-beta.12
+-
+-- Fixed TurboPlates mana-enemy health bars not turning blue on Ascension nameplate units.
+-- Mana detection now checks the actual mana pool before relying on UnitPowerType.
+-- Added an independent blue fill overlay that follows the live health fill and cannot be overwritten by TurboPlates threat colors.
+-- Retains the single Totem Bar mover and all beta.11 class tracking changes.
+-
+-RetreatUI v1.0.11-beta.11
+-=============================
+-
+-WAGO-CURATED CLASS TRACKING TEST
+-- Added native RetreatUI tracking from the supplied Venomancer, Reaper, Starcaller, Felsworn and Primalist WeakAura packs.
+-- Sorted class spells into Main Rotation, Utility and active-only Procs/Buffs.
+-- Uses the verified Wago spell names and IDs without importing or depending on WeakAuras.
+-- Target debuffs remain tracked above the target frame.
+-- Corrected outdated IDs including Felsworn Chaos Rush and several Primalist abilities.
+-- Retains the Totem Bar and full-frame mana-nameplate fixes from beta.10.
+-
+-RetreatUI v1.0.11-beta.10
+-=============================
+-
+-SINGLE TOTEM BAR MOVER HOTFIX
+-- ElvUI Toggle Anchors now shows only one Witch Doctor Totem Bar mover.
+-- Keeps the RetreatUI-managed Totem Bar attached to the active mover.
+-- Suppresses the unused duplicate TotemBarMover whenever ElvUI opens its anchors.
+-- Removes the duplicate mover key from the RetreatUI ElvUI profile and migrates the saved position automatically.
+-- Retains full-frame blue mana-enemy nameplates and all beta.9 changes.
+-
+-RetreatUI v1.0.11-beta.9
+-============================
+-
+-TOTEM BAR + TURBOPLATES MANA HOTFIX
+-- The Witch Doctor Totem Bar is now explicitly anchored to the same ElvUI mover that the drag grip moves.
+-- Re-links the bar whenever Ascension or ElvUI rebuilds the Totem Bar after spell, talent or totem changes.
+-- TurboPlates mana coloring now supports legacy Ascension nameplates without modern nameplate unit tokens.
+-- Scans TurboPlates frame tables, WorldFrame nameplates, target/mouseover/focus names and GUID metadata.
+-- Colors both StatusBar-based and texture-based health fills blue for mana-using NPCs.
+-- Includes all Witch Doctor spell additions, class colors and vertical Buff Manager behavior from beta.8.
+-
+-RetreatUI v1.0.11-beta.8
+-============================
+-
+-WITCH DOCTOR + TOTEM BAR + MANA PLATES TEST
+-- Added Mana Jinx (801925), Stasis Ward (801678) and Shadow Avatar (705943) to Witch Doctor's main rotation.
+-- Added Hexing Effigy (506634) to Witch Doctor utility.
+-- Added a persistent drag grip for the Witch Doctor Totem Bar; custom placement is preserved across login, reload and profile installation.
+-- TurboPlates NPC health bars turn blue when the NPC's active power type is mana.
+-- Retains direct class-colored player/target text and the universal one-column vertical Buff Manager.
+-
+-RetreatUI v1.0.11-beta.7
+-============================
+-
+-CLASS TEXT COLOR + VERTICAL BUFF MANAGER TEST
+-- Player and target names now use the active RetreatUI class accent directly in their ElvUI tag formats.
+-- Player and target health values now use the same active class accent.
+-- Existing RetreatUI profiles are migrated even when the general ElvUI value color was already changed by beta.5/beta.6.
+-- Custom unit-frame tag layouts are preserved.
+-- The compact Buff Manager is now one vertical column on every class and never wraps horizontally.
+-- Includes all installer, Cultist, Sun Cleric, right-chat and Witch Doctor changes from earlier betas.
+-
+-RetreatUI v1.0.11-beta.7
+-============================
+-
+-INSTALLER + CULTIST + SUN CLERIC LAYOUT TEST
+-- Added persistent per-module installer toggles, including the option to preserve an existing ElvUI profile.
+-- Buff Manager now requires a real current spellbook entry before showing a class buff family.
+-- Buff Manager used an experimental horizontal layout in beta.6.
+-- Dawn readiness now glows the active Vow state at 20/20 Solar Power.
+-- Sun Cleric state icons and the Sol Invictus reminder are anchored above the player frame with a protected gap.
+-- Sun Cleric HUD rows were moved slightly downward and all state/reminder icons were removed from the target-frame area.
+-- Includes the right-chat preservation, class-colored fonts and Witch Doctor Voodoo tracking from earlier betas.
+-
+-RetreatUI v1.0.11-beta.5
+-============================
+-
+-ELVUI RIGHT CHAT + CLASS FONT COLOR TEST
+-- Preserves chat windows and tabs placed in ElvUI's right chat panel.
+-- Keeps the right-panel Data Text strip untouched.
+-- Continues removing only standalone Loot/Trade windows outside the right panel.
+-- Uses the active RetreatUI class accent as the default ElvUI value/font color.
+-- Migrates the legacy Knight-red default without overwriting custom colors.
+-- Includes all Witch Doctor Voodoo tracking from beta.4.
+-
+-RetreatUI v1.0.11-beta.4
+-============================
+-
+-WITCH DOCTOR — VOODOO TRACKING TEST
+-- Added Hex of Malice / Zalazane's Malice target-debuff tracking.
+-- Corrected Puppeteer's Threads to track on the target rather than as a player proc.
+-- Added a dedicated Loa state icon with live stack count.
+-- Added Drakkari Barrier cooldown and active-duration tracking.
+-- Added learned-only Voodoo Strings, Shadowflare and Voodoo Idol coverage.
+-- Added learned-only Healing Ward and Cleansing Idol utility coverage.
+-- Candidate aura aliases only appear when the live client reports a matching spell or aura.
+-
+-RetreatUI v1.0.11-beta.3
+-- Target-frame debuff tracking now shows every debuff applied by the player, pet, or vehicle across all classes.
+-- Added safer handling for Ascension class debuffs that do not report a caster.
+-- Added Champion of the Sun cooldown tracking for Valkyr Sun Cleric.
+-- Improved cooldown timer alignment with ElvUI while retaining event-driven performance optimizations.
+-- Preserved ElvUI's right chat panel and data-text strip while still removing unwanted Loot/Trade chat windows.
+-
+-RetreatUI v1.0.11-beta.2
+-============================
+-
+-SUN CLERIC — SERAPHIM TANK POLISH
+-- Solar Power now remains visible at 0/20 after Dawn instead of disappearing.
+-- Solar Power now matches the primary Mana bar width and sits directly above it.
+-- Removed Dawn from Main Rotation; Dawn readiness is now shown on the active Vow icon with a bright border and glow.
+-- Sol Invictus is no longer shown permanently and only appears as a red warning while the threat aura is missing.
+-- Cooldown icons and active uptime trackers are now fully separated.
+-- Hammer of Kings, Seraphic Bulwark, Radiance, Chosen of the Light, Resplendence and Paragon no longer alternate between cooldown and uptime timers.
+-- Active uptime/proc icons continue to appear in their own dedicated row.
+-
+-PERFORMANCE AND STABILITY
+-- Retains the event-driven HUD refresh and reduced timer frequency from Beta 1/test.44.
+-- Retains the Casting Dawn target-frame SetPoint fix and safe fallback placement.
+-- Retains strict Seraphim tank curation so unrelated Sun Cleric abilities do not repopulate the HUD.
+-
+-RetreatUI v1.0.11-beta.1
+-============================
+-
+-SUN CLERIC — SERAPHIM TANK BETA
+-- Curated Main Rotation to Dawn, Horusath Blast, Solar Nova, Gavel of Light, Dawnbreak, Justicar's Wrath, Hammer of Kings, Dawnfall and Radiance.
+-- Curated defensive/cooldown tracking for Seraphic Bulwark, Chosen of the Light, Solar Prayer, Paragon, all three requested Solar Invocations, Circle of Valor and Scroll of Hope.
+-- Curated utility tracking for Seraphim Stride, Judgement Day, Glare, Calm and Injunction.
+-- Curated active uptime/proc tracking for Hammer of Kings, Seraphic Bulwark, Shining Shield, Radiance, Chosen of the Light, Resplendence, Seraphim's Light, Paragon and Angelic Presence.
+-- Added a dedicated Sol Invictus threat-aura check.
+-- Hides the native CoA resource orb through events and a Show hook instead of an every-frame script.
+-- Solar Power remains a compact 0/20 bar and resets immediately after Dawn.
