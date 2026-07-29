@@ -65,7 +65,7 @@ jobs:
               'core version': f'## Version: {expected}' in core_toc,
               'classes version': f'## Version: {expected}' in classes_toc,
               'visible Totem Bar linked to mover': 'LinkBarToMover' in totem and 'bar.SetPoint, bar, "CENTER", mover, "CENTER", 0, 0' in totem,
-              'Totem Bar relink loop': 'relinkElapsed' in totem and 'ResolveTotemBar' in totem,
+              'Totem Bar relink loop': 'refreshFrame:SetScript("OnUpdate"' in totem and 'Attach()' in totem,
               'mana discovery retained': 'RefreshAllManaPlates' in turbo and 'CollectFramesFromTable' in turbo,
               'full-frame blue palette': 'MANA_BLUE_DARK' in turbo and 'MANA_BLUE_BORDER' in turbo,
               'whole nameplate visual scan': 'CollectPlateVisuals' in turbo and 'AddPlateVisual' in turbo,
