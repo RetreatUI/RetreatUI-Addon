@@ -1,0 +1,161 @@
+name: Publish RetreatUI v1.0.11-beta.13
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.13/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.13
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.12 package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/base build/source
+          gh release download v1.0.11-beta.12 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.12.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.12.zip -d build/source
+          test -f build/source/RetreatUI/Integrations/TurboPlates.lua
+          test -f build/source/RetreatUI/Core/BuffManager.lua
+
+      - name: Apply beta.13 patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat \
+            .release-v1.0.11-beta.13/beta13.patch.gz.b64.part1 \
+            .release-v1.0.11-beta.13/beta13.patch.gz.b64.part2 \
+            | base64 -d > beta13.patch.gz
+          echo '348e317a1245caa126b94a180d635b34ea727d4abcf7fb34b1a2e9d7f7a419b4  beta13.patch.gz' | sha256sum -c -
+          gzip -dc beta13.patch.gz > beta13.patch
+          git apply --check --directory=build/source beta13.patch
+          git apply --directory=build/source beta13.patch
+
+      - name: Validate beta.13 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('build/source')
+          expected = '1.0.11-beta.13'
+          turbo = (root / 'RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
+          buffs = (root / 'RetreatUI/Core/BuffManager.lua').read_text(encoding='utf-8')
+          core_toc = (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          classes_toc = (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          checks = {
+              'core version': f'## Version: {expected}' in core_toc,
+              'classes version': f'## Version: {expected}' in classes_toc,
+              'exact TurboPlates namespace map': 'FindTurboNamespace' in turbo and 'namespace.unitToPlate[unit]' in turbo,
+              'overlay above native fill': '"ARTWORK", nil, 7' in turbo and 'SetDrawLayer' in turbo,
+              'native color update hook': '_ruiManaColorHooked' in turbo and 'hooksecurefunc' in turbo,
+              'mana diagnostic': 'TurboPlates mana link' in turbo,
+              'Demonfire Pact buff': 'Demonfire Pact", 800031' in buffs,
+              'runtime markers': 'manaNPCExactNamespaceMap = true' in turbo and 'manaNPCOverlayLayerFix = true' in turbo,
+          }
+          for name, passed in checks.items():
+              print(('PASS' if passed else 'FAIL') + ': ' + name)
+          failed = [name for name, passed in checks.items() if not passed]
+          if failed:
+              raise RuntimeError('Validation failed: ' + ', '.join(failed))
+          PY
+
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes \
+            -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          root = Path('build/source')
+          output = Path('RetreatUI_v1.0.11-beta.13.zip')
+          with zipfile.ZipFile(output, 'w', zipfile.ZIP_DEFLATED, compresslevel=9) as archive:
+              for root_name in ('RetreatUI', 'RetreatUI_Classes'):
+                  for path in sorted((root / root_name).rglob('*')):
+                      if path.is_file():
+                          archive.write(path, path.relative_to(root).as_posix())
+          with zipfile.ZipFile(output) as archive:
+              names = set(archive.namelist())
+              roots = {name.split('/', 1)[0] for name in names if '/' in name}
+              if roots != {'RetreatUI', 'RetreatUI_Classes'}:
+                  raise RuntimeError(f'Unexpected ZIP roots: {sorted(roots)}')
+              required = {
+                  'RetreatUI/RetreatUI.toc',
+                  'RetreatUI/Integrations/TurboPlates.lua',
+                  'RetreatUI/Core/BuffManager.lua',
+                  'RetreatUI_Classes/RetreatUI_Classes.toc',
+              }
+              missing = required - names
+              if missing:
+                  raise RuntimeError(f'Missing ZIP entries: {sorted(missing)}')
+          PY
+          sha256sum RetreatUI_v1.0.11-beta.13.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.13
+          path: RetreatUI_v1.0.11-beta.13.zip
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TARGET: ${{ github.event.pull_request.base.sha }}
+        run: |
+          set -euo pipefail
+          cat > release-notes.md <<'EOF'
+          # RetreatUI v1.0.11-beta.13 — TurboPlates Runtime Link + Demonfire Pact
+
+          ## Test focus
+
+          - Mana enemies now use TurboPlates' exact private unit-to-plate mapping
+          - The blue overlay renders above the native StatusBar fill and refreshes after every TurboPlates color update
+          - Targeting a mana enemy prints one diagnostic line showing namespace, plate, healthbar and overlay linkage
+          - Demonfire Pact is now included in the Felsworn Buff Manager
+          - All beta.12 and beta.11 changes remain included
+          EOF
+
+          tag='v1.0.11-beta.13'
+          if gh release view "$tag" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$tag" \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.13 — TurboPlates Runtime Link + Demonfire Pact' \
+              --notes-file release-notes.md \
+              --prerelease
+            gh release upload "$tag" RetreatUI_v1.0.11-beta.13.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --clobber
+          else
+            gh release create "$tag" RetreatUI_v1.0.11-beta.13.zip \
+              --repo "$GITHUB_REPOSITORY" \
+              --target "$RELEASE_TARGET" \
+              --title 'RetreatUI v1.0.11-beta.13 — TurboPlates Runtime Link + Demonfire Pact' \
+              --notes-file release-notes.md \
+              --prerelease
+          fi
