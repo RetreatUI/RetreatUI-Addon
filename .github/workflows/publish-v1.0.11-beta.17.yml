@@ -1,0 +1,332 @@
+name: Publish RetreatUI v1.0.11-beta.17
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".release-v1.0.11-beta.17/trigger-pr"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.0.11-beta.17
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download beta.16 package
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p build/source build/base
+          gh release download v1.0.11-beta.16 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11-beta.16.zip' \
+            --dir build/base
+          unzip -q build/base/RetreatUI_v1.0.11-beta.16.zip -d build/source
+
+      - name: Apply beta.17 source changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('build/source')
+          path = root / 'RetreatUI/Integrations/TurboPlates.lua'
+          source = path.read_text(encoding='utf-8')
+
+          mana_block = r'''local MANA_CLASS_TOKENS = {
+            MAGE=true, PRIEST=true, WARLOCK=true, SHAMAN=true, PALADIN=true, DRUID=true,
+          }
+          local NON_MANA_CLASS_TOKENS = {
+            WARRIOR=true, ROGUE=true, HUNTER=true, DEATHKNIGHT=true,
+          }
+
+          local function UnitManaEvidence(unit)
+            if not unit or type(UnitExists) ~= "function" or not UnitExists(unit) then
+              return false, "missing_unit", nil, nil, nil, 0, 0
+            end
+
+            if type(UnitIsFriend) == "function" then
+              local friendOK, friendly = pcall(UnitIsFriend, "player", unit)
+              if friendOK and friendly == true then
+                return false, "friendly", nil, nil, nil, 0, 0
+              end
+            end
+
+            local manaType = tonumber(_G.SPELL_POWER_MANA) or 0
+            if type(UnitPowerType) ~= "function" then
+              return false, "no_power_api", nil, nil, nil, 0, 0
+            end
+            local typeOK, powerType, token = pcall(UnitPowerType, unit)
+            if not typeOK then return false, "power_type_error", nil, nil, nil, 0, 0 end
+            local typeIsMana = tonumber(powerType) == manaType
+              or powerType == "MANA"
+              or token == "MANA"
+              or token == "Mana"
+              or token == "mana"
+            if not typeIsMana then
+              return false, "non_mana_power", nil, powerType, token, 0, 0
+            end
+
+            local maximum, current = 0, 0
+            if type(UnitPowerMax) == "function" then
+              local ok, value = pcall(UnitPowerMax, unit, manaType)
+              if ok then maximum = math.max(maximum, tonumber(value) or 0) end
+            end
+            if type(UnitManaMax) == "function" then
+              local ok, value = pcall(UnitManaMax, unit)
+              if ok then maximum = math.max(maximum, tonumber(value) or 0) end
+            end
+            if type(UnitPower) == "function" then
+              local ok, value = pcall(UnitPower, unit, manaType)
+              if ok then current = math.max(current, tonumber(value) or 0) end
+            end
+            if type(UnitMana) == "function" then
+              local ok, value = pcall(UnitMana, unit)
+              if ok then current = math.max(current, tonumber(value) or 0) end
+            end
+            if maximum <= 0 then
+              return false, "no_mana_pool", nil, powerType, token, maximum, current
+            end
+
+            local classToken
+            if type(UnitClass) == "function" then
+              local ok, _, tokenValue = pcall(UnitClass, unit)
+              if ok then classToken = tokenValue end
+            end
+            if classToken and NON_MANA_CLASS_TOKENS[classToken] then
+              return false, "non_mana_class", classToken, powerType, token, maximum, current
+            end
+            if classToken and MANA_CLASS_TOKENS[classToken] then
+              return true, "mana_class", classToken, powerType, token, maximum, current
+            end
+
+            local isPlayer = false
+            if type(UnitIsPlayer) == "function" then
+              local ok, value = pcall(UnitIsPlayer, unit)
+              isPlayer = ok and value == true
+            end
+            if isPlayer then
+              return false, "unknown_player_class", classToken, powerType, token, maximum, current
+            end
+
+            -- Ascension exposes a synthetic 100-point MANA pool on many ordinary
+            -- NPCs. Only an unclassified NPC with a pool above that default is
+            -- accepted as a real mana user.
+            if maximum <= 100 then
+              return false, "synthetic_100_pool", classToken, powerType, token, maximum, current
+            end
+            return true, "large_npc_mana_pool", classToken, powerType, token, maximum, current
+          end
+
+          local function UnitUsesMana(unit)
+            local usesMana = UnitManaEvidence(unit)
+            return usesMana == true
+          end
+
+          '''
+
+          source, count = re.subn(
+              r'local function UnitUsesMana\(unit\).*?\nend\n\n(?=local UNIT_CANDIDATES)',
+              mana_block,
+              source,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
+              raise RuntimeError('Could not replace UnitUsesMana block')
+
+          old_paint_unit = r'''local function PaintUnitTurboPlate(unit, seenObjects)
+            if not UnitKnownMana(unit) then return false end
+
+            -- Use only the public Ascension nameplate lookup and the plate's own
+            -- myPlate/hp references. The user's beta.13 diagnostic proved these objects
+            -- exist even when TurboPlates' private namespace cannot be recovered.
+            local nameplate = NamePlateForUnit(unit)
+            local myPlate = ResolveTurboPlate(nameplate)
+            local painted = false
+            if myPlate and myPlate.hp then painted = PaintTurboPlate(myPlate, seenObjects) or painted end
+            if nameplate then painted = PaintPlate(nameplate, seenObjects, unit) or painted end
+            return painted
+          end'''
+          new_paint_unit = r'''local function PaintUnitTurboPlate(unit, seenObjects)
+            if not UnitKnownMana(unit) then return false end
+
+            -- The public nameplate's myPlate.hp object is the only TurboPlates object
+            -- RetreatUI is allowed to recolor. Broad frame/texture scans are disabled:
+            -- they can include recycled plates and make unrelated NPCs blue.
+            local nameplate = NamePlateForUnit(unit)
+            local myPlate = ResolveTurboPlate(nameplate)
+            if myPlate and myPlate.hp then
+              return PaintTurboPlate(myPlate, seenObjects) == true
+            end
+            return false
+          end'''
+          if old_paint_unit not in source:
+              raise RuntimeError('PaintUnitTurboPlate block not found')
+          source = source.replace(old_paint_unit, new_paint_unit, 1)
+
+          source = source.replace(
+              '          if myPlate then PaintTurboPlate(myPlate, seenObjects) end\n          PaintPlate(nameplate, seenObjects, unit)',
+              '          if myPlate then PaintTurboPlate(myPlate, seenObjects) end',
+              1,
+          )
+
+          old_mouseover = r'''local function PaintMouseoverPlate(seenObjects)
+            if not (type(UnitExists) == "function" and UnitExists("mouseover") and UnitKnownMana("mouseover")) then return end
+            if type(GetMouseFocus) ~= "function" then return end
+            local focus = GetMouseFocus()
+            if focus then PaintPlate(FindPlateAncestor(focus), seenObjects, "mouseover") end
+          end'''
+          new_mouseover = r'''local function PaintMouseoverPlate(seenObjects)
+            if type(UnitExists) == "function" and UnitExists("mouseover") then
+              PaintUnitTurboPlate("mouseover", seenObjects)
+            end
+          end'''
+          if old_mouseover not in source:
+              raise RuntimeError('PaintMouseoverPlate block not found')
+          source = source.replace(old_mouseover, new_mouseover, 1)
+
+          source = source.replace(
+              '  local usesMana = UnitKnownMana("target")\n  if not usesMana then return end',
+              '  local usesMana, manaReason, classToken, powerType, powerToken, manaMaximum, manaCurrent = UnitManaEvidence("target")',
+              1,
+          )
+          source = source.replace(
+              '  PaintUnitTurboPlate("target", seenObjects)',
+              '  if usesMana then PaintUnitTurboPlate("target", seenObjects) end',
+              1,
+          )
+          source = source.replace(
+              '    "|cff52a8ffRetreatUI|r TurboPlates mana link: nameplate=%s, reserveHP=%s, reserveShown=%s, liveBars=%d, liveOverlay=%s",',
+              '    "|cff52a8ffRetreatUI|r TurboPlates mana: detected=%s, reason=%s, class=%s, power=%s/%s, mana=%s/%s, nameplate=%s, reserveHP=%s, reserveShown=%s, liveBars=%d, liveOverlay=%s",',
+              1,
+          )
+          source = source.replace(
+              '    nameplate and "yes" or "no",\n    hp and "yes" or "no",',
+              '    usesMana and "yes" or "no",\n    tostring(manaReason or "unknown"),\n    tostring(classToken or "none"),\n    tostring(powerType or "nil"),\n    tostring(powerToken or "nil"),\n    tostring(manaCurrent or 0),\n    tostring(manaMaximum or 0),\n    nameplate and "yes" or "no",\n    hp and "yes" or "no",',
+              1,
+          )
+
+          source = source.replace('manaNPCNoHeuristicPlatePainting = true,', 'manaNPCNoHeuristicPlatePainting = true,\n    manaNPCSyntheticPoolFilter = true,\n    manaNPCDirectHPOnly = true,', 1)
+          path.write_text(source, encoding='utf-8')
+
+          for toc in [root / 'RetreatUI/RetreatUI.toc', root / 'RetreatUI_Classes/RetreatUI_Classes.toc']:
+              text = toc.read_text(encoding='utf-8').replace('1.0.11-beta.16', '1.0.11-beta.17')
+              toc.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate beta.17 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('build/source')
+          turbo = (root / 'RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
+          checks = {
+            'version': '## Version: 1.0.11-beta.17' in (root / 'RetreatUI/RetreatUI.toc').read_text(encoding='utf-8'),
+            'class version': '## Version: 1.0.11-beta.17' in (root / 'RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8'),
+            'mana evidence': 'UnitManaEvidence' in turbo and 'synthetic_100_pool' in turbo,
+            'non-mana classes': 'NON_MANA_CLASS_TOKENS' in turbo,
+            'direct hp only flag': 'manaNPCDirectHPOnly = true' in turbo,
+            'no active broad nameplate paint': 'if nameplate then painted = PaintPlate' not in turbo,
+            'no mouse focus broad paint': 'PaintPlate(FindPlateAncestor(focus)' not in turbo,
+            'diagnostic details': 'detected=%s, reason=%s, class=%s' in turbo,
+          }
+          for name, ok in checks.items(): print(('PASS' if ok else 'FAIL') + ': ' + name)
+          failed = [name for name, ok in checks.items() if not ok]
+          if failed: raise RuntimeError(', '.join(failed))
+          PY
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Test strict mana evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          source = Path('build/source/RetreatUI/Integrations/TurboPlates.lua').read_text(encoding='utf-8')
+          marker = 'local UNIT_CANDIDATES ='
+          export = '_G.__RUI_TP17_TEST = { UnitManaEvidence=UnitManaEvidence }\n\n'
+          Path('/tmp/TurboPlates17_test.lua').write_text(source.replace(marker, export + marker, 1), encoding='utf-8')
+          PY
+          cat > /tmp/test_tp17.lua <<'LUA'
+          RetreatUI = {}
+          SPELL_POWER_MANA = 0
+          local state = {}
+          function UnitExists(unit) return state[unit] ~= nil end
+          function UnitIsFriend() return false end
+          function UnitPowerType(unit) return state[unit].powerType, state[unit].token end
+          function UnitPowerMax(unit) return state[unit].maximum end
+          function UnitManaMax(unit) return state[unit].maximum end
+          function UnitPower(unit) return state[unit].current end
+          function UnitMana(unit) return state[unit].current end
+          function UnitClass(unit) return state[unit].classToken, state[unit].classToken end
+          function UnitIsPlayer(unit) return state[unit].isPlayer == true end
+          assert(loadfile('/tmp/TurboPlates17_test.lua'))()
+          local E = assert(__RUI_TP17_TEST).UnitManaEvidence
+          local function check(name, expected)
+            local actual, reason = E(name)
+            assert(actual == expected, name .. ' expected ' .. tostring(expected) .. ', got ' .. tostring(actual) .. ' (' .. tostring(reason) .. ')')
+            print('PASS: ' .. name .. ' -> ' .. tostring(actual) .. ' (' .. tostring(reason) .. ')')
+          end
+          state.warrior = {powerType=0, token='MANA', maximum=100, current=100, classToken='WARRIOR'}
+          state.synthetic = {powerType=0, token='MANA', maximum=100, current=100}
+          state.mage = {powerType=0, token='MANA', maximum=100, current=100, classToken='MAGE'}
+          state.caster = {powerType=0, token='MANA', maximum=5000, current=5000}
+          state.energy = {powerType=3, token='ENERGY', maximum=100, current=100, classToken='ROGUE'}
+          check('warrior', false)
+          check('synthetic', false)
+          check('mage', true)
+          check('caster', true)
+          check('energy', false)
+          LUA
+          lua5.1 /tmp/test_tp17.lua
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd build/source
+          zip -qr ../RetreatUI_v1.0.11-beta.17.zip RetreatUI RetreatUI_Classes
+          cd ..
+          test "$(unzip -Z1 RetreatUI_v1.0.11-beta.17.zip | cut -d/ -f1 | sort -u | tr '\n' ' ')" = "RetreatUI RetreatUI_Classes "
+          unzip -p RetreatUI_v1.0.11-beta.17.zip RetreatUI/RetreatUI.toc | grep -F '## Version: 1.0.11-beta.17'
+          unzip -p RetreatUI_v1.0.11-beta.17.zip RetreatUI/Integrations/TurboPlates.lua | grep -F 'synthetic_100_pool'
+          sha256sum RetreatUI_v1.0.11-beta.17.zip
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.0.11-beta.17
+          path: build/RetreatUI_v1.0.11-beta.17.zip
+          if-no-files-found: error
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          notes=$'RetreatUI v1.0.11-beta.17\n\n- Filters Ascension synthetic 100-point NPC mana pools.\n- Rejects known non-mana class tokens even when the client reports MANA.\n- Uses only TurboPlates direct myPlate.hp coloring in the active path.\n- Removes broad nameplate/frame painting from active mana coloring.\n- Adds detailed target diagnostics with decision reason, class, power type and mana values.'
+          if gh release view v1.0.11-beta.17 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload v1.0.11-beta.17 build/RetreatUI_v1.0.11-beta.17.zip --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit v1.0.11-beta.17 --repo "$GITHUB_REPOSITORY" --prerelease --title 'RetreatUI v1.0.11-beta.17' --notes "$notes"
+          else
+            gh release create v1.0.11-beta.17 build/RetreatUI_v1.0.11-beta.17.zip --repo "$GITHUB_REPOSITORY" --prerelease --title 'RetreatUI v1.0.11-beta.17' --notes "$notes"
+          fi
