@@ -74,8 +74,9 @@ jobs:
           pathlib.Path('inspection/templar-export.txt').write_text(encoded + '\n', encoding='utf-8')
 
           sys.path.insert(0, '/tmp/python-weakauras-tool')
-          from wa_tool import run_lua
-          decoded = run_lua('decode', encoded)
+          import wa_tool
+          wa_tool.python_path = '/tmp/python-weakauras-tool'
+          decoded = wa_tool.run_lua('decode', encoded)
           if not isinstance(decoded, str) or decoded.startswith(('failed', 'invalid', 'unsupported', 'deserialization')):
               raise SystemExit(f'Decoder failed: {decoded!r}')
           data = json.loads(decoded)
