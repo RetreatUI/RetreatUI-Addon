@@ -14,24 +14,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate payload parts
+      - name: Hash part04 blocks
         run: |
-          expected=(
-            5657a7d9ba7995ca0b5f0834d35e527daa511b45
-            88c9f0c263e896a5a72fb4affcd06c6af5e80277
-            65214a98c27bd3125a4997f756df45543244ff56
-            f27aa2350e79f19c2eebdadf0f75160b718ace8c
-            ec84960fe6faf01388d4d25e399dfefd3c72a68b
-            a854ebc38aced0fbf6e7cf01971786f4dccc9b1d
-            9c56a8567891f6341404ed438e3643e8388f724b
-            57c19142e6c596675b2bb3022540c0fb9e86525d
-          )
-          for n in $(seq 0 7); do
-            i=$(printf '%02d' "$n")
-            path=".release-v1.1.0-beta.6/payload.part${i}"
-            test -f "$path"
-            actual=$(git hash-object "$path")
-            bytes=$(wc -c < "$path")
-            echo "part${i}: bytes=$bytes blob=$actual expected=${expected[$n]}"
-            test "$actual" = "${expected[$n]}"
-          done
+          python3 - <<'PY'
+          from pathlib import Path
+          import hashlib
+          data = Path('.release-v1.1.0-beta.6/payload.part04').read_bytes()
+          print('bytes', len(data))
+          for offset in range(0, len(data), 200):
+              print(offset // 200, hashlib.sha256(data[offset:offset + 200]).hexdigest())
+          PY
