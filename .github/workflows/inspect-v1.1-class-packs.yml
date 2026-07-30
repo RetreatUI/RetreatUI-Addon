@@ -1,0 +1,155 @@
+name: Inspect RetreatUI v1.1 class packs
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    if: github.event.pull_request.head.ref == 'analysis/v1.1-class-packs'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout trigger branch
+        uses: actions/checkout@v4
+
+      - name: Install decoder
+        run: |
+          python3 -m pip install --disable-pip-version-check lupa requests
+          git clone --depth=1 https://github.com/geexmmo/python-weakauras-tool.git /tmp/python-weakauras-tool
+
+      - name: Fetch and decode Templar Wago pack
+        run: |
+          mkdir -p inspection
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import requests
+          import sys
+
+          slug = 'tblTJdMRI'
+          headers = {
+              'User-Agent': 'RetreatUI class-pack inspection',
+              'Identifier': 'RetreatUI',
+          }
+          response = requests.post(
+              'https://data.wago.io/api/check/',
+              json={'ids': [slug]},
+              headers=headers,
+              timeout=60,
+          )
+          response.raise_for_status()
+          metadata = response.json()
+          pathlib.Path('inspection/templar-metadata.json').write_text(
+              json.dumps(metadata, indent=2, ensure_ascii=False) + '\n',
+              encoding='utf-8',
+          )
+
+          candidates = []
+          if isinstance(metadata, dict):
+              candidates.extend(value for value in metadata.values() if isinstance(value, dict))
+              if metadata.get('_id') or metadata.get('slug'):
+                  candidates.insert(0, metadata)
+          elif isinstance(metadata, list):
+              candidates.extend(value for value in metadata if isinstance(value, dict))
+          if not candidates:
+              raise SystemExit(f'No Wago metadata entry returned: {metadata!r}')
+          entry = next((item for item in candidates if item.get('slug') == slug or item.get('_id') == slug), candidates[0])
+          wago_id = entry.get('_id') or entry.get('id') or slug
+
+          encoded_response = requests.get(
+              'https://data.wago.io/api/raw/encoded',
+              params={'id': wago_id},
+              headers=headers,
+              timeout=60,
+          )
+          encoded_response.raise_for_status()
+          encoded = encoded_response.text.strip()
+          if not encoded.startswith('!WA:'):
+              raise SystemExit(f'Unexpected Wago export prefix: {encoded[:80]!r}')
+          pathlib.Path('inspection/templar-export.txt').write_text(encoded + '\n', encoding='utf-8')
+
+          sys.path.insert(0, '/tmp/python-weakauras-tool')
+          from wa_tool import run_lua
+          decoded = run_lua('decode', encoded)
+          if not isinstance(decoded, str) or decoded.startswith(('failed', 'invalid', 'unsupported', 'deserialization')):
+              raise SystemExit(f'Decoder failed: {decoded!r}')
+          data = json.loads(decoded)
+          pathlib.Path('inspection/templar-decoded.json').write_text(
+              json.dumps(data, indent=2, ensure_ascii=False, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          PY
+
+      - name: Summarize decoded Templar pack
+        run: |
+          python3 - <<'PY'
+          import json
+          import pathlib
+          import re
+
+          data = json.loads(pathlib.Path('inspection/templar-decoded.json').read_text(encoding='utf-8'))
+          aura_rows = []
+          spell_ids = set()
+          aura_names = set()
+          custom_code = []
+
+          def walk(value, path='root'):
+              if isinstance(value, dict):
+                  name = value.get('id') or value.get('name')
+                  if isinstance(name, str) and any(key in value for key in ('regionType', 'triggers', 'trigger', 'load')):
+                      aura_rows.append({
+                          'path': path,
+                          'name': name,
+                          'uid': value.get('uid'),
+                          'regionType': value.get('regionType'),
+                          'load': value.get('load'),
+                      })
+                      aura_names.add(name)
+                  for key, item in value.items():
+                      key_lower = str(key).lower()
+                      if key_lower in ('spellid', 'spellids', 'spell_id', 'spell_ids'):
+                          if isinstance(item, (int, float)) and int(item) > 0:
+                              spell_ids.add(int(item))
+                          elif isinstance(item, str):
+                              spell_ids.update(int(x) for x in re.findall(r'(?<![A-Za-z])\d{4,8}(?![A-Za-z])', item))
+                          elif isinstance(item, (list, dict)):
+                              for match in re.findall(r'(?<![A-Za-z])\d{4,8}(?![A-Za-z])', json.dumps(item)):
+                                  spell_ids.add(int(match))
+                      if key_lower in ('custom', 'customtrigger', 'customuntrigger', 'customduration', 'customtext') and isinstance(item, str) and item.strip():
+                          custom_code.append({'path': f'{path}.{key}', 'code': item})
+                          spell_ids.update(int(x) for x in re.findall(r'(?<![A-Za-z])\d{4,8}(?![A-Za-z])', item))
+                      walk(item, f'{path}.{key}')
+              elif isinstance(value, list):
+                  for index, item in enumerate(value):
+                      walk(item, f'{path}[{index}]')
+
+          walk(data)
+          summary = {
+              'aura_count': len(aura_rows),
+              'aura_names': sorted(aura_names),
+              'spell_ids': sorted(spell_ids),
+              'auras': aura_rows,
+              'custom_code': custom_code,
+          }
+          pathlib.Path('inspection/templar-summary.json').write_text(
+              json.dumps(summary, indent=2, ensure_ascii=False, sort_keys=True) + '\n',
+              encoding='utf-8',
+          )
+          print(json.dumps({
+              'aura_count': summary['aura_count'],
+              'aura_names': summary['aura_names'],
+              'spell_ids': summary['spell_ids'],
+          }, indent=2, ensure_ascii=False))
+          PY
+
+      - name: Upload inspection artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1-class-pack-inspection
+          path: inspection
+          if-no-files-found: error
