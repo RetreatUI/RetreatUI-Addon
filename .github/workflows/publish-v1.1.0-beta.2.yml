@@ -103,6 +103,7 @@ jobs:
             function methods:GetFrameLevel() return 1 end
             function methods:SetChecked(v) self.checked=v end
             function methods:GetChecked() return self.checked end
+            setmetatable(methods, {__index=function() return noop end})
             return setmetatable({shown=false}, {__index=methods})
           end
           function CreateFrame(_,name) local f=object(); if name then _G[name]=f end; return f end
