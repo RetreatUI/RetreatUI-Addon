@@ -1,0 +1,168 @@
+name: Publish RetreatUI v1.1.0-beta.8
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.1.0-beta.8'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.1.0-beta.8
+      ZIP_NAME: RetreatUI_v1.1.0-beta.8.zip
+      MANIFEST_NAME: RetreatUI_manifest.json
+      PATCH_SHA256: 9c34a68d2dcbee49c981a38440ccbffd12fbefbd2f90409ab6776794da1b0153
+      TREE_SHA256: 066489f9574a0d6d48cdfb066be0e93c8072497fc4b8e5d3ed93596bc8461b5e
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download beta.7 base and official release
+        run: |
+          mkdir -p base work official
+          gh release download v1.1.0-beta.7 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.1.0-beta.7.zip' --dir base
+          gh release download v1.0.11 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.0.11.zip' --dir official
+          test -f base/RetreatUI_v1.1.0-beta.7.zip
+          test -f official/RetreatUI_v1.0.11.zip
+          unzip -q base/RetreatUI_v1.1.0-beta.7.zip -d work
+
+      - name: Decode and apply beta.8 patch
+        run: |
+          cat .release-v1.1.0-beta.8/payload.part* | tr -d '\r\n ' | base64 -d | gzip -d > /tmp/v1.1.0-beta.8.patch
+          echo "$PATCH_SHA256  /tmp/v1.1.0-beta.8.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < /tmp/v1.1.0-beta.8.patch
+
+      - name: Validate beta.8 content
+        run: |
+          grep -Fq '## Version: 1.1.0-beta.8' work/RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.0-beta.8' work/RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'or "1.1.0-beta.8"' work/RetreatUI/Loader.lua
+          grep -Fq 'title = "RetreatUI v1.1.0-beta.8"' work/RetreatUI/Core/Version.lua
+          grep -Fq 'RetreatUIPartyInterruptTracker' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'ARCANE_TORRENT_DEFAULT_ID = 50613' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'IsBloodElfUnit(member.unit)' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'capability.category ~= "interrupt"' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'settings.categories.interrupt = false' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'key="partyInterrupts", label="PARTY INTERRUPTS"' work/RetreatUI/Core/HUDEditor.lua
+          grep -Fq 'partyInterrupts = {x=0, y=-278, scale=1}' work/RetreatUI/Core/Layout.lua
+          grep -Fq 'SetPartyInterruptEditorPreview(true)' work/RetreatUI/Core/HUDEditor.lua
+          ! grep -Fq 'local ordered = {"interrupt","combatres"' work/RetreatUI/Core/PartyUtility.lua
+          ACTUAL_TREE_SHA=$(cd work && find RetreatUI RetreatUI_Classes -type f -print0 | sort -z | xargs -0 sha256sum | sha256sum | awk '{print $1}')
+          test "$ACTUAL_TREE_SHA" = "$TREE_SHA256"
+
+      - name: Validate tracker separation
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          utility = Path('work/RetreatUI/Core/PartyUtility.lua').read_text()
+          editor = Path('work/RetreatUI/Core/HUDEditor.lua').read_text()
+          init = Path('work/RetreatUI/Core/Init.lua').read_text()
+          assert utility.count('capability.category ~= "interrupt"') >= 2
+          assert 'local function BuildInterruptEntriesByUnit()' in utility
+          assert 'local function RenderInterruptTracker()' in utility
+          assert 'RenderInterruptTracker()' in utility
+          assert 'ArcaneTorrentCapability' in utility
+          assert 'IsBloodElfUnit("player")' in utility
+          assert 'IsBloodElfUnit(member.unit)' in utility
+          assert 'GameTooltip.SetSpellByID' in utility
+          assert 'No interrupt detected' in utility
+          assert 'ApplyHUDFrameScale(frame, "partyInterrupts")' in utility
+          assert 'SetPartyInterruptEditorPreview(true)' in editor
+          assert 'SetPartyInterruptEditorPreview(false)' in editor
+          assert 'db.partyUtility.categories.interrupt = false' in init
+          assert 'db.partyInterrupts.showSelf' in init
+          PY
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package addon
+        run: |
+          rm -f "$ZIP_NAME"
+          (cd work && zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes)
+          unzip -tq "$ZIP_NAME"
+          python3 - <<'PY'
+          import zipfile
+          path = 'RetreatUI_v1.1.0-beta.8.zip'
+          with zipfile.ZipFile(path) as archive:
+              roots = {
+                  name.split('/', 1)[0]
+                  for name in archive.namelist()
+                  if name and not name.startswith('__MACOSX/')
+              }
+              assert roots == {'RetreatUI', 'RetreatUI_Classes'}, roots
+              assert all('/.git/' not in name and not name.endswith('.pyc') for name in archive.namelist())
+          PY
+
+      - name: Create launcher release manifest
+        run: |
+          BETA_SHA=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+          RELEASE_SHA=$(sha256sum official/RetreatUI_v1.0.11.zip | awk '{print $1}')
+          cat > "$MANIFEST_NAME" <<JSON
+          {
+            "schema": 1,
+            "generated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "channels": {
+              "release": {"version":"1.0.11","tag":"v1.0.11","asset":"RetreatUI_v1.0.11.zip","sha256":"$RELEASE_SHA","prerelease":false},
+              "beta": {"version":"1.1.0-beta.8","tag":"v1.1.0-beta.8","asset":"RetreatUI_v1.1.0-beta.8.zip","sha256":"$BETA_SHA","prerelease":true}
+            }
+          }
+          JSON
+          python3 -m json.tool "$MANIFEST_NAME" >/dev/null
+
+      - name: Publish GitHub pre-release
+        run: |
+          cat > /tmp/release-notes.md <<'MD'
+          ## RetreatUI v1.1.0-beta.8
+
+          ### Separate Party Interrupt Tracker
+          - Removed interrupt icons from the Party Utility rows beside individual party frames.
+          - Added a dedicated central interrupt tracker for the player and every party member.
+          - Displays each member's detected interrupt with live Ready or cooldown status.
+          - Includes Blood Elf Arcane Torrent through automatic race detection and RetreatUI capability sync.
+          - Shows the native ability tooltip and the owning player's name on hover.
+          - Shows a clear dimmed fallback when no interrupt has been detected for a member.
+
+          ### Movable HUD element
+          - Added a `PARTY INTERRUPTS` anchor to `/rui hud`.
+          - The tracker can be moved and scaled, and its position is saved with the detected build layout.
+
+          ### Preserved beta.7 changes
+          - Keeps native Party Utility ability tooltips, HUD scaling, automatic build detection and existing saved layouts.
+          MD
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.8' --notes-file /tmp/release-notes.md --prerelease
+          else
+            gh release create "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.8' --notes-file /tmp/release-notes.md --prerelease
+          fi
+
+      - name: Verify published pre-release
+        run: |
+          test "$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isPrerelease --jq '.isPrerelease')" = "true"
+          mkdir -p verify
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$ZIP_NAME" --pattern "$MANIFEST_NAME" --dir verify
+          unzip -tq "verify/$ZIP_NAME"
+          grep -Fq '"version":"1.1.0-beta.8"' "verify/$MANIFEST_NAME"
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1.0-beta.8
+          path: |
+            RetreatUI_v1.1.0-beta.8.zip
+            RetreatUI_manifest.json
+          if-no-files-found: error
