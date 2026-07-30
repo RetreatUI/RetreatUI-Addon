@@ -15,7 +15,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       TAG: launcher-v0.1.0-alpha.1
-      SOURCE_SHA256: 1b6fee2a0ddf4b9035d1e2dc9e330248fc2ce90e443b459b3d7d024cc4ec73fb
+      SOURCE_SHA256: cbb1c5075f6afd4b3a343abfe42bbda0530d0e5c258b2b734f35b5e5545c33a9
     steps:
       - name: Checkout publication branch
         uses: actions/checkout@v4
@@ -32,8 +32,7 @@ jobs:
           echo "$SOURCE_SHA256  launcher-source.tar.gz" | sha256sum -c -
           tar -xzf launcher-source.tar.gz
           test -f RetreatUI_Launcher/retreatui_launcher.py
-          test -f RetreatUI_Launcher/assets/retreatui_logo.ico
-          test -f RetreatUI_Launcher/assets/retreatui_logo.png
+          test -f RetreatUI_Launcher/README.md
 
       - name: Validate source and install builder
         shell: pwsh
@@ -42,6 +41,29 @@ jobs:
           python RetreatUI_Launcher/retreatui_launcher.py --self-test
           python -m pip install --disable-pip-version-check --upgrade pip
           python -m pip install --disable-pip-version-check pyinstaller pillow
+
+      - name: Generate launcher artwork
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "RetreatUI_Launcher/assets" | Out-Null
+          @'
+          from pathlib import Path
+          from PIL import Image, ImageDraw
+
+          out = Path("RetreatUI_Launcher/assets")
+          size = 256
+          image = Image.new("RGBA", (size, size), (17, 18, 23, 255))
+          draw = ImageDraw.Draw(image)
+          draw.rounded_rectangle((16, 16, 240, 240), radius=48, fill=(25, 27, 34, 255), outline=(48, 52, 62, 255), width=6)
+          draw.polygon([(58, 51), (198, 51), (218, 91), (174, 205), (128, 229), (82, 205), (38, 91)], fill=(255, 90, 31, 255))
+          draw.polygon([(76, 74), (157, 74), (190, 105), (174, 137), (149, 151), (192, 201), (151, 201), (116, 158), (98, 158), (98, 201), (70, 201), (70, 82)], fill=(242, 243, 245, 255))
+          draw.polygon([(98, 101), (147, 101), (162, 114), (153, 131), (98, 131)], fill=(25, 27, 34, 255))
+          image.save(out / "retreatui_logo.png")
+          image.save(out / "retreatui_logo.ico", sizes=[(16,16),(24,24),(32,32),(48,48),(64,64),(128,128),(256,256)])
+          '@ | Set-Content -Encoding utf8NoBOM generate_launcher_art.py
+          python generate_launcher_art.py
+          if (!(Test-Path "RetreatUI_Launcher/assets/retreatui_logo.ico")) { throw "ICO generation failed" }
+          if (!(Test-Path "RetreatUI_Launcher/assets/retreatui_logo.png")) { throw "PNG generation failed" }
 
       - name: Build Windows executable
         shell: pwsh
