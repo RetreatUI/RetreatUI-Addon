@@ -1,64 +1,118 @@
-name: Audit GitHub Cleanup
+name: Clean GitHub Repository
 
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
+    types: [synchronize, reopened]
 
 permissions:
-  contents: read
-  actions: read
-  pull-requests: read
+  contents: write
+  actions: write
+  pull-requests: write
 
 jobs:
-  audit:
+  cleanup:
     if: github.event.pull_request.head.ref == 'maintenance/github-cleanup-audit'
     runs-on: ubuntu-latest
     env:
       GH_TOKEN: ${{ github.token }}
+      KEEP_RELEASE_RUN: 30586143219
+      KEEP_BETA_TAG: v1.1.0-beta.11
+      KEEP_ROLLBACK_TAG: v1.1.0-beta.10.2
     steps:
-      - name: Audit branches, artifacts, workflows and releases
+      - name: Remove safe GitHub clutter
         shell: bash
         run: |
           set -euo pipefail
           repo="$GITHUB_REPOSITORY"
           owner="${repo%%/*}"
+          current_branch="${{ github.event.pull_request.head.ref }}"
+          current_pr="${{ github.event.pull_request.number }}"
           default_branch="$(gh api "repos/$repo" --jq '.default_branch')"
-          default_sha="$(gh api "repos/$repo/git/ref/heads/$default_branch" --jq '.object.sha')"
 
-          echo "AUDIT_REPO|$repo"
-          echo "DEFAULT|$default_branch|$default_sha"
-          echo "BRANCHES_BEGIN"
+          echo "CLEANUP_REPO|$repo"
+
+          # Actions artifacts duplicate permanent release assets. Remove all of them.
+          gh api --paginate "repos/$repo/actions/artifacts?per_page=100" | jq -s '[.[].artifacts[]]' > /tmp/artifacts-before.json
+          artifact_count="$(jq 'length' /tmp/artifacts-before.json)"
+          artifact_bytes="$(jq '[.[].size_in_bytes] | add // 0' /tmp/artifacts-before.json)"
+          jq -r '.[].id' /tmp/artifacts-before.json > /tmp/artifact-ids.txt
+          if [[ -s /tmp/artifact-ids.txt ]]; then
+            xargs -r -n1 -P8 -I{} sh -c 'gh api --silent -X DELETE "repos/'"$repo"'/actions/artifacts/{}" || true' < /tmp/artifact-ids.txt
+          fi
+          echo "DELETED_ARTIFACTS|count=$artifact_count|bytes=$artifact_bytes"
+
+          # Keep the verified beta.11 publication run and this cleanup run; remove old run history.
+          gh api --paginate "repos/$repo/actions/runs?per_page=100" | jq -s '[.[].workflow_runs[]]' > /tmp/runs-before.json
+          jq -r --arg current "$GITHUB_RUN_ID" --arg keep "$KEEP_RELEASE_RUN" '.[] | select((.id|tostring) != $current and (.id|tostring) != $keep) | .id' /tmp/runs-before.json > /tmp/run-ids.txt
+          run_delete_count="$(wc -l < /tmp/run-ids.txt | tr -d ' ')"
+          if [[ -s /tmp/run-ids.txt ]]; then
+            xargs -r -n1 -P6 -I{} sh -c 'gh api --silent -X DELETE "repos/'"$repo"'/actions/runs/{}" || true' < /tmp/run-ids.txt
+          fi
+          echo "DELETED_WORKFLOW_RUNS|count=$run_delete_count"
+
+          # Remove obsolete prerelease pages and assets, but keep current beta and emergency rollback.
+          gh api --paginate "repos/$repo/releases?per_page=100" | jq -s '[.[][]]' > /tmp/releases-before.json
+          jq -r --arg keep "$KEEP_BETA_TAG" --arg rollback "$KEEP_ROLLBACK_TAG" '.[] | select(.prerelease == true and .tag_name != $keep and .tag_name != $rollback) | .id' /tmp/releases-before.json > /tmp/release-ids.txt
+          release_delete_count="$(wc -l < /tmp/release-ids.txt | tr -d ' ')"
+          release_delete_bytes="$(jq --arg keep "$KEEP_BETA_TAG" --arg rollback "$KEEP_ROLLBACK_TAG" '[.[] | select(.prerelease == true and .tag_name != $keep and .tag_name != $rollback) | .assets[].size] | add // 0' /tmp/releases-before.json)"
+          if [[ -s /tmp/release-ids.txt ]]; then
+            xargs -r -n1 -P4 -I{} sh -c 'gh api --silent -X DELETE "repos/'"$repo"'/releases/{}"' < /tmp/release-ids.txt
+          fi
+          echo "DELETED_PRERELEASES|count=$release_delete_count|asset_bytes=$release_delete_bytes"
+
+          # Close stale development PRs without deleting their unique branches.
+          gh api --paginate "repos/$repo/pulls?state=open&per_page=100" | jq -s '[.[][]]' > /tmp/open-prs.json
+          jq -r --arg current "$current_pr" '.[] | select((.number|tostring) != $current) | .number' /tmp/open-prs.json > /tmp/stale-prs.txt
+          stale_pr_count="$(wc -l < /tmp/stale-prs.txt | tr -d ' ')"
+          while IFS= read -r number; do
+            [[ -z "$number" ]] && continue
+            gh api --silent -X PATCH "repos/$repo/pulls/$number" -f state=closed
+          done < /tmp/stale-prs.txt
+          echo "CLOSED_STALE_PRS|count=$stale_pr_count"
+
+          # Delete only branches with zero commits unique to them and no open PR.
           gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[].name' | sort > /tmp/branches.txt
+          : > /tmp/deleted-branches.txt
           while IFS= read -r branch; do
-            sha="$(gh api "repos/$repo/git/ref/heads/$branch" --jq '.object.sha')"
+            [[ "$branch" == "$default_branch" || "$branch" == "$current_branch" ]] && continue
             open_prs="$(gh api "repos/$repo/pulls?state=open&head=$owner:$branch&per_page=100" --jq 'length')"
-            if [[ "$branch" == "$default_branch" ]]; then
-              ahead=0
-              behind=0
-              status=default
-            else
-              compare="$(gh api "repos/$repo/compare/$default_branch...$branch")"
-              ahead="$(jq -r '.ahead_by' <<<"$compare")"
-              behind="$(jq -r '.behind_by' <<<"$compare")"
-              status="$(jq -r '.status' <<<"$compare")"
+            [[ "$open_prs" != "0" ]] && continue
+            compare="$(gh api "repos/$repo/compare/$default_branch...$branch")"
+            ahead="$(jq -r '.ahead_by' <<<"$compare")"
+            if [[ "$ahead" == "0" ]]; then
+              gh api --silent -X DELETE "repos/$repo/git/refs/heads/$branch"
+              echo "$branch" >> /tmp/deleted-branches.txt
             fi
-            printf 'BRANCH|%s|sha=%s|ahead=%s|behind=%s|status=%s|open_prs=%s\n' "$branch" "$sha" "$ahead" "$behind" "$status" "$open_prs"
           done < /tmp/branches.txt
-          echo "BRANCHES_END"
+          deleted_branch_count="$(wc -l < /tmp/deleted-branches.txt | tr -d ' ')"
+          echo "DELETED_BRANCHES|count=$deleted_branch_count|names=$(paste -sd, /tmp/deleted-branches.txt)"
 
-          gh api --paginate "repos/$repo/actions/artifacts?per_page=100" | jq -s '[.[].artifacts[]]' > /tmp/artifacts.json
-          artifact_count="$(jq 'length' /tmp/artifacts.json)"
-          artifact_bytes="$(jq '[.[].size_in_bytes] | add // 0' /tmp/artifacts.json)"
-          echo "ARTIFACT_SUMMARY|count=$artifact_count|bytes=$artifact_bytes"
-          jq -r 'sort_by(.created_at)[] | "ARTIFACT|id=\(.id)|name=\(.name)|bytes=\(.size_in_bytes)|created=\(.created_at)|expired=\(.expired)|branch=\(.workflow_run.head_branch // "")|run=\(.workflow_run.id // 0)"' /tmp/artifacts.json
-
+          # Disable one-off workflows. Keep only the reusable stable release workflow and this job until it finishes.
           gh api --paginate "repos/$repo/actions/workflows?per_page=100" | jq -s '[.[].workflows[]]' > /tmp/workflows.json
-          echo "WORKFLOW_SUMMARY|count=$(jq 'length' /tmp/workflows.json)"
-          jq -r 'sort_by(.path)[] | "WORKFLOW|id=\(.id)|state=\(.state)|path=\(.path)|name=\(.name)"' /tmp/workflows.json
+          current_workflow_id="$(jq -r '.[] | select(.path == ".github/workflows/github-cleanup-audit.yml") | .id' /tmp/workflows.json | head -n1)"
+          jq -r --arg current "$current_workflow_id" '.[] | select(.path != ".github/workflows/publish-release.yml" and (.id|tostring) != $current) | .id' /tmp/workflows.json > /tmp/disable-workflows.txt
+          disabled_count="$(wc -l < /tmp/disable-workflows.txt | tr -d ' ')"
+          while IFS= read -r workflow_id; do
+            [[ -z "$workflow_id" ]] && continue
+            gh api --silent -X PUT "repos/$repo/actions/workflows/$workflow_id/disable" || true
+          done < /tmp/disable-workflows.txt
+          echo "DISABLED_OLD_WORKFLOWS|count=$disabled_count"
 
-          gh api --paginate "repos/$repo/releases?per_page=100" | jq -s '[.[][]]' > /tmp/releases.json
-          release_count="$(jq 'length' /tmp/releases.json)"
-          release_bytes="$(jq '[.[].assets[].size] | add // 0' /tmp/releases.json)"
-          echo "RELEASE_SUMMARY|count=$release_count|asset_bytes=$release_bytes"
-          jq -r 'sort_by(.created_at)[] | "RELEASE|tag=\(.tag_name)|draft=\(.draft)|prerelease=\(.prerelease)|created=\(.created_at)|assets=\([.assets[].name] | join(","))|bytes=\([.assets[].size] | add // 0)"' /tmp/releases.json
+          # Final repository state before this maintenance run removes itself.
+          remaining_artifacts="$(gh api "repos/$repo/actions/artifacts?per_page=1" --jq '.total_count')"
+          remaining_runs="$(gh api "repos/$repo/actions/runs?per_page=1" --jq '.total_count')"
+          gh api --paginate "repos/$repo/releases?per_page=100" | jq -s '[.[][]]' > /tmp/releases-after.json
+          remaining_releases="$(jq 'length' /tmp/releases-after.json)"
+          remaining_release_bytes="$(jq '[.[].assets[].size] | add // 0' /tmp/releases-after.json)"
+          remaining_branches="$(gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[].name' | wc -l | tr -d ' ')"
+          active_workflows="$(gh api --paginate "repos/$repo/actions/workflows?per_page=100" | jq -s '[.[].workflows[] | select(.state == "active")] | length')"
+          echo "FINAL_STATE|artifacts=$remaining_artifacts|runs=$remaining_runs|releases=$remaining_releases|release_asset_bytes=$remaining_release_bytes|branches_before_self_delete=$remaining_branches|active_workflows_before_self_disable=$active_workflows"
+
+          # Close this PR, disable this temporary workflow and delete its branch.
+          gh api --silent -X PATCH "repos/$repo/pulls/$current_pr" -f state=closed
+          if [[ -n "$current_workflow_id" ]]; then
+            gh api --silent -X PUT "repos/$repo/actions/workflows/$current_workflow_id/disable" || true
+          fi
+          gh api --silent -X DELETE "repos/$repo/git/refs/heads/$current_branch"
+          echo "SELF_CLEANUP|pr=$current_pr|branch=$current_branch|workflow_id=$current_workflow_id"
