@@ -1,0 +1,115 @@
+diff --git a/RetreatUI/CHANGELOG.txt b/RetreatUI/CHANGELOG.txt
+index 1365d00..323e9dc 100644
+--- a/RetreatUI/CHANGELOG.txt
++++ b/RetreatUI/CHANGELOG.txt
+@@ -1,3 +1,9 @@
++RetreatUI v1.1.0-beta.7
++- Party Utility icons now display the native ability tooltip when hovered instead of internal labels such as Group Defensive.
++- Added live cooldown remaining or Ready status beneath the spell tooltip.
++- Added a safe spell-link fallback for Project Ascension clients without direct spell-tooltip support.
++- Preserved all beta.6 HUD scaling, build detection and saved layout changes.
++
+ RetreatUI v1.1.0-beta.6
+ - Added scalable HUD Editor controls for every major HUD section.
+ - Added selected-section and Scale All controls from 60% to 160% in 5% steps.
+diff --git a/RetreatUI/Core/PartyUtility.lua b/RetreatUI/Core/PartyUtility.lua
+index d993e6b..0ca13ac 100644
+--- a/RetreatUI/Core/PartyUtility.lua
++++ b/RetreatUI/Core/PartyUtility.lua
+@@ -417,10 +417,28 @@ local function CreateIcon(parent)
+     local entry = self.entry
+     if not entry or not GameTooltip then return end
+     GameTooltip:SetOwner(self, "ANCHOR_TOP")
+-    GameTooltip:SetText(tostring(entry.name), 1, 1, 1)
+-    GameTooltip:AddLine(tostring(CATEGORY_LABELS[entry.category] or entry.category), 0.85, 0.85, 0.90)
++
++    local spellID = tonumber(entry.id)
++    local spellTooltipShown = false
++    if spellID and spellID > 0 then
++      if type(GameTooltip.SetSpellByID) == "function" then
++        spellTooltipShown = pcall(GameTooltip.SetSpellByID, GameTooltip, spellID)
++      end
++      if not spellTooltipShown and type(GameTooltip.SetHyperlink) == "function" then
++        spellTooltipShown = pcall(GameTooltip.SetHyperlink, GameTooltip, "spell:" .. tostring(spellID))
++      end
++    end
++
++    if not spellTooltipShown then
++      GameTooltip:SetText(tostring(entry.name), 1, 1, 1)
++    end
++
+     local remaining = tonumber(self.remaining) or 0
+-    if remaining > 0 then GameTooltip:AddLine("Cooldown: " .. W:FormatCooldown(remaining), 1, 0.82, 0.12) end
++    if remaining > 0 then
++      GameTooltip:AddLine("Cooldown remaining: " .. W:FormatCooldown(remaining), 1, 0.82, 0.12)
++    elseif not entry.preview then
++      GameTooltip:AddLine("Ready", 0.34, 0.95, 0.38)
++    end
+     GameTooltip:Show()
+   end)
+   frame:SetScript("OnLeave", function() if GameTooltip then GameTooltip:Hide() end end)
+diff --git a/RetreatUI/Core/Version.lua b/RetreatUI/Core/Version.lua
+index 0667a1c..9e2c65a 100644
+--- a/RetreatUI/Core/Version.lua
++++ b/RetreatUI/Core/Version.lua
+@@ -2,15 +2,13 @@ local RUI = RetreatUI
+ 
+ RUI.changelog = {
+   version = RUI.version,
+-  title = "RetreatUI v1.1.0-beta.6",
+-  summary = "A scalable HUD Editor and stronger automatic build/talent detection.",
++  title = "RetreatUI v1.1.0-beta.7",
++  summary = "Native ability tooltips for Party Utility cooldown icons.",
+   changes = {
+-    "Added per-section HUD scaling for Main Rotation, Utility, Procs/Buffs, Class Resource, Primary Power and Target Debuffs.",
+-    "Added HUD Editor scale controls in 5% steps, 100% reset, Scale All controls and mouse-wheel scaling directly on anchors.",
+-    "HUD positions and scale are saved separately for each detected class build and old beta.5 layouts migrate automatically.",
+-    "Upgraded build detection to include the active Character Advancement slot, stable spell/entry keys and learned HUD records.",
+-    "Added cached Character Advancement node detection and explicit entryID, collectorEntryID and talentID visibility conditions.",
+-    "Build changes now invalidate stale talent data before the HUD, target debuffs and party utility are refreshed.",
++    "Party Utility icons now show the native ability tooltip when hovered instead of internal category labels such as Group Defensive.",
++    "Tooltips use the tracked spell ID and include the live cooldown remaining or Ready state.",
++    "Added a safe spell-link fallback for Project Ascension clients without GameTooltip:SetSpellByID support.",
++    "Preserved all beta.6 HUD scaling, build detection and saved layout changes.",
+   },
+ }
+ 
+diff --git a/RetreatUI/Loader.lua b/RetreatUI/Loader.lua
+index e5201d5..a83d262 100644
+--- a/RetreatUI/Loader.lua
++++ b/RetreatUI/Loader.lua
+@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
+ local RUI = RetreatUI
+ 
+ RUI.name = "RetreatUI"
+-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.1.0-beta.6"
++RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.1.0-beta.7"
+ RUI._loaderLoaded = true
+ 
+ local function Chat(message)
+diff --git a/RetreatUI/RetreatUI.toc b/RetreatUI/RetreatUI.toc
+index 487efd1..d7e8a1b 100644
+--- a/RetreatUI/RetreatUI.toc
++++ b/RetreatUI/RetreatUI.toc
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI
+ ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
+ ## Author: Retreat
+-## Version: 1.1.0-beta.6
++## Version: 1.1.0-beta.7
+ ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
+ ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core
+ ## DefaultState: Enabled
+diff --git a/RetreatUI_Classes/RetreatUI_Classes.toc b/RetreatUI_Classes/RetreatUI_Classes.toc
+index 6bed498..94d8228 100644
+--- a/RetreatUI_Classes/RetreatUI_Classes.toc
++++ b/RetreatUI_Classes/RetreatUI_Classes.toc
+@@ -2,7 +2,7 @@
+ ## Title: RetreatUI Classes
+ ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
+ ## Author: Retreat
+-## Version: 1.1.0-beta.6
++## Version: 1.1.0-beta.7
+ ## Dependencies: RetreatUI
+ ## DefaultState: Enabled
+ 
