@@ -1,0 +1,243 @@
+name: Publish RetreatUI v1.1.0-beta.2
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.1.0-beta.2'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.1.0-beta.2
+      ZIP_NAME: RetreatUI_v1.1.0-beta.2.zip
+      MANIFEST_NAME: RetreatUI_manifest.json
+      PATCH_SHA256: 2922513042bc57ab6c26cd33a597047a3fbe14937d26c6f035993134f3158faf
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download beta.1 base and official release
+        run: |
+          mkdir -p base work official
+          gh release download v1.1.0-beta.1 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.1.0-beta.1.zip' \
+            --dir base
+          gh release download v1.0.11 \
+            --repo "$GITHUB_REPOSITORY" \
+            --pattern 'RetreatUI_v1.0.11.zip' \
+            --dir official
+          test -f base/RetreatUI_v1.1.0-beta.1.zip
+          test -f official/RetreatUI_v1.0.11.zip
+          unzip -q base/RetreatUI_v1.1.0-beta.1.zip -d work
+
+      - name: Decode and apply beta.2 patch
+        run: |
+          base64 -d .release-v1.1.0-beta.2/payload.patch.gz.b64 | gzip -d > /tmp/v1.1.0-beta.2.patch
+          echo "$PATCH_SHA256  /tmp/v1.1.0-beta.2.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < /tmp/v1.1.0-beta.2.patch
+
+      - name: Validate beta.2 systems
+        run: |
+          grep -Fq '## Version: 1.1.0-beta.2' work/RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.0-beta.2' work/RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'RUI.schema = 6' work/RetreatUI/Core/Init.lua
+          test -f work/RetreatUI/Core/PartyUtility.lua
+          test -f work/RetreatUI/Data/DangerousAbilities.lua
+          test -f work/RetreatUI/Integrations/TurboDangerousAbilities.lua
+          grep -Fq 'RUIUTIL2' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'function RUI:InitializePartyUtilityTracker' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'function RUI:OpenPartyUtilitySettings' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'function RUI:InitializeDangerousAbilitySystem' work/RetreatUI/Integrations/TurboDangerousAbilities.lua
+          grep -Fq 'function RUI:RegisterDangerousAbility' work/RetreatUI/Data/DangerousAbilities.lua
+          grep -Fq 'partyUtility = {x=0, y=190}' work/RetreatUI/Core/Layout.lua
+          grep -Fq '{key="partyUtility", label="PARTY UTILITY"' work/RetreatUI/Core/HUDEditor.lua
+          grep -Fq 'elseif command == "utility"' work/RetreatUI/Loader.lua || grep -Fq 'if command == "utility"' work/RetreatUI/Loader.lua
+          if grep -Fq 'icon.text:SetText("?")' work/RetreatUI/Integrations/NPCSpellCooldowns.lua; then
+            echo 'Question-mark NPC cooldown output is still present.' >&2
+            exit 1
+          fi
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Runtime-test Party Utility, dangerous abilities and anchor migration
+        run: |
+          lua5.1 - <<'LUA'
+          local function noop() end
+          local function object()
+            local methods = {}
+            function methods:SetSize(w,h) self.w,self.h=w,h end
+            function methods:SetWidth(w) self.w=w end
+            function methods:SetHeight(h) self.h=h end
+            function methods:GetWidth() return self.w or 100 end
+            function methods:GetHeight() return self.h or 20 end
+            function methods:SetPoint(...) self.point={...} end
+            function methods:ClearAllPoints() self.point=nil end
+            function methods:Show() self.shown=true end
+            function methods:Hide() self.shown=false end
+            function methods:IsShown() return self.shown==true end
+            function methods:SetScript(k,v) self.scripts=self.scripts or {}; self.scripts[k]=v end
+            function methods:RegisterEvent() end
+            function methods:CreateTexture() return setmetatable({}, {__index=function() return noop end}) end
+            function methods:CreateFontString()
+              local f={}
+              function f:SetText(v) self.text=v end
+              return setmetatable(f, {__index=function() return noop end})
+            end
+            function methods:GetFrameLevel() return 1 end
+            function methods:SetChecked(v) self.checked=v end
+            function methods:GetChecked() return self.checked end
+            return setmetatable({shown=false}, {__index=methods})
+          end
+          function CreateFrame(_,name) local f=object(); if name then _G[name]=f end; return f end
+          UIParent=CreateFrame('Frame','UIParent')
+          WorldFrame=UIParent
+          DEFAULT_CHAT_FRAME={AddMessage=noop}
+          GameTooltip={SetOwner=noop,SetText=noop,AddLine=noop,Show=noop,Hide=noop}
+          BOOKTYPE_SPELL='spell'
+          function date() return 'test' end
+          function time() return 1 end
+          function GetTime() return 100 end
+          function InCombatLockdown() return false end
+          function UnitName(unit) if unit=='player' then return 'Tester','' end end
+          function UnitExists(unit) return unit=='player' end
+          function UnitGUID(unit) return unit=='player' and 'Player-1' or nil end
+          function UnitGroupRolesAssigned() return 'DAMAGER' end
+          function GetNumPartyMembers() return 0 end
+          function GetNumRaidMembers() return 0 end
+          function IsInRaid() return false end
+          function IsInGroup() return false end
+          function GetSpellInfo(value)
+            if tonumber(value)==111 then return 'Kick',nil,'Interface\\Icons\\Spell_Frost_IceShock' end
+            if tonumber(value)==222 then return 'Ward',nil,'Interface\\Icons\\Spell_Holy_DevotionAura' end
+            return tostring(value),nil,'Interface\\Icons\\Spell_Holy_Resurrection'
+          end
+          function GetSpellCooldown() return 0,0,1 end
+          function RegisterAddonMessagePrefix() return true end
+          function SendAddonMessage() return true end
+          C_NamePlateManager={EnumerateActiveNamePlates=function() return function() return nil end end}
+
+          RetreatUI={}
+          assert(loadfile('work/RetreatUI/Core/Init.lua'))()
+          RetreatUI.ApplyFont=noop
+          RetreatUI.SkinFrame=noop
+          RetreatUI.GetTheme=function() return {accent={1,0.3,0.1,1}} end
+          RetreatUI.layout={partyUtility={x=0,y=190}}
+          RetreatUI.defaultLayout={partyUtility={x=0,y=190}}
+          assert(loadfile('work/RetreatUI/Core/HUDWidgets.lua'))()
+          RetreatUI.GetDetectedClass=function() return 'TestClass' end
+          RetreatUI.GetBuildFingerprint=function() return 'b12345678' end
+          RetreatUI.GetClassSpellRecords=function() return {
+            {name='Kick',id=111,category='interrupt',hudRow='utility',cooldownHint=15},
+            {name='Ward',id=222,category='defensive',partyCooldown=true,cooldownCategory='defensive',cooldownHint=60},
+          } end
+          RetreatUI.GetSpellRecordRuntimeID=function(_,r) return r.id end
+          RetreatUI.GetSpellRecordTexture=function(_,r) return select(3,GetSpellInfo(r.id)) end
+          RetreatUI.IsSpellRecordCastable=function() return true end
+          RetreatUI.ShouldShowSpellRecord=function() return true end
+          RetreatUI.spellDatabase={TestClass={spells=RetreatUI:GetClassSpellRecords()}}
+          assert(loadfile('work/RetreatUI/Core/PartyUtility.lua'))()
+          assert(RetreatUI:InitializePartyUtilityTracker())
+          local active, capabilities=RetreatUI:GetPartyUtilityStatus()
+          assert(active and capabilities==2)
+          assert(RetreatUI:TogglePartyUtilityPreview(true)==true)
+          assert(RetreatUIPartyUtilityTracker:IsShown())
+
+          assert(loadfile('work/RetreatUI/Data/DangerousAbilities.lua'))()
+          local definition, source=RetreatUI:GetDangerousAbilityDefinition(1,nil,'Dragon Breath')
+          assert(definition and definition.category=='frontal' and source=='name-pattern')
+          assert(loadfile('work/RetreatUI/Integrations/TurboDangerousAbilities.lua'))()
+          assert(RetreatUI:InitializeDangerousAbilitySystem())
+
+          RetreatUIDB.hudProfiles={version=1,classes={TestClass={default={core={x=1,y=2}},builds={bold={core={x=3,y=4}}}}},activeBuilds={TestClass='bold'},lastDetected={}}
+          RetreatUI.NormalizeClassName=function(_,v) return v end
+          RetreatUI.GetActiveAdvancementSlot=function() return 1 end
+          RetreatUI.ScanSpellbook=function() return {},false end
+          RetreatUI.IsSpellRecordLearned=function() return false end
+          RetreatUI.ApplyHUDLayout=function() return true end
+          assert(loadfile('work/RetreatUI/Core/BuildProfiles.lua'))()
+          local profile=RetreatUI:GetActiveHUDProfile('TestClass',true)
+          assert(profile.partyUtility and profile.partyUtility.y==190)
+          print('beta.2 runtime tests passed')
+          LUA
+
+      - name: Package addon
+        run: |
+          cd work
+          zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes
+          cd ..
+          test -f "$ZIP_NAME"
+
+      - name: Validate ZIP structure
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          name='RetreatUI_v1.1.0-beta.2.zip'
+          with zipfile.ZipFile(name) as archive:
+              roots=sorted({entry.split('/',1)[0] for entry in archive.namelist() if entry})
+              if roots != ['RetreatUI','RetreatUI_Classes']:
+                  raise SystemExit(f'Unexpected ZIP roots: {roots}')
+              assert '## Version: 1.1.0-beta.2' in archive.read('RetreatUI/RetreatUI.toc').decode('utf-8')
+              assert '## Version: 1.1.0-beta.2' in archive.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
+              assert 'RUIUTIL2' in archive.read('RetreatUI/Core/PartyUtility.lua').decode('utf-8')
+              assert 'InitializeDangerousAbilitySystem' in archive.read('RetreatUI/Integrations/TurboDangerousAbilities.lua').decode('utf-8')
+          PY
+          sha256sum "$ZIP_NAME"
+
+      - name: Create launcher release manifest
+        run: |
+          RELEASE_SHA=$(sha256sum official/RetreatUI_v1.0.11.zip | awk '{print $1}')
+          BETA_SHA=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+          export RELEASE_SHA BETA_SHA
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          manifest={
+              'schema':1,
+              'repository':'RetreatUI/RetreatUI-Addon',
+              'generated_at':datetime.now(timezone.utc).isoformat(),
+              'channels':{
+                  'release':{'version':'1.0.11','tag':'v1.0.11','asset':'RetreatUI_v1.0.11.zip','sha256':os.environ['RELEASE_SHA'],'prerelease':False},
+                  'beta':{'version':'1.1.0-beta.2','tag':'v1.1.0-beta.2','asset':'RetreatUI_v1.1.0-beta.2.zip','sha256':os.environ['BETA_SHA'],'prerelease':True},
+              },
+          }
+          with open('RetreatUI_manifest.json','w',encoding='utf-8') as handle:
+              json.dump(manifest,handle,indent=2)
+              handle.write('\n')
+          PY
+          python3 -m json.tool "$MANIFEST_NAME" >/dev/null
+
+      - name: Publish GitHub pre-release
+        run: |
+          NOTES=$'RetreatUI v1.1 systems beta.2.\n\n- Adds the synchronized Party Utility Tracker with learned-only and role-aware filtering.\n- Tracks interrupts, combat resurrection, dispels, externals, group defensives, immunities and taunts.\n- Adds /rui utility settings, per-category controls, group resync and solo preview.\n- Adds the TurboPlates Dangerous Ability System with priority cast borders and labels.\n- Adds a separate dangerous-ability registry for future encounter data updates.\n- Hides unknown NPC cooldown/question-mark entries until a real icon and cooldown are available.\n\nThis is a beta-channel testing build.'
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.2' --prerelease --notes "$NOTES"
+          else
+            gh release create "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.2' --prerelease --notes "$NOTES"
+          fi
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1.0-beta.2-artifact
+          path: |
+            RetreatUI_v1.1.0-beta.2.zip
+            RetreatUI_manifest.json
+          if-no-files-found: error
