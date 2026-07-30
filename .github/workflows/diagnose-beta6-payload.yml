@@ -14,13 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Hash part04 blocks
+      - name: Print mismatched part04 block
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import hashlib
-          data = Path('.release-v1.1.0-beta.6/payload.part04').read_bytes()
-          print('bytes', len(data))
-          for offset in range(0, len(data), 200):
-              print(offset // 200, hashlib.sha256(data[offset:offset + 200]).hexdigest())
+          data = Path('.release-v1.1.0-beta.6/payload.part04').read_text()
+          print(data[39 * 200:40 * 200])
           PY
