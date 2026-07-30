@@ -26,11 +26,12 @@ jobs:
             9c56a8567891f6341404ed438e3643e8388f724b
             57c19142e6c596675b2bb3022540c0fb9e86525d
           )
-          for i in $(seq -w 0 7); do
+          for n in $(seq 0 7); do
+            i=$(printf '%02d' "$n")
             path=".release-v1.1.0-beta.6/payload.part${i}"
             test -f "$path"
             actual=$(git hash-object "$path")
             bytes=$(wc -c < "$path")
-            echo "part${i}: bytes=$bytes blob=$actual expected=${expected[$((10#$i))]}"
-            test "$actual" = "${expected[$((10#$i))]}"
+            echo "part${i}: bytes=$bytes blob=$actual expected=${expected[$n]}"
+            test "$actual" = "${expected[$n]}"
           done
