@@ -1,0 +1,122 @@
+name: Publish RetreatUI Launcher v0.1.0-alpha.1
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.event.pull_request.head.ref == 'release/launcher-v0.1.0-alpha.1'
+    runs-on: windows-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: launcher-v0.1.0-alpha.1
+      SOURCE_SHA256: 1b6fee2a0ddf4b9035d1e2dc9e330248fc2ce90e443b459b3d7d024cc4ec73fb
+    steps:
+      - name: Checkout publication branch
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Reconstruct and verify launcher source
+        shell: bash
+        run: |
+          cat .release-launcher-v0.1.0-alpha.1/payload.part* | tr -d '\r\n ' | base64 -d > launcher-source.tar.gz
+          echo "$SOURCE_SHA256  launcher-source.tar.gz" | sha256sum -c -
+          tar -xzf launcher-source.tar.gz
+          test -f RetreatUI_Launcher/retreatui_launcher.py
+          test -f RetreatUI_Launcher/assets/retreatui_logo.ico
+          test -f RetreatUI_Launcher/assets/retreatui_logo.png
+
+      - name: Validate source and install builder
+        shell: pwsh
+        run: |
+          python -m py_compile RetreatUI_Launcher/retreatui_launcher.py
+          python RetreatUI_Launcher/retreatui_launcher.py --self-test
+          python -m pip install --disable-pip-version-check --upgrade pip
+          python -m pip install --disable-pip-version-check pyinstaller pillow
+
+      - name: Build Windows executable
+        shell: pwsh
+        working-directory: RetreatUI_Launcher
+        run: |
+          python -m PyInstaller --noconfirm --clean --onefile --windowed `
+            --name "RetreatUI_Launcher" `
+            --icon "assets/retreatui_logo.ico" `
+            --add-data "assets/retreatui_logo.png;assets" `
+            --add-data "assets/retreatui_logo.ico;assets" `
+            retreatui_launcher.py
+          if (!(Test-Path "dist/RetreatUI_Launcher.exe")) { throw "Launcher EXE was not created" }
+
+      - name: Test packaged executable
+        shell: pwsh
+        run: |
+          $process = Start-Process -FilePath "RetreatUI_Launcher/dist/RetreatUI_Launcher.exe" -ArgumentList "--portable", "--self-test" -Wait -PassThru
+          if ($process.ExitCode -ne 0) { throw "Packaged launcher self-test failed with exit code $($process.ExitCode)" }
+
+      - name: Create release assets and manifest
+        shell: pwsh
+        run: |
+          Copy-Item "RetreatUI_Launcher/dist/RetreatUI_Launcher.exe" "RetreatUI_Launcher.exe"
+          Compress-Archive -Path "RetreatUI_Launcher/retreatui_launcher.py", "RetreatUI_Launcher/README.md", "RetreatUI_Launcher/launcher_manifest.template.json", "RetreatUI_Launcher/assets" -DestinationPath "RetreatUI_Launcher_Source.zip" -Force
+          $hash = (Get-FileHash "RetreatUI_Launcher.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
+          $manifest = [ordered]@{
+            schema = 1
+            version = "0.1.0-alpha.1"
+            tag = "launcher-v0.1.0-alpha.1"
+            asset = "RetreatUI_Launcher.exe"
+            sha256 = $hash
+            repository = "RetreatUI/RetreatUI-Addon"
+            self_update = $true
+            addon_channels = @("release", "beta")
+          }
+          $manifest | ConvertTo-Json -Depth 4 | Set-Content -Encoding utf8NoBOM "RetreatUI_Launcher_manifest.json"
+          python -m json.tool RetreatUI_Launcher_manifest.json | Out-Null
+          Write-Host "Launcher SHA-256: $hash"
+
+      - name: Publish launcher alpha
+        shell: bash
+        run: |
+          cat > launcher-notes.md <<'MD'
+          ## RetreatUI Launcher v0.1.0-alpha.1
+
+          First public testing build of the standalone RetreatUI Windows launcher.
+
+          ### Included
+          - Self-updating launcher: users only need to download the launcher manually once.
+          - Separate Release and Beta addon channels.
+          - Automatic Project Ascension AddOns-path detection plus manual browsing.
+          - One-click Install, Update and Repair.
+          - Required SHA-256 verification for every launcher and addon download.
+          - Atomic addon replacement with rollback on failure.
+          - Backups of RetreatUI folders and SavedVariables before changes.
+          - Backup restore and previous-version recovery.
+          - Release notes and optional Launch Game button.
+          - Per-user installation in LocalAppData with a Start Menu shortcut.
+          - No account, telemetry or administrator access required for normal use.
+
+          This alpha is not yet code-signed, so Windows may show an unknown-publisher warning on first launch.
+          MD
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" RetreatUI_Launcher.exe RetreatUI_Launcher_manifest.json RetreatUI_Launcher_Source.zip --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI Launcher v0.1.0-alpha.1' --notes-file launcher-notes.md --prerelease
+          else
+            gh release create "$TAG" RetreatUI_Launcher.exe RetreatUI_Launcher_manifest.json RetreatUI_Launcher_Source.zip --repo "$GITHUB_REPOSITORY" --title 'RetreatUI Launcher v0.1.0-alpha.1' --notes-file launcher-notes.md --prerelease
+          fi
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-Launcher-v0.1.0-alpha.1
+          path: |
+            RetreatUI_Launcher.exe
+            RetreatUI_Launcher_manifest.json
+            RetreatUI_Launcher_Source.zip
+          if-no-files-found: error
