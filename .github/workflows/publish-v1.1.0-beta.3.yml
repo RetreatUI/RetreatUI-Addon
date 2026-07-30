@@ -1,0 +1,286 @@
+name: Publish RetreatUI v1.1.0-beta.3
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.1.0-beta.3'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.1.0-beta.3
+      ZIP_NAME: RetreatUI_v1.1.0-beta.3.zip
+      MANIFEST_NAME: RetreatUI_manifest.json
+      PATCH_SHA256: 7e1ac2b8032710a784d321e5801436f740d694a6e032b66a17484e5058e9b265
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download beta.2 base and official release
+        run: |
+          mkdir -p base work official
+          gh release download v1.1.0-beta.2 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.1.0-beta.2.zip' --dir base
+          gh release download v1.0.11 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.0.11.zip' --dir official
+          test -f base/RetreatUI_v1.1.0-beta.2.zip
+          test -f official/RetreatUI_v1.0.11.zip
+          unzip -q base/RetreatUI_v1.1.0-beta.2.zip -d work
+
+      - name: Decode and apply beta.3 patch
+        run: |
+          cat .release-v1.1.0-beta.3/payload.part* | base64 -d | gzip -d > /tmp/v1.1.0-beta.3.patch
+          echo "$PATCH_SHA256  /tmp/v1.1.0-beta.3.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < /tmp/v1.1.0-beta.3.patch
+
+      - name: Validate beta.3 architecture
+        run: |
+          grep -Fq '## Version: 1.1.0-beta.3' work/RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.0-beta.3' work/RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'RUI.schema = 7' work/RetreatUI/Core/Init.lua
+          grep -Fq 'local PREFIX = "RUIUTIL3"' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'local UNIT_ORDER = {"player", "party1", "party2", "party3", "party4"}' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'RetreatUIPartyUtility_' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'container:SetPoint("RIGHT", target, "LEFT", -4, 0)' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'peer.exactCapabilities = true' work/RetreatUI/Core/PartyUtility.lua
+          grep -Fq 'InferredCapabilities(className)' work/RetreatUI/Core/PartyUtility.lua
+          ! grep -Fq 'COMBAT_LOG_EVENT_UNFILTERED' work/RetreatUI/Core/PartyUtility.lua
+          ! grep -Fq '{key="partyUtility"' work/RetreatUI/Core/HUDEditor.lua
+          ! grep -Fq 'partyUtility = {' work/RetreatUI/Core/Layout.lua
+          ! test -f work/RetreatUI/Data/DangerousAbilities.lua
+          ! test -f work/RetreatUI/Integrations/TurboDangerousAbilities.lua
+          ! grep -Fq 'TurboDangerousAbilities.lua' work/RetreatUI/RetreatUI.toc
+          ! grep -Fq 'InitializeDangerousAbilitySystem' work/RetreatUI/Core/Events.lua
+          ! grep -Fq 'command == "danger"' work/RetreatUI/Loader.lua
+
+      - name: Validate Templar and Knight of Xoroth coverage
+        run: |
+          grep -Fq 'version = 4' work/RetreatUI_Classes/Templar/Data.lua
+          for id in 807814 801478 801165 804781 804816 804228 500757 578276 562302 803880 803872 806521 503135 805421 807274 806864 704576; do
+            grep -Fq "${id}" work/RetreatUI_Classes/Templar/Data.lua
+          done
+          grep -Fq 'name="Divine Strikes", id=705255, category="debuff"' work/RetreatUI_Classes/Templar/Data.lua
+          grep -Fq 'name="Parry Dance", id=804912, auraID=560651' work/RetreatUI_Classes/Templar/Data.lua
+          grep -Fq 'name="Lightkeeper", id=560835, auraID=561016' work/RetreatUI_Classes/Templar/Data.lua
+          grep -Fq 'name="Duty Calls", id=705286, auraID=560834' work/RetreatUI_Classes/Templar/Data.lua
+          grep -Fq 'version = 6' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Blade of Xoroth", id=560675' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Demonflare", id=503468' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Flames of Xoroth", id=801059' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Hell Scream", id=801002' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Burning Scripture", id=805696' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'name="Hellfire Form", id=804006' work/RetreatUI_Classes/KnightOfXoroth/Data.lua
+          grep -Fq 'HasPestilenceOfApocalypse' work/RetreatUI_Classes/KnightOfXoroth/HUD.lua
+          grep -Fq 'frame.effectText:SetText("MISSING")' work/RetreatUI_Classes/KnightOfXoroth/HUD.lua
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Runtime-test exact unit ownership
+        run: |
+          lua5.1 - <<'LUA'
+          local function noop() end
+          local frameMethods = {}
+          function frameMethods:SetSize(w,h) self.w,self.h=w,h end
+          function frameMethods:SetWidth(w) self.w=w end
+          function frameMethods:SetHeight(h) self.h=h end
+          function frameMethods:GetWidth() return self.w or 120 end
+          function frameMethods:GetHeight() return self.h or 32 end
+          function frameMethods:SetPoint(...) self.point={...} end
+          function frameMethods:ClearAllPoints() self.point=nil end
+          function frameMethods:Show() self.shown=true end
+          function frameMethods:Hide() self.shown=false end
+          function frameMethods:IsShown() return self.shown ~= false end
+          function frameMethods:SetScript(k,v) self.scripts=self.scripts or {}; self.scripts[k]=v end
+          function frameMethods:RegisterEvent() end
+          function frameMethods:SetFrameStrata(v) self.strata=v end
+          function frameMethods:GetFrameStrata() return self.strata or 'MEDIUM' end
+          function frameMethods:SetFrameLevel(v) self.level=v end
+          function frameMethods:GetFrameLevel() return self.level or 1 end
+          function frameMethods:SetClampedToScreen() end
+          function frameMethods:EnableMouse() end
+          function frameMethods:SetMovable() end
+          function frameMethods:RegisterForDrag() end
+          function frameMethods:RegisterForClicks() end
+          function frameMethods:SetNormalTexture() end
+          function frameMethods:SetPushedTexture() end
+          function frameMethods:SetHighlightTexture() end
+          function frameMethods:SetCheckedTexture() end
+          function frameMethods:SetChecked(v) self.checked=v end
+          function frameMethods:GetChecked() return self.checked end
+          function frameMethods:GetName() return self.name end
+          function frameMethods:GetAttribute(k) return self[k] end
+          function frameMethods:CreateTexture()
+            local t={}
+            function t:SetTexture(v) self.texture=v end
+            function t:SetDesaturated(v) self.desaturated=v end
+            setmetatable(t,{__index=function() return noop end})
+            return t
+          end
+          function frameMethods:CreateFontString()
+            local f={}
+            function f:SetText(v) self.text=v end
+            setmetatable(f,{__index=function() return noop end})
+            return f
+          end
+          setmetatable(frameMethods,{__index=function() return noop end})
+          local function frame(name, unit)
+            return setmetatable({name=name,unit=unit,shown=true,icons={}}, {__index=frameMethods})
+          end
+          function CreateFrame(_,name)
+            local f=frame(name)
+            if name then _G[name]=f end
+            return f
+          end
+          UIParent=frame('UIParent')
+          WorldFrame=UIParent
+          DEFAULT_CHAT_FRAME={AddMessage=noop}
+          GameTooltip={SetOwner=noop,SetText=noop,AddLine=noop,Show=noop,Hide=noop}
+          function GetTime() return 100 end
+          function InCombatLockdown() return false end
+          function GetNumPartyMembers() return 2 end
+          function GetNumSubgroupMembers() return 2 end
+          function IsInGroup() return true end
+          function IsInRaid() return false end
+          function UnitExists(unit) return unit=='player' or unit=='party1' or unit=='party2' end
+          local names={player='Retreat',party1='Alice',party2='Bob'}
+          function UnitName(unit) return names[unit],'' end
+          function UnitGUID(unit) return 'GUID-'..tostring(unit) end
+          function UnitGroupRolesAssigned(unit) return unit=='party2' and 'TANK' or 'DAMAGER' end
+          local classes={player='TestClass',party1='PartyOneClass',party2='PartyTwoClass'}
+          function UnitClass(unit) return classes[unit],classes[unit] end
+          local spellNames={[111]='Self Kick',[211]='Alice Dispel',[311]='Bob Taunt'}
+          function GetSpellInfo(id) return spellNames[tonumber(id)] or tostring(id),nil,'Interface\\Icons\\Spell_Holy_SealOfMight' end
+          function GetSpellCooldown() return 0,0,1 end
+          function RegisterAddonMessagePrefix() return true end
+          function SendAddonMessage() return true end
+
+          ElvUF_PartyGroup1UnitButton1=frame('ElvUF_PartyGroup1UnitButton1','player')
+          ElvUF_PartyGroup1UnitButton2=frame('ElvUF_PartyGroup1UnitButton2','party1')
+          ElvUF_PartyGroup1UnitButton3=frame('ElvUF_PartyGroup1UnitButton3','party2')
+
+          RetreatUIDB={partyUtility={enabled=true,showReady=true,showSelf=true,showSolo=false,roleAware=true,categories={interrupt=true,combatres=true,dispel=true,external=true,defensive=true,immunity=true,taunt=true}}}
+          RetreatUI={version='1.1.0-beta.3'}
+          local R=RetreatUI
+          R.spellDatabase={
+            TestClass={spells={{name='Self Kick',id=111,category='interrupt',cooldownHint=15}}},
+            PartyOneClass={spells={{name='Alice Dispel',id=211,category='utility',dispel=true,cooldownHint=8}}},
+            PartyTwoClass={spells={{name='Bob Taunt',id=311,category='taunt',cooldownHint=12}}},
+          }
+          R.HUDWidgets={}
+          function R.HUDWidgets:CreateIcon(parent,size)
+            local f=frame(nil); f.parent=parent; f:SetSize(size,size); f.texture=f:CreateTexture(); return f
+          end
+          function R.HUDWidgets:SetIconInactive(f,v) f.inactive=v end
+          function R.HUDWidgets:SetCooldownDisplay(f,remaining) f.cooldownRemaining=remaining end
+          function R.HUDWidgets:ReadSpellCooldown() return 0,0,1 end
+          function R.HUDWidgets:FormatCooldown(v) return tostring(v) end
+          function R.HUDWidgets:SetBorder(f,color) f.border=color end
+          function R:EnsureDB() return RetreatUIDB end
+          function R:ClearTable(t) for k in pairs(t) do t[k]=nil end end
+          function R:GetDetectedClass() return 'TestClass' end
+          function R:NormalizeClassName(v) return v end
+          function R:GetClassSpellRecords(className) return self.spellDatabase[className] and self.spellDatabase[className].spells or {} end
+          function R:GetSpellRecordRuntimeID(record) return record.id end
+          function R:GetSpellRecordTexture() return 'Interface\\Icons\\Spell_Holy_SealOfMight' end
+          function R:IsSpellRecordCastable() return true end
+          function R:ShouldShowSpellRecord() return true end
+          function R:GetBuildFingerprint() return 'b12345678' end
+          function R:After(_,fn) fn() end
+          function R:ApplyFont() end
+          function R:SkinFrame() end
+          function R:Print() end
+          C_ChatInfo={RegisterAddonMessagePrefix=function() return true end,SendAddonMessage=function() return true end}
+
+          assert(loadfile('work/RetreatUI/Core/PartyUtility.lua'))()
+          assert(R:InitializePartyUtilityTracker())
+          local player=_G.RetreatUIPartyUtility_player
+          local party1=_G.RetreatUIPartyUtility_party1
+          local party2=_G.RetreatUIPartyUtility_party2
+          assert(player and party1 and party2)
+          assert(player.point[2] == ElvUF_PartyGroup1UnitButton1)
+          assert(party1.point[2] == ElvUF_PartyGroup1UnitButton2)
+          assert(party2.point[2] == ElvUF_PartyGroup1UnitButton3)
+          assert(#player.entries == 1 and player.entries[1].id == 111)
+          assert(#party1.entries == 1 and party1.entries[1].id == 211)
+          assert(#party2.entries == 1 and party2.entries[1].id == 311)
+          local driver=_G.RetreatUIPartyUtilityDriver
+          driver.scripts.OnEvent(driver,'UNIT_SPELLCAST_SUCCEEDED','party1','Alice Dispel',211)
+          assert(party1.entries[1].remaining > 0)
+          assert((party2.entries[1].remaining or 0) == 0)
+          print('Exact player/party1/party2 ownership runtime test passed')
+          LUA
+
+      - name: Package addon
+        run: |
+          cd work
+          zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes
+          cd ..
+          test -f "$ZIP_NAME"
+
+      - name: Validate ZIP structure
+        run: |
+          python3 - <<'PY'
+          import zipfile
+          name='RetreatUI_v1.1.0-beta.3.zip'
+          with zipfile.ZipFile(name) as archive:
+              roots=sorted({entry.split('/',1)[0] for entry in archive.namelist() if entry})
+              if roots != ['RetreatUI','RetreatUI_Classes']:
+                  raise SystemExit(f'Unexpected ZIP roots: {roots}')
+              assert '## Version: 1.1.0-beta.3' in archive.read('RetreatUI/RetreatUI.toc').decode('utf-8')
+              assert '## Version: 1.1.0-beta.3' in archive.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
+          PY
+          sha256sum "$ZIP_NAME"
+
+      - name: Create launcher release manifest
+        run: |
+          RELEASE_SHA=$(sha256sum official/RetreatUI_v1.0.11.zip | awk '{print $1}')
+          BETA_SHA=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+          export RELEASE_SHA BETA_SHA
+          python3 - <<'PY'
+          import json, os
+          from datetime import datetime, timezone
+          manifest={
+              'schema':1,
+              'repository':'RetreatUI/RetreatUI-Addon',
+              'generated_at':datetime.now(timezone.utc).isoformat(),
+              'channels':{
+                  'release':{'version':'1.0.11','tag':'v1.0.11','asset':'RetreatUI_v1.0.11.zip','sha256':os.environ['RELEASE_SHA'],'prerelease':False},
+                  'beta':{'version':'1.1.0-beta.3','tag':'v1.1.0-beta.3','asset':'RetreatUI_v1.1.0-beta.3.zip','sha256':os.environ['BETA_SHA'],'prerelease':True},
+              },
+          }
+          with open('RetreatUI_manifest.json','w',encoding='utf-8') as handle:
+              json.dump(manifest,handle,indent=2); handle.write('\n')
+          PY
+          python3 -m json.tool "$MANIFEST_NAME" >/dev/null
+
+      - name: Publish GitHub pre-release
+        run: |
+          NOTES=$'RetreatUI v1.1.0-beta.3.\n\n- Rebuilds Party Utility as unit-owned rows attached to the exact player and party frames.\n- Preserves cooldown ownership across roster changes and uses exact RetreatUI sync plus class-aware fallback.\n- Removes the beta.2 central utility tracker, combat-log scan and TurboPlates dangerous-ability runtime.\n- Expands native Templar coverage after auditing Bella\x27s Templar pack.\n- Merges missing Knight of Xoroth Hellfire coverage without duplicating Rage, Demonfire or Pestilence trackers.\n\nThis is a beta-channel testing build.'
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.3' --prerelease --notes "$NOTES"
+          else
+            gh release create "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.3' --prerelease --notes "$NOTES"
+          fi
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1.0-beta.3-artifact
+          path: |
+            RetreatUI_v1.1.0-beta.3.zip
+            RetreatUI_manifest.json
+          if-no-files-found: error
