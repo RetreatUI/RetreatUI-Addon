@@ -92,7 +92,7 @@ jobs:
             function methods:Show() self.shown=true end
             function methods:Hide() self.shown=false end
             function methods:IsShown() return self.shown==true end
-            function methods:SetScript(k,v) self.scripts=self.scripts or {}; self.scripts[k]=v end
+            function methods:SetScript(k,v) local scripts=rawget(self,'scripts') or {}; rawset(self,'scripts',scripts); scripts[k]=v end
             function methods:RegisterEvent() end
             function methods:CreateTexture() return setmetatable({}, {__index=function() return noop end}) end
             function methods:CreateFontString()
