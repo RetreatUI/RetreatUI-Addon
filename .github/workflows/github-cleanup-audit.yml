@@ -1,0 +1,64 @@
+name: Audit GitHub Cleanup
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+
+jobs:
+  audit:
+    if: github.event.pull_request.head.ref == 'maintenance/github-cleanup-audit'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Audit branches, artifacts, workflows and releases
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+          owner="${repo%%/*}"
+          default_branch="$(gh api "repos/$repo" --jq '.default_branch')"
+          default_sha="$(gh api "repos/$repo/git/ref/heads/$default_branch" --jq '.object.sha')"
+
+          echo "AUDIT_REPO|$repo"
+          echo "DEFAULT|$default_branch|$default_sha"
+          echo "BRANCHES_BEGIN"
+          gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[].name' | sort > /tmp/branches.txt
+          while IFS= read -r branch; do
+            sha="$(gh api "repos/$repo/git/ref/heads/$branch" --jq '.object.sha')"
+            open_prs="$(gh api "repos/$repo/pulls?state=open&head=$owner:$branch&per_page=100" --jq 'length')"
+            if [[ "$branch" == "$default_branch" ]]; then
+              ahead=0
+              behind=0
+              status=default
+            else
+              compare="$(gh api "repos/$repo/compare/$default_branch...$branch")"
+              ahead="$(jq -r '.ahead_by' <<<"$compare")"
+              behind="$(jq -r '.behind_by' <<<"$compare")"
+              status="$(jq -r '.status' <<<"$compare")"
+            fi
+            printf 'BRANCH|%s|sha=%s|ahead=%s|behind=%s|status=%s|open_prs=%s\n' "$branch" "$sha" "$ahead" "$behind" "$status" "$open_prs"
+          done < /tmp/branches.txt
+          echo "BRANCHES_END"
+
+          gh api --paginate "repos/$repo/actions/artifacts?per_page=100" | jq -s '[.[].artifacts[]]' > /tmp/artifacts.json
+          artifact_count="$(jq 'length' /tmp/artifacts.json)"
+          artifact_bytes="$(jq '[.[].size_in_bytes] | add // 0' /tmp/artifacts.json)"
+          echo "ARTIFACT_SUMMARY|count=$artifact_count|bytes=$artifact_bytes"
+          jq -r 'sort_by(.created_at)[] | "ARTIFACT|id=\(.id)|name=\(.name)|bytes=\(.size_in_bytes)|created=\(.created_at)|expired=\(.expired)|branch=\(.workflow_run.head_branch // "")|run=\(.workflow_run.id // 0)"' /tmp/artifacts.json
+
+          gh api --paginate "repos/$repo/actions/workflows?per_page=100" | jq -s '[.[].workflows[]]' > /tmp/workflows.json
+          echo "WORKFLOW_SUMMARY|count=$(jq 'length' /tmp/workflows.json)"
+          jq -r 'sort_by(.path)[] | "WORKFLOW|id=\(.id)|state=\(.state)|path=\(.path)|name=\(.name)"' /tmp/workflows.json
+
+          gh api --paginate "repos/$repo/releases?per_page=100" | jq -s '[.[][]]' > /tmp/releases.json
+          release_count="$(jq 'length' /tmp/releases.json)"
+          release_bytes="$(jq '[.[].assets[].size] | add // 0' /tmp/releases.json)"
+          echo "RELEASE_SUMMARY|count=$release_count|asset_bytes=$release_bytes"
+          jq -r 'sort_by(.created_at)[] | "RELEASE|tag=\(.tag_name)|draft=\(.draft)|prerelease=\(.prerelease)|created=\(.created_at)|assets=\([.assets[].name] | join(","))|bytes=\([.assets[].size] | add // 0)"' /tmp/releases.json
