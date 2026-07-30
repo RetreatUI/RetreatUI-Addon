@@ -1,0 +1,249 @@
+name: Publish RetreatUI v1.1.0-beta.4
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'release/v1.1.0-beta.4'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TAG: v1.1.0-beta.4
+      ZIP_NAME: RetreatUI_v1.1.0-beta.4.zip
+      MANIFEST_NAME: RetreatUI_manifest.json
+      PATCH_SHA256: bc54bf90347d3552f05c969f71c103ba278ced86ad6f4f3acdda8b23cdf62e81
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 unzip zip patch
+
+      - name: Download beta.3 base and official release
+        run: |
+          mkdir -p base work official
+          gh release download v1.1.0-beta.3 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.1.0-beta.3.zip' --dir base
+          gh release download v1.0.11 --repo "$GITHUB_REPOSITORY" --pattern 'RetreatUI_v1.0.11.zip' --dir official
+          test -f base/RetreatUI_v1.1.0-beta.3.zip
+          test -f official/RetreatUI_v1.0.11.zip
+          unzip -q base/RetreatUI_v1.1.0-beta.3.zip -d work
+
+      - name: Decode and apply beta.4 patch
+        run: |
+          cat .release-v1.1.0-beta.4/payload.part* | tr -d '\r\n ' | base64 -d | gzip -d > /tmp/v1.1.0-beta.4.patch
+          echo "$PATCH_SHA256  /tmp/v1.1.0-beta.4.patch" | sha256sum -c -
+          patch --batch --forward -p1 -d work < /tmp/v1.1.0-beta.4.patch
+
+      - name: Validate beta.4 architecture
+        run: |
+          grep -Fq '## Version: 1.1.0-beta.4' work/RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.0-beta.4' work/RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'RUI.schema = 8' work/RetreatUI/Core/Init.lua
+          grep -Fq 'buffManagerKeybinds = true' work/RetreatUI/Core/Init.lua
+          grep -Fq 'NORMAL / LESSER' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'GREATER / SMART' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Choose every key yourself' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'SetOverrideBindingClick' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'SecureActionButtonTemplate' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'function RUI:SetBuffManagerKeybind' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'function RUI:GetBuffManagerKeybind' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'key == "BACKSPACE" or key == "DELETE"' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'key=="ESCAPE" or key=="BACKSPACE" or key=="DELETE"' work/RetreatUI/Core/BuffManager.lua
+          grep -Fq 'command == "buffs" or command == "keybinds"' work/RetreatUI/Loader.lua
+          for step in READINESS COMPONENTS INSTALL COMPLETE; do grep -Fq "$step" work/RetreatUI/Installer/Installer.lua; done
+          ! grep -Fq 'DangerousAbilities.lua' work/RetreatUI/RetreatUI.toc
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find work/RetreatUI work/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Runtime-test user-selected keybind storage
+        run: |
+          lua5.1 - <<'LUA'
+          local function noop() end
+          local methods = {}
+          function methods:SetSize() end
+          function methods:SetPoint() end
+          function methods:ClearAllPoints() end
+          function methods:SetAlpha() end
+          function methods:EnableMouse() end
+          function methods:EnableKeyboard() end
+          function methods:EnableMouseWheel() end
+          function methods:RegisterForClicks() end
+          function methods:RegisterForDrag() end
+          function methods:SetMovable() end
+          function methods:StartMoving() end
+          function methods:StopMovingOrSizing() end
+          function methods:SetFrameStrata() end
+          function methods:SetFrameLevel() end
+          function methods:GetFrameLevel() return 1 end
+          function methods:SetBackdrop() end
+          function methods:SetBackdropColor() end
+          function methods:SetBackdropBorderColor() end
+          function methods:RegisterEvent() end
+          function methods:SetScript(k,v) self._scripts=self._scripts or {}; self._scripts[k]=v end
+          function methods:Show() self.shown=true end
+          function methods:Hide() self.shown=false end
+          function methods:IsShown() return self.shown == true end
+          function methods:GetName() return self.name end
+          function methods:SetAttribute(k,v) self.attributes=self.attributes or {}; self.attributes[k]=v end
+          function methods:GetAttribute(k) return self.attributes and self.attributes[k] end
+          function methods:GetHeight() return 240 end
+          function methods:GetWidth() return 640 end
+          function methods:SetHeight() end
+          function methods:SetWidth() end
+          function methods:SetMinMaxValues() end
+          function methods:SetValueStep() end
+          function methods:SetValue() end
+          function methods:GetValue() return 0 end
+          function methods:SetOrientation() end
+          function methods:SetThumbTexture() end
+          function methods:SetVerticalScroll() end
+          function methods:SetScrollChild() end
+          function methods:SetAllPoints() end
+          function methods:CreateTexture()
+            local t={}
+            setmetatable(t,{__index=function() return noop end})
+            return t
+          end
+          function methods:CreateFontString()
+            local t={}
+            function t:SetText(v) self.text=v end
+            setmetatable(t,{__index=function() return noop end})
+            return t
+          end
+          setmetatable(methods,{__index=function() return noop end})
+          function CreateFrame(_,name)
+            local f=setmetatable({name=name,shown=false}, {__index=methods})
+            if name then _G[name]=f end
+            return f
+          end
+          UIParent=CreateFrame('Frame','UIParent')
+          SlashCmdList={}
+          DEFAULT_CHAT_FRAME={AddMessage=noop}
+          GameTooltip={SetOwner=noop,SetText=noop,AddLine=noop,Show=noop,Hide=noop}
+          function GetSpellInfo(id) return type(id)=='string' and id or ('Spell'..tostring(id)),nil,'icon' end
+          function GetNumSpellTabs() return 0 end
+          function GetNumPartyMembers() return 0 end
+          function GetNumRaidMembers() return 0 end
+          function GetNumSubgroupMembers() return 0 end
+          function UnitName() return 'Retreat' end
+          function UnitGUID() return 'Player-1' end
+          function UnitClass() return 'Witch Doctor','Witch Doctor' end
+          function UnitExists(unit) return unit=='player' end
+          function UnitIsConnected() return true end
+          function UnitIsDeadOrGhost() return false end
+          function UnitBuff() return nil end
+          function UnitPowerType() return 0,'MANA' end
+          function InCombatLockdown() return false end
+          function IsInRaid() return false end
+          function IsInGroup() return false end
+          function GetTime() return 100 end
+          function GetBindingAction() return '' end
+          function GetBindingText(key) return key end
+          function SetOverrideBindingClick() return true end
+          function ClearOverrideBindings() end
+          function IsControlKeyDown() return false end
+          function IsShiftKeyDown() return false end
+          function IsAltKeyDown() return false end
+          RetreatUIDB={}
+          RetreatUI={}
+          local R=RetreatUI
+          function R:EnsureDB() return RetreatUIDB end
+          function R:Print() end
+          function R:GetTheme()
+            return {background={.02,.02,.02,1},panelStrong={.04,.04,.04,1},panelSoft={.06,.06,.06,1},dim={.2,.2,.2,1},accent={.8,.4,.1,1},muted={.6,.6,.6,1},text={1,1,1,1},success={.1,.8,.2,1},danger={.9,.1,.1,1}}
+          end
+          function R:ApplyFont() end
+          function R:SkinFrame() end
+          function R:CreateButton(parent,text)
+            local b=CreateFrame('Button',nil,parent); b.text=b:CreateFontString(); b.text:SetText(text); function b:SetLabel(v) self.text:SetText(v) end; function b:SetEnabled() end; return b
+          end
+          assert(loadfile('work/RetreatUI/Core/BuffManager.lua'))()
+          assert(R:SetBuffManagerKeybind('Witch Doctor','fortitude','normal','CTRL-F'))
+          assert(R:SetBuffManagerKeybind('Witch Doctor','fortitude','greater','SHIFT-F'))
+          assert(R:GetBuffManagerKeybind('Witch Doctor','fortitude','normal') == 'CTRL-F')
+          assert(R:GetBuffManagerKeybind('Witch Doctor','fortitude','greater') == 'SHIFT-F')
+          assert(R:SetBuffManagerKeybind('Witch Doctor','intellect','normal','CTRL-F'))
+          assert(R:GetBuffManagerKeybind('Witch Doctor','fortitude','normal') == nil)
+          assert(R:GetBuffManagerKeybind('Witch Doctor','intellect','normal') == 'CTRL-F')
+          assert(R:SetBuffManagerKeybind('Templar','fortitude','normal','CTRL-F'))
+          assert(R:GetBuffManagerKeybind('Witch Doctor','intellect','normal') == 'CTRL-F')
+          assert(R:GetBuffManagerKeybind('Templar','fortitude','normal') == 'CTRL-F')
+          assert(R:SetBuffManagerKeybind('Witch Doctor','intellect','normal',nil))
+          assert(R:GetBuffManagerKeybind('Witch Doctor','intellect','normal') == nil)
+          print('Buff Manager user-selected keybind runtime test passed')
+          LUA
+
+      - name: Package addon
+        run: |
+          rm -f "$ZIP_NAME"
+          (cd work && zip -qr "../$ZIP_NAME" RetreatUI RetreatUI_Classes)
+          unzip -tq "$ZIP_NAME"
+          python3 - <<'PY'
+          import zipfile
+          path='RetreatUI_v1.1.0-beta.4.zip'
+          with zipfile.ZipFile(path) as z:
+              roots={n.split('/',1)[0] for n in z.namelist() if n and not n.startswith('__MACOSX/')}
+              assert roots == {'RetreatUI','RetreatUI_Classes'}, roots
+              assert all('/.git/' not in n and not n.endswith('.pyc') for n in z.namelist())
+          PY
+
+      - name: Create launcher release manifest
+        run: |
+          BETA_SHA=$(sha256sum "$ZIP_NAME" | awk '{print $1}')
+          RELEASE_SHA=$(sha256sum official/RetreatUI_v1.0.11.zip | awk '{print $1}')
+          cat > "$MANIFEST_NAME" <<JSON
+          {
+            "schema": 1,
+            "generated": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "channels": {
+              "release": {"version":"1.0.11","tag":"v1.0.11","asset":"RetreatUI_v1.0.11.zip","sha256":"$RELEASE_SHA","prerelease":false},
+              "beta": {"version":"1.1.0-beta.4","tag":"v1.1.0-beta.4","asset":"RetreatUI_v1.1.0-beta.4.zip","sha256":"$BETA_SHA","prerelease":true}
+            }
+          }
+          JSON
+          python3 -m json.tool "$MANIFEST_NAME" >/dev/null
+
+      - name: Publish GitHub pre-release
+        run: |
+          cat > /tmp/release-notes.md <<'MD'
+          ## RetreatUI v1.1.0-beta.4
+
+          ### Buff Manager keybinds
+          - Every keybind is chosen by the user; RetreatUI assigns no default keys.
+          - Each learned buff family can have separate Normal/Lesser and Greater/Smart bindings.
+          - Bindings are stored per class and shown directly on the buff bar.
+          - The key-capture view supports conflict warnings, duplicate prevention, Esc to cancel and Backspace/Delete to clear.
+          - Secure smart-target buttons preserve Buff Manager assignments and combat safety.
+
+          ### In-game installer overhaul
+          - Rebuilt as a clean class-neutral Readiness, Components, Install and Complete flow.
+          - Clear dependency states and actionable repair instructions.
+          - Existing profiles, layouts and Buff Manager assignments are preserved.
+          - Consistent visuals and validation across every supported class.
+          MD
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.4' --notes-file /tmp/release-notes.md --prerelease
+          else
+            gh release create "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" --title 'RetreatUI v1.1.0-beta.4' --notes-file /tmp/release-notes.md --prerelease
+          fi
+
+      - name: Upload workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1.0-beta.4
+          path: |
+            RetreatUI_v1.1.0-beta.4.zip
+            RetreatUI_manifest.json
+          if-no-files-found: error
