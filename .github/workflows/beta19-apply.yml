@@ -1,0 +1,127 @@
+name: Apply beta19 rune label hotfix
+
+on:
+  push:
+    branches:
+      - hotfix/beta19-rune-label
+    paths:
+      - ".github/workflows/beta19-apply.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hotfix/beta19-rune-label
+          fetch-depth: 0
+      - name: Apply permanent icon-only resource fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              if old not in text:
+                  raise SystemExit(f"Expected text not found in {path}")
+              p.write_text(text.replace(old, new, 1), encoding="utf-8")
+
+          advanced = "RetreatUI_Classes/AdvancedHUD.lua"
+          old = '''      state.root.resourceLabel:ClearAllPoints()
+              state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+              if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+              state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
+              state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
+              state.root.resourceLabel:Show()
+'''
+          new = '''      if config.showLabel == false or label == "" then
+                state.root.resourceLabel:SetText("")
+                state.root.resourceLabel:Hide()
+              else
+                state.root.resourceLabel:ClearAllPoints()
+                state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+                if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+                state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
+                state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
+                state.root.resourceLabel:Show()
+              end
+'''
+          replace(advanced, old, new)
+
+          data = Path("RetreatUI_Classes/Runemaster/Data.lua")
+          text = data.read_text(encoding="utf-8")
+          old_resource = 'maximum=4,defaultCurrent=0,keepVisible=true,mode="segments",icon='
+          new_resource = 'maximum=4,defaultCurrent=0,keepVisible=true,mode="segments",showLabel=false,icon='
+          if old_resource not in text:
+              raise SystemExit("Runemaster resource config pattern not found")
+          data.write_text(text.replace(old_resource, new_resource, 1), encoding="utf-8")
+
+          hud = Path("RetreatUI_Classes/Runemaster/HUD.lua")
+          text = hud.read_text(encoding="utf-8")
+          marker = "\n-- Inscribed Runes is intentionally icon-only."
+          if marker in text:
+              text = text.split(marker, 1)[0].rstrip() + "\n"
+          hud.write_text(text, encoding="utf-8")
+
+          for path in ["RetreatUI/RetreatUI.toc", "RetreatUI_Classes/RetreatUI_Classes.toc"]:
+              p = Path(path)
+              text = p.read_text(encoding="utf-8")
+              if "1.1.0-beta.18" not in text:
+                  raise SystemExit(f"beta.18 version not found in {path}")
+              p.write_text(text.replace("1.1.0-beta.18", "1.1.0-beta.19"), encoding="utf-8")
+
+          version = Path("RetreatUI/Core/Version.lua")
+          text = version.read_text(encoding="utf-8")
+          start = text.index("RUI.changelog = {")
+          end = text.index("\n}\n", start) + 3
+          block = '''RUI.changelog = {
+            version = RUI.version,
+            title = "RetreatUI v1.1.0-beta.19",
+            summary = "Permanent icon-only Inscribed Runes renderer fix.",
+            changes = {
+              "Fixed the shared resource update loop recreating the Inscribed Runes title and 0/4 counter.",
+              "Added native showLabel=false support for segmented class resources.",
+              "Runemaster now displays only four rune icons during login, reloads and live resource updates.",
+            },
+          }
+'''
+          version.write_text(text[:start] + block + text[end:], encoding="utf-8")
+
+          compat = Path("RetreatUI/Core/CompatibilityChangelog.lua")
+          compat.write_text('''local RUI = RetreatUI
+
+          RUI.changelog = {
+            version = RUI.version,
+            title = "RetreatUI v1.1.0-beta.19",
+            summary = "Permanent icon-only Inscribed Runes renderer fix.",
+            changes = {
+              "Fixed the shared resource update loop recreating the Inscribed Runes title and 0/4 counter.",
+              "Added native showLabel=false support for segmented class resources.",
+              "Runemaster now displays only four rune icons during login, reloads and live resource updates.",
+            },
+          }
+          '''.replace("          ", ""), encoding="utf-8")
+
+          changelog = Path("RetreatUI/CHANGELOG.txt")
+          existing = changelog.read_text(encoding="utf-8")
+          entry = '''RetreatUI v1.1.0-beta.19
+- Fixed the shared segmented-resource renderer so showLabel=false remains respected during every live update.
+- Removed the Inscribed Runes title and 0/4 counter permanently.
+- Runemaster now displays only four centered rune icons.
+
+'''
+          changelog.write_text(entry + existing, encoding="utf-8")
+          PY
+
+          rm -f .github/workflows/beta19-apply.yml
+          git config user.name "RetreatUI"
+          git config user.email "retreatui@users.noreply.github.com"
+          git add -A
+          git commit -m "Fix Inscribed Runes label permanently"
+          git push origin HEAD:hotfix/beta19-rune-label
