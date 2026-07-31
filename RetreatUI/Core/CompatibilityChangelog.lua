@@ -2,14 +2,14 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.15",
-  summary = "Unsupported ElvUI 2.0 detection and compatibility protection.",
+  title = "RetreatUI v1.1.0-beta.16",
+  summary = "Fixes false-positive ElvUI 2.0 detection while preserving the compatibility block.",
   changes = {
-    "Detects Rhenyra's modified ElvUI 2.0 fork by its unique addon folders and runtime systems.",
-    "Shows a full RetreatUI warning at login explaining the incompatibility, likely symptoms and removal steps.",
-    "Blocks the RetreatUI installer while ElvUI 2.0 is installed instead of writing a RetreatUI profile into the unsupported fork.",
-    "Disables RetreatUI's ElvUI-specific runtime changes for the session while keeping the standalone class HUD available.",
-    "Requires the official Ascension ElvUI 7.27 before installation can be completed and validated.",
-    "Preserves the beta.14 Ascension-ElvUI aura repair for supported installations.",
+    "Fixed the ElvUI 2.0 warning incorrectly appearing for users of the official Ascension ElvUI.",
+    "Restored normal /rui and /rui install behaviour when the unsupported fork is not securely detected.",
+    "Changed addon-folder detection to enumerate installed addons and require an exact internal folder-name match.",
+    "Requires either the unique ElvUI_PartyDamage folder or multiple independent ElvUI 2.0 runtime markers before blocking the installer.",
+    "No longer treats a single generic absorb or support table as sufficient proof of ElvUI 2.0.",
+    "Preserves the warning and ElvUI write protection for confirmed ElvUI 2.0 installations.",
   },
 }
