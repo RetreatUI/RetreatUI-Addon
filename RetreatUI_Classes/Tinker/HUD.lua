@@ -187,11 +187,19 @@ local function UpdateAmmoAndBionics()
   local bionicsMissing=LearnedBionics() and not auras.byID[BIONICS_ID] and not auras.byName["bionics"]
 
   if not maximum then
-    if ammoFrame then
+    if bionicsMissing then
+      EnsureAmmoFrame()
       for _,segment in ipairs(ammoSegments) do segment:Hide() end
-      if bionicsMissing then
-        EnsureAmmoFrame(); PositionAmmo(0,true); bionicsIcon:Show(); ammoFrame:Show()
-      else bionicsIcon:Hide(); ammoFrame:Hide() end
+      PositionAmmo(0,true)
+      W:SetBorder(bionicsIcon,{1,.18,.12},1)
+      W:SetGlow(bionicsIcon,{1,.18,.12},.75)
+      bionicsIcon:Show()
+      ammoFrame:Show()
+    elseif ammoFrame then
+      for _,segment in ipairs(ammoSegments) do segment:Hide() end
+      W:SetGlow(bionicsIcon,nil,0)
+      bionicsIcon:Hide()
+      ammoFrame:Hide()
     end
     return
   end
