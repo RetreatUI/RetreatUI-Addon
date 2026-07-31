@@ -1,0 +1,105 @@
+name: Validate and publish RetreatUI
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "RetreatUI/**"
+      - "RetreatUI_Classes/**"
+      - ".github/workflows/validate-and-publish.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "RetreatUI/**"
+      - "RetreatUI_Classes/**"
+      - ".github/workflows/validate-and-publish.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 zip
+
+      - name: Validate Lua 5.1 syntax
+        run: |
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | sort -z \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate versions and TOC file references
+        shell: bash
+        run: |
+          set -euo pipefail
+          CORE_VERSION="$(awk -F': ' '/^## Version:/{print $2; exit}' RetreatUI/RetreatUI.toc | tr -d '\r')"
+          CLASS_VERSION="$(awk -F': ' '/^## Version:/{print $2; exit}' RetreatUI_Classes/RetreatUI_Classes.toc | tr -d '\r')"
+          test -n "$CORE_VERSION"
+          test "$CORE_VERSION" = "$CLASS_VERSION"
+          python3 - <<'PY'
+          from pathlib import Path
+
+          for toc_path in (Path('RetreatUI/RetreatUI.toc'), Path('RetreatUI_Classes/RetreatUI_Classes.toc')):
+              root = toc_path.parent
+              missing = []
+              for raw in toc_path.read_text(encoding='utf-8-sig').splitlines():
+                  line = raw.strip()
+                  if not line or line.startswith('##') or line.startswith('#'):
+                      continue
+                  candidate = root / line.replace('\\', '/')
+                  if not candidate.is_file():
+                      missing.append(str(candidate))
+              if missing:
+                  raise SystemExit(f"{toc_path}: missing referenced files: {', '.join(missing)}")
+          PY
+          echo "VERSION=$CORE_VERSION" >> "$GITHUB_ENV"
+
+      - name: Build release archive
+        run: |
+          ZIP="RetreatUI_v${VERSION}.zip"
+          zip -qr "$ZIP" RetreatUI RetreatUI_Classes
+          python3 - <<'PY'
+          import os
+          import zipfile
+
+          version = os.environ['VERSION']
+          archive = f'RetreatUI_v{version}.zip'
+          with zipfile.ZipFile(archive) as zf:
+              names = zf.namelist()
+          if not any(name.startswith('RetreatUI/') for name in names):
+              raise SystemExit('RetreatUI folder is missing from archive root')
+          if not any(name.startswith('RetreatUI_Classes/') for name in names):
+              raise SystemExit('RetreatUI_Classes folder is missing from archive root')
+          unexpected = sorted({name.split('/', 1)[0] for name in names if '/' in name} - {'RetreatUI', 'RetreatUI_Classes'})
+          if unexpected:
+              raise SystemExit(f'Unexpected archive root entries: {unexpected}')
+          PY
+
+      - name: Publish GitHub prerelease
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="v${VERSION}"
+          ZIP="RetreatUI_v${VERSION}.zip"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "Release $TAG already exists; validation completed without republishing."
+            exit 0
+          fi
+
+          FLAGS=(--repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "RetreatUI ${VERSION}" --generate-notes)
+          if [[ "$VERSION" == *beta* || "$VERSION" == *alpha* || "$VERSION" == *rc* ]]; then
+            FLAGS+=(--prerelease)
+          fi
+          gh release create "$TAG" "$ZIP" "${FLAGS[@]}"
