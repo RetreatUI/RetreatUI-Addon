@@ -3,7 +3,8 @@ if not RUI then return end
 
 -- The native Ascension class-resource widget is part of the Class HUD contract,
 -- not the optional general cleanup preset. Hide only confirmed resource frames
--- after the active RetreatUI class module reports a complete replacement.
+-- after the active RetreatUI class module reports a complete replacement, and
+-- restore them when the user disables Class HUD or changes to an incomplete HUD.
 local knownNames = {
   "CoAResourceSegmentBar",
   "CoAResourceSegmentBarContainer", "CoAResourceSegmentContainer",
@@ -24,11 +25,9 @@ for index = 1, 24 do
   knownNames[#knownNames + 1] = string.format("CoAResourceSegmentBarPoolFrameCoAResourceSegmentTemplate%02d", index)
 end
 
-local knownSet = {}
-for _, name in ipairs(knownNames) do knownSet[name] = true end
-
 local discovered = {}
 local guarded = setmetatable({}, {__mode="k"})
+local managed = setmetatable({}, {__mode="k"})
 local scheduledSerial = 0
 local pendingCombat = false
 
@@ -41,6 +40,12 @@ local function FrameLike(frame)
   return (kind == "table" or kind == "userdata")
     and frame.GetObjectType ~= nil
     and (frame.SetAlpha ~= nil or frame.Hide ~= nil)
+end
+
+local function Shown(frame)
+  if not frame or type(frame.IsShown) ~= "function" then return false end
+  local ok, value = pcall(frame.IsShown, frame)
+  return ok and value == true
 end
 
 local function Protected(frame)
@@ -95,8 +100,40 @@ local function CompleteReplacement()
   return module.customResourcesComplete == true
 end
 
+local function RememberFrame(frame)
+  if managed[frame] then return end
+  local alpha = 1
+  if frame.GetAlpha then
+    local ok, value = pcall(frame.GetAlpha, frame)
+    if ok and tonumber(value) then alpha = tonumber(value) end
+  end
+  managed[frame] = {alpha=alpha, shown=Shown(frame)}
+end
+
+local function RestoreFrame(frame, state)
+  if not frame or not state then return end
+  if frame.SetAlpha then pcall(frame.SetAlpha, frame, tonumber(state.alpha) or 1) end
+  if frame.EnableMouse then pcall(frame.EnableMouse, frame, true) end
+  if frame.SetMouseClickEnabled then pcall(frame.SetMouseClickEnabled, frame, true) end
+  if frame.SetMouseMotionEnabled then pcall(frame.SetMouseMotionEnabled, frame, true) end
+  if state.shown and frame.Show then pcall(frame.Show, frame) end
+end
+
+function RUI:RestoreNativeClassResourceFrames()
+  if InCombat() then pendingCombat = true; return false end
+  for frame, state in pairs(managed) do
+    RestoreFrame(frame, state)
+    managed[frame] = nil
+  end
+  if type(self.RestoreNativeResourceMirrorSources) == "function" then
+    pcall(self.RestoreNativeResourceMirrorSources, self)
+  end
+  return true
+end
+
 local function HideFrame(frame, name)
   if not frame or not FrameLike(frame) or InCombat() or not CompleteReplacement() then return false end
+  RememberFrame(frame)
   local protected = Protected(frame)
   local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function"
     and RUI:IsNativeResourceMirrorSource(frame)
@@ -113,6 +150,7 @@ local function HideFrame(frame, name)
   if not protected and not guarded[frame] and frame.HookScript then
     local ok = pcall(frame.HookScript, frame, "OnShow", function(shown)
       if InCombat() or not CompleteReplacement() then return end
+      RememberFrame(shown)
       local source = type(RUI.IsNativeResourceMirrorSource) == "function"
         and RUI:IsNativeResourceMirrorSource(shown)
       if shown.SetAlpha then pcall(shown.SetAlpha, shown, 0) end
@@ -142,7 +180,10 @@ end
 
 function RUI:HideNativeClassResourceFrames(forceDiscovery)
   if InCombat() then pendingCombat = true; return false, 0 end
-  if not CompleteReplacement() then return false, 0 end
+  if not CompleteReplacement() then
+    self:RestoreNativeClassResourceFrames()
+    return false, 0
+  end
   if forceDiscovery or not next(discovered) then Discover() end
 
   local hidden = 0
