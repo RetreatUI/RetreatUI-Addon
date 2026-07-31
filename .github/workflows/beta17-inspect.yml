@@ -1,36 +1,34 @@
-name: Beta17 inspect
+name: Apply beta17 implementation
 
 on:
   push:
     branches:
       - feature/beta17-hud-editor-runemaster
-  pull_request:
-    branches:
-      - main
+    paths:
+      - ".github/beta17-patch/ready"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  inspect:
+  apply:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Print relevant tree
+        with:
+          ref: feature/beta17-hud-editor-runemaster
+          fetch-depth: 0
+      - name: Apply implementation patch
         shell: bash
         run: |
-          echo '=== TREE ==='
-          find RetreatUI RetreatUI_Classes -maxdepth 4 -type f | sort
-          echo '=== CLASS REGISTRATION ==='
-          grep -RniE 'RegisterClass|classModules|Register.*Module|supportedClasses|classDatabase' RetreatUI RetreatUI_Classes | head -n 300 || true
-          echo '=== RUNES ==='
-          grep -RniE 'rune|inscribed' RetreatUI RetreatUI_Classes | head -n 300 || true
-      - name: Upload source snapshot
-        uses: actions/upload-artifact@v4
-        with:
-          name: beta17-source
-          path: |
-            RetreatUI
-            RetreatUI_Classes
-            .github/workflows/validate-and-publish.yml
-          include-hidden-files: true
+          set -euo pipefail
+          cat .github/beta17-patch/part-* | tr -d '\n' | base64 -d > /tmp/beta17.patch
+          git apply --check /tmp/beta17.patch
+          git apply /tmp/beta17.patch
+          rm -rf .github/beta17-patch
+          rm -f .github/workflows/beta17-inspect.yml
+          git config user.name "RetreatUI"
+          git config user.email "retreatui@users.noreply.github.com"
+          git add -A
+          git commit -m "Build RetreatUI v1.1.0-beta.17"
+          git push origin HEAD:feature/beta17-hud-editor-runemaster
