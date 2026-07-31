@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
 local RUI = RetreatUI
 
 RUI.name = "RetreatUI"
-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.1.0-beta.13"
+RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.1.0-beta.14"
 RUI._loaderLoaded = true
 
 local function Chat(message)
@@ -37,6 +37,7 @@ local function RunRepair()
     {"Frame cleanup", "RunFrameCleanupNow"},
     {"Party frame", "ApplyPartyFramePosition", false},
     {"Target of Target", "ApplyTargetTargetFrame", false},
+    {"ElvUI aura settings", "RepairElvUIAuraProfiles", true},
     {"Castbars and action bars", "ApplyElvUIHUDPolish", true},
     {"Target aura bars", "RefreshTargetAuraBars"},
     {"Combat text", "ApplyCombatTextStyle"},

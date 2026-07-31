@@ -223,6 +223,142 @@ local TARGET_CASTBAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,310,326"
 local ACTIONBAR3_MOVER = "BOTTOM,ElvUIParent,BOTTOM,0,26"
 local STANCE_BAR_MOVER = "TOPLEFT,ElvUIParent,BOTTOMLEFT,649,32"
 
+local ELVUI_AURA_REPAIR_REVISION = 1
+local AURA_REQUIRED_DEFAULTS = {
+  perrow = 4,
+  numrows = 1,
+  attachTo = "FRAME",
+  anchorPoint = "TOPLEFT",
+  countFont = "Fira Sans Heavy",
+  countFontOutline = "OUTLINE",
+  countFontSize = 12,
+  durationPosition = "CENTER",
+  clickThrough = false,
+  sortMethod = "TIME_REMAINING",
+  sortDirection = "DESCENDING",
+  minDuration = 0,
+  maxDuration = 300,
+  priority = "",
+  sizeOverride = 0,
+  xOffset = 0,
+  yOffset = 0,
+}
+
+local PARTY_BUFF_DEFAULTS = {
+  enable = false,
+  perrow = 4,
+  numrows = 1,
+  attachTo = "FRAME",
+  anchorPoint = "LEFT",
+  countFont = "Fira Sans Heavy",
+  countFontOutline = "OUTLINE",
+  countFontSize = 12,
+  durationPosition = "CENTER",
+  clickThrough = false,
+  sortMethod = "TIME_REMAINING",
+  sortDirection = "DESCENDING",
+  minDuration = 0,
+  maxDuration = 300,
+  priority = "Blacklist,TurtleBuffs",
+  sizeOverride = 0,
+  xOffset = 0,
+  yOffset = 0,
+}
+
+local PARTY_DEBUFF_DEFAULTS = {
+  enable = true,
+  perrow = 4,
+  numrows = 1,
+  attachTo = "FRAME",
+  anchorPoint = "RIGHT",
+  countFont = "Fira Sans Heavy",
+  countFontOutline = "OUTLINE",
+  countFontSize = 12,
+  durationPosition = "CENTER",
+  clickThrough = false,
+  sortMethod = "TIME_REMAINING",
+  sortDirection = "DESCENDING",
+  minDuration = 0,
+  maxDuration = 300,
+  priority = "Blacklist,RaidDebuffs,CCDebuffs,Dispellable,Whitelist",
+  sizeOverride = 20,
+  xOffset = 0,
+  yOffset = 0,
+}
+
+local function FillMissingAuraFields(aura, defaults)
+  if type(aura) ~= "table" then return false end
+  local changed = false
+  for key, value in pairs(defaults or AURA_REQUIRED_DEFAULTS) do
+    if aura[key] == nil then
+      aura[key] = value
+      changed = true
+    end
+  end
+  return changed
+end
+
+local function RepairAuraProfile(profile)
+  if type(profile) ~= "table" then return false end
+  profile.unitframe = profile.unitframe or {}
+  profile.unitframe.units = profile.unitframe.units or {}
+  local units = profile.unitframe.units
+  local changed = false
+
+  -- Sparse ElvUI exports omit values equal to defaults. Ascension-ElvUI 7.27
+  -- directly indexes these fields and does not tolerate nil values after a raw
+  -- profile table is installed, so complete every aura table that RetreatUI
+  -- supplies before ElvUI creates or refreshes unit frames.
+  for _, unit in pairs(units) do
+    if type(unit) == "table" then
+      for _, auraType in ipairs({"buffs", "debuffs"}) do
+        local aura = unit[auraType]
+        if type(aura) == "table" then
+          changed = FillMissingAuraFields(aura, AURA_REQUIRED_DEFAULTS) or changed
+        end
+      end
+    end
+  end
+
+  units.party = units.party or {}
+  local party = units.party
+  party.smartAuraPosition = party.smartAuraPosition or "DISABLED"
+  party.buffs = party.buffs or {}
+  party.debuffs = party.debuffs or {}
+  changed = FillMissingAuraFields(party.buffs, PARTY_BUFF_DEFAULTS) or changed
+  changed = FillMissingAuraFields(party.debuffs, PARTY_DEBUFF_DEFAULTS) or changed
+  return changed
+end
+
+function RUI:RepairElvUIAuraProfiles(refreshLive)
+  local changed = false
+  if type(ElvDB) == "table" and type(ElvDB.profiles) == "table" then
+    changed = RepairAuraProfile(ElvDB.profiles.RetreatUI) or changed
+  end
+
+  local E = ElvUI and unpack(ElvUI)
+  local currentProfile
+  if E and E.data and E.data.GetCurrentProfile then
+    local ok, value = pcall(E.data.GetCurrentProfile, E.data)
+    if ok then currentProfile = value end
+  end
+  if currentProfile == "RetreatUI" and E and E.db then
+    changed = RepairAuraProfile(E.db) or changed
+  end
+
+  local db = self:EnsureDB()
+  db.integrations.elvui = db.integrations.elvui or {}
+  db.integrations.elvui.auraRepairRevision = ELVUI_AURA_REPAIR_REVISION
+  db.integrations.elvui.auraRepairVersion = self.version
+
+  if refreshLive and changed and E then
+    if E.UpdateMoverPositions then pcall(E.UpdateMoverPositions, E) end
+    if E.UpdateAll then pcall(E.UpdateAll, E, true) end
+  end
+  return true, changed and "ElvUI unit-frame aura settings repaired" or "ElvUI unit-frame aura settings verified"
+end
+
+
 local function NumberOr(value, fallback)
   return type(value) == "number" and value or fallback
 end
@@ -664,6 +800,7 @@ function RUI:InstallElvUIProfile()
     preservedTotemMover, preservedTotemMoverKey = self:GetTotemBarMoverPosition()
   end
   local profile = self:DeepCopy(self.ElvUIProfile)
+  RepairAuraProfile(profile)
   profile.movers = profile.movers or {}
   profile.movers.ElvBar_Totem = nil
   profile.movers.TotemBarMover = nil
@@ -686,6 +823,7 @@ function RUI:InstallElvUIProfile()
 
   local ok, err = pcall(function()
     if E and E.data and E.data.SetProfile then E.data:SetProfile(profileName) end
+    if E and E.db then RepairAuraProfile(E.db) end
     self:DisableElvUINamePlates()
     if E and E.db then self:ForceFontFields(E.db) end
     if E and E.db and E.db.unitframe and E.db.unitframe.units and E.db.unitframe.units.player then
@@ -760,4 +898,9 @@ function RUI:SyncThemeFonts()
   -- Do not rebuild or destroy the installer here. Existing font strings remain
   -- valid, and the next /reload applies Fira Sans Heavy everywhere.
   return true, "Fira Sans Heavy applied to " .. table.concat(results, ", ")
+end
+
+-- Emergency migration for profiles installed by beta.12 or beta.13.
+if type(ElvDB) == "table" and type(ElvDB.profiles) == "table" and ElvDB.profiles.RetreatUI then
+  pcall(RUI.RepairElvUIAuraProfiles, RUI, false)
 end

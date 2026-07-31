@@ -247,9 +247,11 @@ Use the Stable channel for the latest normal release.
 
 ### Beta
 
-**RetreatUI v1.1.0-beta.13**
+**RetreatUI v1.1.0-beta.14**
 
 The current beta includes:
+
+- Emergency repair for incomplete Ascension-ElvUI party and unit-frame aura settings
 
 - Critical ElvUI installer validation and reload handling hotfix
 
@@ -310,7 +312,7 @@ Please include:
 
 ## Current Addon Version
 
-**RetreatUI v1.1.0-beta.13**
+**RetreatUI v1.1.0-beta.14**
 
 This version promotes the complete current addon source to `main`, restores native Trinket Tracker tooltips and anchors target-of-target relative to the target frame for resolution-independent placement.
 

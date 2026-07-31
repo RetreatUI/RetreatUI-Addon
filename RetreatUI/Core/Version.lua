@@ -2,9 +2,12 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.13",
-  summary = "Critical ElvUI installer hotfix for the v1.1 beta.",
+  title = "RetreatUI v1.1.0-beta.14",
+  summary = "Emergency repair for incomplete Ascension-ElvUI unit-frame aura settings.",
   changes = {
+    "Fixed the party-frame Lua error caused by missing Ascension-ElvUI maxDuration, minDuration and priority aura fields.",
+    "Automatically repairs RetreatUI profiles created by beta.12 and beta.13 before party frames are created.",
+    "Completed every sparse unit-frame buff/debuff table with safe Ascension-ElvUI 7.27 defaults.",
     "Fixed the installer incorrectly reporting a failed ElvUI profile when live ElvUI refresh work only needed the required reload.",
     "The RetreatUI ElvUI profile is now assigned directly to the current character before frame refresh callbacks run.",
     "Installer failures now include the original module error instead of only showing a generic FAILED state.",
