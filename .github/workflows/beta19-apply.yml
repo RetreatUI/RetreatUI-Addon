@@ -1,4 +1,4 @@
-name: Apply beta19 rune label hotfix
+name: Apply beta19 HUD hotfixes
 
 on:
   push:
@@ -18,50 +18,56 @@ jobs:
         with:
           ref: hotfix/beta19-rune-label
           fetch-depth: 0
-      - name: Apply permanent icon-only resource fix
+
+      - name: Apply Runemaster and trinket HUD fixes
         shell: bash
         run: |
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
 
-          def replace(path, old, new):
-              p = Path(path)
-              text = p.read_text(encoding="utf-8")
+          def replace_once(path, old, new):
+              path = Path(path)
+              text = path.read_text(encoding="utf-8")
               if old not in text:
-                  raise SystemExit(f"Expected text not found in {path}")
-              p.write_text(text.replace(old, new, 1), encoding="utf-8")
+                  raise SystemExit(f"Expected block not found in {path}")
+              path.write_text(text.replace(old, new, 1), encoding="utf-8")
 
-          advanced = "RetreatUI_Classes/AdvancedHUD.lua"
-          old = '''      state.root.resourceLabel:ClearAllPoints()
-              state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
-              if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
-              state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
-              state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
-              state.root.resourceLabel:Show()
-'''
-          new = '''      if config.showLabel == false or label == "" then
-                state.root.resourceLabel:SetText("")
-                state.root.resourceLabel:Hide()
-              else
-                state.root.resourceLabel:ClearAllPoints()
-                state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
-                if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
-                state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
-                state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
-                state.root.resourceLabel:Show()
-              end
-'''
-          replace(advanced, old, new)
+          # Segmented resources must respect showLabel=false during every refresh.
+          replace_once(
+              "RetreatUI_Classes/AdvancedHUD.lua",
+              '''      state.root.resourceLabel:ClearAllPoints()
+          state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+          if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+          state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
+          state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
+          state.root.resourceLabel:Show()
+          ''',
+              '''      if config.showLabel == false or label == "" then
+            state.root.resourceLabel:SetText("")
+            state.root.resourceLabel:SetAlpha(0)
+            state.root.resourceLabel:Hide()
+          else
+            state.root.resourceLabel:SetAlpha(1)
+            state.root.resourceLabel:ClearAllPoints()
+            state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+            if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+            state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
+            state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
+            state.root.resourceLabel:Show()
+          end
+          ''',
+          )
 
           data = Path("RetreatUI_Classes/Runemaster/Data.lua")
           text = data.read_text(encoding="utf-8")
           old_resource = 'maximum=4,defaultCurrent=0,keepVisible=true,mode="segments",icon='
           new_resource = 'maximum=4,defaultCurrent=0,keepVisible=true,mode="segments",showLabel=false,icon='
           if old_resource not in text:
-              raise SystemExit("Runemaster resource config pattern not found")
+              raise SystemExit("Runemaster resource config was not found")
           data.write_text(text.replace(old_resource, new_resource, 1), encoding="utf-8")
 
+          # The temporary Runemaster wrapper is no longer needed after fixing the shared renderer.
           hud = Path("RetreatUI_Classes/Runemaster/HUD.lua")
           text = hud.read_text(encoding="utf-8")
           marker = "\n-- Inscribed Runes is intentionally icon-only."
@@ -69,53 +75,170 @@ jobs:
               text = text.split(marker, 1)[0].rstrip() + "\n"
           hud.write_text(text, encoding="utf-8")
 
-          for path in ["RetreatUI/RetreatUI.toc", "RetreatUI_Classes/RetreatUI_Classes.toc"]:
-              p = Path(path)
-              text = p.read_text(encoding="utf-8")
+          # Prefer the first player-frame candidate that has valid live bounds.
+          replace_once(
+              "RetreatUI/Core/TrinketTracker.lua",
+              '''local function PlayerFrame()
+            local candidates = {
+              _G.ElvUF_Player,
+              _G.ElvUF_PlayerMover,
+              _G.PlayerFrame,
+            }
+            for _, frame in ipairs(candidates) do
+              if frame and frame.GetRight and frame.GetTop then return frame end
+            end
+            return nil
+          end
+          ''',
+              '''local function PlayerFrame()
+            local candidates = {
+              _G.ElvUF_Player,
+              _G.ElvUF_PlayerMover,
+              _G.PlayerFrame,
+            }
+            for _, frame in ipairs(candidates) do
+              if frame and FrameBounds(frame) then return frame end
+            end
+            return nil
+          end
+          ''',
+          )
+
+          replace_once(
+              "RetreatUI/Core/TrinketTracker.lua",
+              '''local function FindTrinketAura(state, buffs)
+            if not state.itemID then return nil end
+
+            local learned = LearnedAuraForItem(state.itemID)
+          ''',
+              '''local function FindTrinketAura(state, buffs)
+            if not state.equipped then return nil end
+
+            local learned = state.itemID and LearnedAuraForItem(state.itemID) or nil
+          ''',
+          )
+
+          replace_once(
+              "RetreatUI/Core/TrinketTracker.lua",
+              '''    states[index] = {slot=slot, icon=icon, itemID=nil, lastCooldownStart=0, lastCooldownDuration=0}
+          ''',
+              '''    states[index] = {slot=slot, icon=icon, itemID=nil, itemLink=nil, texture=nil, equipped=false, lastCooldownStart=0, lastCooldownDuration=0}
+          ''',
+          )
+
+          replace_once(
+              "RetreatUI/Core/TrinketTracker.lua",
+              '''local function RefreshItems(force)
+            if not tracker then return end
+            for index, state in ipairs(states) do
+              local itemID = GetInventoryItemID and GetInventoryItemID("player", state.slot) or nil
+              if not itemID and GetInventoryItemLink then
+                local link = GetInventoryItemLink("player", state.slot)
+                itemID = link and tonumber(string.match(link, "item:(%d+)")) or nil
+              end
+              if force or itemID ~= state.itemID then
+                state.itemID = itemID
+                state.activationUntil = nil
+                state.lastCooldownStart = 0
+                state.lastCooldownDuration = 0
+                state.itemSpellName, state.itemSpellID, state.itemSpellTexture = ItemSpell(itemID)
+                state.texture = GetInventoryItemTexture and GetInventoryItemTexture("player", state.slot) or nil
+                state.icon.texture:SetTexture(state.texture or "Interface\\Icons\\INV_Misc_QuestionMark")
+                state.icon.stackText:SetText("")
+                state.icon.cooldownText:SetText("")
+                W:SetGlow(state.icon, nil, 0)
+                W:SetBorder(state.icon, {0,0,0,1}, 1)
+                if itemID then state.icon:Show() else state.icon:Hide() end
+              end
+            end
+          end
+          ''',
+              '''local function RefreshItems(force)
+            if not tracker then return end
+            for index, state in ipairs(states) do
+              local link = GetInventoryItemLink and GetInventoryItemLink("player", state.slot) or nil
+              local itemID = GetInventoryItemID and GetInventoryItemID("player", state.slot) or nil
+              if not itemID and link then
+                itemID = tonumber(string.match(link, "item:(%d+)"))
+              end
+              local texture = GetInventoryItemTexture and GetInventoryItemTexture("player", state.slot) or nil
+
+              -- Some Ascension clients do not expose a standard item ID for
+              -- equipped custom trinkets. A slot link or texture still proves
+              -- that the trinket is equipped and supports slot cooldowns.
+              local equipped = itemID ~= nil or link ~= nil or texture ~= nil
+
+              if force or itemID ~= state.itemID or link ~= state.itemLink
+                or texture ~= state.texture or equipped ~= state.equipped then
+                state.itemID = itemID
+                state.itemLink = link
+                state.texture = texture
+                state.equipped = equipped
+                state.activationUntil = nil
+                state.lastCooldownStart = 0
+                state.lastCooldownDuration = 0
+                state.itemSpellName, state.itemSpellID, state.itemSpellTexture = ItemSpell(itemID)
+                state.icon.texture:SetTexture(texture or "Interface\\Icons\\INV_Misc_QuestionMark")
+                state.icon.stackText:SetText("")
+                state.icon.cooldownText:SetText("")
+                W:SetGlow(state.icon, nil, 0)
+                W:SetBorder(state.icon, {0,0,0,1}, 1)
+                if equipped then state.icon:Show() else state.icon:Hide() end
+              end
+            end
+          end
+          ''',
+          )
+
+          replace_once(
+              "RetreatUI/Core/TrinketTracker.lua",
+              '''  if not state.itemID then icon:Hide(); return false end
+          ''',
+              '''  if not state.equipped then icon:Hide(); return false end
+          ''',
+          )
+
+          # Bump both bundled addon folders together.
+          for filename in ["RetreatUI/RetreatUI.toc", "RetreatUI_Classes/RetreatUI_Classes.toc"]:
+              path = Path(filename)
+              text = path.read_text(encoding="utf-8")
               if "1.1.0-beta.18" not in text:
-                  raise SystemExit(f"beta.18 version not found in {path}")
-              p.write_text(text.replace("1.1.0-beta.18", "1.1.0-beta.19"), encoding="utf-8")
+                  raise SystemExit(f"beta.18 version not found in {filename}")
+              path.write_text(text.replace("1.1.0-beta.18", "1.1.0-beta.19"), encoding="utf-8")
+
+          changes = '''RUI.changelog = {
+            version = RUI.version,
+            title = "RetreatUI v1.1.0-beta.19",
+            summary = "Inscribed Runes and trinket HUD reliability hotfix.",
+            changes = {
+              "Fixed the shared segmented-resource renderer recreating the Inscribed Runes title and 0/4 counter.",
+              "Runemaster now permanently displays only four centered rune icons.",
+              "Made the trinket HUD recognize equipped Ascension trinkets even when the client does not return a standard item ID.",
+              "Improved trinket HUD player-frame anchoring by skipping invalid or hidden frame candidates.",
+            },
+          }
+          '''
 
           version = Path("RetreatUI/Core/Version.lua")
           text = version.read_text(encoding="utf-8")
           start = text.index("RUI.changelog = {")
           end = text.index("\n}\n", start) + 3
-          block = '''RUI.changelog = {
-            version = RUI.version,
-            title = "RetreatUI v1.1.0-beta.19",
-            summary = "Permanent icon-only Inscribed Runes renderer fix.",
-            changes = {
-              "Fixed the shared resource update loop recreating the Inscribed Runes title and 0/4 counter.",
-              "Added native showLabel=false support for segmented class resources.",
-              "Runemaster now displays only four rune icons during login, reloads and live resource updates.",
-            },
-          }
-'''
-          version.write_text(text[:start] + block + text[end:], encoding="utf-8")
+          version.write_text(text[:start] + changes + text[end:], encoding="utf-8")
 
-          compat = Path("RetreatUI/Core/CompatibilityChangelog.lua")
-          compat.write_text('''local RUI = RetreatUI
-
-          RUI.changelog = {
-            version = RUI.version,
-            title = "RetreatUI v1.1.0-beta.19",
-            summary = "Permanent icon-only Inscribed Runes renderer fix.",
-            changes = {
-              "Fixed the shared resource update loop recreating the Inscribed Runes title and 0/4 counter.",
-              "Added native showLabel=false support for segmented class resources.",
-              "Runemaster now displays only four rune icons during login, reloads and live resource updates.",
-            },
-          }
-          '''.replace("          ", ""), encoding="utf-8")
+          Path("RetreatUI/Core/CompatibilityChangelog.lua").write_text(
+              "local RUI = RetreatUI\n\n" + changes,
+              encoding="utf-8",
+          )
 
           changelog = Path("RetreatUI/CHANGELOG.txt")
           existing = changelog.read_text(encoding="utf-8")
           entry = '''RetreatUI v1.1.0-beta.19
-- Fixed the shared segmented-resource renderer so showLabel=false remains respected during every live update.
-- Removed the Inscribed Runes title and 0/4 counter permanently.
-- Runemaster now displays only four centered rune icons.
+          - Fixed Inscribed Runes permanently showing only four rune icons with no title or 0/4 counter.
+          - Added native showLabel=false support for segmented class resources.
+          - Fixed the trinket HUD on Ascension clients that do not return standard item IDs for equipped custom trinkets.
+          - Improved trinket HUD player-frame anchoring.
 
-'''
+          '''.replace("          ", "")
           changelog.write_text(entry + existing, encoding="utf-8")
           PY
 
@@ -123,5 +246,5 @@ jobs:
           git config user.name "RetreatUI"
           git config user.email "retreatui@users.noreply.github.com"
           git add -A
-          git commit -m "Fix Inscribed Runes label permanently"
+          git commit -m "Fix Runemaster resource and trinket HUD"
           git push origin HEAD:hotfix/beta19-rune-label
