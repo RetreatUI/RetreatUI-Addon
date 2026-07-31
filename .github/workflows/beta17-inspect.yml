@@ -1,39 +1,32 @@
-name: Apply beta17 implementation
+name: Diagnose beta17 patch
 
 on:
-  push:
-    branches:
-      - feature/beta17-hud-editor-runemaster
-    paths:
-      - ".github/beta17-patch/ready"
   pull_request:
     branches:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  apply:
-    if: github.event_name == 'pull_request'
+  diagnose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: feature/beta17-hud-editor-runemaster
-          fetch-depth: 0
-      - name: Apply implementation patch
+      - name: Inspect patch payload
         shell: bash
         run: |
           set -euo pipefail
-          test -f .github/beta17-patch/ready
-          cat .github/beta17-patch/part-* | tr -d '\n' | base64 -d > /tmp/beta17.patch
-          git apply --check /tmp/beta17.patch
-          git apply /tmp/beta17.patch
-          rm -rf .github/beta17-patch
-          rm -f .github/workflows/beta17-inspect.yml
-          git config user.name "RetreatUI"
-          git config user.email "retreatui@users.noreply.github.com"
-          git add -A
-          git commit -m "Build RetreatUI v1.1.0-beta.17"
-          git push origin HEAD:feature/beta17-hud-editor-runemaster
+          for file in .github/beta17-patch/part-*; do
+            printf '%s\t' "$file"
+            wc -c < "$file"
+          done
+          cat .github/beta17-patch/part-* | tr -d '\n' > /tmp/beta17.b64
+          echo "combined bytes: $(wc -c < /tmp/beta17.b64)"
+          echo "combined modulo 4: $(( $(wc -c < /tmp/beta17.b64) % 4 ))"
+          sha256sum /tmp/beta17.b64
+          LC_ALL=C grep -n '[^A-Za-z0-9+/=]' /tmp/beta17.b64 | head -n 20 || true
+          head -c 32 /tmp/beta17.b64; echo
+          tail -c 32 /tmp/beta17.b64; echo
