@@ -37,5 +37,6 @@ Integrations\DBM.lua
 Integrations\Cleanup.lua
 Installer\Installer.lua
 Core\Compatibility.lua
+Core\CompatibilityChangelog.lua
 Core\Events.lua
 Automation\AutoRoleCheck.lua
