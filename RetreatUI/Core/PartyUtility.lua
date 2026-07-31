@@ -9,12 +9,12 @@ local ICON_SIZE = 24
 local ICON_SPACING = 2
 local MAX_PER_UNIT = 10
 
-local INTERRUPT_TRACKER_WIDTH = 270
-local INTERRUPT_HEADER_HEIGHT = 28
-local INTERRUPT_ROW_HEIGHT = 34
+local INTERRUPT_TRACKER_WIDTH = 190
+local INTERRUPT_HEADER_HEIGHT = 20
+local INTERRUPT_ROW_HEIGHT = 24
 local INTERRUPT_ROW_GAP = 1
-local INTERRUPT_TRACKER_PADDING = 2
-local INTERRUPT_PARTY_GAP = 8
+local INTERRUPT_TRACKER_PADDING = 1
+local INTERRUPT_PARTY_GAP = 5
 local ARCANE_TORRENT_DEFAULT_ID = 50613
 local ARCANE_TORRENT_IDS = {50613, 28730, 25046, 80483, 69179, 129597}
 local ARCANE_TORRENT_TEXTURE = "Interface\\Icons\\Spell_Shadow_Teleport"
@@ -973,9 +973,9 @@ local function CreateInterruptTracker()
   RUI:SkinFrame(frame.header, {0.015, 0.04, 0.065, 0.98}, {0.015, 0.04, 0.065, 0})
   frame.header.text = frame.header:CreateFontString(nil, "OVERLAY")
   frame.header.text:SetPoint("CENTER", frame.header, "CENTER", 0, 0)
-  RUI:ApplyFont(frame.header.text, 15, "OUTLINE")
+  RUI:ApplyFont(frame.header.text, 11, "OUTLINE")
   frame.header.text:SetTextColor(0.05, 0.95, 1.00, 1)
-  frame.header.text:SetText("Interrupts")
+  frame.header.text:SetText("INTERRUPTS")
 
   frame:Hide()
   interruptFrame = frame
@@ -992,19 +992,20 @@ local function InterruptRowFrame(index)
 
   row.icon = CreateIcon(row, INTERRUPT_ROW_HEIGHT - 4)
   row.icon:SetPoint("LEFT", row, "LEFT", 2, 0)
+  row.icon:Show()
 
   row.nameText = row:CreateFontString(nil, "OVERLAY")
-  row.nameText:SetPoint("LEFT", row.icon, "RIGHT", 9, 0)
-  row.nameText:SetPoint("RIGHT", row, "RIGHT", -82, 0)
+  row.nameText:SetPoint("LEFT", row.icon, "RIGHT", 5, 0)
+  row.nameText:SetPoint("RIGHT", row, "RIGHT", -55, 0)
   row.nameText:SetJustifyH("LEFT")
-  RUI:ApplyFont(row.nameText, 12, "OUTLINE")
+  RUI:ApplyFont(row.nameText, 10, "OUTLINE")
   row.nameText:SetTextColor(0.96, 0.96, 0.98, 1)
 
   row.statusText = row:CreateFontString(nil, "OVERLAY")
-  row.statusText:SetPoint("RIGHT", row, "RIGHT", -9, 0)
-  row.statusText:SetWidth(68)
+  row.statusText:SetPoint("RIGHT", row, "RIGHT", -5, 0)
+  row.statusText:SetWidth(46)
   row.statusText:SetJustifyH("RIGHT")
-  RUI:ApplyFont(row.statusText, 12, "OUTLINE")
+  RUI:ApplyFont(row.statusText, 9, "OUTLINE")
 
   tracker.rows[index] = row
   return row
@@ -1012,24 +1013,31 @@ end
 
 function RUI:ApplyPartyInterruptLayout()
   local frame = CreateInterruptTracker()
-  frame:SetScale(1)
+  local layout = self.layout and self.layout.partyInterrupts or {}
+  local scale = self.GetHUDScale and self:GetHUDScale("partyInterrupts") or 1
+  frame:SetScale(scale)
   frame:ClearAllPoints()
+
+  if layout.autoAnchor == false then
+    frame:SetWidth(tonumber(layout.width) or INTERRUPT_TRACKER_WIDTH)
+    frame:SetPoint("CENTER", UIParent, "CENTER", tonumber(layout.x) or 0, tonumber(layout.y) or -278)
+    return true
+  end
 
   local anchor = PartyAnchorFrame()
   if anchor then
+    frame:SetWidth(INTERRUPT_TRACKER_WIDTH)
     frame:SetPoint("TOPLEFT", anchor, "BOTTOMLEFT", 0, -INTERRUPT_PARTY_GAP)
-    frame:SetPoint("TOPRIGHT", anchor, "BOTTOMRIGHT", 0, -INTERRUPT_PARTY_GAP)
   else
     local left, bottom, width = PartyFrameBounds()
     if left and bottom and width then
-      frame:SetWidth(width)
+      frame:SetWidth(math.min(INTERRUPT_TRACKER_WIDTH, width))
       frame:SetPoint("TOPLEFT", UIParent, "BOTTOMLEFT", left, bottom - INTERRUPT_PARTY_GAP)
     else
       frame:SetWidth(INTERRUPT_TRACKER_WIDTH)
       frame:SetPoint("TOP", UIParent, "CENTER", 0, -120)
     end
   end
-  if self.layout then self.layout.partyInterrupts = {autoAnchor=true} end
   return true
 end
 
@@ -1105,6 +1113,7 @@ local function UpdateInterruptRow(row, item, index, width, showingPreview)
     W:SetBorder(row.icon, CATEGORY_COLORS.interrupt, 1)
   end
   UpdateIcon(row.icon)
+  row.icon:Show()
 
   row.nameText:SetText(item.ownerName)
   if entry.missing then
@@ -1127,12 +1136,18 @@ local function RenderInterruptTracker()
   local entries = FlattenInterruptEntries(entriesByUnit, byUnit, showingPreview)
   if #entries == 0 then frame:Hide(); return end
 
+  local layout = RUI.layout and RUI.layout.partyInterrupts or {}
   local _, _, partyWidth = PartyFrameBounds()
-  local width = partyWidth or INTERRUPT_TRACKER_WIDTH
+  local width
+  if layout.autoAnchor == false then
+    width = tonumber(layout.width) or INTERRUPT_TRACKER_WIDTH
+  else
+    width = math.min(INTERRUPT_TRACKER_WIDTH, partyWidth or INTERRUPT_TRACKER_WIDTH)
+  end
   local height = INTERRUPT_TRACKER_PADDING * 2 + INTERRUPT_HEADER_HEIGHT
     + #entries * INTERRUPT_ROW_HEIGHT + math.max(0, #entries - 1) * INTERRUPT_ROW_GAP
   frame:SetHeight(height)
-  if not PartyAnchorFrame() then frame:SetWidth(width) end
+  frame:SetWidth(width)
 
   for index, item in ipairs(entries) do
     UpdateInterruptRow(InterruptRowFrame(index), item, index, math.max(1, width - INTERRUPT_TRACKER_PADDING * 2), showingPreview)

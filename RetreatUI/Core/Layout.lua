@@ -11,7 +11,7 @@ RUI.layout = {
   core = {x=0, y=-183, scale=1},
   utility = {x=0, y=-224, scale=1},
   targetDebuffs = {x=310, y=-59, scale=1},
-  partyInterrupts = {autoAnchor=true},
+  partyInterrupts = {autoAnchor=true, width=190, scale=1},
   demonfire = {x=0, y=-118, scale=1},
   auraTrackers = {x=0, y=-83, size=30, spacing=3, scale=1},
   stanceTracker = {size=38, gap=6},

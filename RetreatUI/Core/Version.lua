@@ -2,21 +2,12 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.14",
-  summary = "Emergency repair for incomplete Ascension-ElvUI unit-frame aura settings.",
+  title = "RetreatUI v1.1.0-beta.17",
+  summary = "Compact interrupts, selectable ElvUI unit frames and a native Runemaster HUD conversion.",
   changes = {
-    "Fixed the party-frame Lua error caused by missing Ascension-ElvUI maxDuration, minDuration and priority aura fields.",
-    "Automatically repairs RetreatUI profiles created by beta.12 and beta.13 before party frames are created.",
-    "Completed every sparse unit-frame buff/debuff table with safe Ascension-ElvUI 7.27 defaults.",
-    "Fixed the installer incorrectly reporting a failed ElvUI profile when live ElvUI refresh work only needed the required reload.",
-    "The RetreatUI ElvUI profile is now assigned directly to the current character before frame refresh callbacks run.",
-    "Installer failures now include the original module error instead of only showing a generic FAILED state.",
-    "Added two compact trinket slots above the right side of the player frame on every supported class and build profile.",
-    "Tracks equipped slot 13/14 item cooldowns and matching active proc or buff duration with stacks and glow.",
-    "Uses the same icon size as the existing Buffs/Procs row and follows the live player frame without a separate mover.",
-    "Automatically shifts the trinket row away from nearby unit frames instead of allowing overlap.",
-    "Updated the RetreatUI ElvUI baseline from the supplied profile, including party, raid, pet, focus and target-of-target placement.",
-    "Preserved the beta.10.2 HUD sizing rollback and the fixed party-anchored Interrupt Tracker.",
+    "Rebuilt the Party Interrupt Tracker into a compact icon-first layout.",
+    "Added selectable, movable and scalable managed ElvUI unit frames to /rui hud.",
+    "Converted the supplied Runemaster WeakAura reference into native RetreatUI rows, resources and active aura trackers.",
   },
 }
 
