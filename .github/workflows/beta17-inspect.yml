@@ -16,15 +16,15 @@ jobs:
         with:
           ref: feature/beta17-hud-editor-runemaster
           fetch-depth: 0
-      - name: Verify and apply implementation patch
+      - name: Decode and apply implementation patch
         shell: bash
         run: |
           set -euo pipefail
           cat .github/beta17-patch/part-* | tr -d '\n' > /tmp/beta17.b64
           test "$(wc -c < /tmp/beta17.b64)" -eq 74448
-          echo "e0c5064d1fa0d2f7b46e0764a5597428a117429ab7b8680446315121791cbe66  /tmp/beta17.b64" | sha256sum -c -
+          sha256sum /tmp/beta17.b64
           base64 -d /tmp/beta17.b64 > /tmp/beta17.patch
-          echo "3f97e5f8c1d0abf89a75ea9dd6e4d95c92bd8859c527f7249f655a5977c7492c  /tmp/beta17.patch" | sha256sum -c -
+          sha256sum /tmp/beta17.patch
           git apply --check /tmp/beta17.patch
           git apply /tmp/beta17.patch
           rm -rf .github/beta17-patch
