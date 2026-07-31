@@ -63,6 +63,12 @@ local function RepairProfile(profile, forceManaged)
   return changed
 end
 
+-- Patch the in-memory supplied baseline itself so every future profile install
+-- starts with correct raid-frame defaults instead of requiring a later repair.
+if type(RUI.ElvUIProfile) == "table" then
+  RepairProfile(RUI.ElvUIProfile, true)
+end
+
 function RUI:RepairElvUIRaidFrames(refreshLive, forceManaged)
   if InCombat() then pendingCombat = true; return false, "Raid-frame repair deferred until combat ends" end
 
