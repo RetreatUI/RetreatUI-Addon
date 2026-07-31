@@ -247,9 +247,11 @@ Use the Stable channel for the latest normal release.
 
 ### Beta
 
-**RetreatUI v1.1.0-beta.12**
+**RetreatUI v1.1.0-beta.13**
 
 The current beta includes:
+
+- Critical ElvUI installer validation and reload handling hotfix
 
 - Automatic per-class/per-build HUD profiles
 - The `/rui hud` visual editor
@@ -308,7 +310,7 @@ Please include:
 
 ## Current Addon Version
 
-**RetreatUI v1.1.0-beta.12**
+**RetreatUI v1.1.0-beta.13**
 
 This version promotes the complete current addon source to `main`, restores native Trinket Tracker tooltips and anchors target-of-target relative to the target frame for resolution-independent placement.
 

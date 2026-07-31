@@ -101,14 +101,25 @@ function RUI:DisableElvUINamePlates()
 end
 
 function RUI:AreElvUINamePlatesDisabled()
-  local E = ElvUI and unpack(ElvUI)
-  if E and E.private and E.private.nameplates and E.private.nameplates.enable ~= false then return false end
-  if E and E.db and E.db.nameplates and E.db.nameplates.enable ~= false then return false end
-
   local db = self:EnsureDB()
-  return db.integrations and db.integrations.elvui
-    and db.integrations.elvui.nameplatesDisabled == true
-    and db.integrations.elvui.nameplateAddonDisableOK ~= false
+  local state = db.integrations and db.integrations.elvui
+  if not state or state.nameplatesDisabled ~= true then return false end
+
+  -- A separately loaded ElvUI NamePlates module can remain alive until the
+  -- reload that completes installation. Validate the saved RetreatUI profile
+  -- here and repair the live tables without turning that reload-only state into
+  -- a fatal installer error.
+  local profile = type(ElvDB) == "table"
+    and type(ElvDB.profiles) == "table"
+    and ElvDB.profiles.RetreatUI
+  if type(profile) ~= "table" then return false end
+  profile.nameplates = profile.nameplates or {}
+  if profile.nameplates.enable ~= false then return false end
+
+  local E = ElvUI and unpack(ElvUI)
+  if E and E.private then DisablePrivateNamePlates(E.private) end
+  if E and E.db then DisablePrivateNamePlates(E.db) end
+  return true
 end
 
 local function ObjectName(value)
@@ -665,6 +676,14 @@ function RUI:InstallElvUIProfile()
   ApplyClassFontColor(profile, true)
   ElvDB.profiles[profileName] = profile
 
+  ElvDB.profileKeys = ElvDB.profileKeys or {}
+  if UnitName then
+    local character = UnitName("player")
+    local realm = GetRealmName and GetRealmName()
+    local characterKey = character and realm and (character .. " - " .. realm) or character
+    if characterKey and characterKey ~= "" then ElvDB.profileKeys[characterKey] = profileName end
+  end
+
   local ok, err = pcall(function()
     if E and E.data and E.data.SetProfile then E.data:SetProfile(profileName) end
     self:DisableElvUINamePlates()
@@ -681,7 +700,24 @@ function RUI:InstallElvUIProfile()
     self:After(0.25, function() self:RemoveRightLootTradeChat() end)
     self:After(1.00, function() self:RemoveRightLootTradeChat() end)
   end)
-  if not ok then return false, "Profile created, but activation failed: " .. tostring(err) end
+  if not ok then
+    local persisted = type(ElvDB.profiles) == "table"
+      and type(ElvDB.profiles[profileName]) == "table"
+      and type(ElvDB.profiles[profileName].nameplates) == "table"
+      and ElvDB.profiles[profileName].nameplates.enable == false
+    if persisted then
+      local db = self:EnsureDB()
+      db.integrations.elvui = db.integrations.elvui or {}
+      db.integrations.elvui.activationWarning = tostring(err)
+      db.integrations.elvui.activationPendingReload = true
+      return true, "RetreatUI ElvUI profile saved; live frame activation will finish after reload"
+    end
+    return false, "Profile creation failed: " .. tostring(err)
+  end
+  local db = self:EnsureDB()
+  db.integrations.elvui = db.integrations.elvui or {}
+  db.integrations.elvui.activationWarning = nil
+  db.integrations.elvui.activationPendingReload = nil
   return true, "RetreatUI ElvUI profile installed; ElvUI NamePlates disabled, right chat panel preserved, and Loot/Trade chat windows removed"
 end
 

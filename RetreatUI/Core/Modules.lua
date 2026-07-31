@@ -152,7 +152,10 @@ function RUI:ValidateInstallation()
     if definition and definition.required and self:IsInstallerModuleEnabled(key) then
       local record = self:GetModuleStatus(key)
       if not record or record.version ~= self.version or record.state ~= "success" then
-        problems[#problems + 1] = definition.label .. " was not installed successfully"
+        local detail = record and tostring(record.message or "") or ""
+        problems[#problems + 1] = detail ~= ""
+          and (definition.label .. ": " .. detail)
+          or (definition.label .. " was not installed successfully")
       elseif definition.validate then
         local valid, message = definition.validate(self)
         if not valid then problems[#problems + 1] = message or (definition.label .. " failed validation") end

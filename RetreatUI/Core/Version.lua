@@ -2,9 +2,12 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.12",
-  summary = "Global trinket tracking and a new user-supplied ElvUI unit-frame baseline.",
+  title = "RetreatUI v1.1.0-beta.13",
+  summary = "Critical ElvUI installer hotfix for the v1.1 beta.",
   changes = {
+    "Fixed the installer incorrectly reporting a failed ElvUI profile when live ElvUI refresh work only needed the required reload.",
+    "The RetreatUI ElvUI profile is now assigned directly to the current character before frame refresh callbacks run.",
+    "Installer failures now include the original module error instead of only showing a generic FAILED state.",
     "Added two compact trinket slots above the right side of the player frame on every supported class and build profile.",
     "Tracks equipped slot 13/14 item cooldowns and matching active proc or buff duration with stacks and glow.",
     "Uses the same icon size as the existing Buffs/Procs row and follows the live player frame without a separate mover.",
