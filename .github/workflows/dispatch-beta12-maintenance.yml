@@ -1,0 +1,20 @@
+name: Dispatch beta.12 maintenance
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.ref == 'maintenance/beta12-trigger'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Start the beta.12 promotion and cleanup workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run promote-v1.1.0-beta.12-and-cleanup.yml --repo "$GITHUB_REPOSITORY" --ref main
