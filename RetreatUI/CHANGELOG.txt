@@ -1,3 +1,10 @@
+RetreatUI v1.1.0-beta.17
+- Rebuilt Party Interrupts as a smaller compact tracker and fixed hidden spell icons.
+- Restored movable/scalable Party Interrupts without auto-anchor overwriting custom placement.
+- Added selectable, movable and scalable ElvUI unit-frame handles to /rui hud.
+- Converted the supplied Runemaster WeakAura reference into native RetreatUI rows, Inscribed Runes and active-only aura tracking.
+- Capped and centred Runemaster rows to avoid overlap with power, unit frames and nearby trackers.
+
 RetreatUI v1.1.0-beta.11
 - Added a global two-slot trinket tracker above the player frame for slots 13 and 14.
 - Added equipped-item cooldown, active proc/buff duration, stack and tooltip tracking.

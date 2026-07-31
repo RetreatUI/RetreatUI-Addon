@@ -175,6 +175,29 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     return RUI:GetSpellRecordTexture(definition)
   end
 
+  local function OrderedDefinitions(definitions, preferredNames, strictPreferred)
+    if type(preferredNames) ~= "table" or #preferredNames == 0 then return definitions or {} end
+    local byName, used, result = {}, {}, {}
+    for _, definition in ipairs(definitions or {}) do
+      local key = Normalize(definition.name)
+      if key ~= "" and not byName[key] then byName[key] = definition end
+    end
+    for _, name in ipairs(preferredNames) do
+      local key = Normalize(name)
+      local definition = byName[key]
+      if definition and not used[definition] then
+        result[#result + 1] = definition
+        used[definition] = true
+      end
+    end
+    if strictPreferred ~= true then
+      for _, definition in ipairs(definitions or {}) do
+        if not used[definition] then result[#result + 1] = definition end
+      end
+    end
+    return result
+  end
+
   local function LearnedDefinitions(definitions, maximum)
     local result = {}
     for _, definition in ipairs(definitions or {}) do
@@ -188,10 +211,12 @@ function RUI:RegisterAdvancedClassHUD(className, options)
 
   local function BuildRows(forceRacialScan)
     if not state.root then return end
-    local core = LearnedDefinitions(CoreDefinitions(), options.maxCore or 16)
-    local utility = LearnedDefinitions(UtilityDefinitions(forceRacialScan), options.maxUtility or 18)
-    W:BuildSpellRow(state.root.coreRow, core, 38, 1, function() return true end, Texture)
-    W:BuildSpellRow(state.root.utilityRow, utility, 32, 1, function() return true end, Texture)
+    local coreDefinitions = OrderedDefinitions(CoreDefinitions(), options.coreOrder, options.strictCoreOrder)
+    local utilityDefinitions = OrderedDefinitions(UtilityDefinitions(forceRacialScan), options.utilityOrder, options.strictUtilityOrder)
+    local core = LearnedDefinitions(coreDefinitions, options.maxCore or 16)
+    local utility = LearnedDefinitions(utilityDefinitions, options.maxUtility or 18)
+    W:BuildSpellRow(state.root.coreRow, core, options.coreIconSize or 38, options.coreSpacing or 1, function() return true end, Texture)
+    W:BuildSpellRow(state.root.utilityRow, utility, options.utilityIconSize or 32, options.utilitySpacing or 1, function() return true end, Texture)
   end
 
   -----------------------------------------------------------------------------
@@ -322,14 +347,18 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   local function BuildProcLookup()
     local byName, byID = {}, {}
     local resource = Database().nativeResource or options.nativeResource or {}
-    local resourceNames = {}
+    local resourceNames, resourceIDs = {}, {}
     for _, name in ipairs(resource.auraNames or {}) do resourceNames[Normalize(name)] = true end
-    local resourceID = tonumber(resource.spellID)
+    if tonumber(resource.spellID) then resourceIDs[tonumber(resource.spellID)] = true end
+    for _, spellID in ipairs(resource.spellIDs or resource.auraIDs or {}) do
+      spellID = tonumber(spellID)
+      if spellID then resourceIDs[spellID] = true end
+    end
 
     for _, definition in ipairs(RUI:GetAuraTrackerDefinitions(className) or {}) do
       local definitionID = tonumber(definition.auraID) or tonumber(definition.id)
       local nameKey = Normalize(definition.buff or definition.name)
-      local isResource = (resourceID and definitionID == resourceID) or resourceNames[nameKey]
+      local isResource = (definitionID and resourceIDs[definitionID]) or resourceNames[nameKey]
       local isClassState = RUI.IsClassStateAuraDefinition
         and RUI:IsClassStateAuraDefinition(className, definition, {
           extraDefinitions=options.stanceAuras,
@@ -761,13 +790,22 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     for _, segment in ipairs(state.resourceSegments) do segment:Hide() end
   end
 
+  local function ResourceAuraFromState(auraState, config)
+    local aura = AnyAura(auraState, config.auraNames)
+    if not aura and config.spellID then aura = FindAura(auraState, tonumber(config.spellID)) end
+    if not aura then
+      for _, spellID in ipairs(config.spellIDs or config.auraIDs or {}) do
+        aura = FindAura(auraState, tonumber(spellID))
+        if aura then break end
+      end
+    end
+    return aura
+  end
+
   local function ResourceAura(playerAuras, config)
-    local aura = AnyAura(playerAuras, config.auraNames)
-    if not aura and config.spellID then aura = FindAura(playerAuras, tonumber(config.spellID)) end
+    local aura = ResourceAuraFromState(playerAuras, config)
     if not aura and config.harmfulAura == true then
-      local harmfulAuras = ReadAura("player", true)
-      aura = AnyAura(harmfulAuras, config.auraNames)
-      if not aura and config.spellID then aura = FindAura(harmfulAuras, tonumber(config.spellID)) end
+      aura = ResourceAuraFromState(ReadAura("player", true), config)
     end
     return aura
   end
