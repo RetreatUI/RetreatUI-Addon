@@ -2,12 +2,12 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.17",
-  summary = "Compact interrupts, selectable ElvUI unit frames and a native Runemaster HUD conversion.",
+  title = "RetreatUI v1.1.0-beta.18",
+  summary = "Runemaster localization and Inscribed Runes display hotfix.",
   changes = {
-    "Rebuilt the Party Interrupt Tracker into a compact icon-first layout.",
-    "Added selectable, movable and scalable managed ElvUI unit frames to /rui hud.",
-    "Converted the supplied Runemaster WeakAura reference into native RetreatUI rows, resources and active aura trackers.",
+    "Made Runemaster detection language-independent for official localized Ascension clients.",
+    "Added SPIRITMAGE class-token aliases and spell-ID fallbacks for Chinese and other localized clients.",
+    "Removed the Inscribed Runes title and 0/4 counter; the resource now displays only four rune icons.",
   },
 }
 
