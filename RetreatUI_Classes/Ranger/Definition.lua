@@ -20,8 +20,13 @@ RUI:RegisterClassDefinition("Ranger", {
   primaryResource = "FOCUS",
   dynamicPrimaryResource = true,
   supportedLoadouts = {ARCHERY=true,DUELING=true,SURVIVAL=true},
+  aliases = {"RANGER"},
   detectionPriority = 100,
   detectionThreshold = 1,
-  detectionSpells = {"Crippling Shot","Incendiary Shot","Woodland Arrow"},
+  detectionSpells = {
+    {id=804725, name="Crippling Shot"},
+    {id=524870, name="Incendiary Shot"},
+    {id=806368, name="Woodland Arrow"},
+  },
   hudFrameName = "RetreatUIRangerHUD",
 })

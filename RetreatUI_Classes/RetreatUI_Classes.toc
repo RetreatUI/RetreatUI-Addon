@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.0-beta.19
+## Version: 1.1.0-beta.20
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -94,6 +94,7 @@ Templar\HUD.lua
 
 Ranger\Definition.lua
 Ranger\Data.lua
+Ranger\WAAudit.lua
 Ranger\HUD.lua
 WagoCurated.lua
 Bloodmage\VanthirsGift.lua
