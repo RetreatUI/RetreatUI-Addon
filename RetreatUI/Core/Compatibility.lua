@@ -6,11 +6,36 @@ local warningPrinted = false
 
 local UNSUPPORTED_MESSAGE = "RetreatUI supports only the official Ascension ElvUI 7.27. The modified ElvUI 2.0 fork is not supported."
 
+local function NormalizeAddOnName(value)
+  return string.lower(tostring(value or ""))
+end
+
 local function AddOnExists(name)
+  local target = NormalizeAddOnName(name)
+  if target == "" then return false end
+
+  -- Ascension's GetAddOnInfo implementation is not reliable when an unknown
+  -- addon name is passed directly. Enumerate the installed addon list and
+  -- require an exact internal-folder-name match instead.
+  if type(GetNumAddOns) == "function" and type(GetAddOnInfo) == "function" then
+    local countOK, count = pcall(GetNumAddOns)
+    if countOK and type(count) == "number" then
+      for index = 1, count do
+        local infoOK, installedName = pcall(GetAddOnInfo, index)
+        if infoOK and NormalizeAddOnName(installedName) == target then
+          return true
+        end
+      end
+      return false
+    end
+  end
+
   if IsAddOnLoaded and IsAddOnLoaded(name) then return true end
-  if not GetAddOnInfo then return false end
-  local ok, addonName = pcall(GetAddOnInfo, name)
-  return ok and addonName ~= nil
+  if type(GetAddOnInfo) == "function" then
+    local infoOK, installedName = pcall(GetAddOnInfo, name)
+    return infoOK and NormalizeAddOnName(installedName) == target
+  end
+  return false
 end
 
 local function AddMarker(markers, seen, value)
@@ -27,34 +52,26 @@ end
 
 function RUI:DetectUnsupportedElvUI()
   local markers, seen = {}, {}
-  local hardMatch = false
 
-  -- These folders are shipped with Rhenyra's ElvUI 2.0 package. PartyDamage
-  -- is a unique hard marker; DTBars2 is kept as supporting information only.
-  if AddOnExists("ElvUI_PartyDamage") then
-    hardMatch = true
-    AddMarker(markers, seen, "ElvUI_PartyDamage")
-  end
-  if AddOnExists("ElvUI_DTBars2") then
-    AddMarker(markers, seen, "ElvUI_DTBars2")
-  end
-
-  -- The fork keeps ElvUI's public version at 7.27, so the normal TOC version
-  -- cannot distinguish it from the official Ascension build. Detect unique
-  -- runtime systems added by the fork instead.
+  local hasPartyDamage = AddOnExists("ElvUI_PartyDamage")
+  local hasDTBars2 = AddOnExists("ElvUI_DTBars2")
   local E = GetElvUIEngine()
-  if E and type(E.AbsorbEngine) == "table" then
-    hardMatch = true
-    AddMarker(markers, seen, "custom AbsorbEngine")
-  end
-  if E and type(E.SupportSpecCache) == "table" then
-    hardMatch = true
-    AddMarker(markers, seen, "custom SupportSpecCache")
-  end
-  if type(_G.ElvUI_AbsorbSettings) == "table" then
-    hardMatch = true
-    AddMarker(markers, seen, "ElvUI_AbsorbSettings")
-  end
+  local hasAbsorbEngine = E and type(E.AbsorbEngine) == "table" or false
+  local hasSupportSpecCache = E and type(E.SupportSpecCache) == "table" or false
+  local hasAbsorbSettings = type(_G.ElvUI_AbsorbSettings) == "table"
+
+  if hasPartyDamage then AddMarker(markers, seen, "ElvUI_PartyDamage") end
+  if hasDTBars2 then AddMarker(markers, seen, "ElvUI_DTBars2") end
+  if hasAbsorbEngine then AddMarker(markers, seen, "custom AbsorbEngine") end
+  if hasSupportSpecCache then AddMarker(markers, seen, "custom SupportSpecCache") end
+  if hasAbsorbSettings then AddMarker(markers, seen, "ElvUI_AbsorbSettings") end
+
+  -- Never block from one generic runtime table alone. A positive detection now
+  -- requires either the fork's unique PartyDamage addon folder or a combination
+  -- of independent ElvUI 2.0 runtime/package markers.
+  local hardMatch = hasPartyDamage
+    or (hasAbsorbEngine and hasSupportSpecCache)
+    or (hasDTBars2 and (hasAbsorbEngine or hasSupportSpecCache))
 
   self.elvUICompatibility = self.elvUICompatibility or {}
   self.elvUICompatibility.checked = true
