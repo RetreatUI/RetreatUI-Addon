@@ -38,10 +38,8 @@ local function RepairProfile(profile, forceManaged)
   units.raid = units.raid or {}
   local raid = units.raid
   local managedRaid = forceManaged == true
-    or raid.visibility == nil
     or raid.visibility == LEGACY_RAID_VISIBILITY
-    or raid.enable == nil
-    or raid.enable == false
+    or (raid.enable == nil and raid.visibility == nil)
   if managedRaid then
     if raid.enable ~= true then raid.enable = true; changed = true end
     if forceManaged == true or raid.visibility == nil or raid.visibility == LEGACY_RAID_VISIBILITY then
@@ -53,9 +51,8 @@ local function RepairProfile(profile, forceManaged)
   units.raid40 = units.raid40 or {}
   local raid40 = units.raid40
   local managedRaid40 = forceManaged == true
-    or raid40.enable == nil
-    or raid40.enable == false
-    or raid40.visibility == nil
+    or (raid40.enable == false and raid40.visibility == nil)
+    or (raid40.enable == nil and raid40.visibility == nil)
   if managedRaid40 then
     if raid40.enable ~= true then raid40.enable = true; changed = true end
     if forceManaged == true or raid40.visibility == nil then
@@ -150,7 +147,9 @@ events:SetScript("OnEvent", function(_, eventName, addonName)
   db.integrations = db.integrations or {}
   db.integrations.elvui = db.integrations.elvui or {}
   local needsMigration = tonumber(db.integrations.elvui.raidFrameRepairRevision) ~= REVISION
-  RUI:ScheduleElvUIRaidFrameRepair(needsMigration)
+  if needsMigration or eventName == "GROUP_ROSTER_UPDATE" then
+    RUI:ScheduleElvUIRaidFrameRepair(false)
+  end
 end)
 
 -- Also cover reloads where ElvUI is already initialized before this file loads.
