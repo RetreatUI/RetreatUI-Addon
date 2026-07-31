@@ -1,0 +1,27 @@
+name: Beta18 source snapshot
+
+on:
+  push:
+    branches:
+      - hotfix/beta18-runemaster
+    paths:
+      - ".github/workflows/beta18-source.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: hotfix/beta18-runemaster
+      - name: Upload source
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta18-source
+          path: |
+            RetreatUI
+            RetreatUI_Classes
+            .github/workflows/validate-and-publish.yml
