@@ -1,0 +1,26 @@
+name: Beta17 inspect
+
+on:
+  push:
+    branches:
+      - feature/beta17-hud-editor-runemaster
+    paths:
+      - ".github/workflows/beta17-inspect.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Print relevant tree
+        shell: bash
+        run: |
+          echo '=== TREE ==='
+          find RetreatUI RetreatUI_Classes -maxdepth 4 -type f | sort
+          echo '=== CLASS REGISTRATION ==='
+          grep -RniE 'RegisterClass|classModules|Register.*Module|supportedClasses|classDatabase' RetreatUI RetreatUI_Classes | head -n 300 || true
+          echo '=== RUNES ==='
+          grep -RniE 'rune|inscribed' RetreatUI RetreatUI_Classes | head -n 300 || true
