@@ -20,8 +20,16 @@ RUI:RegisterClassDefinition("Runemaster", {
   primaryResource = "MANA",
   dynamicPrimaryResource = true,
   supportedLoadouts = {ARCANE=true,RIFTBLADE=true,RUNIC=true},
+  -- UnitClass() returns the internal SPIRITMAGE token on some localized
+  -- Ascension clients. Keep English display aliases as well, then fall back to
+  -- language-independent spell IDs when the localized class name is unknown.
+  aliases = {"SPIRITMAGE", "Spirit Mage", "SpiritMage"},
   detectionPriority = 100,
   detectionThreshold = 1,
-  detectionSpells = {"Smolder","Hoarfrost","Runic Brand"},
+  detectionSpells = {
+    {id=801087, name="Smolder"},
+    {id=801104, name="Hoarfrost"},
+    {id=712299, name="Runic Brand"},
+  },
   hudFrameName = "RetreatUIRunemasterHUD",
 })
