@@ -1,0 +1,238 @@
+name: Run RetreatUI beta.12 maintenance
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+  actions: write
+  pull-requests: write
+
+concurrency:
+  group: retreatui-beta12-direct-maintenance
+  cancel-in-progress: false
+
+jobs:
+  maintain:
+    if: github.event.pull_request.head.ref == 'maintenance/beta12-trigger'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BASE_TAG: v1.1.0-beta.11
+      BASE_ZIP: RetreatUI_v1.1.0-beta.11.zip
+      VERSION: 1.1.0-beta.12
+      TAG: v1.1.0-beta.12
+      ZIP_NAME: RetreatUI_v1.1.0-beta.12.zip
+      MANIFEST_NAME: RetreatUI_manifest.json
+      STABLE_TAG: v1.0.11
+      ROLLBACK_TAG: v1.1.0-beta.10.2
+      SELF_PATH: .github/workflows/run-beta12-maintenance.yml
+
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Reconstruct published beta.11
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf build
+          mkdir -p build/base build/source build/published
+          gh release download "$BASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --pattern "$BASE_ZIP" --pattern "$MANIFEST_NAME" --dir build/base
+          unzip -q "build/base/$BASE_ZIP" -d build/source
+          test -f build/source/RetreatUI/RetreatUI.toc
+          test -f build/source/RetreatUI_Classes/RetreatUI_Classes.toc
+
+      - name: Apply beta.12 fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path('build/source')
+          old, new = '1.1.0-beta.11', '1.1.0-beta.12'
+
+          trackers = list(root.rglob('TrinketTracker.lua'))
+          if len(trackers) != 1:
+              raise SystemExit(f'Expected one TrinketTracker.lua, found {trackers}')
+          tracker = trackers[0]
+          text = tracker.read_text(encoding='utf-8')
+          if 'EnableMouse(true)' not in text:
+              pattern = re.compile(r'(?m)^(?P<indent>\s*)(?P<var>[A-Za-z_][A-Za-z0-9_\.]*)\:SetScript\("OnEnter"')
+              match = pattern.search(text)
+              if not match:
+                  raise SystemExit('Trinket tooltip OnEnter handler not found')
+              insert = f"{match.group('indent')}{match.group('var')}:EnableMouse(true)\n"
+              text = text[:match.start()] + insert + text[match.start():]
+              tracker.write_text(text, encoding='utf-8')
+
+          profile = root / 'RetreatUI' / 'Profiles' / 'ElvUI.lua'
+          data = profile.read_text(encoding='utf-8')
+          data, count = re.subn(
+              r'(?m)^(\s*)ElvUF_TargetTargetMover\s*=\s*"[^"]*",\s*$',
+              r'\1ElvUF_TargetTargetMover = "TOPLEFT,ElvUF_TargetMover,TOPRIGHT,8,0",',
+              data,
+              count=1,
+          )
+          if count != 1:
+              raise SystemExit('Target-of-target mover line not found')
+          profile.write_text(data, encoding='utf-8')
+
+          for folder in (root / 'RetreatUI', root / 'RetreatUI_Classes'):
+              for path in folder.rglob('*'):
+                  if path.is_file() and path.suffix.lower() in {'.lua', '.toc', '.xml'}:
+                      value = path.read_text(encoding='utf-8')
+                      value = value.replace(old, new)
+                      if path.suffix.lower() == '.toc':
+                          value = re.sub(r'(?m)^## Version:\s*.*$', f'## Version: {new}', value, count=1)
+                      path.write_text(value, encoding='utf-8')
+
+          assert 'EnableMouse(true)' in tracker.read_text(encoding='utf-8')
+          assert 'ElvUF_TargetTargetMover = "TOPLEFT,ElvUF_TargetMover,TOPRIGHT,8,0"' in profile.read_text(encoding='utf-8')
+          for toc in (root/'RetreatUI'/'RetreatUI.toc', root/'RetreatUI_Classes'/'RetreatUI_Classes.toc'):
+              assert f'## Version: {new}' in toc.read_text(encoding='utf-8')
+          PY
+
+      - name: Validate Lua 5.1 and install complete source on main
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find build/source/RetreatUI build/source/RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+          rm -rf RetreatUI RetreatUI_Classes
+          cp -a build/source/RetreatUI RetreatUI
+          cp -a build/source/RetreatUI_Classes RetreatUI_Classes
+
+          find . -maxdepth 1 -type d \( -name '.release-*' -o -name '.patch-*' -o -name '.inspect-*' -o -name '.analysis-*' \) -print0 | xargs -0 -r rm -rf
+          find .github/workflows -maxdepth 1 -type f \( -name '*.yml' -o -name '*.yaml' \) \
+            ! -name 'publish-release.yml' ! -name 'run-beta12-maintenance.yml' -delete
+
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          p = Path('README.md')
+          if p.exists():
+              text = p.read_text(encoding='utf-8')
+              text = text.replace('RetreatUI v1.0.10 includes HUD support', 'RetreatUI v1.1.0 includes HUD support')
+              section = '''## Current Release
+
+**RetreatUI v1.1.0-beta.12**
+
+This beta promotes the complete current addon source to `main`, restores Trinket Tracker tooltips, and anchors target-of-target relative to the target frame. The supplied ElvUI profile remains a one-time baseline and personal mover changes remain user-managed.
+
+---'''
+              text, count = re.subn(r'## Current Release\n.*?\n---', section, text, count=1, flags=re.S)
+              if count != 1:
+                  raise SystemExit('README Current Release section not found')
+              p.write_text(text, encoding='utf-8')
+          Path('.github/release-manifest.json').write_text('''{
+  "publish": false,
+  "version": "1.1.0-beta.12",
+  "title": "RetreatUI v1.1.0-beta.12",
+  "notes_file": "RELEASE_NOTES.md",
+  "prerelease": true
+}
+''', encoding='utf-8')
+          PY
+
+          git config user.name RetreatUI
+          git config user.email gaarn94@gmail.com
+          git add -A
+          git commit -m "Promote RetreatUI v1.1.0-beta.12 source"
+          git push origin HEAD:main
+          echo "SOURCE_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Package, publish and verify beta.12
+        shell: bash
+        run: |
+          set -euo pipefail
+          zip -qr "$ZIP_NAME" RetreatUI RetreatUI_Classes
+          unzip -t "$ZIP_NAME"
+          mapfile -t roots < <(zipinfo -1 "$ZIP_NAME" | awk -F/ 'NF {print $1}' | sort -u)
+          [[ "${#roots[@]}" -eq 2 && "${roots[0]}" == RetreatUI && "${roots[1]}" == RetreatUI_Classes ]]
+          export ZIP_SHA256="$(sha256sum "$ZIP_NAME" | awk '{print $1}')"
+
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          data = json.loads((Path('build/base')/os.environ['MANIFEST_NAME']).read_text(encoding='utf-8-sig'))
+          version, tag, asset, digest = os.environ['VERSION'], os.environ['TAG'], os.environ['ZIP_NAME'], os.environ['ZIP_SHA256']
+          data.update({'version': version, 'tag': tag, 'asset': asset, 'sha256': digest})
+          for key, value in [('tag_name', tag), ('asset_name', asset), ('filename', asset)]:
+              if key in data: data[key] = value
+          if 'prerelease' in data: data['prerelease'] = True
+          if 'channel' in data: data['channel'] = 'beta'
+          beta = data.setdefault('channels', {}).setdefault('beta', {})
+          beta.update({'version': version, 'tag': tag, 'asset': asset, 'sha256': digest})
+          Path(os.environ['MANIFEST_NAME']).write_text(json.dumps(data, indent=2, sort_keys=True)+'\n', encoding='utf-8')
+          PY
+
+          cat > release-notes.md <<'MD'
+          ## RetreatUI v1.1.0-beta.12
+
+          - Restores native item tooltips on both Trinket Tracker slots.
+          - Anchors target-of-target directly to the target mover for resolution-independent placement.
+          - Promotes the complete current RetreatUI and RetreatUI_Classes source to `main`.
+          - Preserves the supplied ElvUI profile as a one-time baseline without re-forcing personal settings on login.
+          - Preserves the beta.10.2 HUD rollback, Party Interrupt Tracker, class HUDs and build profiles.
+          MD
+
+          gh release create "$TAG" "$ZIP_NAME" "$MANIFEST_NAME" --repo "$GITHUB_REPOSITORY" \
+            --target "$SOURCE_SHA" --title "RetreatUI v$VERSION" --notes-file release-notes.md --prerelease
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$ZIP_NAME" --pattern "$MANIFEST_NAME" --dir build/published
+          cmp "$ZIP_NAME" "build/published/$ZIP_NAME"
+          cmp "$MANIFEST_NAME" "build/published/$MANIFEST_NAME"
+          unzip -t "build/published/$ZIP_NAME"
+
+      - name: Clean obsolete GitHub data
+        shell: bash
+        run: |
+          set -euo pipefail
+          repo="$GITHUB_REPOSITORY"
+
+          gh api --paginate "repos/$repo/releases?per_page=100" | jq -s '[.[][]]' > /tmp/releases.json
+          jq -r --arg a "$STABLE_TAG" --arg b "$ROLLBACK_TAG" --arg c "$TAG" '.[]|select(.tag_name!=$a and .tag_name!=$b and .tag_name!=$c)|.tag_name' /tmp/releases.json | while read -r tag; do
+            [[ -z "$tag" ]] || gh release delete "$tag" --repo "$repo" --yes --cleanup-tag || true
+          done
+
+          gh api --paginate "repos/$repo/git/matching-refs/tags/" --jq '.[].ref' | sed 's#refs/tags/##' | while read -r tag; do
+            [[ "$tag" == "$STABLE_TAG" || "$tag" == "$ROLLBACK_TAG" || "$tag" == "$TAG" ]] && continue
+            encoded="$(jq -rn --arg v "$tag" '$v|@uri')"
+            gh api --silent -X DELETE "repos/$repo/git/refs/tags/$encoded" || true
+          done
+
+          gh api --paginate "repos/$repo/pulls?state=open&per_page=100" --jq '.[].number' | while read -r n; do
+            [[ -z "$n" ]] || gh api --silent -X PATCH "repos/$repo/pulls/$n" -f state=closed || true
+          done
+
+          gh api --paginate "repos/$repo/branches?per_page=100" --jq '.[].name' | while read -r branch; do
+            [[ -z "$branch" || "$branch" == main ]] && continue
+            encoded="$(jq -rn --arg v "$branch" '$v|@uri')"
+            gh api --silent -X DELETE "repos/$repo/git/refs/heads/$encoded" || true
+          done
+
+          gh api --paginate "repos/$repo/actions/artifacts?per_page=100" | jq -s -r '.[].artifacts[].id' | xargs -r -n1 -P8 -I{} sh -c 'gh api --silent -X DELETE "repos/'"$repo"'/actions/artifacts/{}" || true'
+          gh api --paginate "repos/$repo/actions/runs?per_page=100" | jq -s -r --arg current "$GITHUB_RUN_ID" '.[].workflow_runs[]|select((.id|tostring)!=$current)|.id' | xargs -r -n1 -P6 -I{} sh -c 'gh api --silent -X DELETE "repos/'"$repo"'/actions/runs/{}" || true'
+
+      - name: Remove temporary maintenance workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git pull --ff-only origin main
+          git rm "$SELF_PATH"
+          git commit -m "Remove completed beta.12 maintenance workflow"
+          git push origin HEAD:main
+
+      - name: Summary
+        run: |
+          echo "Beta.12 source promoted, release verified and repository cleanup completed." >> "$GITHUB_STEP_SUMMARY"
