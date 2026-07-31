@@ -6,12 +6,16 @@ on:
       - feature/beta17-hud-editor-runemaster
     paths:
       - ".github/beta17-patch/ready"
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -22,6 +26,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          test -f .github/beta17-patch/ready
           cat .github/beta17-patch/part-* | tr -d '\n' | base64 -d > /tmp/beta17.patch
           git apply --check /tmp/beta17.patch
           git apply /tmp/beta17.patch
