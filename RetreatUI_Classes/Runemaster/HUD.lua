@@ -44,16 +44,27 @@ local module = RUI:RegisterAdvancedClassHUD("Runemaster", {
   maxProcs = 10,
 })
 
--- Inscribed Runes is intentionally icon-only. The shared resource renderer
--- also owns labelled resources for other classes, so suppress only the
--- Runemaster label after its native HUD frame has been created.
-local function HideInscribedRunesLabel()
+-- The shared resource renderer refreshes its label continuously. Hiding the
+-- label only during activation therefore allowed "INSCRIBED RUNES 0 / 4" to
+-- return later. Shadow Show() on this one FontString so every future refresh
+-- remains icon-only without changing labelled resources for other classes.
+local function LockInscribedRunesLabel()
   local root = _G.RetreatUIRunemasterHUD
-  if root and root.resourceLabel then
-    root.resourceLabel:SetText("")
-    root.resourceLabel:SetAlpha(0)
-    root.resourceLabel:Hide()
+  local label = root and root.resourceLabel
+  if not label then return end
+
+  if not label._retreatUIOriginalShow then
+    label._retreatUIOriginalShow = label.Show
+    label.Show = function(self)
+      self:SetText("")
+      self:SetAlpha(0)
+      self:Hide()
+    end
   end
+
+  label:SetText("")
+  label:SetAlpha(0)
+  label:Hide()
 end
 
 if module then
@@ -61,7 +72,7 @@ if module then
   function module:activate(...)
     local result
     if originalActivate then result = originalActivate(self, ...) end
-    HideInscribedRunesLabel()
+    LockInscribedRunesLabel()
     return result
   end
 
@@ -69,7 +80,7 @@ if module then
   function module:refreshLayout(...)
     local result
     if originalRefreshLayout then result = originalRefreshLayout(self, ...) end
-    HideInscribedRunesLabel()
+    LockInscribedRunesLabel()
     return result
   end
 end
