@@ -6,6 +6,11 @@ on:
       - temp/release-download-counts
     paths:
       - ".github/workflows/temp-release-download-counts.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/temp-release-download-counts.yml"
 
 permissions:
   contents: read
