@@ -1,11 +1,16 @@
 local RUI = RetreatUI
-if not RUI or type(RUI.RefreshTrinketTracker) ~= "function" then return end
-if not RUI.HUDWidgets then return end
+if not RUI then return end
 
--- Some Ascension clients expose an equipped custom trinket texture and slot
--- cooldown without returning a standard item ID. The primary tracker uses the
--- item ID for proc discovery, so keep a lightweight slot-based fallback for
--- any equipped slot that the primary tracker could not display.
+-- The compatibility wrapper was required by the beta.19 item-ID tracker. The
+-- beta.22 slot-first engine already contains those fallbacks internally, so it
+-- must not be wrapped a second time.
+if tonumber(RUI.trinketTrackerEngineVersion) and tonumber(RUI.trinketTrackerEngineVersion) >= 2 then
+  RUI.trinketTrackerFallbackActive = false
+  return
+end
+
+if type(RUI.RefreshTrinketTracker) ~= "function" or not RUI.HUDWidgets then return end
+
 local W = RUI.HUDWidgets
 local SLOTS = {13, 14}
 local originalRefresh = RUI.RefreshTrinketTracker
@@ -26,11 +31,7 @@ local function FrameUsable(frame)
 end
 
 local function PlayerFrame()
-  for _, frame in ipairs({
-    _G.ElvUF_Player,
-    _G.ElvUF_PlayerMover,
-    _G.PlayerFrame,
-  }) do
+  for _, frame in ipairs({_G.ElvUF_Player, _G.ElvUF_PlayerMover, _G.PlayerFrame}) do
     if FrameUsable(frame) then return frame end
   end
   return nil
@@ -39,14 +40,10 @@ end
 local function SlotData(slot)
   local link = GetInventoryItemLink and GetInventoryItemLink("player", slot) or nil
   local texture = GetInventoryItemTexture and GetInventoryItemTexture("player", slot) or nil
-
   if not texture and link and GetItemInfo then
-    local ok, resolved = pcall(function()
-      return select(10, GetItemInfo(link))
-    end)
+    local ok, resolved = pcall(function() return select(10, GetItemInfo(link)) end)
     if ok then texture = resolved end
   end
-
   return link ~= nil or texture ~= nil, texture
 end
 
@@ -62,18 +59,13 @@ end
 
 local function ShowFallback()
   if RUI.IsHUDOverlaySuppressed and RUI:IsHUDOverlaySuppressed() then return false end
-
   local tracker = RUI.GetTrinketTrackerFrame and RUI:GetTrinketTrackerFrame() or nil
   local player = PlayerFrame()
   if not tracker or not tracker.icons or not player then return false end
 
-  local shown = false
-  local usedFallback = false
+  local shown, usedFallback = false, false
   for index, slot in ipairs(SLOTS) do
     local icon = tracker.icons[index]
-
-    -- Preserve the richer primary state, including proc glows and learned aura
-    -- timers, whenever the normal item-ID path already displayed this slot.
     if icon and IsShown(icon) then
       shown = true
     else
@@ -83,7 +75,6 @@ local function ShowFallback()
         icon.stackText:SetText("")
         W:SetGlow(icon, nil, 0)
         W:SetBorder(icon, {0, 0, 0, 1}, 1)
-
         local remaining = Cooldown(slot)
         if remaining > 0.05 then
           W:SetCooldownDisplay(icon, remaining, true)
@@ -94,10 +85,8 @@ local function ShowFallback()
           icon:SetAlpha(1)
           if icon.texture.SetDesaturated then icon.texture:SetDesaturated(false) end
         end
-
         icon:Show()
-        shown = true
-        usedFallback = true
+        shown, usedFallback = true, true
       elseif icon then
         icon:Hide()
       end
@@ -109,13 +98,11 @@ local function ShowFallback()
     RUI.trinketTrackerFallbackActive = false
     return false
   end
-
   if usedFallback or not IsShown(tracker) then
     tracker:ClearAllPoints()
     tracker:SetPoint("BOTTOMRIGHT", player, "TOPRIGHT", 0, 2)
     tracker:Show()
   end
-
   RUI.trinketTrackerFallbackActive = usedFallback
   return true
 end
