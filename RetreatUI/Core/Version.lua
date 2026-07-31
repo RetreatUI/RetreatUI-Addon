@@ -2,12 +2,14 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0-beta.19",
-  summary = "Runemaster resource and trinket HUD reliability hotfix.",
+  title = "RetreatUI v1.1.0",
+  summary = "The modular RetreatUI release with reliable native HUD systems.",
   changes = {
-    "Made the Inscribed Runes label permanently icon-only during every resource refresh.",
-    "Added a slot-based trinket HUD fallback for Ascension custom items without standard item IDs.",
-    "Trinket icons now remain visible and continue showing slot cooldowns above the player frame.",
+    "Added independent installer choices for Class HUD, layouts, trackers, nameplates and integrations.",
+    "Added reliable combat-log party cooldowns and a compact direct-interrupt tracker with Arcane Torrent support.",
+    "Added clean Ranger and Tinker HUD systems without duplicate tracking.",
+    "Added the live-tested slot-first Ascension trinket tracker.",
+    "Cleaned Pyromancer Heat and Ember resources and suppressed the duplicate Ascension resource bar.",
   },
 }
 
