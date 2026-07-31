@@ -301,7 +301,18 @@ local CLASS_STATE_GROUPS = {
     },
   },
 
-  ["Witch Doctor"] = {},
+  ["Witch Doctor"] = {
+    {
+      key="LOA",
+      prefixes={"Loa: ", "Presence of the Loa: "},
+      labelFromName=true,
+      members={
+        Member("Loa Spirits", "LOA", nil, {"Loa Spirit"}, "Interface\\Icons\\achievement_boss_zuldazar_loacouncil"),
+        Member("Voodoo Spirits", "LOA", 704511, nil, "Interface\\Icons\\achievement_jadeserpent_2"),
+        Member("Presence of the Loa", "LOA", 572871, nil, "Interface\\icons\\nhi_earthmask_Border"),
+      },
+    },
+  },
 
   ["Witch Hunter"] = {
     {
@@ -652,16 +663,37 @@ function Tracker:Collect(auraState)
   return active
 end
 
+local function TrackerAnchor(options)
+  options = options or {}
+  if options.anchor == "player" then
+    local frame = _G.ElvUF_Player or _G.PlayerFrame
+    if frame and type(frame) ~= "string" and frame.GetWidth and frame.SetPoint then return frame end
+  end
+  if type(options.anchorFrameName) == "string" then
+    local frame = _G[options.anchorFrameName]
+    if frame and type(frame) ~= "string" and frame.GetWidth and frame.SetPoint then return frame end
+  end
+  return nil
+end
+
 function Tracker:Position(count)
   local size = self.options.size or ((RUI.layout.stanceTracker and RUI.layout.stanceTracker.size) or 38)
   local gap = self.options.gap or ((RUI.layout.stanceTracker and RUI.layout.stanceTracker.gap) or 6)
   local startX = self.options.x or -195
   local direction = self.options.direction == "right" and 1 or -1
   local y = self.options.y or ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118)
+  local anchor = TrackerAnchor(self.options)
   for index = 1, count do
     local frame = self.frames[index] or CreateTrackerFrame(self, index)
     frame:ClearAllPoints()
-    frame:SetPoint("CENTER", UIParent, "CENTER", startX + direction * (index - 1) * (size + gap), y)
+    local x = startX + direction * (index - 1) * (size + gap)
+    if anchor then
+      frame:SetPoint("BOTTOM", anchor, "TOP", x, y)
+    else
+      local fallbackX = tonumber(self.options.fallbackX) or x
+      local fallbackY = tonumber(self.options.fallbackY) or y
+      frame:SetPoint("CENTER", UIParent, "CENTER", fallbackX + direction * (index - 1) * (size + gap), fallbackY)
+    end
   end
 end
 

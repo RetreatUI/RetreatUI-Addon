@@ -3,7 +3,7 @@ local RUI = RetreatUI
 RUI:RegisterClassDefinition("Sun Cleric", {
   ready = true,
   releaseStatus = "all-spec",
-  roles = "Healer / Damage",
+  roles = "Tank / Healer / Damage",
   theme = "Solar Grace",
   accent = {1.000, 0.720, 0.180},
   accent2 = {1.000, 0.940, 0.580},
@@ -12,7 +12,7 @@ RUI:RegisterClassDefinition("Sun Cleric", {
   installerTheme = {
     title = "SUN CLERIC",
     subtitle = "Solar Grace • All Specializations",
-    description = "Carry the dawn. Temper mercy with flame. Banish shadow.",
+    description = "Carry the dawn. Guard your allies. Temper mercy with flame.",
     loadout = "All Specializations",
     icon = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\SunCleric_Icon.tga",
     background = "Interface\\AddOns\\RetreatUI\\Media\\Themes\\SunCleric_Installer.tga",

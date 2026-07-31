@@ -24,7 +24,7 @@ RetreatUI automatically adapts to your learned abilities, talents, active class 
 
 ## Supported Classes
 
-RetreatUI v1.0.10 includes HUD support for all 21 Conquest of Azeroth classes:
+RetreatUI v1.1.0 includes HUD support for all 21 Conquest of Azeroth classes:
 
 - Barbarian
 - Bloodmage
@@ -110,11 +110,9 @@ Please include:
 
 ## Current Release
 
-**RetreatUI v1.0.10**
+**RetreatUI v1.1.0-beta.12**
 
-This release expands the shared HUD framework across all 21 classes and introduces major updates to class-state tracking, the Buff Manager, Bloodmage, Knight of Xoroth, Sun Cleric, Templar and the Necromancer Guardian HUD.
-
-See the full release notes on the **Releases** page.
+This beta promotes the complete current addon source to `main`, restores Trinket Tracker tooltips, and anchors target-of-target relative to the target frame. The supplied ElvUI profile remains a one-time baseline and personal mover changes remain user-managed.
 
 ---
 

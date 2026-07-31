@@ -1,0 +1,24 @@
+{
+  "asset": "RetreatUI_v1.1.0-beta.11.zip",
+  "channels": {
+    "beta": {
+      "asset": "RetreatUI_v1.1.0-beta.11.zip",
+      "prerelease": true,
+      "sha256": "0ddd89eb5e8bde92d55671aba525fded6831b77c243e1dff105ff3453e4f8c6d",
+      "tag": "v1.1.0-beta.11",
+      "version": "1.1.0-beta.11"
+    },
+    "release": {
+      "asset": "RetreatUI_v1.0.11.zip",
+      "prerelease": false,
+      "sha256": "f34151dfda3d69e5ee1d894066d8d8ed9bee2092a7ec78eed6d122c1135efe51",
+      "tag": "v1.0.11",
+      "version": "1.0.11"
+    }
+  },
+  "generated": "2026-07-30T12:20:52Z",
+  "schema": 1,
+  "sha256": "0ddd89eb5e8bde92d55671aba525fded6831b77c243e1dff105ff3453e4f8c6d",
+  "tag": "v1.1.0-beta.11",
+  "version": "1.1.0-beta.11"
+}

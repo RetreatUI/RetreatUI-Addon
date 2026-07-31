@@ -5,7 +5,7 @@ local RUI = RetreatUI
 
 RUI.name = RUI.name or "RetreatUI"
 RUI.author = "Retreat"
-RUI.schema = 4
+RUI.schema = 10
 RUI.modules = RUI.modules or {}
 RUI.classModules = RUI.classModules or {}
 RUI.providers = RUI.providers or {}
@@ -84,6 +84,7 @@ function RUI:EnsureDB()
     db.installer.initialCompleted = true
   end
   db.installer.classes = db.installer.classes or {}
+  db.installer.moduleSelections = db.installer.moduleSelections or {}
   -- Older builds stored installer completion globally. That made every newly
   -- visited class look preinstalled and forced testers to use /rui reset before
   -- seeing the correct class installer. Schema 4 intentionally starts a clean
@@ -98,6 +99,35 @@ function RUI:EnsureDB()
   db.integrations = db.integrations or {}
   db.hiddenFrames = db.hiddenFrames or {}
   db.spellDiscovery = db.spellDiscovery or {}
+  db.features = db.features or {}
+  if db.features.hudEditor == nil then db.features.hudEditor = true end
+  if db.features.buildProfiles == nil then db.features.buildProfiles = true end
+  if db.features.partyUtility == nil then db.features.partyUtility = true end
+  if db.features.partyInterrupts == nil then db.features.partyInterrupts = true end
+  db.features.dangerousAbilities = false
+  if db.features.buffManager2 == nil then db.features.buffManager2 = true end
+  if db.features.buffManagerKeybinds == nil then db.features.buffManagerKeybinds = true end
+  if db.features.trinketTracker == nil then db.features.trinketTracker = true end
+
+  db.trinketTracker = db.trinketTracker or {}
+  if db.trinketTracker.enabled == nil then db.trinketTracker.enabled = true end
+  db.trinketTracker.auraByItem = db.trinketTracker.auraByItem or {}
+
+  db.partyUtility = db.partyUtility or {}
+  if db.partyUtility.enabled == nil then db.partyUtility.enabled = true end
+  db.partyUtility.categories = db.partyUtility.categories or {}
+  for _, category in ipairs({"interrupt","combatres","dispel","external","defensive","immunity","taunt"}) do
+    if db.partyUtility.categories[category] == nil then db.partyUtility.categories[category] = true end
+  end
+  db.partyUtility.categories.interrupt = false
+
+  db.partyInterrupts = db.partyInterrupts or {}
+  if db.partyInterrupts.enabled == nil then db.partyInterrupts.enabled = true end
+  if db.partyInterrupts.showSelf == nil then db.partyInterrupts.showSelf = true end
+  if db.partyInterrupts.showSolo == nil then db.partyInterrupts.showSolo = false end
+
+  db.dangerousAbilities = nil
+
 
   if previousSchema < 3 then RemoveRetiredData(db) end
   db.schema = self.schema

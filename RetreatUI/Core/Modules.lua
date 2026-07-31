@@ -20,6 +20,28 @@ function RUI:RegisterInstallerModule(key, definition)
   return true
 end
 
+function RUI:IsInstallerModuleEnabled(key)
+  local definition = self.moduleInstallers[key]
+  if definition and definition.selectable == false then return true end
+  local db = self:EnsureDB()
+  db.installer.moduleSelections = db.installer.moduleSelections or {}
+  local selected = db.installer.moduleSelections[key]
+  if selected == nil then
+    selected = definition == nil or definition.defaultEnabled ~= false
+    db.installer.moduleSelections[key] = selected
+  end
+  return selected ~= false
+end
+
+function RUI:SetInstallerModuleEnabled(key, enabled)
+  local definition = self.moduleInstallers[key]
+  if definition and definition.selectable == false then return true end
+  local db = self:EnsureDB()
+  db.installer.moduleSelections = db.installer.moduleSelections or {}
+  db.installer.moduleSelections[key] = enabled ~= false
+  return db.installer.moduleSelections[key]
+end
+
 function RUI:GetModuleStatusKey(key)
   if key == "classHUD" then return key .. ":" .. tostring(self:GetDetectedClass()) end
   return key
@@ -95,6 +117,9 @@ function RUI:InstallModule(key)
 
   local definition = self.moduleInstallers[key]
   if not definition then return self:SetModuleStatus(key, "error", "Module not registered") end
+  if not self:IsInstallerModuleEnabled(key) then
+    return self:SetModuleStatus(key, "skipped", "Disabled by user")
+  end
 
   if definition.available and not definition.available(self) then
     if definition.required then
@@ -124,7 +149,7 @@ function RUI:ValidateInstallation()
 
   for _, key in ipairs(self.moduleOrder) do
     local definition = self.moduleInstallers[key]
-    if definition and definition.required then
+    if definition and definition.required and self:IsInstallerModuleEnabled(key) then
       local record = self:GetModuleStatus(key)
       if not record or record.version ~= self.version or record.state ~= "success" then
         problems[#problems + 1] = definition.label .. " was not installed successfully"
@@ -170,7 +195,11 @@ function RUI:InstallAllModules(progressCallback)
 
   for _, key in ipairs(self.moduleOrder) do
     local definition = self.moduleInstallers[key]
-    if progressCallback then progressCallback(key, "running", definition) end
+    if self:IsInstallerModuleEnabled(key) then
+      if progressCallback then progressCallback(key, "running", definition) end
+    else
+      if progressCallback then progressCallback(key, "skipped", definition) end
+    end
     local record = self:InstallModule(key)
     if progressCallback then progressCallback(key, record.state, definition, record) end
   end
@@ -200,6 +229,7 @@ RUI:RegisterInstallerModule("elvui", {
 
 RUI:RegisterInstallerModule("classHUD", {
   label="Class HUD",
+  selectable=false,
   icon=function(self) return self:GetTheme().installer.icon end,
   required=true,
   available=function(self)

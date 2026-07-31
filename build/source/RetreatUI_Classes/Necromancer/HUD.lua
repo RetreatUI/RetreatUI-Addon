@@ -172,14 +172,19 @@ local function EnsureLifeForceSegments(maximum)
 
   local size = maximum > 12 and math.max(13, math.floor(330 / maximum)) or 25
   local spacing = 1
-  local total = maximum * size + (maximum - 1) * spacing
-  local firstX = -total / 2 + size / 2
-  local y = (RUI.layout.demonfire and RUI.layout.demonfire.y) or -118
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("demonfire") or 1
+  local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+  local total = maximum * effectiveSize + (maximum - 1) * effectiveSpacing
+  local firstX = -total / 2 + effectiveSize / 2
+  local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+  local x = tonumber(resourceLayout.x) or 0
+  local y = tonumber(resourceLayout.y) or -118
 
   for index, frame in ipairs(lifeForceSegments) do
     frame:ClearAllPoints()
     frame:SetSize(size, size)
-    frame:SetPoint("CENTER", UIParent, "CENTER", firstX + (index - 1) * (size + spacing), y)
+    frame:SetPoint("CENTER", UIParent, "CENTER", x + firstX + (index - 1) * (effectiveSize + effectiveSpacing), y)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "demonfire") end
   end
 end
 
@@ -373,8 +378,9 @@ local function UpdateProcTrackers(playerAuras)
     frame.definition = item.definition
     frame:ClearAllPoints()
     frame:SetPoint("CENTER", UIParent, "CENTER",
-      (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing),
+      (layout.x or 0) - total / 2 + effectiveSize / 2 + (index - 1) * (effectiveSize + effectiveSpacing),
       layout.y or -83)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end
     frame.texture:SetTexture(aura.icon or Texture(item.definition))
     if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
     if frame.cooldownShade then frame.cooldownShade:Hide() end
@@ -573,6 +579,7 @@ end
 
 local function PositionTargetBar(bar, index)
   local targetFrame = TargetFrameAnchor()
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("targetDebuffs") or 1
   local width = 260
   if targetFrame and targetFrame.GetWidth then
     local ok, measured = pcall(targetFrame.GetWidth, targetFrame)
@@ -582,11 +589,12 @@ local function PositionTargetBar(bar, index)
   bar:SetWidth(width)
   bar:ClearAllPoints()
   if targetFrame then
-    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18)
+    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18 * scale)
   else
     local fallback = RUI.layout.targetDebuffs or {x=310,y=-59}
-    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18)
+    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18 * scale)
   end
+  if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end
 end
 
 local function UpdateTargetDebuffs()
@@ -688,7 +696,8 @@ local function Build()
   root:SetFrameStrata("MEDIUM")
 
   root.lifeForceLabel = root:CreateFontString(nil, "OVERLAY")
-  root.lifeForceLabel:SetPoint("CENTER", UIParent, "CENTER", 0, ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118) + 22)
+  local initialResourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+  root.lifeForceLabel:SetPoint("CENTER", UIParent, "CENTER", tonumber(initialResourceLayout.x) or 0, (tonumber(initialResourceLayout.y) or -118) + 22)
   RUI:ApplyFont(root.lifeForceLabel, 8, "OUTLINE")
   local theme = RUI:GetTheme()
   root.lifeForceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
@@ -823,8 +832,41 @@ local function Build()
   end)
 end
 
+function module:refreshLayout(force)
+  if not root then return false end
+  local coreLayout = RUI.layout.core or {x=0, y=-183}
+  local utilityLayout = RUI.layout.utility or {x=0, y=-224}
+  local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+  local resourceX = tonumber(resourceLayout.x) or 0
+  local resourceY = tonumber(resourceLayout.y) or -118
+
+  root.coreRow:ClearAllPoints()
+  root.coreRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(coreLayout.x) or 0, tonumber(coreLayout.y) or -183)
+  root.utilityRow:ClearAllPoints()
+  root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(utilityLayout.x) or 0, tonumber(utilityLayout.y) or -224)
+  if RUI.ApplyHUDFrameScale then
+    RUI:ApplyHUDFrameScale(root.coreRow, "core")
+    RUI:ApplyHUDFrameScale(root.utilityRow, "utility")
+  end
+  root.lifeForceLabel:ClearAllPoints()
+  root.lifeForceLabel:SetPoint("CENTER", UIParent, "CENTER", resourceX, resourceY + 22)
+  if root.lifeForceLabel.SetScale and RUI.GetHUDScale then root.lifeForceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+  if root.stance then
+    root.stance:ClearAllPoints()
+    root.stance:SetPoint("CENTER", UIParent, "CENTER", resourceX - 195, resourceY - 12)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(root.stance, "demonfire") end
+  end
+  for _, segment in ipairs(lifeForceSegments) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(segment, "demonfire") end end
+  for _, frame in ipairs(procFrames) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end end
+  for _, bar in ipairs(targetBars) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end end
+  EnsureLifeForceSegments(math.max(1, lifeForceObservedMax or 1))
+  if root:IsShown() then UpdateAll(force == true) end
+  return true
+end
+
 function module:activate()
   Build()
+  module:refreshLayout(true)
   root:Show()
   root:SetAlpha(1)
   if root.guardianHUD then root.guardianHUD:Activate() end

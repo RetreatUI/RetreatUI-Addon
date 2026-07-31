@@ -3,8 +3,8 @@ local RUI = RetreatUI
 RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
   collectorClassFile = "FLESHWARDEN",
   tabs = {"Defiance","Hellfire","War"},
-  version = 5,
-  source = "Ascension DB + RetreatUI runtime discovery",
+  version = 6,
+  source = "Ascension DB + Pyro KoX Hellfire WeakAura audit + RetreatUI runtime discovery",
   resources = {
     {key="rage", name="Rage", type="primary", position="power"},
     {key="demonfire", name="Demonfire", type="stacks", max=6, position="resource"},
@@ -14,19 +14,20 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
   spells = {
     -- Main combat row. The order is stable; unlearned records are omitted.
     {name="Sever", category="rotation", hudRow="core", order=10, trackCooldown=true},
-    {name="Infernal Strike", category="rotation", hudRow="core", order=15, trackCooldown=true, hideWhen={{name="Shieldgore", id=301302}}},
+    {name="Infernal Strike", id=501518, category="rotation", hudRow="core", order=15, trackCooldown=true, hideWhen={{name="Shieldgore", id=301302}}},
     {name="Unleash Pestilence", category="rotation", hudRow="core", order=20, trackCooldown=true, cooldownHint=4},
 
     -- Learned-only specialization abilities. Names are authoritative so higher
     -- ranks and replacement spell IDs are resolved from the live spellbook.
     {name="Shieldgore", id=301302, category="rotation", hudRow="core", order=25, talent=true, trackCooldown=true, sourceTab="Defiance", collectorEntryID=30229},
     {name="Gore", id=680941, category="rotation", hudRow="core", order=26, talent=true, trackCooldown=true, trackCharges=true, cooldownHint=8, sourceTab="War", collectorEntryID=31166},
-    {name="Seeking Flame", id=805671, category="rotation", hudRow="core", order=27, talent=true, trackCooldown=true, cooldownHint=6, sourceTab="Hellfire", collectorEntryID=30709},
+    {name="Seeking Flame", id=560668, category="rotation", hudRow="core", order=27, talent=true, trackCooldown=true, cooldownHint=6, sourceTab="Hellfire", collectorEntryID=30709},
+    {name="Blade of Xoroth", id=560675, category="rotation", hudRow="core", order=27.5, talent=true, trackCooldown=true, sourceTab="Hellfire", source="PyroKoXAudit"},
     {name="Hellmaw", id=806965, category="rotation", hudRow="core", order=28, talent=true, trackCooldown=true, sourceTab="Hellfire", collectorEntryID=31167},
     {name="Skulltaker", category="rotation", hudRow="core", order=29, talent=true, trackCooldown=true, sourceTab="Hellfire"},
     {name="Warbringer", id=570727, category="rotation", hudRow="core", order=30, talent=true, trackCooldown=true, sourceTab="War", collectorEntryID=12166},
     {name="Meatsaw", category="rotation", hudRow="core", order=31, talent=true, trackCooldown=true, sourceTab="War"},
-    {name="Flames of Xoroth", category="rotation", hudRow="core", order=32, talent=true, trackCooldown=true, sourceTab="Hellfire"},
+    {name="Flames of Xoroth", id=801059, category="rotation", hudRow="core", order=32, talent=true, trackCooldown=true, targetDebuff=true, sourceTab="Hellfire"},
 
     -- Specialization combat cooldowns remain in the main row because they are
     -- part of the active damage plan rather than situational utility.
@@ -36,7 +37,9 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
     {name="Burning Blade", id=524920, category="offensive", hudRow="core", order=38, talent=true, trackCooldown=true, cooldownHint=60, buff="Burning Blade", auraTracker=true, trackDuration=true, sourceTab="War", collectorEntryID=7889, partyCooldown=true, cooldownCategory="offensive"},
     {name="Hellstorm", id=802342, category="offensive", hudRow="core", order=39, talent=true, trackCooldown=true, cooldownHint=30, sourceTab="Hellfire", collectorEntryID=34100},
     {name="Doom", id=802602, category="offensive", hudRow="core", order=40, talent=true, trackCooldown=true, cooldownHint=30, sourceTab="Hellfire", collectorEntryID=34108, partyCooldown=true, cooldownCategory="offensive"},
-    {name="Hellfire Form", id=805696, category="offensive", hudRow="core", order=41, talent=true, trackCooldown=true, cooldownHint=120, buff="Hellfire Form", auraTracker=true, trackDuration=true, sourceTab="Hellfire", collectorEntryID=34066, partyCooldown=true, cooldownCategory="offensive"},
+    {name="Hell Scream", id=801002, category="offensive", hudRow="core", order=40.2, talent=true, trackCooldown=true, buff="Hell Scream", auraTracker=true, trackDuration=true, sourceTab="Hellfire", source="PyroKoXAudit"},
+    {name="Burning Scripture", id=805696, category="offensive", hudRow="core", order=40.4, talent=true, trackCooldown=true, sourceTab="Hellfire", source="PyroKoXAudit"},
+    {name="Hellfire Form", id=804006, category="offensive", hudRow="core", order=41, talent=true, trackCooldown=true, cooldownHint=120, buff="Hellfire Form", auraTracker=true, trackDuration=true, sourceTab="Hellfire", collectorEntryID=34066, partyCooldown=true, cooldownCategory="offensive"},
 
     {name="Chainwhip", category="interrupt", hudRow="utility", order=30, trackCooldown=true, cooldownHint=20, partyCooldown=true, cooldownCategory="interrupt"},
     {name="Snarl", category="taunt", hudRow="utility", order=40, trackCooldown=true, partyCooldown=true, cooldownCategory="taunt"},
@@ -68,6 +71,7 @@ RUI:RegisterClassSpellDatabase("Knight of Xoroth", {
 
     -- Target debuffs applied by the player.
     {name="Bulwark of Xoroth", id=300388, category="debuff", order=5, targetDebuff=true, auraBar=true, talent=true},
+    {name="Demonflare", id=503468, category="debuff", order=7, targetDebuff=true, trackHUD=false, source="PyroKoXAudit"},
     {name="Curse of Xoroth", category="debuff", order=10, targetDebuff=true},
     {name="Torn Flesh", category="debuff", order=20, targetDebuff=true},
     {name="Ritual Fire", category="debuff", order=30, targetDebuff=true},

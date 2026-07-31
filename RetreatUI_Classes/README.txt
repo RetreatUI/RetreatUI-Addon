@@ -1,4 +1,4 @@
-RETREATUI CLASSES v1.0.10
+RETREATUI CLASSES v1.0.11
 ==========================
 
 This addon is bundled with RetreatUI and must always use the same version as Core.
@@ -9,7 +9,8 @@ CLASS COVERAGE
 - Main Rotation contains learned core abilities and relevant offensive cooldowns.
 - Utility contains interrupts, taunts, control, movement, defensives and racials.
 - Proc tracking is active-only and deduplicated by live aura ID or name.
-- Curated target debuffs accept effects from the player, pet or casterless Ascension auras.
+- Target debuff bars show player, pet and vehicle-applied effects; casterless Ascension class auras are matched against the active class database.
+- Curated class-pack tracking expands Venomancer, Reaper, Starcaller, Felsworn and Primalist coverage.
 
 CLASS-STATE TRACKER
 - Curated state families include stances, forms, vows, aspects, oaths, formations, inscriptions, modes, augmentations and similar class systems.
@@ -21,7 +22,8 @@ CLASS-STATE TRACKER
 
 CUSTOM CLASS SYSTEMS
 - Knight of Xoroth: Demonfire, Demon's Blood, Hellfire Imp, Pestilence and target-debuff handling.
-- Bloodmage: form-dependent spell eligibility, Eternal Resolve and class-specific trackers.
+- Bloodmage: form-dependent spell eligibility, Eternal Resolve and expanded active proc tracking.
+- Starcaller: dedicated eight-segment target-bound Scattered Stars tracking.
 - Felsworn: dedicated Felfury, Chaos Rush and Inner Demon tracking.
 - Necromancer: Life Force systems and a Guardian HUD with individual minion health bars, Zombie tracking and a movable L/U lock control.
 

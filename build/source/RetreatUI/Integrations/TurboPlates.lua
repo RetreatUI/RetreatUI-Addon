@@ -387,7 +387,7 @@ local function StatusBarMatchesUnitHealth(value, unit)
   end
 
   -- TurboPlates' live health StatusBar uses the unit's actual health range. The
-  -- hidden reserve bar found in beta.14 did not. Matching both range and ratio
+  -- hidden reserve healthbar does not. Matching both range and ratio
   -- lets RetreatUI select the visible red bar without accidentally recoloring
   -- cast or power bars of a similar size.
   local maxTolerance = math.max(1, unitMaximum * 0.02)
@@ -940,7 +940,7 @@ local function RefreshAllManaPlates(fullDiscovery)
   end
 
   -- Explicitly restore every overlay that was not confirmed as a live mana unit
-  -- during this refresh. This also cleans up beta.15's stale blue state.
+  -- during this refresh. This also cleans up any stale blue state.
   for value in pairs(activeColorObjects) do
     if not seenObjects[value] then RestoreColor(value) end
   end
@@ -1057,6 +1057,7 @@ function RUI:ApplyTurboPlatesRuntime()
     manaNPCSyntheticPoolFilter = true,
     manaNPCDirectHPOnly = true,
     manaNPCStaleOverlayCleanup = true,
+    dangerousAbilityPriority = false,
     version = self.version,
   }
 

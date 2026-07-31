@@ -260,23 +260,73 @@ function RUI:RestoreNativeResourceMirrorSources()
   end
 end
 
+local cachedResourceFrames = {}
+
+local function ResourceCacheKey(keywords, fallbackLabel)
+  local values = {}
+  for _, keyword in ipairs(type(keywords) == "table" and keywords or {}) do
+    values[#values + 1] = Lower(keyword)
+  end
+  table.sort(values)
+  return table.concat(values, "|") .. "::" .. Lower(fallbackLabel)
+end
+
+local function BuildResourceSnapshot(frame, name)
+  if not frame or not IsFrameLike(frame) then return nil end
+  local snapshot = {
+    frame = frame,
+    name = name or FrameName(frame) or "",
+    texts = {}, textSet = {},
+    icons = {}, iconSet = {},
+    textures = {}, textureSet = {},
+    bars = {}, segments = {},
+  }
+  Collect(frame, snapshot, 0, {})
+  table.sort(snapshot.bars, function(left, right) return (left.area or 0) > (right.area or 0) end)
+  return snapshot
+end
+
+local function FinishResourceSnapshot(self, snapshot, fallbackLabel)
+  if not snapshot then return nil end
+  snapshot.label = CleanLabel(snapshot, fallbackLabel)
+  snapshot.icon = snapshot.icons[1]
+
+  if snapshot.bars[1] then
+    snapshot.current = math.max(0, tonumber(snapshot.bars[1].current) or 0)
+    snapshot.maximum = math.max(1, tonumber(snapshot.bars[1].maximum) or 1)
+  elseif #snapshot.segments > 0 then
+    local active = 0
+    for _, segment in ipairs(snapshot.segments) do if segment.active then active = active + 1 end end
+    snapshot.current, snapshot.maximum = active, #snapshot.segments
+  else
+    snapshot.current, snapshot.maximum = ParseTextValues(snapshot)
+  end
+
+  if snapshot.current == nil or snapshot.maximum == nil then return nil end
+  self:MarkNativeResourceMirrorSource(snapshot.frame)
+  return snapshot
+end
+
 function RUI:ReadAscensionResourceSnapshot(keywords, fallbackLabel, forceDiscovery)
+  local cacheKey = ResourceCacheKey(keywords, fallbackLabel)
+  local cached = cachedResourceFrames[cacheKey]
+
+  -- Normal gameplay reads only the already discovered resource frame. The old
+  -- implementation recursively inspected every discovered Ascension frame on
+  -- each power/aura refresh, which could cut FPS even while standing idle.
+  if forceDiscovery ~= true and cached and cached.frame and IsFrameLike(cached.frame) then
+    local snapshot = BuildResourceSnapshot(cached.frame, cached.name)
+    local finished = FinishResourceSnapshot(self, snapshot, fallbackLabel)
+    if finished then return finished end
+    cachedResourceFrames[cacheKey] = nil
+  end
+
   Discover(forceDiscovery == true)
   local best, bestScore
 
   for frame, name in pairs(discovered) do
     if frame and IsFrameLike(frame) then
-      local snapshot = {
-        frame = frame,
-        name = name or FrameName(frame) or "",
-        texts = {}, textSet = {},
-        icons = {}, iconSet = {},
-        textures = {}, textureSet = {},
-        bars = {}, segments = {},
-      }
-      Collect(frame, snapshot, 0, {})
-      table.sort(snapshot.bars, function(left, right) return (left.area or 0) > (right.area or 0) end)
-
+      local snapshot = BuildResourceSnapshot(frame, name)
       local score = KeywordScore(snapshot, keywords)
       if IsShown(frame) then score = score + 20 end
       if #snapshot.bars > 0 then score = score + 12 end
@@ -292,23 +342,11 @@ function RUI:ReadAscensionResourceSnapshot(keywords, fallbackLabel, forceDiscove
     end
   end
 
-  if not best then return nil end
-  best.label = CleanLabel(best, fallbackLabel)
-  best.icon = best.icons[1]
-
-  if best.bars[1] then
-    best.current = math.max(0, tonumber(best.bars[1].current) or 0)
-    best.maximum = math.max(1, tonumber(best.bars[1].maximum) or 1)
-  elseif #best.segments > 0 then
-    local active = 0
-    for _, segment in ipairs(best.segments) do if segment.active then active = active + 1 end end
-    best.current, best.maximum = active, #best.segments
-  else
-    best.current, best.maximum = ParseTextValues(best)
+  local finished = FinishResourceSnapshot(self, best, fallbackLabel)
+  if finished then
+    cachedResourceFrames[cacheKey] = {frame=finished.frame, name=finished.name}
   end
-
-  self:MarkNativeResourceMirrorSource(best.frame)
-  return best
+  return finished
 end
 
 local POWER_TYPE_BY_TOKEN = {

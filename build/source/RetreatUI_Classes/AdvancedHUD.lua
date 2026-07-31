@@ -371,7 +371,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     local maximum = math.min(#active, options.maxProcs or 12)
     local layout = RUI.layout.auraTrackers or {x=0,y=-83,size=30,spacing=3}
     local size, spacing = layout.size or 30, layout.spacing or 3
-    local total = maximum > 0 and (maximum * size + (maximum - 1) * spacing) or 0
+    local scale = RUI.GetHUDScale and RUI:GetHUDScale("auraTrackers") or 1
+    local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+    local total = maximum > 0 and (maximum * effectiveSize + (maximum - 1) * effectiveSpacing) or 0
     local theme = RUI:GetTheme()
 
     for index = 1, maximum do
@@ -382,8 +384,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       frame.definition = item.definition
       frame:ClearAllPoints()
       frame:SetPoint("CENTER", UIParent, "CENTER",
-        (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing),
+        (layout.x or 0) - total / 2 + effectiveSize / 2 + (index - 1) * (effectiveSize + effectiveSpacing),
         layout.y or -83)
+      if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end
       frame.texture:SetTexture(aura.icon or Texture(item.definition))
       if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
       if frame.cooldownShade then frame.cooldownShade:Hide() end
@@ -582,6 +585,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
 
   local function PositionTargetBar(bar, index)
     local targetFrame = TargetFrameAnchor()
+    local scale = RUI.GetHUDScale and RUI:GetHUDScale("targetDebuffs") or 1
     local width = 180
     if targetFrame and targetFrame.GetWidth then
       local ok, measured = pcall(targetFrame.GetWidth, targetFrame)
@@ -591,12 +595,13 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     bar:ClearAllPoints()
     local anchored = false
     if targetFrame then
-      anchored = pcall(bar.SetPoint, bar, "BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18)
+      anchored = pcall(bar.SetPoint, bar, "BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18 * scale)
     end
     if not anchored then
       local fallback = RUI.layout.targetDebuffs or {x=310,y=-59}
-      bar:SetPoint("CENTER", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + (index - 1) * 18)
+      bar:SetPoint("CENTER", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + (index - 1) * 18 * scale)
     end
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end
   end
 
   local function UpdateTargetDebuffs()
@@ -706,8 +711,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     local bar = state.root.resourceBar
     local height = tonumber(config.height) or 10
     local width = tonumber(config.width) or 330
-    local x = tonumber(config.x) or 0
-    local y = tonumber(config.y) or ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118)
+    local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    local x = tonumber(config.x) or tonumber(resourceLayout.x) or 0
+    local y = tonumber(config.y) or tonumber(resourceLayout.y) or -118
 
     if config.matchPrimaryPower == true then
       local primary = _G.RetreatUIPrimaryPowerBar
@@ -725,12 +731,14 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         y = (tonumber(powerLayout.y) or -152) + primaryHeight / 2 + height / 2 + (tonumber(config.gap) or 1)
         bar:SetPoint("CENTER", UIParent, "CENTER", (tonumber(powerLayout.x) or 0) + (tonumber(config.xOffset) or 0), y)
       end
+      if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "demonfire") end
       return
     end
 
     bar:ClearAllPoints()
     bar:SetSize(width, height)
     bar:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "demonfire") end
   end
 
   local function CreateResourceSegment(index)
@@ -756,6 +764,11 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   local function ResourceAura(playerAuras, config)
     local aura = AnyAura(playerAuras, config.auraNames)
     if not aura and config.spellID then aura = FindAura(playerAuras, tonumber(config.spellID)) end
+    if not aura and config.harmfulAura == true then
+      local harmfulAuras = ReadAura("player", true)
+      aura = AnyAura(harmfulAuras, config.auraNames)
+      if not aura and config.spellID then aura = FindAura(harmfulAuras, tonumber(config.spellID)) end
+    end
     return aura
   end
 
@@ -888,9 +901,16 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       while #state.resourceSegments < maximum do CreateResourceSegment(#state.resourceSegments + 1) end
       local size = maximum > 12 and math.max(12, math.floor(330 / maximum)) or 25
       local spacing = 1
-      local total = maximum * size + (maximum - 1) * spacing
-      local firstX = -total / 2 + size / 2
-      local y = (RUI.layout.demonfire and RUI.layout.demonfire.y) or -118
+      local scale = RUI.GetHUDScale and RUI:GetHUDScale("demonfire") or 1
+      local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+      local total = maximum * effectiveSize + (maximum - 1) * effectiveSpacing
+      local firstX = -total / 2 + effectiveSize / 2
+      local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+      local x = tonumber(resourceLayout.x) or 0
+      local y = tonumber(resourceLayout.y) or -118
+      state.root.resourceLabel:ClearAllPoints()
+      state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+      if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
       state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
       state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
       state.root.resourceLabel:Show()
@@ -899,7 +919,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
           local active = index <= current
           segment:ClearAllPoints()
           segment:SetSize(size,size)
-          segment:SetPoint("CENTER", UIParent, "CENTER", firstX + (index - 1) * (size + spacing), y)
+          segment:SetPoint("CENTER", UIParent, "CENTER", x + firstX + (index - 1) * (effectiveSize + effectiveSpacing), y)
+          if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(segment, "demonfire") end
           segment.texture:SetTexture(icon)
           if segment.texture.SetDesaturated then segment.texture:SetDesaturated(not active) end
           segment.texture:SetVertexColor(active and 1 or .45, active and 1 or .45, active and 1 or .45, 1)
@@ -927,7 +948,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   end
 
   function module.customResourcesComplete()
-    -- Aura-only mirrors are useful for testing, but do not prove that we have
+    -- Aura-only mirrors can be useful, but do not prove that we have
     -- replaced Ascension's complete native resource. Keep the native frame
     -- until a native/custom-power source is confirmed, unless a class opts in.
     return state.resourceNativeReady == true
@@ -1033,7 +1054,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.utility.x, RUI.layout.utility.y + hudYOffset)
 
     root.resourceLabel = root:CreateFontString(nil, "OVERLAY")
-    root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", 0, ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118) + 22)
+    local initialResourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", tonumber(initialResourceLayout.x) or 0, (tonumber(initialResourceLayout.y) or -118) + 22)
     RUI:ApplyFont(root.resourceLabel, 8, "OUTLINE")
     root.resourceLabel:Hide()
 
@@ -1158,8 +1180,36 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     end)
   end
 
+  function module:refreshLayout(force)
+    if not state.root then return false end
+    local coreLayout = RUI.layout.core or {x=0, y=-183}
+    local utilityLayout = RUI.layout.utility or {x=0, y=-224}
+    local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    local hudYOffset = tonumber(options.hudYOffset) or 0
+
+    state.root.coreRow:ClearAllPoints()
+    state.root.coreRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(coreLayout.x) or 0, (tonumber(coreLayout.y) or -183) + hudYOffset)
+    state.root.utilityRow:ClearAllPoints()
+    state.root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(utilityLayout.x) or 0, (tonumber(utilityLayout.y) or -224) + hudYOffset)
+    if RUI.ApplyHUDFrameScale then
+      RUI:ApplyHUDFrameScale(state.root.coreRow, "core")
+      RUI:ApplyHUDFrameScale(state.root.utilityRow, "utility")
+    end
+    state.root.resourceLabel:ClearAllPoints()
+    state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", tonumber(resourceLayout.x) or 0, (tonumber(resourceLayout.y) or -118) + 22)
+    if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+    PositionResourceBar(ResourceConfig() or {})
+    if state.classStateTracker and RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(state.classStateTracker, "demonfire") end
+    if state.stanceTracker and RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(state.stanceTracker, "demonfire") end
+    for _, frame in ipairs(state.procFrames) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end end
+    for _, bar in ipairs(state.targetBars) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end end
+    if state.root:IsShown() then UpdateAll(force == true) end
+    return true
+  end
+
   function module:activate()
     Build()
+    module:refreshLayout(true)
     state.root:Show()
     state.root:SetAlpha(1)
     state.events:Show()

@@ -2,14 +2,15 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.0.11-beta.20",
-  summary = "Dedicated Starcaller Scattered Stars target resource.",
+  title = "RetreatUI v1.1.0-beta.12",
+  summary = "Global trinket tracking and a new user-supplied ElvUI unit-frame baseline.",
   changes = {
-    "Replaced Scattered/Shattered Stars target debuff bars with an 8-segment target-bound HUD resource.",
-    "The tracker resets on target changes and reads only the player's matching target aura.",
-    "Moved Lunar Phase and Lunar Charge to the normal Procs/Buffs row.",
-    "Kept the tracker centered between Procs/Buffs and the primary power bar without overlap.",
-    "Preserved the validated TurboPlates mana coloring and Buff Manager behavior from beta.18.",
+    "Added two compact trinket slots above the right side of the player frame on every supported class and build profile.",
+    "Tracks equipped slot 13/14 item cooldowns and matching active proc or buff duration with stacks and glow.",
+    "Uses the same icon size as the existing Buffs/Procs row and follows the live player frame without a separate mover.",
+    "Automatically shifts the trinket row away from nearby unit frames instead of allowing overlap.",
+    "Updated the RetreatUI ElvUI baseline from the supplied profile, including party, raid, pet, focus and target-of-target placement.",
+    "Preserved the beta.10.2 HUD sizing rollback and the fixed party-anchored Interrupt Tracker.",
   },
 }
 

@@ -9,6 +9,14 @@ local function Normalize(value)
   return string.lower(value):gsub("^%s+", ""):gsub("%s+$", "")
 end
 
+local advancementEntryCache = {}
+local advancementCacheSlot
+
+function RUI:InvalidateAdvancementEntryCache()
+  advancementEntryCache = {}
+  advancementCacheSlot = nil
+end
+
 
 function RUI:RegisterClassSpellDatabase(className, database)
   if type(className) ~= "string" or type(database) ~= "table" then return false end
@@ -65,12 +73,20 @@ function RUI:IsAdvancementEntryLearned(entryID)
   local advancement = _G.C_CharacterAdvancement
   if not entryID or type(advancement) ~= "table" then return nil end
   local slot = self:GetActiveAdvancementSlot()
+  if advancementCacheSlot ~= slot then
+    advancementEntryCache = {}
+    advancementCacheSlot = slot
+  end
+  if advancementEntryCache[entryID] ~= nil then return advancementEntryCache[entryID] end
 
   local rankKnown
   if type(advancement.UnitTalentRankByID) == "function" then
     local ok, rank = pcall(advancement.UnitTalentRankByID, "player", entryID, slot)
     if ok and type(rank) == "number" then
-      if rank > 0 then return true end
+      if rank > 0 then
+        advancementEntryCache[entryID] = true
+        return true
+      end
       rankKnown = false
     end
   end
@@ -79,8 +95,12 @@ function RUI:IsAdvancementEntryLearned(entryID)
   -- zero talent rank still gets a second authoritative check through UnitKnownID.
   if type(advancement.UnitKnownID) == "function" then
     local ok, known = pcall(advancement.UnitKnownID, "player", entryID, slot)
-    if ok and type(known) == "boolean" then return known end
+    if ok and type(known) == "boolean" then
+      advancementEntryCache[entryID] = known
+      return known
+    end
   end
+  advancementEntryCache[entryID] = rankKnown
   return rankKnown
 end
 
@@ -158,7 +178,13 @@ local function AnyConditionLearned(self, values)
     if type(value) == "number" and self.IsSpellIDLearned and self:IsSpellIDLearned(value) then return true end
     if type(value) == "string" and self.IsSpellLearned and self:IsSpellLearned(value) then return true end
     if type(value) == "table" then
-      if value.id and self.IsSpellIDLearned and self:IsSpellIDLearned(value.id) then return true end
+      local entryID = value.collectorEntryID or value.entryID or value.talentID
+      if entryID and self.IsAdvancementEntryLearned then
+        local known = self:IsAdvancementEntryLearned(entryID)
+        if known == true then return true end
+      end
+      local spellID = value.spellID or value.id
+      if spellID and self.IsSpellIDLearned and self:IsSpellIDLearned(spellID) then return true end
       if value.name and self.IsSpellLearned and self:IsSpellLearned(value.name) then return true end
     end
   end

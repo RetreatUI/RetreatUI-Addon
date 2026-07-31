@@ -332,12 +332,15 @@ local function UpdateAuraTrackers()
   local layout = RUI.layout.auraTrackers or {}
   local size = layout.size or 30
   local spacing = layout.spacing or 3
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("auraTrackers") or 1
+  local effectiveSize, effectiveSpacing = size * scale, spacing * scale
   local y = layout.y or -83
-  local total = #active > 0 and (#active * size + (#active - 1) * spacing) or 0
+  local total = #active > 0 and (#active * effectiveSize + (#active - 1) * effectiveSpacing) or 0
   for index, tracker in ipairs(active) do
     local aura = tracker.aura
     tracker:ClearAllPoints()
-    tracker:SetPoint("CENTER", UIParent, "CENTER", (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing), y)
+    tracker:SetPoint("CENTER", UIParent, "CENTER", (layout.x or 0) - total / 2 + effectiveSize / 2 + (index - 1) * (effectiveSize + effectiveSpacing), y)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(tracker, "auraTrackers") end
     tracker.texture:SetTexture(aura.icon or DefinitionTexture(tracker.definition))
     tracker.stackText:SetText(aura.count and aura.count > 1 and tostring(aura.count) or "")
     if aura.expires and aura.expires > 0 then
@@ -462,6 +465,7 @@ end
 local function PositionTargetAuraBar(bar, index)
   if not bar or CombatLocked() then return false end
   local targetFrame = TargetFrameAnchor()
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("targetDebuffs") or 1
   local width = 260
   if targetFrame and targetFrame.GetWidth then
     local ok, measured = pcall(targetFrame.GetWidth, targetFrame)
@@ -473,11 +477,12 @@ local function PositionTargetAuraBar(bar, index)
   bar:ClearAllPoints()
 
   if targetFrame then
-    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18)
+    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18 * scale)
   else
     local fallback = RUI.layout.targetDebuffs or {x=310, y=-59}
-    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18)
+    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18 * scale)
   end
+  if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end
   return true
 end
 
@@ -594,8 +599,8 @@ local function Build()
   root:SetFrameStrata("MEDIUM")
 
 
-  local resourceTrackerY = (RUI.layout and RUI.layout.demonfire and RUI.layout.demonfire.y) or -118
-  root.bondTracker = CreateBondTracker(0, resourceTrackerY)
+  local resourceLayout = (RUI.layout and RUI.layout.demonfire) or {x=0, y=-118}
+  root.bondTracker = CreateBondTracker(tonumber(resourceLayout.x) or 0, tonumber(resourceLayout.y) or -118)
   root.coreRow = CreateFrame("Frame", nil, root)
   root.coreRow:SetSize(620, 38)
   root.coreRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.core.x, RUI.layout.core.y)
@@ -608,7 +613,8 @@ local function Build()
   local allowed = {
       ["Saturating Sutures"]=true,
       ["Blood Rush"]=true,
-      ["Enraging Howls"]=true,
+      ["Enraging Howl"]=true,
+      ["Trail of Blood"]=true,
       ["Call of the Darkwing"]=true,
       ["Monstrous Hunger"]=true,
   }
@@ -696,8 +702,35 @@ local function Build()
   end)
 end
 
+function module:refreshLayout()
+  if not root then return false end
+  local coreLayout = RUI.layout.core or {x=0, y=-183}
+  local utilityLayout = RUI.layout.utility or {x=0, y=-224}
+  local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+  root.coreRow:ClearAllPoints()
+  root.coreRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(coreLayout.x) or 0, tonumber(coreLayout.y) or -183)
+  root.utilityRow:ClearAllPoints()
+  root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(utilityLayout.x) or 0, tonumber(utilityLayout.y) or -224)
+  if RUI.ApplyHUDFrameScale then
+    RUI:ApplyHUDFrameScale(root.coreRow, "core")
+    RUI:ApplyHUDFrameScale(root.utilityRow, "utility")
+  end
+  if root.bondTracker then
+    root.bondTracker:ClearAllPoints()
+    root.bondTracker:SetPoint("CENTER", UIParent, "CENTER", tonumber(resourceLayout.x) or 0, (tonumber(resourceLayout.y) or -118) - 10)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(root.bondTracker, "demonfire") end
+  end
+  for _, tracker in ipairs(root.auraTrackers or {}) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(tracker, "auraTrackers") end end
+  for _, bar in ipairs(targetAuraBars or {}) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end end
+  targetBarsPositioned = false
+  PositionAllTargetAuraBars()
+  if root:IsShown() then UpdateAll() end
+  return true
+end
+
 function module:activate()
   Build()
+  module:refreshLayout(true)
   root:Show()
   driver:Show()
   timerDriver:Show()

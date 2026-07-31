@@ -2,17 +2,18 @@ local RUI = RetreatUI
 
 RUI.layout = {
   -- Final 1920x1080 on-screen coordinates for the native RetreatUI HUD.
-  power = {x=0, y=-152, width=360, height=16},
+  power = {x=0, y=-152, width=360, height=16, scale=1},
   custom = {y=-183},
   counters = {imp={x=-105, y=-118}, blood={x=105, y=-118}},
   -- Secondary class counters use ICON / NAME / VALUE. Their text extends
   -- below the icon, so this higher row keeps the value clear of the power bar.
   secondaryCounters = {left={x=-105, y=-96}, right={x=105, y=-96}},
-  core = {x=0, y=-183},
-  utility = {x=0, y=-224},
-  targetDebuffs = {x=310, y=-59},
-  demonfire = {x=0, y=-118},
-  auraTrackers = {x=0, y=-83, size=30, spacing=3},
+  core = {x=0, y=-183, scale=1},
+  utility = {x=0, y=-224, scale=1},
+  targetDebuffs = {x=310, y=-59, scale=1},
+  partyInterrupts = {autoAnchor=true},
+  demonfire = {x=0, y=-118, scale=1},
+  auraTrackers = {x=0, y=-83, size=30, spacing=3, scale=1},
   stanceTracker = {size=38, gap=6},
   tankFramework = {
     build={x=-105, y=-96},
@@ -20,6 +21,9 @@ RUI.layout = {
     state={x=-167, y=-96},
   },
 }
+
+-- Immutable baseline used by build-aware HUD profiles and the live editor.
+RUI.defaultLayout = RUI.defaultLayout or RUI:DeepCopy(RUI.layout)
 
 local powerFrame
 local powerDriver
@@ -151,6 +155,7 @@ function RUI:ActivatePrimaryPower()
     return false
   end
   local frame = CreatePowerFrame()
+  if self.ApplyPrimaryPowerLayout then self:ApplyPrimaryPowerLayout() end
   frame:Show()
   lastPowerCurrent, lastPowerMaximum, lastPowerToken = nil, nil, nil
   self:UpdatePrimaryPower(true)

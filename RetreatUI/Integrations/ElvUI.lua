@@ -111,17 +111,75 @@ function RUI:AreElvUINamePlatesDisabled()
     and db.integrations.elvui.nameplateAddonDisableOK ~= false
 end
 
+local function ObjectName(value)
+  if not value or type(value.GetName) ~= "function" then return nil end
+  local ok, name = pcall(value.GetName, value)
+  return ok and type(name) == "string" and name or nil
+end
+
+local function IsRightChatNamed(value)
+  local name = ObjectName(value)
+  return name and string.find(string.lower(name), "rightchat", 1, true) ~= nil
+end
+
+local function TouchesRightChatPanel(value, seen, depth)
+  if not value or depth > 8 then return false end
+  seen = seen or {}
+  if seen[value] then return false end
+  seen[value] = true
+
+  if IsRightChatNamed(value)
+    or value == _G.RightChatPanel
+    or value == _G.RightChatDataPanel
+    or value == _G.RightChatTab then
+    return true
+  end
+
+  if type(value.GetParent) == "function" then
+    local ok, parent = pcall(value.GetParent, value)
+    if ok and parent and TouchesRightChatPanel(parent, seen, depth + 1) then return true end
+  end
+
+  if type(value.GetNumPoints) == "function" and type(value.GetPoint) == "function" then
+    local ok, count = pcall(value.GetNumPoints, value)
+    if ok then
+      for pointIndex = 1, tonumber(count) or 0 do
+        local pointOK, _, relativeTo = pcall(value.GetPoint, value, pointIndex)
+        if pointOK and relativeTo and TouchesRightChatPanel(relativeTo, seen, depth + 1) then return true end
+      end
+    end
+  end
+
+  return false
+end
+
+local function IsChatFrameInRightPanel(frame)
+  if not frame then return false end
+  if TouchesRightChatPanel(frame, {}, 0) then return true end
+
+  local frameName = ObjectName(frame)
+  if frameName then
+    for _, suffix in ipairs({"Tab", "ButtonFrame", "EditBox"}) do
+      local companion = _G[frameName .. suffix]
+      if companion and TouchesRightChatPanel(companion, {}, 0) then return true end
+    end
+  end
+
+  return false
+end
+
 function RUI:RemoveRightLootTradeChat()
   local removed = false
 
-  -- Close custom chat windows named Loot/Trade (and common variants).
+  -- Close standalone Loot/Trade windows only. Any chat frame or tab attached
+  -- to ElvUI's right chat panel is user-managed content and must be preserved.
   if type(NUM_CHAT_WINDOWS) == "number" and type(GetChatWindowInfo) == "function" then
     for index = NUM_CHAT_WINDOWS, 1, -1 do
       local name = GetChatWindowInfo(index)
       local lower = type(name) == "string" and string.lower(name) or ""
       if lower ~= "" and (string.find(lower, "loot", 1, true) or string.find(lower, "trade", 1, true)) then
         local frame = _G["ChatFrame" .. index]
-        if frame then
+        if frame and not IsChatFrameInRightPanel(frame) then
           if type(FCF_UnDockFrame) == "function" then pcall(FCF_UnDockFrame, frame) end
           if type(FCF_Close) == "function" then
             pcall(FCF_Close, frame)
@@ -134,73 +192,134 @@ function RUI:RemoveRightLootTradeChat()
     end
   end
 
-  -- ElvUI's right chat container can remain visible even after its chat tab is closed.
-  local rightFrames = {
-    "RightChatPanel",
-    "RightChatPanelTab",
-    "RightChatPanelToggleButton",
-    "RightChatPanelDataPanel",
-    "RightChatDataPanel",
-  }
-  for _, globalName in ipairs(rightFrames) do
-    if SafeHide(_G[globalName]) then removed = true end
-  end
-
+  -- The right chat container, its data-text panel, and every chat tab placed
+  -- inside it remain untouched.
   return removed
 end
 
 
 local PARTY_MOVER_OLD = "TOPLEFT,ElvUIParent,BOTTOMLEFT,24,603"
 local PARTY_MOVER_INTERMEDIATE = "TOPLEFT,ElvUIParent,BOTTOMLEFT,250,603"
-local PARTY_MOVER_FALLBACK = "TOPLEFT,ElvUIParent,BOTTOMLEFT,430,603"
-local PARTY_MOVER_Y = 603
-local PARTY_PLAYER_GAP = 28
+local PARTY_MOVER_FALLBACK = "TOPLEFT,ElvUIParent,BOTTOMLEFT,313,659"
 local TARGET_TARGET_MOVER_OLD = "BOTTOM,ElvUIParent,BOTTOM,310,323"
-local TARGET_TARGET_MOVER_FALLBACK = "BOTTOM,ElvUIParent,BOTTOM,508,350"
-local TARGET_TARGET_GAP = 8
+local TARGET_TARGET_MOVER_FALLBACK = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,1408,350"
 local TARGET_TARGET_WIDTH = 120
 local TARGET_TARGET_HEIGHT = 24
-local HUD_POLISH_REVISION = 2
+local HUD_POLISH_REVISION = 6
+local PET_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,404"
 local PLAYER_CASTBAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,326"
 local TARGET_CASTBAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,310,326"
 local ACTIONBAR3_MOVER = "BOTTOM,ElvUIParent,BOTTOM,0,26"
-local STANCE_BAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,8"
+local STANCE_BAR_MOVER = "TOPLEFT,ElvUIParent,BOTTOMLEFT,649,32"
 
 local function NumberOr(value, fallback)
   return type(value) == "number" and value or fallback
 end
 
+local function IsLegacyKnightFontColor(value)
+  if type(value) ~= "table" then return true end
+  local red = tonumber(value.r)
+  local green = tonumber(value.g) or 0
+  local blue = tonumber(value.b) or 0
+  if red == nil then return green <= 0.08 and blue <= 0.08 end
+  return red >= 0.88 and green <= 0.10 and blue <= 0.10
+end
+
+local function ClampColorChannel(value)
+  value = tonumber(value) or 1
+  if value < 0 then value = 0 elseif value > 1 then value = 1 end
+  return math.floor((value * 255) + 0.5)
+end
+
+local function ThemeAccentHex()
+  local theme = RUI:GetTheme()
+  local color = theme and theme.accent or {1, 1, 1}
+  return string.format("%02x%02x%02x",
+    ClampColorChannel(color[1]),
+    ClampColorChannel(color[2]),
+    ClampColorChannel(color[3]))
+end
+
+local function StripInlineColor(value)
+  if type(value) ~= "string" then return value end
+  return value:gsub("|c%x%x%x%x%x%x%x%x", ""):gsub("|r", "")
+end
+
+local function ManagedColorFormat(baseFormat, hex)
+  return "|cff" .. tostring(hex or "ffffff") .. tostring(baseFormat or "") .. "|r"
+end
+
+local function CanReplaceManagedFormat(current, baseFormat, force)
+  if force or current == nil or current == "" then return true end
+  return StripInlineColor(current) == baseFormat
+end
+
+local function ApplyManagedUnitTextColor(profile, force)
+  if type(profile) ~= "table" then return false end
+  profile.unitframe = profile.unitframe or {}
+  profile.unitframe.units = profile.unitframe.units or {}
+  local units = profile.unitframe.units
+  local hex = ThemeAccentHex()
+  local changed = false
+
+  local managed = {
+    player = {
+      name = "[name:medium]",
+      health = "[health:current]",
+    },
+    target = {
+      name = "[name:medium]",
+      health = "[health:current]",
+    },
+    targettarget = {
+      name = "[name:short]",
+    },
+  }
+
+  for unitName, fields in pairs(managed) do
+    units[unitName] = units[unitName] or {}
+    for fieldName, baseFormat in pairs(fields) do
+      units[unitName][fieldName] = units[unitName][fieldName] or {}
+      local field = units[unitName][fieldName]
+      if CanReplaceManagedFormat(field.text_format, baseFormat, force) then
+        local desired = ManagedColorFormat(baseFormat, hex)
+        if field.text_format ~= desired then
+          field.text_format = desired
+          changed = true
+        end
+      end
+    end
+  end
+
+  return changed
+end
+
+local function ApplyClassFontColor(profile, force)
+  if type(profile) ~= "table" then return false end
+  profile.general = profile.general or {}
+  local changed = false
+
+  if force or IsLegacyKnightFontColor(profile.general.valuecolor) then
+    local theme = RUI:GetTheme()
+    local color = theme and theme.accent or {1, 1, 1}
+    profile.general.valuecolor = {
+      r = NumberOr(color[1], 1),
+      g = NumberOr(color[2], 1),
+      b = NumberOr(color[3], 1),
+      a = 1,
+    }
+    changed = true
+  end
+
+  -- ElvUI's general value color does not control the central unit-frame tags.
+  -- Apply the active RetreatUI class accent directly to the managed name and
+  -- health formats while preserving genuinely custom tag layouts.
+  return ApplyManagedUnitTextColor(profile, force) or changed
+end
+
 local function BuildPartyMoverPosition(E)
-  local parent = _G.ElvUIParent or UIParent
-  local parentWidth = parent and parent.GetWidth and parent:GetWidth() or 1920
-  local partyWidth = 190
-  local playerWidth = 260
-
-  if E and E.db and E.db.unitframe and E.db.unitframe.units then
-    local units = E.db.unitframe.units
-    if units.party then partyWidth = NumberOr(units.party.width, partyWidth) end
-    if units.player then playerWidth = NumberOr(units.player.width, playerWidth) end
-  end
-
-  local playerLeft = nil
-  local playerMover = _G.ElvUF_PlayerMover
-  if playerMover and playerMover.GetLeft then
-    local ok, left = pcall(playerMover.GetLeft, playerMover)
-    if ok and type(left) == "number" then playerLeft = left end
-  end
-
-  -- Fall back to RetreatUI's default player-frame anchor when ElvUI has not
-  -- created its movers yet. This still scales correctly on 16:9 and ultrawide.
-  if not playerLeft then
-    local playerCenter = (parentWidth * 0.5) - 310
-    playerLeft = playerCenter - (playerWidth * 0.5)
-  end
-
-  local x = math.floor(playerLeft - partyWidth - PARTY_PLAYER_GAP + 0.5)
-  local maximum = math.max(8, math.floor(parentWidth - partyWidth - 8))
-  if x < 8 then x = 8 end
-  if x > maximum then x = maximum end
-  return string.format("TOPLEFT,ElvUIParent,BOTTOMLEFT,%d,%d", x, PARTY_MOVER_Y)
+  local baseline = RUI.ElvUIProfile and RUI.ElvUIProfile.movers
+  return baseline and baseline.ElvUF_PartyMover or PARTY_MOVER_FALLBACK
 end
 
 function RUI:ApplyPartyFramePosition(force)
@@ -258,30 +377,8 @@ function RUI:ApplyPartyFramePosition(force)
 end
 
 local function BuildTargetTargetMoverPosition(E)
-  local parent = _G.ElvUIParent or UIParent
-  local targetMover = _G.ElvUF_TargetMover or _G.ElvUF_Target
-
-  if targetMover and targetMover.GetRight and targetMover.GetBottom then
-    local okRight, right = pcall(targetMover.GetRight, targetMover)
-    local okBottom, bottom = pcall(targetMover.GetBottom, targetMover)
-    if okRight and okBottom and type(right) == "number" and type(bottom) == "number" then
-      local parentLeft = 0
-      local parentBottom = 0
-      if parent and parent.GetLeft then
-        local ok, value = pcall(parent.GetLeft, parent)
-        if ok and type(value) == "number" then parentLeft = value end
-      end
-      if parent and parent.GetBottom then
-        local ok, value = pcall(parent.GetBottom, parent)
-        if ok and type(value) == "number" then parentBottom = value end
-      end
-      local x = math.floor((right - parentLeft) + TARGET_TARGET_GAP + 0.5)
-      local y = math.floor((bottom - parentBottom) + 0.5)
-      return string.format("BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,%d,%d", x, y)
-    end
-  end
-
-  return TARGET_TARGET_MOVER_FALLBACK
+  local baseline = RUI.ElvUIProfile and RUI.ElvUIProfile.movers
+  return baseline and baseline.ElvUF_TargetTargetMover or TARGET_TARGET_MOVER_FALLBACK
 end
 
 local function ConfigureTargetTargetFrame(units)
@@ -348,8 +445,44 @@ local function ConfigureCastbar(castbar, iconPosition, showLatency)
   end
 end
 
+local BASELINE_UNITFRAME_MOVERS = {
+  "ElvUF_PlayerMover",
+  "ElvUF_PlayerCastbarMover",
+  "ElvUF_TargetMover",
+  "ElvUF_TargetCastbarMover",
+  "ElvUF_TargetTargetMover",
+  "ElvUF_PetMover",
+  "ElvUF_FocusMover",
+  "ElvUF_PartyMover",
+  "ElvUF_RaidMover",
+  "ElvUF_Raid40Mover",
+  "ElvUF_RaidpetMover",
+  "ElvUF_BossMover",
+  "ArenaHeaderMover",
+  "BossHeaderMover",
+  "ElvBar_Pet",
+}
+
+local function ApplySuppliedUnitFrameBaseline(profile)
+  if type(profile) ~= "table" or type(RUI.ElvUIProfile) ~= "table" then return end
+  local baseline = RUI.ElvUIProfile
+  profile.unitframe = profile.unitframe or {}
+  profile.unitframe.units = profile.unitframe.units or {}
+  local sourceUnits = baseline.unitframe and baseline.unitframe.units or {}
+  for unit, settings in pairs(sourceUnits) do
+    profile.unitframe.units[unit] = RUI:DeepCopy(settings)
+  end
+
+  profile.movers = profile.movers or {}
+  local sourceMovers = baseline.movers or {}
+  for _, mover in ipairs(BASELINE_UNITFRAME_MOVERS) do
+    if sourceMovers[mover] then profile.movers[mover] = sourceMovers[mover] end
+  end
+end
+
 local function ConfigureHUDPolish(profile, applyMovers)
   if type(profile) ~= "table" then return end
+  if applyMovers then ApplySuppliedUnitFrameBaseline(profile) end
 
   profile.actionbar = profile.actionbar or {}
   profile.actionbar.bar3 = profile.actionbar.bar3 or {}
@@ -391,8 +524,11 @@ local function ConfigureHUDPolish(profile, applyMovers)
 
   if applyMovers then
     profile.movers = profile.movers or {}
+    profile.movers.ElvUF_PetMover = PET_MOVER
     profile.movers.ElvUF_PlayerCastbarMover = PLAYER_CASTBAR_MOVER
     profile.movers.ElvUF_TargetCastbarMover = TARGET_CASTBAR_MOVER
+    profile.movers.ElvUF_PartyMover = BuildPartyMoverPosition()
+    profile.movers.ElvUF_TargetTargetMover = BuildTargetTargetMoverPosition()
     profile.movers.ElvAB_3 = ACTIONBAR3_MOVER
     profile.movers.ShiftAB = STANCE_BAR_MOVER
   end
@@ -419,13 +555,19 @@ function RUI:ApplyElvUIHUDPolish(force)
   local applyMovers = force or db.integrations.elvui.hudPolishRevision ~= HUD_POLISH_REVISION
 
   ConfigureHUDPolish(E.db, applyMovers)
+  local classFontColorApplied = ApplyClassFontColor(E.db, false)
   if ElvDB.profiles and ElvDB.profiles.RetreatUI then
     ConfigureHUDPolish(ElvDB.profiles.RetreatUI, applyMovers)
+    classFontColorApplied = ApplyClassFontColor(ElvDB.profiles.RetreatUI, false) or classFontColorApplied
   end
 
   if applyMovers then
     db.integrations.elvui.hudPolishRevision = HUD_POLISH_REVISION
     db.integrations.elvui.hudPolishVersion = self.version
+  end
+  if classFontColorApplied then
+    db.integrations.elvui.classFontColorVersion = self.version
+    db.integrations.elvui.classFontColorClass = type(self.GetDetectedClass) == "function" and self:GetDetectedClass() or nil
   end
 
   if E.UpdateMoverPositions then pcall(E.UpdateMoverPositions, E) end
@@ -436,7 +578,7 @@ function RUI:ApplyElvUIHUDPolish(force)
   end)
 
   if applyMovers then
-    return true, "Castbars moved below the unitframes, stance bar lowered, and HUD positions updated"
+    return true, "Supplied ElvUI unit-frame baseline, castbars and HUD positions applied"
   end
   return true, "RetreatUI castbar, stance bar, and frame styling refreshed"
 end
@@ -506,8 +648,21 @@ function RUI:InstallElvUIProfile()
   local E = unpack(ElvUI)
   local profileName = "RetreatUI"
   ElvDB.profiles = ElvDB.profiles or {}
+  local preservedTotemMover, preservedTotemMoverKey
+  if type(self.GetTotemBarMoverPosition) == "function" then
+    preservedTotemMover, preservedTotemMoverKey = self:GetTotemBarMoverPosition()
+  end
   local profile = self:DeepCopy(self.ElvUIProfile)
+  profile.movers = profile.movers or {}
+  profile.movers.ElvBar_Totem = nil
+  profile.movers.TotemBarMover = nil
+  if preservedTotemMover and preservedTotemMover ~= "" then
+    profile.movers[preservedTotemMoverKey or "ElvBar_Totem"] = preservedTotemMover
+  else
+    profile.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
+  end
   self:ForceFontFields(profile)
+  ApplyClassFontColor(profile, true)
   ElvDB.profiles[profileName] = profile
 
   local ok, err = pcall(function()
@@ -516,7 +671,7 @@ function RUI:InstallElvUIProfile()
     if E and E.db then self:ForceFontFields(E.db) end
     if E and E.db and E.db.unitframe and E.db.unitframe.units and E.db.unitframe.units.player then
       E.db.unitframe.units.player.health = E.db.unitframe.units.player.health or {}
-      E.db.unitframe.units.player.health.text_format = "[health:current]"
+      E.db.unitframe.units.player.health.text_format = ManagedColorFormat("[health:current]", ThemeAccentHex())
     end
     if E and E.UpdateAll then E:UpdateAll(true) end
     self:ApplyPartyFramePosition(true)
@@ -527,7 +682,7 @@ function RUI:InstallElvUIProfile()
     self:After(1.00, function() self:RemoveRightLootTradeChat() end)
   end)
   if not ok then return false, "Profile created, but activation failed: " .. tostring(err) end
-  return true, "RetreatUI ElvUI profile installed; ElvUI NamePlates disabled and right Loot/Trade chat removed"
+  return true, "RetreatUI ElvUI profile installed; ElvUI NamePlates disabled, right chat panel preserved, and Loot/Trade chat windows removed"
 end
 
 function RUI:SyncThemeFonts()

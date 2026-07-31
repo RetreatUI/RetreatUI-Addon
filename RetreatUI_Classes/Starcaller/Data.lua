@@ -6,7 +6,7 @@ RUI:RegisterClassSpellDatabase("Starcaller", {
   collectorClassFile = "STARCALLER",
   tabs = {"AstralWarfare","Hydromancy","Moonbow","Tides"},
   resources = {{key="primary", name="Primary Power", type="primary", position="power"}},
-  nativeResource = {title="LUNAR STATE",keywords={"lunar phase","lunar charge","scattered stars"},auraNames={"Lunar Phase","Lunar Charge","Scattered Stars"},maxByName={["lunar phase"]=8,["lunar charge"]=1,["scattered stars"]=6},mode="segments",icon="Interface\\Icons\\Spell_Arcane_StarFire"},
+  targetResource = {title="SCATTERED STARS", spellIDs={804378,254271,807301}, auraNames={"Scattered Stars","Shattered Stars"}, maximum=8, size=24, spacing=2, x=0, y=-118, labelY=-136, icon="Interface\\Icons\\Spell_Arcane_StarFire"},
   spells = {
     {name="Trueshot", id=520590, category="rotation", hudRow="core", order=10, trackCooldown=true, trackCharges=true, glowWhenAura={"Star-Guided Arrows"}, talent=true, fallbackIcon="Interface\\Icons\\Trueshot", sourceTab="Moonbow", collectorEntryID=29887, cooldownHint=0},
     {name="Aspect of the Cosmos", id=801123, category="rotation", hudRow="core", order=20, trackCooldown=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\Icons\\ability_ardenweald_priest", sourceTab="Class", collectorEntryID=7254, cooldownHint=10},

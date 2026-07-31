@@ -32,7 +32,7 @@ RUI:RegisterClassDefinition("Bloodmage", {
     combatState={"Cursed Form"},
     coreMechanic="Blood Bond",
     taunt="Bare Fangs",
-    combatBuffs={"Saturating Sutures", "Blood Rush", "Enraging Howls", "Call of the Darkwing"},
+    combatBuffs={"Saturating Sutures", "Blood Rush", "Enraging Howl", "Trail of Blood", "Call of the Darkwing"},
   },
   hudFrameName = "RetreatUIBloodmageHUD",
 })

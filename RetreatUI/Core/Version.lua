@@ -2,18 +2,18 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.0.10",
-  summary = "A major 21-class HUD, class-state, Buff Manager and Necromancer Guardian release.",
+  title = "RetreatUI v1.1.0-beta.12",
+  summary = "Global trinket tracking and a new user-supplied ElvUI unit-frame baseline.",
   changes = {
-    "Expanded learned-only HUD coverage and spell sorting across all 21 Conquest of Azeroth classes.",
-    "Added dedicated active-state tracking for stances, forms, vows, aspects, oaths, formations and similar class systems.",
-    "Expanded the Buff Manager to 58 visible families with automatic Greater selection, equivalent coverage and exclusive-family handling.",
-    "Improved Knight of Xoroth Pestilences and Marks, Bloodmage ability handling, Sun Cleric Vows and Templar Oaths.",
-    "Added a movable and lockable Necromancer Guardian HUD with individual minion health bars and Zombie tracking.",
-    "Improved live spellbook detection, proc handling, target-debuff tracking and refreshes after talent or specialization changes.",
-    "Existing RetreatUI settings and assignments migrate automatically; no manual reset is required.",
+    "Added two compact trinket slots above the right side of the player frame on every supported class and build profile.",
+    "Tracks equipped slot 13/14 item cooldowns and matching active proc or buff duration with stacks and glow.",
+    "Uses the same icon size as the existing Buffs/Procs row and follows the live player frame without a separate mover.",
+    "Automatically shifts the trinket row away from nearby unit frames instead of allowing overlap.",
+    "Updated the RetreatUI ElvUI baseline from the supplied profile, including party, raid, pet, focus and target-of-target placement.",
+    "Preserved the beta.10.2 HUD sizing rollback and the fixed party-anchored Interrupt Tracker.",
   },
 }
+
 local updateFrame
 local pendingPopup
 local loginHandled = false

@@ -200,19 +200,17 @@ end
 
 local PARTY_MOVER_OLD = "TOPLEFT,ElvUIParent,BOTTOMLEFT,24,603"
 local PARTY_MOVER_INTERMEDIATE = "TOPLEFT,ElvUIParent,BOTTOMLEFT,250,603"
-local PARTY_MOVER_FALLBACK = "TOPLEFT,ElvUIParent,BOTTOMLEFT,430,603"
-local PARTY_MOVER_Y = 603
-local PARTY_PLAYER_GAP = 28
+local PARTY_MOVER_FALLBACK = "TOPLEFT,ElvUIParent,BOTTOMLEFT,313,659"
 local TARGET_TARGET_MOVER_OLD = "BOTTOM,ElvUIParent,BOTTOM,310,323"
-local TARGET_TARGET_MOVER_FALLBACK = "BOTTOM,ElvUIParent,BOTTOM,508,350"
-local TARGET_TARGET_GAP = 8
+local TARGET_TARGET_MOVER_FALLBACK = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,1408,350"
 local TARGET_TARGET_WIDTH = 120
 local TARGET_TARGET_HEIGHT = 24
-local HUD_POLISH_REVISION = 4
+local HUD_POLISH_REVISION = 6
+local PET_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,404"
 local PLAYER_CASTBAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,326"
 local TARGET_CASTBAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,310,326"
 local ACTIONBAR3_MOVER = "BOTTOM,ElvUIParent,BOTTOM,0,26"
-local STANCE_BAR_MOVER = "BOTTOM,ElvUIParent,BOTTOM,-310,8"
+local STANCE_BAR_MOVER = "TOPLEFT,ElvUIParent,BOTTOMLEFT,649,32"
 
 local function NumberOr(value, fallback)
   return type(value) == "number" and value or fallback
@@ -320,36 +318,8 @@ local function ApplyClassFontColor(profile, force)
 end
 
 local function BuildPartyMoverPosition(E)
-  local parent = _G.ElvUIParent or UIParent
-  local parentWidth = parent and parent.GetWidth and parent:GetWidth() or 1920
-  local partyWidth = 190
-  local playerWidth = 260
-
-  if E and E.db and E.db.unitframe and E.db.unitframe.units then
-    local units = E.db.unitframe.units
-    if units.party then partyWidth = NumberOr(units.party.width, partyWidth) end
-    if units.player then playerWidth = NumberOr(units.player.width, playerWidth) end
-  end
-
-  local playerLeft = nil
-  local playerMover = _G.ElvUF_PlayerMover
-  if playerMover and playerMover.GetLeft then
-    local ok, left = pcall(playerMover.GetLeft, playerMover)
-    if ok and type(left) == "number" then playerLeft = left end
-  end
-
-  -- Fall back to RetreatUI's default player-frame anchor when ElvUI has not
-  -- created its movers yet. This still scales correctly on 16:9 and ultrawide.
-  if not playerLeft then
-    local playerCenter = (parentWidth * 0.5) - 310
-    playerLeft = playerCenter - (playerWidth * 0.5)
-  end
-
-  local x = math.floor(playerLeft - partyWidth - PARTY_PLAYER_GAP + 0.5)
-  local maximum = math.max(8, math.floor(parentWidth - partyWidth - 8))
-  if x < 8 then x = 8 end
-  if x > maximum then x = maximum end
-  return string.format("TOPLEFT,ElvUIParent,BOTTOMLEFT,%d,%d", x, PARTY_MOVER_Y)
+  local baseline = RUI.ElvUIProfile and RUI.ElvUIProfile.movers
+  return baseline and baseline.ElvUF_PartyMover or PARTY_MOVER_FALLBACK
 end
 
 function RUI:ApplyPartyFramePosition(force)
@@ -407,30 +377,8 @@ function RUI:ApplyPartyFramePosition(force)
 end
 
 local function BuildTargetTargetMoverPosition(E)
-  local parent = _G.ElvUIParent or UIParent
-  local targetMover = _G.ElvUF_TargetMover or _G.ElvUF_Target
-
-  if targetMover and targetMover.GetRight and targetMover.GetBottom then
-    local okRight, right = pcall(targetMover.GetRight, targetMover)
-    local okBottom, bottom = pcall(targetMover.GetBottom, targetMover)
-    if okRight and okBottom and type(right) == "number" and type(bottom) == "number" then
-      local parentLeft = 0
-      local parentBottom = 0
-      if parent and parent.GetLeft then
-        local ok, value = pcall(parent.GetLeft, parent)
-        if ok and type(value) == "number" then parentLeft = value end
-      end
-      if parent and parent.GetBottom then
-        local ok, value = pcall(parent.GetBottom, parent)
-        if ok and type(value) == "number" then parentBottom = value end
-      end
-      local x = math.floor((right - parentLeft) + TARGET_TARGET_GAP + 0.5)
-      local y = math.floor((bottom - parentBottom) + 0.5)
-      return string.format("BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,%d,%d", x, y)
-    end
-  end
-
-  return TARGET_TARGET_MOVER_FALLBACK
+  local baseline = RUI.ElvUIProfile and RUI.ElvUIProfile.movers
+  return baseline and baseline.ElvUF_TargetTargetMover or TARGET_TARGET_MOVER_FALLBACK
 end
 
 local function ConfigureTargetTargetFrame(units)
@@ -497,8 +445,44 @@ local function ConfigureCastbar(castbar, iconPosition, showLatency)
   end
 end
 
+local BASELINE_UNITFRAME_MOVERS = {
+  "ElvUF_PlayerMover",
+  "ElvUF_PlayerCastbarMover",
+  "ElvUF_TargetMover",
+  "ElvUF_TargetCastbarMover",
+  "ElvUF_TargetTargetMover",
+  "ElvUF_PetMover",
+  "ElvUF_FocusMover",
+  "ElvUF_PartyMover",
+  "ElvUF_RaidMover",
+  "ElvUF_Raid40Mover",
+  "ElvUF_RaidpetMover",
+  "ElvUF_BossMover",
+  "ArenaHeaderMover",
+  "BossHeaderMover",
+  "ElvBar_Pet",
+}
+
+local function ApplySuppliedUnitFrameBaseline(profile)
+  if type(profile) ~= "table" or type(RUI.ElvUIProfile) ~= "table" then return end
+  local baseline = RUI.ElvUIProfile
+  profile.unitframe = profile.unitframe or {}
+  profile.unitframe.units = profile.unitframe.units or {}
+  local sourceUnits = baseline.unitframe and baseline.unitframe.units or {}
+  for unit, settings in pairs(sourceUnits) do
+    profile.unitframe.units[unit] = RUI:DeepCopy(settings)
+  end
+
+  profile.movers = profile.movers or {}
+  local sourceMovers = baseline.movers or {}
+  for _, mover in ipairs(BASELINE_UNITFRAME_MOVERS) do
+    if sourceMovers[mover] then profile.movers[mover] = sourceMovers[mover] end
+  end
+end
+
 local function ConfigureHUDPolish(profile, applyMovers)
   if type(profile) ~= "table" then return end
+  if applyMovers then ApplySuppliedUnitFrameBaseline(profile) end
 
   profile.actionbar = profile.actionbar or {}
   profile.actionbar.bar3 = profile.actionbar.bar3 or {}
@@ -540,8 +524,11 @@ local function ConfigureHUDPolish(profile, applyMovers)
 
   if applyMovers then
     profile.movers = profile.movers or {}
+    profile.movers.ElvUF_PetMover = PET_MOVER
     profile.movers.ElvUF_PlayerCastbarMover = PLAYER_CASTBAR_MOVER
     profile.movers.ElvUF_TargetCastbarMover = TARGET_CASTBAR_MOVER
+    profile.movers.ElvUF_PartyMover = BuildPartyMoverPosition()
+    profile.movers.ElvUF_TargetTargetMover = BuildTargetTargetMoverPosition()
     profile.movers.ElvAB_3 = ACTIONBAR3_MOVER
     profile.movers.ShiftAB = STANCE_BAR_MOVER
   end
@@ -591,7 +578,7 @@ function RUI:ApplyElvUIHUDPolish(force)
   end)
 
   if applyMovers then
-    return true, "Castbars moved below the unitframes, stance bar lowered, and HUD positions updated"
+    return true, "Supplied ElvUI unit-frame baseline, castbars and HUD positions applied"
   end
   return true, "RetreatUI castbar, stance bar, and frame styling refreshed"
 end
@@ -672,7 +659,7 @@ function RUI:InstallElvUIProfile()
   if preservedTotemMover and preservedTotemMover ~= "" then
     profile.movers[preservedTotemMoverKey or "ElvBar_Totem"] = preservedTotemMover
   else
-    profile.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,151"
+    profile.movers.ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"
   end
   self:ForceFontFields(profile)
   ApplyClassFontColor(profile, true)

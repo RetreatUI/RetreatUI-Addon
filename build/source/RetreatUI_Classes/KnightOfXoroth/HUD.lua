@@ -641,14 +641,17 @@ local function UpdateAuraTrackers(auraState)
   local layout = RUI.layout.auraTrackers
   local size = layout.size or 30
   local spacing = layout.spacing or 3
-  local total = #active > 0 and (#active * size + (#active - 1) * spacing) or 0
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("auraTrackers") or 1
+  local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+  local total = #active > 0 and (#active * effectiveSize + (#active - 1) * effectiveSpacing) or 0
 
   for index, frame in ipairs(active) do
     local aura = frame.aura
     frame:ClearAllPoints()
     frame:SetPoint("CENTER", UIParent, "CENTER",
-      (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing),
+      (layout.x or 0) - total / 2 + effectiveSize / 2 + (index - 1) * (effectiveSize + effectiveSpacing),
       layout.y or -83)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end
     frame.texture:SetTexture(aura.icon or select(3, GetSpellInfo(frame.auraName)) or frame.fallback)
     if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
     if frame.cooldownShade then frame.cooldownShade:Hide() end
@@ -765,6 +768,16 @@ local function CreateStanceTracker()
   root.stanceTracker = frame
 end
 
+local function HasPestilenceOfApocalypse()
+  if RUI.IsSpellIDLearned and RUI:IsSpellIDLearned(804786) then return true end
+  if RUI.IsSpellLearned and RUI:IsSpellLearned("Pestilence of Apocalypse") then return true end
+  if IsSpellKnown then
+    local ok, known = pcall(IsSpellKnown, 804786)
+    if ok and known then return true end
+  end
+  return false
+end
+
 local function UpdateStanceTracker(auraState)
   local frame = root and root.stanceTracker
   if not frame then return end
@@ -772,8 +785,22 @@ local function UpdateStanceTracker(auraState)
   local definition, texture, stanceName = ActivePestilenceStance(auraState)
   if not definition then
     frame.stanceName = nil
-    frame.effectText:SetText("")
-    frame:Hide()
+    if HasPestilenceOfApocalypse() then
+      local apocalypse = STANCE_DEFINITIONS["pestilence of apocalypse"]
+      local spellTexture = select(3, GetSpellInfo(apocalypse.name))
+      frame.texture:SetTexture(spellTexture or apocalypse.fallback)
+      if frame.texture.SetDesaturated then frame.texture:SetDesaturated(true) end
+      if frame.cooldownShade then frame.cooldownShade:Hide() end
+      frame.cooldownText:SetText("")
+      frame.stackText:SetText("")
+      frame.effectText:SetText("MISSING")
+      frame.effectText:SetTextColor(1, 0.25, 0.2, 1)
+      SetBorder(frame, false)
+      frame:Show()
+    else
+      frame.effectText:SetText("")
+      frame:Hide()
+    end
     return
   end
 
@@ -783,6 +810,7 @@ local function UpdateStanceTracker(auraState)
   if frame.cooldownShade then frame.cooldownShade:Hide() end
   frame.cooldownText:SetText("")
   frame.stackText:SetText("")
+  frame.effectText:SetTextColor(1, 1, 1, 1)
   frame.effectText:SetText(definition.effect)
   frame.stanceName = stanceName or definition.name
   SetBorder(frame, true)
@@ -791,9 +819,10 @@ end
 
 local function CreateDemonfire()
   root.demonfire = root.demonfire or {}
+  local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
   for i=1,6 do
     local icon = CreateIcon(root,25)
-    icon:SetPoint("CENTER", UIParent, "CENTER", (i-3.5)*25, RUI.layout.demonfire.y)
+    icon:SetPoint("CENTER", UIParent, "CENTER", (tonumber(resourceLayout.x) or 0) + (i-3.5)*25, tonumber(resourceLayout.y) or -118)
     local _,_,texture = GetSpellInfo("Hellfire Bellows")
     icon.texture:SetTexture(texture or "Interface\\Icons\\Spell_Fire_Immolation")
     if icon.cooldownShade then icon.cooldownShade:Hide() end
@@ -928,6 +957,7 @@ end
 
 local function PositionTargetAuraBar(bar, index)
   local targetFrame = TargetFrameAnchor()
+  local scale = RUI.GetHUDScale and RUI:GetHUDScale("targetDebuffs") or 1
   local width = 260
   if targetFrame and targetFrame.GetWidth then
     local ok, measured = pcall(targetFrame.GetWidth, targetFrame)
@@ -939,11 +969,12 @@ local function PositionTargetAuraBar(bar, index)
   bar:ClearAllPoints()
 
   if targetFrame then
-    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18)
+    bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18 * scale)
   else
     local fallback = RUI.layout.targetDebuffs or {x=310, y=-59}
-    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18)
+    bar:SetPoint("BOTTOM", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + 30 + (index - 1) * 18 * scale)
   end
+  if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end
 end
 
 local function UpdateTargetDebuffs()
@@ -1235,8 +1266,54 @@ local function Build()
   end)
 end
 
+function module:refreshLayout()
+  if not root then return false end
+  local coreLayout = RUI.layout.core or {x=0, y=-183}
+  local utilityLayout = RUI.layout.utility or {x=0, y=-224}
+  local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+  local resourceX = tonumber(resourceLayout.x) or 0
+  local resourceY = tonumber(resourceLayout.y) or -118
+  local resourceScale = RUI.GetHUDScale and RUI:GetHUDScale("demonfire") or 1
+
+  root.coreRow:ClearAllPoints()
+  root.coreRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(coreLayout.x) or 0, tonumber(coreLayout.y) or -183)
+  root.utilityRow:ClearAllPoints()
+  root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(utilityLayout.x) or 0, tonumber(utilityLayout.y) or -224)
+  if RUI.ApplyHUDFrameScale then
+    RUI:ApplyHUDFrameScale(root.coreRow, "core")
+    RUI:ApplyHUDFrameScale(root.utilityRow, "utility")
+  end
+
+  for index, icon in ipairs(root.demonfire or {}) do
+    icon:ClearAllPoints()
+    icon:SetPoint("CENTER", UIParent, "CENTER", resourceX + (index - 3.5) * 25 * resourceScale, resourceY)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(icon, "demonfire") end
+  end
+  if root.imp then
+    root.imp:ClearAllPoints()
+    root.imp:SetPoint("CENTER", UIParent, "CENTER", resourceX - 105 * resourceScale, resourceY)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(root.imp, "demonfire") end
+  end
+  if root.blood then
+    root.blood:ClearAllPoints()
+    root.blood:SetPoint("CENTER", UIParent, "CENTER", resourceX + 105 * resourceScale, resourceY)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(root.blood, "demonfire") end
+  end
+  if root.stanceTracker and root.imp then
+    local stanceLayout = RUI.layout.stanceTracker or {gap=6}
+    root.stanceTracker:ClearAllPoints()
+    root.stanceTracker:SetPoint("RIGHT", root.imp, "LEFT", -(stanceLayout.gap or 6), 0)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(root.stanceTracker, "demonfire") end
+  end
+  for _, tracker in ipairs(root.auraTrackers or {}) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(tracker, "auraTrackers") end end
+  for _, bar in ipairs(targetAuraBars) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end end
+  UpdateAll()
+  return true
+end
+
 function module:activate()
   Build()
+  module:refreshLayout(true)
   root:Show()
   driver:Show()
   if demonfireDriver then demonfireDriver:Show() end

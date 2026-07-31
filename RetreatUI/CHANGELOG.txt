@@ -1,3 +1,105 @@
+RetreatUI v1.1.0-beta.11
+- Added a global two-slot trinket tracker above the player frame for slots 13 and 14.
+- Added equipped-item cooldown, active proc/buff duration, stack and tooltip tracking.
+- Added automatic unit-frame collision avoidance for the trinket row.
+- Updated the ElvUI unit-frame baseline from the user-supplied RetreatUI profile.
+- Preserved beta.10.2 HUD sizing and fixed Party Interrupt Tracker anchoring.
+
+RetreatUI v1.1.0-beta.9
+- Added one Smart Buff keybind that casts one assigned buff per press and advances through all valid party targets.
+- Smart Buff skips offline, dead, phased, invisible and out-of-range players instead of becoming stuck on them.
+- Temporarily unavailable players automatically return to the buff queue when they can be buffed again.
+- Preserved the individual Normal/Lesser and Greater keybinds as Manual / Advanced fallback controls.
+- Added a complete Pyrolancer HUD curated from both supplied WeakAura packs.
+- Added Pyrolancer cooldowns, utility, priority procs, target debuffs, Heat and five Ember segments.
+- Pyrolancer resources move and scale with the Class Resource section in /rui hud.
+
+RetreatUI v1.1.0-beta.8
+- Removed interrupts from the Party Utility rows beside individual party frames.
+- Added a separate central Party Interrupt Tracker for the player and every party member.
+- Added Blood Elf Arcane Torrent as a tracked interrupt with automatic race detection and addon sync.
+- Added native spell tooltips, live cooldown/Ready states and a clear no-interrupt-detected state.
+- Added a movable and scalable PARTY INTERRUPTS anchor to the HUD Editor.
+
+RetreatUI v1.1.0-beta.7
+- Party Utility icons now display the native ability tooltip when hovered instead of internal labels such as Group Defensive.
+- Added live cooldown remaining or Ready status beneath the spell tooltip.
+- Added a safe spell-link fallback for Project Ascension clients without direct spell-tooltip support.
+- Preserved all beta.6 HUD scaling, build detection and saved layout changes.
+
+RetreatUI v1.1.0-beta.6
+- Added scalable HUD Editor controls for every major HUD section.
+- Added selected-section and Scale All controls from 60% to 160% in 5% steps.
+- Added mouse-wheel scaling directly on HUD Editor anchors.
+- Saved position and scale separately for each detected class build.
+- Migrated existing beta.5 build layouts without resetting user positions.
+- Strengthened automatic Character Advancement talent/build detection.
+- Added stable build fingerprints using active slot, advancement entries and learned HUD records.
+- Added cached advancement-node lookups and explicit talent entry conditions.
+
+RetreatUI v1.1.0-beta.5
+- Fixed Witch Doctor Totem Bar movement by targeting Ascension ElvUI's real `ElvUI_BarTotem` owner instead of the child `MultiCastActionBarFrame`.
+- The visible Totem Bar, its ElvUI mover and RetreatUI drag grip now remain attached and move as one unit.
+- Added automatic repair for the detached child-anchor state left by beta.4 while preserving the user's saved Totem Bar position.
+- Preserved all beta.4 Buff Manager keybind, installer and migration changes without resetting existing profiles, assignments or HUD layouts.
+
+RetreatUI v1.1.0-beta.4
+- Added user-selected Normal/Lesser and Greater/Smart Buff Manager keybinds for every learned buff family.
+- Keybinds are saved per class, displayed on the buff bar and applied through secure smart-target buttons.
+- Added an in-game key capture screen with conflict warnings, duplicate prevention, Esc cancel and Backspace/Delete clear.
+- Rebuilt the in-game installer into a clean, class-neutral Readiness, Components, Install and Complete flow.
+- Added clearer dependency errors and recovery instructions without resetting existing profiles, assignments or HUD layouts.
+
+RetreatUI v1.1.0-beta.3
+- Rebuilt Party Utility as separate player/party1/party2/party3/party4 cooldown rows anchored to the exact matching unit frame.
+- Cooldown ownership follows the player when party order changes; RetreatUI peers sync exact learned abilities and non-RetreatUI members use class-aware/observed fallback data.
+- Removed the central utility row, combat-log scanning and the TurboPlates Dangerous Ability runtime after beta.2 performance testing.
+- Expanded native Templar ability, proc and target-debuff coverage after auditing Bella's Templar WeakAura pack while excluding generic consumable, racial and trinket reminders.
+- Audited the Knight of Xoroth Hellfire WeakAura pack and added missing native coverage without duplicating existing Rage, Demonfire or Pestilence systems.
+
+RetreatUI v1.1.0-beta.2
+- Added Party Utility tracking with RetreatUI group synchronization and combat-log fallback for non-RetreatUI players.
+- Tracks interrupts, combat resurrection, dispels, externals, group defensives, immunities and taunts with learned-only and role-aware filtering.
+- Added `/rui utility` settings, per-category toggles, resync and a solo preview mode.
+- Added a movable Party Utility anchor to `/rui hud` and build-aware layout storage.
+- Added TurboPlates dangerous-cast priority borders and labels for interrupt, defensive, frontal, dispel and control categories.
+- Added a separate dangerous-ability registry so encounter data can be expanded without changing the nameplate renderer.
+- NPC cooldown icons now hide unknown cooldowns and missing textures instead of displaying question marks.
+
+RetreatUI v1.1.0-beta.1
+- Added the first RetreatUI v1.1 systems foundation.
+- Added `/rui hud`, a live HUD Editor with independent anchors for Main Rotation, Utility, Procs/Buffs, class resources, primary power and target debuffs.
+- Added per-class, per-build HUD layouts with automatic Character Advancement/spellbook fingerprint detection.
+- New builds inherit a safe class default automatically and switch without requiring `/reload` or a reset command.
+- Added migration-safe feature settings for the upcoming Party Utility, Dangerous Ability and Buff Manager 2.0 systems.
+- Added the release-manifest foundation required by the future RetreatUI Launcher.
+
+RetreatUI v1.0.11
+====================
+
+MAJOR CLASS HUD EXPANSION
+- Expanded and refined learned-only HUD coverage across all 21 supported Conquest of Azeroth classes.
+- Added more reliable class-state, proc, cooldown, defensive, utility and target-aura handling.
+- Added curated tracking improvements for Venomancer, Reaper, Starcaller, Felsworn and Primalist.
+- Improved Bloodmage, Witch Doctor, Sun Cleric and other class-specific HUD systems.
+
+BUFF MANAGER OVERHAUL
+- Rebuilt buff coverage around shared effect families instead of exact spell IDs alone.
+- Equivalent buffs from other classes now count as valid coverage automatically.
+- Exclusive families such as Bloodmage Offerings and Knight of Xoroth Marks now select only one valid option.
+- Improved automatic assignments, saved migrations and missing-buff selection for groups and raids.
+
+CLASS RESOURCES AND COMBAT READABILITY
+- Added a dedicated eight-segment target-bound Scattered Stars tracker for Starcaller.
+- Improved Felfury, Totem Bar, Bloodmage proc and other class-resource displays.
+- Added safer layouts, clearer active-state feedback and better separation between cooldowns, procs and target debuffs.
+
+INTEGRATIONS AND QUALITY OF LIFE
+- Improved TurboPlates mana-enemy coloring while preserving normal colors for non-mana enemies.
+- Added native Auto Accept Role Checks with a saved toggle and /rui automation access.
+- Preserved ElvUI chat panels and profile customizations while improving class-colored HUD styling.
+- Existing RetreatUI profiles, assignments and managed positions migrate automatically without reset commands.
+
 RetreatUI v1.0.10
 ====================
 

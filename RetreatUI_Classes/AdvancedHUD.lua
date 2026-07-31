@@ -78,12 +78,15 @@ local function PowerTexture()
 end
 
 local function TargetFrameAnchor()
-  if ElvUI and ElvUI[1] and ElvUI[1].UnitFrames then
-    local E = ElvUI[1]
-    local frame = E.UnitFrames.units and E.UnitFrames.units.target
-    if frame then return frame end
+  -- ElvUI's internal UnitFrames.units.target value is not guaranteed to be a
+  -- frame object; on some Ascension builds it is the string "target". Passing
+  -- that value to SetPoint makes WoW look for a globally named region called
+  -- "target" and aborts the entire class HUD refresh. Only use live frames.
+  local frame = _G.ElvUF_Target or _G.TargetFrame
+  if frame and type(frame) ~= "string" and frame.GetWidth and frame.SetPoint then
+    return frame
   end
-  return _G.ElvUF_Target or _G.TargetFrame
+  return nil
 end
 
 function RUI:RegisterAdvancedClassHUD(className, options)
@@ -97,6 +100,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     events = nil,
     timer = nil,
     elapsed = 0,
+    cooldownElapsed = 0,
+    auraElapsed = 0,
     spellRefreshPending = false,
     procFrames = {},
     targetBars = {},
@@ -104,6 +109,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     resourceReady = false,
     resourceNativeReady = false,
     resourceSnapshot = nil,
+    resourcePowerType = nil,
+    resourceForceZero = false,
     stanceTracker = nil,
     stanceAura = nil,
     classStateTracker = nil,
@@ -190,6 +197,74 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   -----------------------------------------------------------------------------
   -- Strong proc glows on the exact spell(s) made free/instant/empowered.
   -----------------------------------------------------------------------------
+  local function SpellRecordUsable(definition)
+    if type(definition) ~= "table" or type(IsUsableSpell) ~= "function" then return false end
+    local candidates, seen = {}, {}
+    local function Add(value)
+      if value == nil then return end
+      local key = tostring(value)
+      if key == "" or seen[key] then return end
+      seen[key] = true
+      candidates[#candidates + 1] = value
+    end
+
+    if RUI.GetSpellRecordRuntimeID then Add(RUI:GetSpellRecordRuntimeID(definition)) end
+    Add(definition.id)
+    Add(definition.name)
+    for _, alias in ipairs(definition.aliases or {}) do Add(alias) end
+
+    for _, candidate in ipairs(candidates) do
+      local ok, usable = pcall(IsUsableSpell, candidate)
+      if ok and usable then return true end
+    end
+    return false
+  end
+
+  local function StateGlowDefinition()
+    local configured = options.stateGlowWhenUsable
+    if type(configured) == "table" then return configured end
+    if type(configured) == "number" then return {id=configured} end
+    if type(configured) == "string" and configured ~= "" then return {name=configured} end
+    return nil
+  end
+
+  local function ApplyStateTrackerUsableGlow()
+    local tracker = state.classStateTracker
+    local definition = StateGlowDefinition()
+    if not tracker or not definition then return end
+
+    local usable = SpellRecordUsable(definition)
+    local resourceReady = options.stateGlowResourceReady
+    if type(resourceReady) == "table" and type(state.resourceSnapshot) == "table" then
+      local current = tonumber(state.resourceSnapshot.current) or 0
+      local maximum = tonumber(state.resourceSnapshot.maximum) or 0
+      local requiredCurrent = tonumber(resourceReady.current) or tonumber(resourceReady.minimum)
+      local requiredMaximum = tonumber(resourceReady.maximum)
+      local thresholdReady = requiredCurrent and current >= requiredCurrent
+      if requiredMaximum and maximum ~= requiredMaximum then thresholdReady = false end
+      usable = thresholdReady == true
+    end
+    local wantedGroup = Normalize(options.stateGlowGroup)
+    local theme = RUI:GetTheme()
+    for _, frame in ipairs(tracker.frames or {}) do
+      if frame:IsShown() and frame.state then
+        local groupKey = Normalize(frame.state.group and frame.state.group.key)
+        local applies = wantedGroup == "" or groupKey == wantedGroup
+        if applies and usable then
+          W:SetBorder(frame, theme.accent, 1)
+          W:SetGlow(frame, theme.accent2, 0.82)
+          if frame.stateText then
+            frame.stateText:SetTextColor(theme.accent2[1], theme.accent2[2], theme.accent2[3], 1)
+          end
+        else
+          W:SetGlow(frame, nil, 0)
+          W:SetBorder(frame, theme.accent2, 1)
+          if frame.stateText then frame.stateText:SetTextColor(1, 1, 1, 1) end
+        end
+      end
+    end
+  end
+
   local function ApplyProcGlows(playerAuras)
     local theme = RUI:GetTheme()
     for _, row in ipairs({state.root.coreRow, state.root.utilityRow}) do
@@ -199,7 +274,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
           local definition = icon.definition
           local aura = AnyAura(playerAuras, definition.glowWhenAura)
           if not aura then aura = AnyAura(playerAuras, definition.glowWhenAuraID) end
-          if aura then
+          local usable = definition.glowWhenUsable == true and SpellRecordUsable(definition)
+          if aura or usable then
             local pulse = 0.72 + 0.28 * math.abs(math.sin(GetTime() * 7.5))
             W:SetBorder(icon, theme.accent2, 1)
             W:SetGlow(icon, theme.accent2, pulse)
@@ -208,6 +284,27 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         end
       end
     end
+  end
+
+  local function UpdateUsableGlowsOnly()
+    if not state.root or not state.root:IsShown() then return end
+    local theme = RUI:GetTheme()
+    for _, row in ipairs({state.root.coreRow, state.root.utilityRow}) do
+      for _, icon in ipairs(row.icons or {}) do
+        local definition = icon.definition
+        if icon:IsShown() and definition and definition.glowWhenUsable == true then
+          if SpellRecordUsable(definition) then
+            W:SetBorder(icon, theme.accent2, 1)
+            W:SetGlow(icon, theme.accent2, 1)
+            if icon.texture and icon.texture.SetDesaturated then icon.texture:SetDesaturated(false) end
+          else
+            W:SetGlow(icon, nil, 0)
+            W:SetBorder(icon, {0,0,0,1}, 1)
+          end
+        end
+      end
+    end
+    ApplyStateTrackerUsableGlow()
   end
 
   -----------------------------------------------------------------------------
@@ -274,7 +371,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     local maximum = math.min(#active, options.maxProcs or 12)
     local layout = RUI.layout.auraTrackers or {x=0,y=-83,size=30,spacing=3}
     local size, spacing = layout.size or 30, layout.spacing or 3
-    local total = maximum > 0 and (maximum * size + (maximum - 1) * spacing) or 0
+    local scale = RUI.GetHUDScale and RUI:GetHUDScale("auraTrackers") or 1
+    local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+    local total = maximum > 0 and (maximum * effectiveSize + (maximum - 1) * effectiveSpacing) or 0
     local theme = RUI:GetTheme()
 
     for index = 1, maximum do
@@ -285,8 +384,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       frame.definition = item.definition
       frame:ClearAllPoints()
       frame:SetPoint("CENTER", UIParent, "CENTER",
-        (layout.x or 0) - total / 2 + size / 2 + (index - 1) * (size + spacing),
+        (layout.x or 0) - total / 2 + effectiveSize / 2 + (index - 1) * (effectiveSize + effectiveSpacing),
         layout.y or -83)
+      if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end
       frame.texture:SetTexture(aura.icon or Texture(item.definition))
       if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
       if frame.cooldownShade then frame.cooldownShade:Hide() end
@@ -418,18 +518,40 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   end
 
   -----------------------------------------------------------------------------
-  -- Curated target debuffs above the target frame.
+  -- Player-applied target debuffs above the target frame.
   -----------------------------------------------------------------------------
   local function BuildTargetLookup()
     local byName, byID = {}, {}
-    for _, definition in ipairs(RUI:GetTargetDebuffDefinitions(className) or {}) do
-      if definition.name then byName[Normalize(definition.name)] = definition end
+
+    local function AddDefinition(definition, curated)
+      if type(definition) ~= "table" then return end
+      if curated then definition._targetDebuffCurated = true end
+      if definition.name then byName[Normalize(definition.name)] = byName[Normalize(definition.name)] or definition end
       if definition.debuff then byName[Normalize(definition.debuff)] = definition end
+      if definition.buff then byName[Normalize(definition.buff)] = byName[Normalize(definition.buff)] or definition end
       local definitionID = tonumber(definition.auraID) or tonumber(definition.id)
-      if definitionID then byID[definitionID] = definition end
-      for _, alias in ipairs(definition.aliases or {}) do byName[Normalize(alias)] = definition end
+      if definitionID then byID[definitionID] = byID[definitionID] or definition end
+      for _, alias in ipairs(definition.aliases or {}) do
+        byName[Normalize(alias)] = byName[Normalize(alias)] or definition
+      end
+    end
+
+    -- Curated records keep their requested ordering, but the target tracker is
+    -- no longer limited to a whitelist. Every player-applied debuff is shown.
+    for _, definition in ipairs(RUI:GetTargetDebuffDefinitions(className) or {}) do
+      AddDefinition(definition, true)
+    end
+    local database = Database()
+    for _, definition in ipairs((database and database.spells) or {}) do
+      AddDefinition(definition, false)
     end
     return byName, byID
+  end
+
+  local function IsOwnTargetDebuffCaster(caster)
+    if caster == "player" or caster == "pet" or caster == "vehicle" then return true end
+    local playerName = UnitName and UnitName("player")
+    return playerName and caster == playerName or false
   end
 
   local function CreateTargetBar(index)
@@ -463,6 +585,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
 
   local function PositionTargetBar(bar, index)
     local targetFrame = TargetFrameAnchor()
+    local scale = RUI.GetHUDScale and RUI:GetHUDScale("targetDebuffs") or 1
     local width = 180
     if targetFrame and targetFrame.GetWidth then
       local ok, measured = pcall(targetFrame.GetWidth, targetFrame)
@@ -470,12 +593,15 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     end
     bar:SetWidth(width)
     bar:ClearAllPoints()
+    local anchored = false
     if targetFrame then
-      bar:SetPoint("BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18)
-    else
-      local fallback = RUI.layout.targetDebuffs or {x=310,y=-59}
-      bar:SetPoint("CENTER", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + (index - 1) * 18)
+      anchored = pcall(bar.SetPoint, bar, "BOTTOMLEFT", targetFrame, "TOPLEFT", 0, 4 + (index - 1) * 18 * scale)
     end
+    if not anchored then
+      local fallback = RUI.layout.targetDebuffs or {x=310,y=-59}
+      bar:SetPoint("CENTER", UIParent, "CENTER", fallback.x or 310, (fallback.y or -59) + (index - 1) * 18 * scale)
+    end
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end
   end
 
   local function UpdateTargetDebuffs()
@@ -491,17 +617,25 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         local spellID = tonumber(values[11])
         local definition = (spellID and byID[spellID]) or byName[Normalize(name)]
         local caster = values[8]
-        local owned = caster == "player" or caster == "pet" or caster == "vehicle" or caster == nil
-        if definition and owned then
+        -- Ascension usually returns a unit token for normal auras, but some
+        -- custom class debuffs have no caster. Accept nil only when the aura
+        -- matches the active class database; explicit player/pet/vehicle auras
+        -- are always tracked, even if they were not manually curated.
+        local owned = IsOwnTargetDebuffCaster(caster) or (caster == nil and definition ~= nil)
+        if owned then
           local idKey = spellID and ("id:" .. tostring(spellID)) or nil
           local nameKey = "name:" .. Normalize(name)
           if (not idKey or not seen[idKey]) and not seen[nameKey] then
             if idKey then seen[idKey] = true end
             seen[nameKey] = true
+            local resolvedDefinition = definition or {
+              name=name, id=spellID, order=900, targetDebuff=true,
+              fallbackIcon=values[3],
+            }
             result[#result + 1] = {
               name=name, icon=values[3], count=tonumber(values[4]) or 0,
               duration=tonumber(values[6]) or 0, expires=tonumber(values[7]) or 0,
-              caster=caster, spellID=spellID, definition=definition,
+              caster=caster, spellID=spellID, definition=resolvedDefinition,
             }
           end
         end
@@ -514,7 +648,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       return tostring(left.name or "") < tostring(right.name or "")
     end)
 
-    local maximum = math.min(#result, options.maxTargetDebuffs or 8)
+    local maximum = math.min(#result, options.maxTargetDebuffs or 12)
     local theme = RUI:GetTheme()
     for index = 1, maximum do
       local aura = result[index]
@@ -572,6 +706,41 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     return Database().nativeResource or options.nativeResource
   end
 
+  local function PositionResourceBar(config)
+    if not state.root or not state.root.resourceBar or type(config) ~= "table" then return end
+    local bar = state.root.resourceBar
+    local height = tonumber(config.height) or 10
+    local width = tonumber(config.width) or 330
+    local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    local x = tonumber(config.x) or tonumber(resourceLayout.x) or 0
+    local y = tonumber(config.y) or tonumber(resourceLayout.y) or -118
+
+    if config.matchPrimaryPower == true then
+      local primary = _G.RetreatUIPrimaryPowerBar
+      local powerLayout = RUI.layout.power or {x=0, y=-152, width=360, height=16}
+      width = primary and primary.GetWidth and primary:GetWidth() or tonumber(powerLayout.width) or width
+      bar:ClearAllPoints()
+      bar:SetSize(width, height)
+      if primary and primary.GetHeight then
+        bar:SetPoint("BOTTOM", primary, "TOP", tonumber(config.xOffset) or 0, tonumber(config.gap) or 1)
+        if bar.SetFrameLevel and primary.GetFrameLevel then
+          bar:SetFrameLevel(math.max(bar:GetFrameLevel() or 1, (primary:GetFrameLevel() or 1) + 1))
+        end
+      else
+        local primaryHeight = tonumber(powerLayout.height) or 16
+        y = (tonumber(powerLayout.y) or -152) + primaryHeight / 2 + height / 2 + (tonumber(config.gap) or 1)
+        bar:SetPoint("CENTER", UIParent, "CENTER", (tonumber(powerLayout.x) or 0) + (tonumber(config.xOffset) or 0), y)
+      end
+      if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "demonfire") end
+      return
+    end
+
+    bar:ClearAllPoints()
+    bar:SetSize(width, height)
+    bar:SetPoint("CENTER", UIParent, "CENTER", x, y)
+    if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "demonfire") end
+  end
+
   local function CreateResourceSegment(index)
     local frame = CreateFrame("Frame", nil, state.root)
     frame:SetSize(25,25)
@@ -595,12 +764,56 @@ function RUI:RegisterAdvancedClassHUD(className, options)
   local function ResourceAura(playerAuras, config)
     local aura = AnyAura(playerAuras, config.auraNames)
     if not aura and config.spellID then aura = FindAura(playerAuras, tonumber(config.spellID)) end
+    if not aura and config.harmfulAura == true then
+      local harmfulAuras = ReadAura("player", true)
+      aura = AnyAura(harmfulAuras, config.auraNames)
+      if not aura and config.spellID then aura = FindAura(harmfulAuras, tonumber(config.spellID)) end
+    end
     return aura
+  end
+
+  local function PowerResourceSnapshot(config)
+    if type(config.fallbackPower) ~= "table" then return nil end
+
+    if state.resourcePowerType ~= nil and UnitPower and UnitPowerMax then
+      local okMax, maximum = pcall(UnitPowerMax, "player", state.resourcePowerType)
+      local okCurrent, current = pcall(UnitPower, "player", state.resourcePowerType)
+      maximum = okMax and tonumber(maximum) or nil
+      current = okCurrent and tonumber(current) or nil
+      if maximum and maximum > 0 and current then
+        return {
+          current=current, maximum=maximum, icon=config.icon,
+          label=config.title, fallback=true, source="power",
+          powerType=state.resourcePowerType,
+        }
+      end
+      state.resourcePowerType = nil
+    end
+
+    if RUI.FindCustomPower then
+      local found = RUI:FindCustomPower(config.fallbackPower)
+      if found then
+        state.resourcePowerType = found.powerType
+        return {
+          current=found.current, maximum=found.maximum, icon=config.icon,
+          label=config.title, fallback=true, source="power",
+          powerType=found.powerType,
+        }
+      end
+    end
+    return nil
   end
 
   local function SnapshotResource(playerAuras, forceDiscovery)
     local config = ResourceConfig()
     if type(config) ~= "table" then return nil end
+
+    -- Direct UnitPower reads are both faster and more accurate than recursively
+    -- inspecting Ascension's UI frames. Sun Cleric opts into this path first.
+    if config.preferPower == true then
+      local power = PowerResourceSnapshot(config)
+      if power then return power end
+    end
 
     local aura = ResourceAura(playerAuras, config)
     if aura then
@@ -626,15 +839,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       end
     end
 
-    if RUI.FindCustomPower and type(config.fallbackPower) == "table" then
-      local found = RUI:FindCustomPower(config.fallbackPower)
-      if found then
-        return {
-          current=found.current, maximum=found.maximum, icon=config.icon,
-          label=config.title, fallback=true, source="power",
-        }
-      end
-    end
+    if config.preferPower ~= true then return PowerResourceSnapshot(config) end
     return nil
   end
 
@@ -647,6 +852,17 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       return
     end
     local snapshot = SnapshotResource(playerAuras, forceDiscovery)
+    if not snapshot and (state.resourceForceZero or config.keepVisible == true) then
+      snapshot = {}
+      if state.resourceSnapshot then
+        for key, value in pairs(state.resourceSnapshot) do snapshot[key] = value end
+      end
+      snapshot.current = state.resourceForceZero and 0 or (tonumber(snapshot.current) or tonumber(config.defaultCurrent) or 0)
+      snapshot.maximum = tonumber(snapshot.maximum) or tonumber(config.maximum) or tonumber(config.maxStacks) or 1
+      snapshot.icon = snapshot.icon or config.icon
+      snapshot.label = snapshot.label or config.title
+      snapshot.source = "displayFallback"
+    end
     if not snapshot then
       state.resourceReady = false
       state.resourceNativeReady = false
@@ -661,6 +877,15 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     local current = math.max(0, tonumber(snapshot.current) or 0)
     local maximum = math.max(1, tonumber(snapshot.maximum) or 1)
     if current > maximum then current = maximum end
+    if state.resourceForceZero then
+      if snapshot.source == "displayFallback" then
+        current = 0
+      elseif current < maximum then
+        state.resourceForceZero = false
+      else
+        current = 0
+      end
+    end
     local label = string.upper(tostring(config.title or snapshot.label or "CLASS RESOURCE"))
     local icon = snapshot.icon or config.icon or "Interface\\Icons\\INV_Misc_QuestionMark"
     local mode = config.mode or "auto"
@@ -676,9 +901,16 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       while #state.resourceSegments < maximum do CreateResourceSegment(#state.resourceSegments + 1) end
       local size = maximum > 12 and math.max(12, math.floor(330 / maximum)) or 25
       local spacing = 1
-      local total = maximum * size + (maximum - 1) * spacing
-      local firstX = -total / 2 + size / 2
-      local y = (RUI.layout.demonfire and RUI.layout.demonfire.y) or -118
+      local scale = RUI.GetHUDScale and RUI:GetHUDScale("demonfire") or 1
+      local effectiveSize, effectiveSpacing = size * scale, spacing * scale
+      local total = maximum * effectiveSize + (maximum - 1) * effectiveSpacing
+      local firstX = -total / 2 + effectiveSize / 2
+      local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+      local x = tonumber(resourceLayout.x) or 0
+      local y = tonumber(resourceLayout.y) or -118
+      state.root.resourceLabel:ClearAllPoints()
+      state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", x, y + 22 * scale)
+      if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
       state.root.resourceLabel:SetText(label .. "  " .. tostring(current) .. " / " .. tostring(maximum))
       state.root.resourceLabel:SetTextColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
       state.root.resourceLabel:Show()
@@ -687,7 +919,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
           local active = index <= current
           segment:ClearAllPoints()
           segment:SetSize(size,size)
-          segment:SetPoint("CENTER", UIParent, "CENTER", firstX + (index - 1) * (size + spacing), y)
+          segment:SetPoint("CENTER", UIParent, "CENTER", x + firstX + (index - 1) * (effectiveSize + effectiveSpacing), y)
+          if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(segment, "demonfire") end
           segment.texture:SetTexture(icon)
           if segment.texture.SetDesaturated then segment.texture:SetDesaturated(not active) end
           segment.texture:SetVertexColor(active and 1 or .45, active and 1 or .45, active and 1 or .45, 1)
@@ -700,19 +933,49 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       end
     else
       local bar = state.root.resourceBar
+      PositionResourceBar(config)
       bar:SetMinMaxValues(0, maximum)
       bar:SetValue(current)
       bar:SetStatusBarColor(theme.accent[1],theme.accent[2],theme.accent[3],1)
-      bar.text:SetText(label .. "  " .. tostring(math.floor(current + .5)) .. " / " .. tostring(math.floor(maximum + .5)))
+      local valueText = tostring(math.floor(current + .5)) .. " / " .. tostring(math.floor(maximum + .5))
+      if config.showLabel == false or label == "" then
+        bar.text:SetText(valueText)
+      else
+        bar.text:SetText(label .. "  " .. valueText)
+      end
       bar:Show()
     end
   end
 
   function module.customResourcesComplete()
-    -- Aura-only mirrors are useful for testing, but do not prove that we have
+    -- Aura-only mirrors can be useful, but do not prove that we have
     -- replaced Ascension's complete native resource. Keep the native frame
     -- until a native/custom-power source is confirmed, unless a class opts in.
     return state.resourceNativeReady == true
+  end
+
+  local function ResourceResetMatches(...)
+    local config = ResourceConfig()
+    local resetValues = type(config) == "table" and config.resetOnCast or nil
+    if type(resetValues) ~= "table" then return false end
+    local expectedIDs, expectedNames = {}, {}
+    for _, value in ipairs(resetValues) do
+      if type(value) == "number" then expectedIDs[tonumber(value)] = true
+      else expectedNames[Normalize(value)] = true end
+    end
+    for index = 1, select("#", ...) do
+      local value = select(index, ...)
+      if type(value) == "number" and expectedIDs[tonumber(value)] then return true end
+      if type(value) == "string" and expectedNames[Normalize(value)] then return true end
+    end
+    return false
+  end
+
+  local function ResetResourceAfterCast()
+    state.resourceForceZero = true
+    if state.resourceSnapshot then state.resourceSnapshot.current = 0 end
+    UpdateResource(ReadAura("player", false), false)
+    UpdateUsableGlowsOnly()
   end
 
   -----------------------------------------------------------------------------
@@ -725,8 +988,11 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     W:UpdateSpellRow(state.root.utilityRow, function(reference) return FindAura(playerAuras, reference) end)
     ApplyProcGlows(playerAuras)
     UpdateProcTrackers(playerAuras)
-    if state.classStateTracker then state.classStateTracker:Update(playerAuras) end
     UpdateResource(playerAuras, forceResourceDiscovery)
+    if state.classStateTracker then
+      state.classStateTracker:Update(playerAuras)
+      ApplyStateTrackerUsableGlow()
+    end
   end
 
   local function UpdateCooldownsOnly()
@@ -735,6 +1001,33 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     W:UpdateSpellRow(state.root.coreRow, function(reference) return FindAura(playerAuras, reference) end)
     W:UpdateSpellRow(state.root.utilityRow, function(reference) return FindAura(playerAuras, reference) end)
     ApplyProcGlows(playerAuras)
+    ApplyStateTrackerUsableGlow()
+  end
+
+  local function UpdateCooldownTimersOnly()
+    if not state.root or not state.root:IsShown() then return end
+    for _, row in ipairs({state.root.coreRow, state.root.utilityRow}) do
+      for _, icon in ipairs(row.icons or {}) do
+        if icon:IsShown() and icon.definition then
+          local definition = icon.definition
+          local chargeCurrent, chargeMaximum, chargeStart, chargeDuration
+          if definition.trackCharges then
+            chargeCurrent, chargeMaximum, chargeStart, chargeDuration = W:ReadSpellCharges(definition)
+          end
+          if definition.trackCooldown == false then
+            W:SetCooldownDisplay(icon, 0, false)
+          elseif chargeCurrent and chargeMaximum then
+            local remaining = chargeDuration > 0 and math.max(0, chargeStart + chargeDuration - GetTime()) or 0
+            W:SetCooldownDisplay(icon, remaining, chargeCurrent < chargeMaximum and remaining > 0.05)
+            icon.stackText:SetText(string.format("%d/%d", chargeCurrent, chargeMaximum))
+          else
+            local startTime, duration, enabled = W:ReadSpellCooldown(definition)
+            local remaining = duration > 0 and math.max(0, startTime + duration - GetTime()) or 0
+            W:SetCooldownDisplay(icon, remaining, duration > 1.5 and remaining > 0.05 and enabled ~= 0)
+          end
+        end
+      end
+    end
   end
 
   local function UpdateAll(forceResourceDiscovery)
@@ -753,21 +1046,23 @@ function RUI:RegisterAdvancedClassHUD(className, options)
 
     root.coreRow = CreateFrame("Frame", nil, root)
     root.coreRow:SetSize(640,38)
-    root.coreRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.core.x, RUI.layout.core.y)
+    local hudYOffset = tonumber(options.hudYOffset) or 0
+    root.coreRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.core.x, RUI.layout.core.y + hudYOffset)
 
     root.utilityRow = CreateFrame("Frame", nil, root)
     root.utilityRow:SetSize(640,32)
-    root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.utility.x, RUI.layout.utility.y)
+    root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", RUI.layout.utility.x, RUI.layout.utility.y + hudYOffset)
 
     root.resourceLabel = root:CreateFontString(nil, "OVERLAY")
-    root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", 0, ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118) + 22)
+    local initialResourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", tonumber(initialResourceLayout.x) or 0, (tonumber(initialResourceLayout.y) or -118) + 22)
     RUI:ApplyFont(root.resourceLabel, 8, "OUTLINE")
     root.resourceLabel:Hide()
 
+    local resourceConfig = ResourceConfig() or {}
     root.resourceBar = CreateFrame("StatusBar", nil, root)
-    root.resourceBar:SetSize(330,10)
-    root.resourceBar:SetPoint("CENTER", UIParent, "CENTER", 0, (RUI.layout.demonfire and RUI.layout.demonfire.y) or -118)
     root.resourceBar:SetStatusBarTexture(PowerTexture())
+    PositionResourceBar(resourceConfig)
     root.resourceBar:SetMinMaxValues(0,1)
     RUI:SkinFrame(root.resourceBar, {0.018,0.018,0.022,0.96}, {0,0,0,1})
     root.resourceBar.text = root.resourceBar:CreateFontString(nil,"OVERLAY")
@@ -780,6 +1075,11 @@ function RUI:RegisterAdvancedClassHUD(className, options)
       state.classStateTracker = RUI:CreateClassStateTracker(root, className, {
         x=stanceConfig.x or -195,
         y=stanceConfig.y or ((RUI.layout.demonfire and RUI.layout.demonfire.y) or -118),
+        anchor=stanceConfig.anchor,
+        anchorFrameName=stanceConfig.anchorFrameName,
+        fallbackX=stanceConfig.fallbackX,
+        fallbackY=stanceConfig.fallbackY,
+        direction=stanceConfig.direction,
         size=stanceConfig.size or 38,
         width=stanceConfig.width or 90,
         height=stanceConfig.height or 58,
@@ -796,14 +1096,18 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     for _, eventName in ipairs({
       "PLAYER_ENTERING_WORLD", "SPELLS_CHANGED", "PLAYER_TALENT_UPDATE", "CHARACTER_POINTS_CHANGED",
       "UNIT_AURA", "PLAYER_TARGET_CHANGED", "UNIT_TARGET",
-      "SPELL_UPDATE_COOLDOWN", "ACTIONBAR_UPDATE_COOLDOWN",
+      "SPELL_UPDATE_COOLDOWN", "ACTIONBAR_UPDATE_COOLDOWN", "UNIT_SPELLCAST_SUCCEEDED",
       "UNIT_POWER", "UNIT_POWER_FREQUENT", "UNIT_DISPLAYPOWER", "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE",
       "UPDATE_SHAPESHIFT_FORM", "UPDATE_SHAPESHIFT_FORMS", "UPDATE_SHAPESHIFT_USABLE",
     }) do pcall(state.events.RegisterEvent, state.events, eventName) end
     if GetSpellCharges then pcall(state.events.RegisterEvent, state.events, "SPELL_UPDATE_CHARGES") end
 
-    state.events:SetScript("OnEvent", function(_, event, unit)
+    state.events:SetScript("OnEvent", function(_, event, unit, ...)
       if not state.root or not state.root:IsShown() then return end
+      if event == "UNIT_SPELLCAST_SUCCEEDED" then
+        if unit == "player" and ResourceResetMatches(...) then ResetResourceAfterCast() end
+        return
+      end
       if event == "UNIT_AURA" then
         if unit == "player" then UpdatePlayerState(false) end
         if unit == "target" then UpdateTargetDebuffs() end
@@ -820,7 +1124,9 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         or event == "UNIT_POWER_BAR_SHOW" or event == "UNIT_POWER_BAR_HIDE" then
         if unit and unit ~= "player" then return end
         if RUI.UpdatePrimaryPower then RUI:UpdatePrimaryPower(true) end
-        UpdateResource(ReadAura("player", false), false)
+        local playerAuras = ReadAura("player", false)
+        UpdateResource(playerAuras, false)
+        UpdateUsableGlowsOnly()
         return
       end
       if event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" or event == "ACTIONBAR_UPDATE_COOLDOWN" then
@@ -846,7 +1152,7 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         BuildRows(true)
         UpdateAll(true)
         for _, delay in ipairs({0.10,0.50,1.00,2.00,4.00}) do
-          RUI:After(delay, function() if state.root and state.root:IsShown() then UpdateAll(true) end end)
+          RUI:After(delay, function() if state.root and state.root:IsShown() then UpdateAll(false) end end)
         end
       end
     end)
@@ -854,30 +1160,71 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     state.timer = CreateFrame("Frame")
     state.timer:Hide()
     state.timer:SetScript("OnUpdate", function(_, delta)
-      state.elapsed = state.elapsed + delta
-      if state.elapsed < 0.10 then return end
-      state.elapsed = 0
-      UpdateCooldownsOnly()
-      UpdateProcTimers()
-      if state.classStateTracker then state.classStateTracker:UpdateTimers() end
-      UpdateTargetTimers()
-      UpdateResource(ReadAura("player", false), false)
+      -- Cooldown text is intentionally lightweight and may update more often
+      -- than aura scanning. This keeps RetreatUI aligned with ElvUI timers
+      -- without reintroducing the expensive full-HUD refresh loop.
+      state.cooldownElapsed = state.cooldownElapsed + delta
+      state.auraElapsed = state.auraElapsed + delta
+
+      if state.cooldownElapsed >= 0.10 then
+        state.cooldownElapsed = 0
+        UpdateCooldownTimersOnly()
+      end
+
+      if state.auraElapsed >= 0.20 then
+        state.auraElapsed = 0
+        UpdateProcTimers()
+        if state.classStateTracker then state.classStateTracker:UpdateTimers() end
+        UpdateTargetTimers()
+      end
     end)
+  end
+
+  function module:refreshLayout(force)
+    if not state.root then return false end
+    local coreLayout = RUI.layout.core or {x=0, y=-183}
+    local utilityLayout = RUI.layout.utility or {x=0, y=-224}
+    local resourceLayout = RUI.layout.demonfire or {x=0, y=-118}
+    local hudYOffset = tonumber(options.hudYOffset) or 0
+
+    state.root.coreRow:ClearAllPoints()
+    state.root.coreRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(coreLayout.x) or 0, (tonumber(coreLayout.y) or -183) + hudYOffset)
+    state.root.utilityRow:ClearAllPoints()
+    state.root.utilityRow:SetPoint("CENTER", UIParent, "CENTER", tonumber(utilityLayout.x) or 0, (tonumber(utilityLayout.y) or -224) + hudYOffset)
+    if RUI.ApplyHUDFrameScale then
+      RUI:ApplyHUDFrameScale(state.root.coreRow, "core")
+      RUI:ApplyHUDFrameScale(state.root.utilityRow, "utility")
+    end
+    state.root.resourceLabel:ClearAllPoints()
+    state.root.resourceLabel:SetPoint("CENTER", UIParent, "CENTER", tonumber(resourceLayout.x) or 0, (tonumber(resourceLayout.y) or -118) + 22)
+    if state.root.resourceLabel.SetScale and RUI.GetHUDScale then state.root.resourceLabel:SetScale(RUI:GetHUDScale("demonfire")) end
+    PositionResourceBar(ResourceConfig() or {})
+    if state.classStateTracker and RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(state.classStateTracker, "demonfire") end
+    if state.stanceTracker and RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(state.stanceTracker, "demonfire") end
+    for _, frame in ipairs(state.procFrames) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(frame, "auraTrackers") end end
+    for _, bar in ipairs(state.targetBars) do if RUI.ApplyHUDFrameScale then RUI:ApplyHUDFrameScale(bar, "targetDebuffs") end end
+    if state.root:IsShown() then UpdateAll(force == true) end
+    return true
   end
 
   function module:activate()
     Build()
+    module:refreshLayout(true)
     state.root:Show()
     state.root:SetAlpha(1)
     state.events:Show()
     state.timer:Show()
     state.elapsed = 0
+    state.cooldownElapsed = 0
+    state.auraElapsed = 0
     state.resourceReady = false
     state.resourceNativeReady = false
+    state.resourcePowerType = nil
+    state.resourceForceZero = false
     BuildRows(true)
     UpdateAll(true)
     for _, delay in ipairs({0.10,0.50,1.00,2.00,4.00}) do
-      RUI:After(delay, function() if state.root and state.root:IsShown() then UpdateAll(true) end end)
+      RUI:After(delay, function() if state.root and state.root:IsShown() then UpdateAll(false) end end)
     end
     return true
   end
@@ -887,8 +1234,12 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     if state.events then state.events:Hide() end
     if state.timer then state.timer:Hide() end
     state.elapsed = 0
+    state.cooldownElapsed = 0
+    state.auraElapsed = 0
     state.resourceReady = false
     state.resourceNativeReady = false
+    state.resourcePowerType = nil
+    state.resourceForceZero = false
     for _, frame in ipairs(state.procFrames) do frame:Hide() end
     for _, bar in ipairs(state.targetBars) do bar:Hide() end
     state.stanceAura = nil

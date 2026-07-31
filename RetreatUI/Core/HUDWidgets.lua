@@ -295,7 +295,7 @@ function W:UpdateSpellRow(row, auraCallback)
           icon.stackText:SetText(tostring(aura.count))
         end
 
-        if definition.trackDuration and aura.expires and aura.expires > 0 then
+        if definition.trackDuration and definition.separateAuraTracker ~= true and aura.expires and aura.expires > 0 then
           local auraRemaining = math.max(0, aura.expires - GetTime())
           if auraRemaining > 0.05 then
             if icon.cooldownShade then icon.cooldownShade:Hide() end

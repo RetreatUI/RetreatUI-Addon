@@ -207,6 +207,10 @@ local function SortEntries(container)
 end
 
 local function DisplaySpell(nameplate, guid, spellID, spellName, duration)
+  duration = tonumber(duration)
+  if not duration or duration < 1.5 then return end
+  local _, _, texture = GetSpellInfo and GetSpellInfo(spellID or spellName)
+  if type(texture) ~= "string" or texture == "" or string.lower(texture):find("questionmark", 1, true) then return end
   local container = GetContainer(nameplate, guid)
   if not container then return end
 
@@ -229,7 +233,7 @@ local function DisplaySpell(nameplate, guid, spellID, spellName, duration)
   entry.started = now
   entry.duration = duration
   entry.expires = duration and (now + duration) or (now + UNKNOWN_DISPLAY)
-  entry.unknown = duration == nil
+  entry.unknown = false
 
   SortEntries(container)
   activeContainers[container] = true
@@ -259,10 +263,7 @@ local function RefreshContainer(container, now)
       local _, _, texture = GetSpellInfo(entry.spellID or 0)
       icon.texture:SetTexture(texture or "Interface\\Icons\\INV_Misc_QuestionMark")
       icon.spellKey = entry.key
-      if entry.unknown then
-        icon.text:SetText("?")
-        icon.shade:SetAlpha(0.25)
-      else
+      if texture then
         local remain = math.max(0, entry.expires - now)
         if remain >= 60 then
           icon.text:SetText(math.ceil(remain / 60) .. "m")
@@ -273,8 +274,8 @@ local function RefreshContainer(container, now)
         end
         local progress = entry.duration and remain / entry.duration or 0
         icon.shade:SetAlpha(0.2 + (1 - progress) * 0.45)
+        icon:Show()
       end
-      icon:Show()
     else
       icon:Hide()
       icon.spellKey = nil

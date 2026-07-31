@@ -2,7 +2,7 @@ RetreatUI = RetreatUI or {}
 local RUI = RetreatUI
 
 RUI.name = "RetreatUI"
-RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.0.11-beta.12"
+RUI.version = (GetAddOnMetadata and GetAddOnMetadata("RetreatUI", "Version")) or "1.1.0-beta.12"
 RUI._loaderLoaded = true
 
 local function Chat(message)
@@ -42,6 +42,7 @@ local function RunRepair()
     {"Combat text", "ApplyCombatTextStyle"},
     {"TurboPlates", "ApplyTurboPlatesRuntime"},
     {"NPC cooldowns", "RefreshNPCSpellCooldowns"},
+    {"Party Utility", "RefreshPartyUtility"},
     {"Loot/Trade chat cleanup", "RemoveRightLootTradeChat", nil, true},
   }
 
@@ -94,6 +95,82 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
+  if command == "automation" or command == "auto" then
+    local automation = RUI.AutoRoleCheck
+    if automation and type(automation.OpenOptions) == "function" then
+      local ok, opened = pcall(automation.OpenOptions, automation)
+      if not ok or opened == false then Chat("The automation settings could not open.") end
+    else
+      Chat("The automation settings did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
+
+  if command == "hud" or command == "editor" then
+    if not RequireSupportedClass() then return end
+    if type(RUI.ToggleHUDEditor) == "function" then
+      local ok, opened = pcall(RUI.ToggleHUDEditor, RUI)
+      if not ok or opened == false then Chat("The HUD Editor could not open.") end
+    else
+      Chat("The HUD Editor did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
+  if command == "build" or command == "profile" then
+    if not RequireSupportedClass() then return end
+    if type(RUI.GetBuildProfileStatus) == "function" then
+      local className, key, count = RUI:GetBuildProfileStatus()
+      Chat(tostring(className) .. " | build profile " .. tostring(key) .. " | saved profiles: " .. tostring(count))
+    else
+      Chat("Build profile detection did not finish loading.")
+    end
+    return
+  end
+
+
+  if command == "utility" or command == "partyutility" then
+    if not RequireSupportedClass() then return end
+    if type(RUI.OpenPartyUtilitySettings) == "function" then
+      local ok, opened = pcall(RUI.OpenPartyUtilitySettings, RUI)
+      if not ok or opened == false then Chat("The Party Utility settings could not open.") end
+    else
+      Chat("Party Utility did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
+  if command == "utility test" or command == "partyutility test" then
+    if type(RUI.TogglePartyUtilityPreview) == "function" then
+      local ok, shown = pcall(RUI.TogglePartyUtilityPreview, RUI)
+      if ok then Chat("Party Utility preview: " .. tostring(shown and "shown" or "hidden"))
+      else Chat("Party Utility preview could not be changed.") end
+    end
+    return
+  end
+
+
+  if command == "buffs" or command == "buffmanager" then
+    if type(RUI.ToggleBuffAssignmentManager) == "function" then
+      local ok = pcall(RUI.ToggleBuffAssignmentManager, RUI)
+      if not ok then Chat("The Buff Manager could not open.") end
+    else
+      Chat("The Buff Manager did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
+  if command == "buffs keybinds" or command == "buff keybinds" or command == "keybinds" then
+    if type(RUI.ToggleBuffKeybindManager) == "function" then
+      local ok = pcall(RUI.ToggleBuffKeybindManager, RUI)
+      if not ok then Chat("The Buff Manager keybinds could not open.") end
+    else
+      Chat("The Buff Manager keybinds did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
   if command == "status" or command == "version" then ShowStatus(); return end
   if command == "changelog" and type(RUI.ShowChangelog) == "function" then
     local ok, err = pcall(RUI.ShowChangelog, RUI)
@@ -110,5 +187,5 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
-  Chat("Commands: /rui | /rui status | /rui changelog | /rui repair | /rui reset")
+  Chat("Commands: /rui | /rui hud | /rui build | /rui utility | /rui buffs | /rui keybinds | /rui automation | /rui status | /rui changelog | /rui repair | /rui reset")
 end

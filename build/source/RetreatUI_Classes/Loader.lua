@@ -3,7 +3,7 @@ local RUI = RetreatUI
 if not RUI then return end
 
 RUI.classesAddonName = ADDON_NAME or "RetreatUI_Classes"
-RUI.classesVersion = (GetAddOnMetadata and GetAddOnMetadata(RUI.classesAddonName, "Version")) or "1.0.11-beta.12"
+RUI.classesVersion = (GetAddOnMetadata and GetAddOnMetadata(RUI.classesAddonName, "Version")) or "1.0.11"
 RUI.classesLoaded = true
 RUI.classPackage = RUI.classPackage or {}
 RUI.classPackage.name = RUI.classesAddonName

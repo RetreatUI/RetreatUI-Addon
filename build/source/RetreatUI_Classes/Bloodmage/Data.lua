@@ -41,7 +41,8 @@ RUI:RegisterClassSpellDatabase("Bloodmage", {
     -- Buff/proc row. Passive talents never become action buttons.
     {name="Saturating Sutures", category="proc", trackHUD=false, auraTracker=true, buff="Saturating Sutures", trackDuration=true, talent=true},
     {name="Blood Rush", id=863848, category="proc", trackHUD=false, auraTracker=true, buff="Blood Rush", trackDuration=true, talent=true},
-    {name="Enraging Howls", id=504551, category="buff", trackHUD=false, auraTracker=true, buff="Enraging Howls", trackDuration=true, talent=true},
+    {name="Enraging Howl", id=504157, category="buff", trackHUD=false, auraTracker=true, buff="Enraging Howl", auraNames={"Enraging Howl","Enraging Howls"}, trackDuration=true, talent=true},
+    {name="Trail of Blood", id=804859, category="buff", trackHUD=false, auraTracker=true, buff="Trail of Blood", trackDuration=true, talent=true},
     {name="Call of the Darkwing", category="proc", trackHUD=false, auraTracker=true, buff="Call of the Darkwing", trackDuration=true, talent=true},
 
     -- Target debuff used by Eternal's auto-attack healing and TurboPlates.

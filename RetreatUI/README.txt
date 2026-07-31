@@ -1,4 +1,4 @@
-RETREATUI v1.0.10
+RETREATUI v1.0.11
 ===================
 
 RetreatUI is a compact Conquest of Azeroth interface package built around ElvUI, TurboPlates, Details! and class-specific combat HUDs.
@@ -29,10 +29,13 @@ SUPPORTED CLASSES
 HUD FEATURES
 - Learned-only Main Rotation, Utility, Defensive and racial tracking.
 - Active-only proc icons with actionable ability glows.
-- Curated player and pet-applied target debuffs above the target frame.
+- Compact slot 13/14 trinket cooldown and proc tracking above the player frame.
+- Player, pet and vehicle-applied target debuffs above the target frame across all supported classes.
 - Dedicated active-state tracking for stances, forms, vows, aspects, oaths, formations, inscriptions and similar class systems.
 - Compact class-resource mirrors only when a reliable live source exists.
 - Class-specific custom systems for Knight of Xoroth, Bloodmage, Felsworn and Necromancer.
+- Dedicated eight-segment target-bound Scattered Stars resource for Starcaller.
+- ElvUI right chat panel and data-text strip are preserved.
 - Necromancer Guardian HUD with active counts, individual health bars, Zombie tracking and a movable L/U lock control.
 
 BUFF MANAGER
@@ -42,6 +45,7 @@ BUFF MANAGER
 - Normal and Greater auras both count as coverage.
 - Red means missing, orange means under five minutes and green means covered.
 - Saved class/spec assignments, equivalent-buff detection and automatic migrations.
+- Equivalent class buffs count as coverage across the entire group.
 - Exclusive handling for Bloodmage Offerings and Knight of Xoroth Marks.
 
 PRIMARY RESOLUTION
@@ -53,6 +57,11 @@ REQUIRED ADDONS
 - TurboPlates v1.4.5
 - MobSpells v1.3
 - Details!
+
+QUALITY OF LIFE
+- Native Auto Accept Role Checks with a saved toggle.
+- Open automation settings directly with /rui automation.
+- Mana-using enemy nameplates are highlighted through TurboPlates.
 
 OPTIONAL INTEGRATION
 - Deadly Boss Mods

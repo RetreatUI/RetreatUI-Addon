@@ -23,3 +23,5 @@ Both bundled RetreatUI addon folders must use the same version; the installer va
 Existing RetreatUI settings, Buff Manager assignments and managed positions migrate automatically. A reset command is not required.
 The installer disables ElvUI NamePlates so TurboPlates remains the active nameplate system after reload.
 Details! is required. DBM remains optional. WeakAuras is independent and is never managed by RetreatUI.
+
+Automation settings can be opened with /rui automation.

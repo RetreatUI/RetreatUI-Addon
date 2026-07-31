@@ -19,6 +19,7 @@ local STATUS = {
   expiring = {1.00, 0.48, 0.05, 1},
   ready    = {0.15, 0.72, 0.22, 1},
   inactive = {0.28, 0.28, 0.28, 1},
+  unavailable = {0.42, 0.34, 0.18, 1},
   unknown  = {0.45, 0.32, 0.12, 1},
 }
 
@@ -492,10 +493,17 @@ local unitCoverageCache = {}
 
 local compactFrame
 local managerFrame
+local keybindFrame
 local compactButtons = {}
 local shieldButton
 local managerRows = {}
 local managerHeaders = {}
+local keybindRows = {}
+local secureBindingButtons = {}
+local appliedBindingKeys = {}
+local bindingOwner
+local keybindsDirty = true
+local RefreshKeybindFrame
 local refreshElapsed = 0
 local refreshPending = false
 local activeClassName
@@ -505,6 +513,8 @@ local activeComposition = {}
 -- additional horizontal columns, regardless of the number of learned buffs.
 local COMPACT_COLUMNS = 1
 local COMPACT_SLOT = 32
+local SMART_FAMILY_KEY = "__smart"
+local SMART_BINDING_MODE = "smart"
 
 local function PositionCompactSlot(button, leftOffset, slotIndex)
   local column = (slotIndex - 1) % COMPACT_COLUMNS
@@ -519,6 +529,10 @@ local function EnsureBuffDB()
   local buffDB = db.buffManager
   buffDB.assignments = buffDB.assignments or {}
   buffDB.seenSpecs = buffDB.seenSpecs or {}
+  buffDB.keybinds = buffDB.keybinds or {}
+  if buffDB.keybindSchema == nil or buffDB.keybindSchema < 2 then
+    buffDB.keybindSchema = 2
+  end
 
   -- Legacy Offering migration: the two old Offering columns are now one exclusive
   -- family. Preserve only deliberate spell selections; otherwise return the
@@ -550,7 +564,7 @@ local function EnsureBuffDB()
     buffDB.offeringAssignmentMigration = 1
   end
 
-  -- beta.15 accidentally exposed Slaughterhouse Offering as a second family.
+  -- Older saved data could expose Slaughterhouse Offering as a second family.
   -- Fold any deliberate assignment back into the single exclusive Offering
   -- family, then remove the obsolete column from saved variables.
   if not buffDB.slaughterhouseOfferingFamilyMigration then
@@ -608,7 +622,7 @@ local function EnsureBuffDB()
     buffDB.xorothMarkAssignmentMigration = 1
   end
 
-  -- beta.15 applies one generic effect-coverage planner to every class buff.
+  -- One generic effect-coverage planner is used for every class buff.
   -- Keep the marker in SavedVariables so future migrations can distinguish the
   -- old fixed-choice behavior without resetting deliberate assignments.
   if not buffDB.genericCoveragePlannerMigration then
@@ -657,7 +671,7 @@ local function SpellIDByName(name)
   return nil
 end
 
-local function ResolveChoice(choice)
+local function ResolveChoiceRank(choice, rankMode)
   if not choice then return nil end
 
   local greaterID = tonumber(choice.greaterID)
@@ -673,25 +687,35 @@ local function ResolveChoice(choice)
   choice.normalName = normalName
   choice.name = displayName
 
-  local learnedGreaterID = greaterName and SpellIDByName(greaterName) or nil
-  greaterID = learnedGreaterID or greaterID
-  if greaterName and IsLearned(greaterName, greaterID) then
-    return {
-      id=greaterID, name=greaterName, displayName=displayName,
-      isGreater=true, choice=choice,
-    }
+  if rankMode == "greater" then
+    local learnedGreaterID = greaterName and SpellIDByName(greaterName) or nil
+    greaterID = learnedGreaterID or greaterID
+    if greaterName and IsLearned(greaterName, greaterID) then
+      return {
+        id=greaterID, name=greaterName, displayName=displayName,
+        isGreater=true, choice=choice,
+      }
+    end
+    return nil
   end
 
-  local learnedNormalID = normalName and SpellIDByName(normalName) or nil
-  normalID = learnedNormalID or normalID
-  if normalName and IsLearned(normalName, normalID) then
-    return {
-      id=normalID, name=normalName, displayName=displayName,
-      isGreater=false, choice=choice,
-    }
+  if rankMode == "normal" then
+    local learnedNormalID = normalName and SpellIDByName(normalName) or nil
+    normalID = learnedNormalID or normalID
+    if normalName and IsLearned(normalName, normalID) then
+      return {
+        id=normalID, name=normalName, displayName=displayName,
+        isGreater=false, choice=choice,
+      }
+    end
+    return nil
   end
 
-  return nil
+  return ResolveChoiceRank(choice, "greater") or ResolveChoiceRank(choice, "normal")
+end
+
+local function ResolveChoice(choice)
+  return ResolveChoiceRank(choice, "smart")
 end
 
 local function ResolvedSelfShields()
@@ -760,8 +784,14 @@ local function ResolvedFamilies(className)
   for _, family in ipairs(BUFF_CATALOG[className] or {}) do
     local resolved = {}
     for _, choice in ipairs(family.choices or {}) do
-      local spell = ResolveChoice(choice)
-      if spell then resolved[#resolved + 1] = {choice=choice, spell=spell} end
+      local normalSpell = ResolveChoiceRank(choice, "normal")
+      local greaterSpell = ResolveChoiceRank(choice, "greater")
+      local spell = greaterSpell or normalSpell
+      if spell then
+        resolved[#resolved + 1] = {
+          choice=choice, spell=spell, normalSpell=normalSpell, greaterSpell=greaterSpell,
+        }
+      end
     end
     if #resolved > 0 then
       result[#result + 1] = {definition=family, choices=resolved}
@@ -1163,7 +1193,7 @@ local function AuraStatus(unit, entry, familyRuntime)
   local exact, exactRemaining = ExactChoiceAuraStatus(coverage, entry.choice, entry.spell)
   if exact then return true, exactRemaining end
 
-  -- Every class buff uses the same effect-family coverage test. Equivalent
+  -- Every class buff uses the same effect-family coverage check. Equivalent
   -- buffs from any other class satisfy the row, while unrelated short procs do
   -- not appear in the curated equivalent lookup and therefore do not count.
   local covered, remaining = CategoriesStatus(coverage, entry.choice)
@@ -1250,21 +1280,55 @@ local function AssignedTargets(casterClass, familyRuntime, choiceKey)
   return targets
 end
 
+local function BuffTargetAvailability(unit, spell)
+  if not unit or not UnitExists or not UnitExists(unit) then return false, "not in group" end
+  if UnitIsConnected and not UnitIsConnected(unit) then return false, "offline" end
+  if UnitIsDeadOrGhost and UnitIsDeadOrGhost(unit) then return false, "dead" end
+
+  if UnitInPhase then
+    local ok, inPhase = pcall(UnitInPhase, unit)
+    if ok and inPhase == false then return false, "different phase" end
+  end
+  if UnitIsVisible then
+    local ok, visible = pcall(UnitIsVisible, unit)
+    if ok and visible == false then return false, "not visible" end
+  end
+  if UnitInRange then
+    local ok, inRange = pcall(UnitInRange, unit)
+    if ok and inRange == false then return false, "out of range" end
+  end
+
+  local spellName = spell and spell.name or nil
+  if spell and spell.id and GetSpellInfo then
+    local ok, resolved = pcall(GetSpellInfo, spell.id)
+    if ok and resolved and resolved ~= "" then spellName = resolved end
+  end
+  if spellName and IsSpellInRange then
+    local ok, inSpellRange = pcall(IsSpellInRange, spellName, unit)
+    if ok and inSpellRange == 0 then return false, "out of spell range" end
+  end
+  return true
+end
+
 local function ChoiceState(casterClass, familyRuntime, entry)
   local targets = AssignedTargets(casterClass, familyRuntime, entry.choice.key)
-  local missing, expiring, good = {}, {}, {}
+  local missing, expiring, good, unavailable = {}, {}, {}, {}
+  local rangeSpell = entry.greaterSpell or entry.normalSpell or entry.spell
   for _, member in ipairs(targets) do
     local unit = member.unit
-    local valid = UnitExists(unit) and UnitIsConnected(unit) and not UnitIsDeadOrGhost(unit)
-    if valid then
-      local present, remaining = AuraStatus(unit, entry, familyRuntime)
+    local present, remaining = AuraStatus(unit, entry, familyRuntime)
+    local valid, reason = BuffTargetAvailability(unit, rangeSpell)
+    if present and (not remaining or remaining <= 0 or remaining >= 300) then
+      good[#good + 1] = member
+    elseif valid then
       if not present then
         missing[#missing + 1] = member
-      elseif remaining and remaining > 0 and remaining < 300 then
-        expiring[#expiring + 1] = member
       else
-        good[#good + 1] = member
+        expiring[#expiring + 1] = member
       end
+    else
+      member.buffUnavailableReason = reason
+      unavailable[#unavailable + 1] = member
     end
   end
 
@@ -1275,18 +1339,20 @@ local function ChoiceState(casterClass, familyRuntime, entry)
     status, nextMember = "missing", missing[1]
   elseif #expiring > 0 then
     status, nextMember = "expiring", expiring[1]
+  elseif #unavailable > 0 then
+    status = "unavailable"
   else
     status = "ready"
   end
   return {
     status=status, targets=targets, missing=missing, expiring=expiring,
-    good=good, nextMember=nextMember,
+    good=good, unavailable=unavailable, nextMember=nextMember,
   }
 end
 
 local function FamilyState(casterClass, familyRuntime)
   local result = {
-    status="inactive", targets={}, missing={}, expiring={}, good={},
+    status="inactive", targets={}, missing={}, expiring={}, good={}, unavailable={},
     entries={}, nextEntry=nil, nextMember=nil, displayEntry=nil,
   }
   local firstWithTargets
@@ -1301,6 +1367,7 @@ local function FamilyState(casterClass, familyRuntime)
     for _, member in ipairs(state.missing) do result.missing[#result.missing + 1] = member end
     for _, member in ipairs(state.expiring) do result.expiring[#result.expiring + 1] = member end
     for _, member in ipairs(state.good) do result.good[#result.good + 1] = member end
+    for _, member in ipairs(state.unavailable or {}) do result.unavailable[#result.unavailable + 1] = member end
     if state.status == "missing" and not firstMissing then firstMissing = {entry=entry, state=state} end
     if state.status == "expiring" and not firstExpiring then firstExpiring = {entry=entry, state=state} end
   end
@@ -1312,7 +1379,7 @@ local function FamilyState(casterClass, familyRuntime)
     result.nextEntry = actionable.entry
     result.nextMember = actionable.state.nextMember
   elseif firstWithTargets then
-    result.status = "ready"
+    result.status = (#result.unavailable > 0) and "unavailable" or "ready"
   end
   result.displayEntry = display and display.entry or nil
   return result
@@ -1335,6 +1402,175 @@ local function SecureSpellName(spell)
     if name and name ~= "" then return name end
   end
   return spell.name
+end
+
+
+local function ClassBindingStore(className)
+  local db = EnsureBuffDB()
+  local classKey = NormalKey(className or "unknown")
+  db.keybinds[classKey] = db.keybinds[classKey] or {}
+  return db.keybinds[classKey], classKey
+end
+
+local function FamilyBindingStore(className, familyKey)
+  local classStore = ClassBindingStore(className)
+  familyKey = tostring(familyKey or "unknown")
+  classStore[familyKey] = classStore[familyKey] or {}
+  return classStore[familyKey]
+end
+
+local function CompactBindingText(key)
+  key = tostring(key or "")
+  if key == "" then return "" end
+  key = key:gsub("CTRL%-", "C-"):gsub("SHIFT%-", "S-"):gsub("ALT%-", "A-")
+  key = key:gsub("NUMPAD", "N"):gsub("MOUSEWHEELUP", "WU"):gsub("MOUSEWHEELDOWN", "WD")
+  key = key:gsub("BUTTON", "M")
+  if #key > 8 then key = string.sub(key, 1, 8) end
+  return key
+end
+
+local function BindingDisplayText(key)
+  key = tostring(key or "")
+  if key == "" then return "Unbound" end
+  if GetBindingText then
+    local ok, text = pcall(GetBindingText, key, "KEY_")
+    if ok and text and text ~= "" then return text end
+  end
+  return key
+end
+
+local function BindingButtonName(className, familyKey, mode)
+  return "RetreatUIBuffKey_" .. NormalKey(className) .. "_" .. NormalKey(familyKey) .. "_" .. tostring(mode)
+end
+
+local function EnsureBindingOwner()
+  if bindingOwner then return bindingOwner end
+  bindingOwner = CreateFrame("Frame", "RetreatUIBuffBindingOwner", UIParent)
+  bindingOwner:SetSize(1, 1)
+  bindingOwner:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -50, 50)
+  bindingOwner:Show()
+  return bindingOwner
+end
+
+local function EnsureSecureBindingButton(className, familyKey, mode)
+  local name = BindingButtonName(className, familyKey, mode)
+  local button = secureBindingButtons[name] or _G[name]
+  if not button then
+    button = CreateFrame("Button", name, UIParent, "SecureActionButtonTemplate")
+    button:SetSize(1, 1)
+    button:SetPoint("TOPLEFT", UIParent, "TOPLEFT", -25, 25)
+    button:SetAlpha(0)
+    button:EnableMouse(false)
+    button:RegisterForClicks("AnyUp")
+    button:Show()
+  end
+  secureBindingButtons[name] = button
+  return button
+end
+
+local function ClearAppliedBindings()
+  if InCombatLockdown and InCombatLockdown() then return false end
+  local owner = EnsureBindingOwner()
+  if ClearOverrideBindings then
+    pcall(ClearOverrideBindings, owner)
+  elseif SetBinding then
+    for key, action in pairs(appliedBindingKeys) do
+      local current = GetBindingAction and GetBindingAction(key) or ""
+      if current == action then pcall(SetBinding, key) end
+    end
+  end
+  for key in pairs(appliedBindingKeys) do appliedBindingKeys[key] = nil end
+  return true
+end
+
+local function ApplyOneBinding(key, button, mouseButton)
+  key = tostring(key or "")
+  if key == "" or not button then return end
+  local owner = EnsureBindingOwner()
+  local action = "CLICK " .. tostring(button:GetName()) .. ":" .. tostring(mouseButton or "LeftButton")
+  if SetOverrideBindingClick then
+    pcall(SetOverrideBindingClick, owner, true, key, button:GetName(), mouseButton or "LeftButton")
+  elseif SetBindingClick then
+    pcall(SetBindingClick, key, button:GetName(), mouseButton or "LeftButton")
+  end
+  appliedBindingKeys[key] = action
+end
+
+local function UpdateSecureBindingAction(className, familyRuntime, state)
+  if not familyRuntime or not familyRuntime.definition then return end
+  local familyKey = familyRuntime.definition.key
+  local entry = state and (state.nextEntry or state.displayEntry) or nil
+  local nextMember = state and state.nextMember or nil
+  local normalButton = EnsureSecureBindingButton(className, familyKey, "normal")
+  local greaterButton = EnsureSecureBindingButton(className, familyKey, "greater")
+
+  local runtimeEntry = entry and ChoiceByKey(familyRuntime, entry.choice.key) or nil
+  local normalSpell = runtimeEntry and runtimeEntry.normalSpell or nil
+  local greaterSpell = runtimeEntry and (runtimeEntry.greaterSpell or runtimeEntry.normalSpell) or nil
+  local unit = nextMember and nextMember.unit or nil
+
+  for _, pair in ipairs({{normalButton, normalSpell}, {greaterButton, greaterSpell}}) do
+    local button, spell = pair[1], pair[2]
+    local secureSpell = unit and spell and SecureSpellName(spell) or nil
+    button:SetAttribute("type", nil)
+    button:SetAttribute("spell", nil)
+    button:SetAttribute("unit", nil)
+    button:SetAttribute("type1", secureSpell and "spell" or nil)
+    button:SetAttribute("spell1", secureSpell)
+    button:SetAttribute("unit1", secureSpell and unit or nil)
+  end
+end
+
+local function UpdateSmartBindingAction(className, plan)
+  local button = EnsureSecureBindingButton(className, SMART_FAMILY_KEY, SMART_BINDING_MODE)
+  local spell = plan and plan.spell or nil
+  local unit = plan and plan.member and plan.member.unit or nil
+  local secureSpell = unit and spell and SecureSpellName(spell) or nil
+  button:SetAttribute("type", nil)
+  button:SetAttribute("spell", nil)
+  button:SetAttribute("unit", nil)
+  button:SetAttribute("type1", secureSpell and "spell" or nil)
+  button:SetAttribute("spell1", secureSpell)
+  button:SetAttribute("unit1", secureSpell and unit or nil)
+  button.smartPlan = plan
+end
+
+local function ApplyConfiguredBindings(className, families)
+  if InCombatLockdown and InCombatLockdown() then return false end
+  if not keybindsDirty then return true end
+  ClearAppliedBindings()
+  local classStore = ClassBindingStore(className)
+  local smartBinding = classStore[SMART_FAMILY_KEY]
+  if smartBinding then
+    ApplyOneBinding(smartBinding[SMART_BINDING_MODE], EnsureSecureBindingButton(className, SMART_FAMILY_KEY, SMART_BINDING_MODE), "LeftButton")
+  end
+  for _, familyRuntime in ipairs(families or {}) do
+    local familyKey = familyRuntime.definition and familyRuntime.definition.key
+    local binding = familyKey and classStore[familyKey] or nil
+    if binding then
+      ApplyOneBinding(binding.normal, EnsureSecureBindingButton(className, familyKey, "normal"), "LeftButton")
+      ApplyOneBinding(binding.greater, EnsureSecureBindingButton(className, familyKey, "greater"), "LeftButton")
+    end
+  end
+  keybindsDirty = false
+  return true
+end
+
+local function SetFamilyBinding(className, familyKey, mode, key)
+  if InCombatLockdown and InCombatLockdown() then
+    RUI:Print("Buff keybinds cannot be changed during combat.")
+    return false
+  end
+  local store = FamilyBindingStore(className, familyKey)
+  if key == nil or key == "" then store[mode] = nil else store[mode] = key end
+  keybindsDirty = true
+  refreshPending = true
+  return true
+end
+
+local function CurrentFamilyBinding(className, familyKey, mode)
+  local store = FamilyBindingStore(className, familyKey)
+  return store[mode]
 end
 
 local function CreateShieldButton()
@@ -1461,6 +1697,14 @@ local function CreateCompactButton(index)
   button.rank = button:CreateFontString(nil, "OVERLAY")
   Font(button.rank, 8)
   button.rank:SetPoint("TOPLEFT", 2, -1)
+  button.normalBind = button:CreateFontString(nil, "OVERLAY")
+  Font(button.normalBind, 6)
+  button.normalBind:SetPoint("TOPRIGHT", -2, -1)
+  button.normalBind:SetJustifyH("RIGHT")
+  button.greaterBind = button:CreateFontString(nil, "OVERLAY")
+  Font(button.greaterBind, 6)
+  button.greaterBind:SetPoint("BOTTOMLEFT", 2, 1)
+  button.greaterBind:SetJustifyH("LEFT")
 
   button:SetScript("PostClick", function(self, mouseButton)
     if mouseButton == "RightButton" then
@@ -1596,6 +1840,28 @@ local function BuildCompact()
   return compactFrame
 end
 
+local function SelectSmartBuffPlan(familyStates)
+  local blocked = 0
+  for _, item in ipairs(familyStates or {}) do
+    local state = item.state
+    if state and state.nextMember and state.nextEntry then
+      local spell = state.nextEntry.greaterSpell or state.nextEntry.normalSpell or state.nextEntry.spell
+      if spell then
+        return {
+          familyRuntime=item.familyRuntime,
+          familyKey=item.familyRuntime.definition and item.familyRuntime.definition.key,
+          entry=state.nextEntry,
+          member=state.nextMember,
+          spell=spell,
+          status=state.status,
+        }, blocked
+      end
+    end
+    blocked = blocked + #(state and state.unavailable or {})
+  end
+  return nil, blocked
+end
+
 local function RefreshCompact()
   -- SecureActionButtonTemplate frames cannot be safely created, moved, shown,
   -- hidden or retargeted during combat. Keep the last valid secure layout and
@@ -1611,8 +1877,11 @@ local function RefreshCompact()
   if RefreshShieldButton(leftOffset, visible + 1) then visible = visible + 1 end
 
   local visibleAssignedBuffs = 0
+  local familyStates = {}
   for _, familyRuntime in ipairs(activeFamilies or {}) do
     local state = FamilyState(activeClassName, familyRuntime)
+    familyStates[#familyStates + 1] = {familyRuntime=familyRuntime, state=state}
+    UpdateSecureBindingAction(activeClassName, familyRuntime, state)
     if #state.targets > 0 then
       visible = visible + 1
       visibleAssignedBuffs = visibleAssignedBuffs + 1
@@ -1627,6 +1896,11 @@ local function RefreshCompact()
       ApplyButtonColor(button, STATUS[state.status] or STATUS.unknown)
       button.count:SetText(#state.missing > 0 and tostring(#state.missing) or (#state.expiring > 0 and tostring(#state.expiring) or ""))
       button.rank:SetText(entry and entry.spell.isGreater and "+" or "")
+      local familyKey = familyRuntime.definition and familyRuntime.definition.key
+      local normalKey = familyKey and CurrentFamilyBinding(activeClassName, familyKey, "normal") or nil
+      local greaterKey = familyKey and CurrentFamilyBinding(activeClassName, familyKey, "greater") or nil
+      button.normalBind:SetText(CompactBindingText(normalKey))
+      button.greaterBind:SetText(CompactBindingText(greaterKey))
 
       if not (InCombatLockdown and InCombatLockdown()) then
         local secureSpell = state.nextMember and entry and SecureSpellName(entry.spell) or nil
@@ -1659,6 +1933,8 @@ local function RefreshCompact()
       end
       if state.nextMember and entry then
         lines[#lines + 1] = "Left-click: " .. entry.spell.name .. " on " .. state.nextMember.name
+      elseif #(state.unavailable or {}) > 0 then
+        lines[#lines + 1] = "No valid targets right now; offline, dead, phased, invisible and out-of-range players are skipped."
       else
         lines[#lines + 1] = "All assigned players are covered."
       end
@@ -1667,6 +1943,9 @@ local function RefreshCompact()
       else
         lines[#lines + 1] = "Equivalent buffs from other classes count as covered."
       end
+      lines[#lines + 1] = "Smart Buff bind: " .. BindingDisplayText(CurrentFamilyBinding(activeClassName, SMART_FAMILY_KEY, SMART_BINDING_MODE))
+      lines[#lines + 1] = "Normal/Lesser bind: " .. BindingDisplayText(normalKey)
+      lines[#lines + 1] = "Manual Greater bind: " .. BindingDisplayText(greaterKey)
       lines[#lines + 1] = "Right-click: Open assignments"
       button.tooltipTitle = familyRuntime.definition.label or (entry and entry.spell.name) or "Buff"
       button.tooltipLines = lines
@@ -1675,6 +1954,11 @@ local function RefreshCompact()
   end
 
   for index=visibleAssignedBuffs+1,#compactButtons do compactButtons[index]:Hide() end
+  local smartPlan, blockedTargets = SelectSmartBuffPlan(familyStates)
+  UpdateSmartBindingAction(activeClassName, smartPlan)
+  compactFrame.smartPlan = smartPlan
+  compactFrame.smartBlockedTargets = blockedTargets
+  ApplyConfiguredBindings(activeClassName, activeFamilies)
   local sideWidth = EnsureBuffDB().locked and 36 or 52
   local usedColumns = math.min(COMPACT_COLUMNS, math.max(1, visible))
   local usedRows = math.max(1, math.ceil(visible / COMPACT_COLUMNS))
@@ -1705,6 +1989,340 @@ local MANAGER_MAX_HEIGHT = 500
 
 local function ManagerTheme()
   return RUI:GetTheme()
+end
+
+
+local MODIFIER_KEYS = {
+  LSHIFT=true, RSHIFT=true, LCTRL=true, RCTRL=true, LALT=true, RALT=true,
+  SHIFT=true, CTRL=true, ALT=true,
+}
+
+local function CaptureKeyName(rawKey)
+  rawKey = tostring(rawKey or "")
+  if rawKey == "" or MODIFIER_KEYS[rawKey] then return nil end
+  local parts = {}
+  if IsControlKeyDown and IsControlKeyDown() then parts[#parts + 1] = "CTRL" end
+  if IsShiftKeyDown and IsShiftKeyDown() then parts[#parts + 1] = "SHIFT" end
+  if IsAltKeyDown and IsAltKeyDown() then parts[#parts + 1] = "ALT" end
+  parts[#parts + 1] = rawKey
+  return table.concat(parts, "-")
+end
+
+local function MouseBindingKey(button)
+  local map = {
+    LeftButton="BUTTON1", RightButton="BUTTON2", MiddleButton="BUTTON3",
+    Button4="BUTTON4", Button5="BUTTON5", Button6="BUTTON6", Button7="BUTTON7",
+  }
+  return CaptureKeyName(map[button] or string.upper(tostring(button or "")))
+end
+
+local function IsOurBindingAction(action)
+  return type(action) == "string" and string.find(action, "RetreatUIBuffKey_", 1, true) ~= nil
+end
+
+local function BindingConflict(key)
+  if not GetBindingAction then return nil end
+  local ok, action = pcall(GetBindingAction, key, true)
+  if not ok or not action or action == "" then
+    ok, action = pcall(GetBindingAction, key)
+  end
+  if ok and action and action ~= "" and not IsOurBindingAction(action) then return action end
+  return nil
+end
+
+local function RemoveDuplicateClassBinding(className, familyKey, mode, key)
+  if not key or key == "" then return end
+  local classStore = ClassBindingStore(className)
+  for otherFamily, binding in pairs(classStore) do
+    if type(binding) == "table" then
+      for _, otherMode in ipairs({"normal", "greater", SMART_BINDING_MODE}) do
+        if binding[otherMode] == key and (otherFamily ~= familyKey or otherMode ~= mode) then
+          binding[otherMode] = nil
+        end
+      end
+    end
+  end
+end
+
+local function CreateBindingField(parent, mode)
+  local theme = ManagerTheme()
+  local button = CreateFrame("Button", nil, parent)
+  button:SetSize(132, 26)
+  button:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
+  button:SetBackdropColor(theme.panelStrong[1], theme.panelStrong[2], theme.panelStrong[3], 0.94)
+  button:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.62)
+  button.text = button:CreateFontString(nil, "OVERLAY")
+  Font(button.text, 9)
+  button.text:SetPoint("CENTER")
+  button.text:SetText("Unbound")
+  button.mode = mode
+  button:SetScript("OnEnter", function(self)
+    if not self.disabled then self:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.9) end
+  end)
+  button:SetScript("OnLeave", function(self)
+    self:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.62)
+  end)
+  function button:SetEnabled(enabled)
+    self.disabled = not enabled
+    self:SetAlpha(enabled and 1 or 0.35)
+    self:EnableMouse(enabled)
+  end
+  return button
+end
+
+local function StopBindingCapture()
+  if not keybindFrame or not keybindFrame.capture then return end
+  local capture = keybindFrame.capture
+  capture.pendingKey = nil
+  capture.row = nil
+  capture.mode = nil
+  capture:EnableKeyboard(false)
+  capture:Hide()
+end
+
+local function CompleteBindingCapture(key)
+  if not keybindFrame or not keybindFrame.capture or not keybindFrame.capture.row then return end
+  local capture = keybindFrame.capture
+  local row, mode = capture.row, capture.mode
+  local className = keybindFrame.className
+  local familyKey = row.isSmart and SMART_FAMILY_KEY
+    or (row.familyRuntime and row.familyRuntime.definition and row.familyRuntime.definition.key)
+  if not className or not familyKey then StopBindingCapture(); return end
+
+  if key == "ESCAPE" then StopBindingCapture(); return end
+  if key == "BACKSPACE" or key == "DELETE" then
+    SetFamilyBinding(className, familyKey, mode, nil)
+    StopBindingCapture()
+    if RefreshKeybindFrame then RefreshKeybindFrame() end
+    RefreshCompact()
+    return
+  end
+
+  local conflict = BindingConflict(key)
+  if conflict and capture.pendingKey ~= key then
+    capture.pendingKey = key
+    capture.message:SetText(BindingDisplayText(key) .. " is already used by " .. tostring(conflict) .. ". Press it again to replace.")
+    capture.message:SetTextColor(1, 0.48, 0.08, 1)
+    return
+  end
+
+  RemoveDuplicateClassBinding(className, familyKey, mode, key)
+  SetFamilyBinding(className, familyKey, mode, key)
+  StopBindingCapture()
+  if RefreshKeybindFrame then RefreshKeybindFrame() end
+  RefreshCompact()
+end
+
+local function BeginBindingCapture(row, mode)
+  if InCombatLockdown and InCombatLockdown() then
+    RUI:Print("Buff keybinds cannot be changed during combat.")
+    return
+  end
+  if not keybindFrame or not keybindFrame.capture then return end
+  local capture = keybindFrame.capture
+  capture.row = row
+  capture.mode = mode
+  capture.pendingKey = nil
+  local modeLabel = mode == SMART_BINDING_MODE and "Smart Buff / next valid target"
+    or (mode == "normal" and "Normal/Lesser" or "Manual Greater")
+  capture.message:SetText("Press a key for " .. tostring(row.labelText or "Buff") .. " — " .. modeLabel .. ".  Esc cancels.  Backspace clears.")
+  local theme = ManagerTheme()
+  capture.message:SetTextColor(theme.text[1], theme.text[2], theme.text[3], 1)
+  capture:Show()
+  capture:EnableKeyboard(true)
+  if capture.SetPropagateKeyboardInput then pcall(capture.SetPropagateKeyboardInput, capture, false) end
+end
+
+local function CreateKeybindRow(index)
+  local theme = ManagerTheme()
+  local row = CreateFrame("Frame", nil, keybindFrame.content)
+  row:SetHeight(38)
+  row.icon = row:CreateTexture(nil, "ARTWORK")
+  row.icon:SetSize(26, 26)
+  row.icon:SetPoint("LEFT", 6, 0)
+  row.icon:SetTexCoord(.08, .92, .08, .92)
+  row.label = row:CreateFontString(nil, "OVERLAY")
+  Font(row.label, 10)
+  row.label:SetPoint("LEFT", 42, 0)
+  row.label:SetWidth(230)
+  row.label:SetJustifyH("LEFT")
+  row.label:SetTextColor(theme.text[1], theme.text[2], theme.text[3], 1)
+  row.normal = CreateBindingField(row, "normal")
+  row.normal:SetPoint("RIGHT", -148, 0)
+  row.greater = CreateBindingField(row, "greater")
+  row.greater:SetPoint("RIGHT", -8, 0)
+  row.normal:SetScript("OnClick", function() if not row.normal.disabled then BeginBindingCapture(row, "normal") end end)
+  row.greater:SetScript("OnClick", function() if not row.greater.disabled then BeginBindingCapture(row, "greater") end end)
+  row.divider = row:CreateTexture(nil, "BORDER")
+  row.divider:SetTexture("Interface\\Buttons\\WHITE8X8")
+  row.divider:SetPoint("BOTTOMLEFT", 4, 0)
+  row.divider:SetPoint("BOTTOMRIGHT", -4, 0)
+  row.divider:SetHeight(1)
+  row.divider:SetVertexColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.22)
+  keybindRows[index] = row
+  return row
+end
+
+local function BuildKeybindFrame()
+  if keybindFrame then return keybindFrame end
+  local theme = ManagerTheme()
+  keybindFrame = CreateFrame("Frame", "RetreatUIBuffKeybindManager", UIParent)
+  keybindFrame:SetSize(650, 408)
+  keybindFrame:SetPoint("CENTER", 0, 20)
+  keybindFrame:SetFrameStrata("DIALOG")
+  keybindFrame:SetClampedToScreen(true)
+  keybindFrame:SetMovable(true)
+  keybindFrame:EnableMouse(true)
+  keybindFrame:RegisterForDrag("LeftButton")
+  keybindFrame:SetScript("OnDragStart", function(self) if not (InCombatLockdown and InCombatLockdown()) then self:StartMoving() end end)
+  keybindFrame:SetScript("OnDragStop", keybindFrame.StopMovingOrSizing)
+  RUI:SkinFrame(keybindFrame, theme.background, {theme.dim[1], theme.dim[2], theme.dim[3], 0.78})
+
+  local accent = keybindFrame:CreateTexture(nil, "ARTWORK")
+  accent:SetTexture("Interface\\Buttons\\WHITE8X8")
+  accent:SetPoint("TOPLEFT", 1, -1); accent:SetPoint("TOPRIGHT", -1, -1); accent:SetHeight(2)
+  accent:SetVertexColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.9)
+
+  keybindFrame.title = keybindFrame:CreateFontString(nil, "OVERLAY")
+  Font(keybindFrame.title, 14)
+  keybindFrame.title:SetPoint("TOPLEFT", 16, -14)
+  keybindFrame.title:SetText("Buff Manager Keybinds")
+  keybindFrame.classTitle = keybindFrame:CreateFontString(nil, "OVERLAY")
+  Font(keybindFrame.classTitle, 10)
+  keybindFrame.classTitle:SetPoint("LEFT", keybindFrame.title, "RIGHT", 10, 0)
+  keybindFrame.classTitle:SetTextColor(theme.accent[1], theme.accent[2], theme.accent[3], 1)
+
+  local help = keybindFrame:CreateFontString(nil, "OVERLAY")
+  Font(help, 9)
+  help:SetPoint("TOPLEFT", 16, -39)
+  help:SetText("Bind Smart Buff once, then press the same key repeatedly. Each press buffs one valid assigned player; manual binds remain available below.")
+  help:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
+
+  local normalHeader = keybindFrame:CreateFontString(nil, "OVERLAY")
+  Font(normalHeader, 9); normalHeader:SetPoint("TOPRIGHT", -156, -68); normalHeader:SetWidth(132); normalHeader:SetJustifyH("CENTER")
+  normalHeader:SetText("NORMAL / LESSER"); normalHeader:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
+  local greaterHeader = keybindFrame:CreateFontString(nil, "OVERLAY")
+  Font(greaterHeader, 9); greaterHeader:SetPoint("TOPRIGHT", -16, -68); greaterHeader:SetWidth(132); greaterHeader:SetJustifyH("CENTER")
+  greaterHeader:SetText("MANUAL GREATER"); greaterHeader:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
+
+  keybindFrame.close = CreateFrame("Button", nil, keybindFrame)
+  keybindFrame.close:SetSize(24, 24); keybindFrame.close:SetPoint("TOPRIGHT", -10, -10)
+  keybindFrame.close:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
+  keybindFrame.close:SetBackdropColor(theme.panelStrong[1], theme.panelStrong[2], theme.panelStrong[3], 0.94)
+  keybindFrame.close:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.6)
+  keybindFrame.close.text = keybindFrame.close:CreateFontString(nil, "OVERLAY"); Font(keybindFrame.close.text, 14); keybindFrame.close.text:SetPoint("CENTER", 0, 1); keybindFrame.close.text:SetText("×")
+  keybindFrame.close:SetScript("OnClick", function() StopBindingCapture(); keybindFrame:Hide() end)
+
+  keybindFrame.scroll = CreateFrame("ScrollFrame", nil, keybindFrame)
+  keybindFrame.scroll:SetPoint("TOPLEFT", 14, -86); keybindFrame.scroll:SetPoint("BOTTOMRIGHT", -18, 50); keybindFrame.scroll:EnableMouseWheel(true)
+  keybindFrame.content = CreateFrame("Frame", nil, keybindFrame.scroll); keybindFrame.content:SetSize(610, 38); keybindFrame.scroll:SetScrollChild(keybindFrame.content)
+  keybindFrame.scrollBar = CreateFrame("Slider", nil, keybindFrame)
+  keybindFrame.scrollBar:SetOrientation("VERTICAL"); keybindFrame.scrollBar:SetPoint("TOPRIGHT", -9, -88); keybindFrame.scrollBar:SetPoint("BOTTOMRIGHT", -9, 52); keybindFrame.scrollBar:SetWidth(5)
+  keybindFrame.scrollBar:SetMinMaxValues(0,0); keybindFrame.scrollBar:SetValueStep(38); keybindFrame.scrollBar:SetValue(0)
+  local thumb = keybindFrame.scrollBar:CreateTexture(nil, "OVERLAY"); thumb:SetTexture("Interface\\Buttons\\WHITE8X8"); thumb:SetSize(5,28); thumb:SetVertexColor(theme.accent[1],theme.accent[2],theme.accent[3],.72); keybindFrame.scrollBar:SetThumbTexture(thumb)
+  keybindFrame.scrollBar:SetScript("OnValueChanged", function(_,value) keybindFrame.scroll:SetVerticalScroll(value or 0) end)
+  keybindFrame.scroll:SetScript("OnMouseWheel", function(_,delta)
+    if keybindFrame.scrollBar:IsShown() then keybindFrame.scrollBar:SetValue((keybindFrame.scrollBar:GetValue() or 0) - delta*38) end
+  end)
+
+  keybindFrame.reset = CreateFrame("Button", nil, keybindFrame)
+  keybindFrame.reset:SetSize(142, 26); keybindFrame.reset:SetPoint("BOTTOMLEFT", 14, 10)
+  keybindFrame.reset:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
+  keybindFrame.reset:SetBackdropColor(theme.panelStrong[1],theme.panelStrong[2],theme.panelStrong[3],.94); keybindFrame.reset:SetBackdropBorderColor(theme.dim[1],theme.dim[2],theme.dim[3],.6)
+  keybindFrame.reset.text=keybindFrame.reset:CreateFontString(nil,"OVERLAY"); Font(keybindFrame.reset.text,9); keybindFrame.reset.text:SetPoint("CENTER"); keybindFrame.reset.text:SetText("Clear class keybinds")
+  keybindFrame.reset:SetScript("OnClick", function()
+    local classStore = ClassBindingStore(keybindFrame.className)
+    for familyKey in pairs(classStore) do classStore[familyKey] = nil end
+    keybindsDirty = true; refreshPending = true
+    RefreshKeybindFrame(); RefreshCompact()
+  end)
+
+  keybindFrame.capture = CreateFrame("Frame", nil, keybindFrame)
+  keybindFrame.capture:SetAllPoints(keybindFrame)
+  keybindFrame.capture:SetFrameLevel(keybindFrame:GetFrameLevel() + 30)
+  keybindFrame.capture:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
+  keybindFrame.capture:SetBackdropColor(0.02,0.02,0.025,0.96); keybindFrame.capture:SetBackdropBorderColor(theme.accent[1],theme.accent[2],theme.accent[3],.9)
+  keybindFrame.capture:EnableMouse(true); keybindFrame.capture:EnableMouseWheel(true)
+  keybindFrame.capture.message = keybindFrame.capture:CreateFontString(nil,"OVERLAY"); Font(keybindFrame.capture.message,12); keybindFrame.capture.message:SetPoint("CENTER"); keybindFrame.capture.message:SetWidth(540); keybindFrame.capture.message:SetJustifyH("CENTER")
+  keybindFrame.capture:SetScript("OnKeyDown", function(_,key) local full=CaptureKeyName(key); if key=="ESCAPE" or key=="BACKSPACE" or key=="DELETE" then full=key end; if full then CompleteBindingCapture(full) end end)
+  keybindFrame.capture:SetScript("OnMouseDown", function(_,button)
+    local full=MouseBindingKey(button)
+    if full == "BUTTON1" or full == "BUTTON2" then
+      keybindFrame.capture.pendingKey = nil
+      keybindFrame.capture.message:SetText("Use a modifier with the left or right mouse button, or choose another key.")
+      keybindFrame.capture.message:SetTextColor(1, 0.48, 0.08, 1)
+    elseif full then
+      CompleteBindingCapture(full)
+    end
+  end)
+  keybindFrame.capture:SetScript("OnMouseWheel", function(_,delta) CompleteBindingCapture(CaptureKeyName(delta>0 and "MOUSEWHEELUP" or "MOUSEWHEELDOWN")) end)
+  keybindFrame.capture:Hide()
+  keybindFrame:Hide()
+  return keybindFrame
+end
+
+RefreshKeybindFrame = function()
+  if not keybindFrame or not keybindFrame:IsShown() then return end
+  local className, families = CurrentClass()
+  keybindFrame.className = className
+  keybindFrame.classTitle:SetText("— " .. tostring(className or "Unknown"))
+
+  local used = 1
+  local smartRow = keybindRows[1] or CreateKeybindRow(1)
+  smartRow:ClearAllPoints(); smartRow:SetPoint("TOPLEFT",0,0); smartRow:SetPoint("RIGHT",keybindFrame.content,"RIGHT",0,0)
+  smartRow.isSmart = true
+  smartRow.familyRuntime = nil
+  smartRow.labelText = "SMART BUFF — NEXT VALID TARGET"
+  smartRow.label:SetText(smartRow.labelText)
+  smartRow.label:SetTextColor(1, 0.82, 0.28, 1)
+  local firstFamily = families and families[1]
+  local firstChoice = firstFamily and firstFamily.choices and firstFamily.choices[1]
+  smartRow.icon:SetTexture(SpellTexture(firstChoice and firstChoice.spell))
+  smartRow.normal:SetSize(272, 26)
+  smartRow.normal:ClearAllPoints(); smartRow.normal:SetPoint("RIGHT", -8, 0)
+  smartRow.normal.text:SetText(BindingDisplayText(CurrentFamilyBinding(className, SMART_FAMILY_KEY, SMART_BINDING_MODE)))
+  smartRow.normal:SetEnabled(#(families or {}) > 0)
+  smartRow.normal:SetScript("OnClick", function() if not smartRow.normal.disabled then BeginBindingCapture(smartRow, SMART_BINDING_MODE) end end)
+  smartRow.greater:Hide()
+  smartRow:Show()
+
+  for _, familyRuntime in ipairs(families or {}) do
+    used = used + 1
+    local row = keybindRows[used] or CreateKeybindRow(used)
+    row:ClearAllPoints(); row:SetPoint("TOPLEFT",0,-((used-1)*38)); row:SetPoint("RIGHT",keybindFrame.content,"RIGHT",0,0)
+    row.isSmart = false
+    row.familyRuntime = familyRuntime
+    row.labelText = familyRuntime.definition.label or familyRuntime.definition.key
+    row.label:SetText(row.labelText)
+    row.label:SetTextColor(1, 1, 1, 1)
+    local first = familyRuntime.choices and familyRuntime.choices[1]
+    row.icon:SetTexture(SpellTexture(first and first.spell))
+    local normalAvailable, greaterAvailable = false, false
+    for _, entry in ipairs(familyRuntime.choices or {}) do
+      if entry.normalSpell then normalAvailable = true end
+      if entry.greaterSpell then greaterAvailable = true end
+    end
+    local familyKey = familyRuntime.definition.key
+    row.normal:SetSize(132, 26)
+    row.normal:ClearAllPoints(); row.normal:SetPoint("RIGHT", -148, 0)
+    row.normal:SetScript("OnClick", function() if not row.normal.disabled then BeginBindingCapture(row, "normal") end end)
+    row.greater:SetScript("OnClick", function() if not row.greater.disabled then BeginBindingCapture(row, "greater") end end)
+    row.greater:Show()
+    row.normal.text:SetText(normalAvailable and BindingDisplayText(CurrentFamilyBinding(className,familyKey,"normal")) or "Unavailable")
+    row.greater.text:SetText(greaterAvailable and BindingDisplayText(CurrentFamilyBinding(className,familyKey,"greater")) or "Unavailable")
+    row.normal:SetEnabled(normalAvailable); row.greater:SetEnabled(greaterAvailable)
+    row:Show()
+  end
+  for index=used+1,#keybindRows do keybindRows[index]:Hide() end
+  local contentHeight=math.max(38,used*38); keybindFrame.content:SetHeight(contentHeight)
+  local viewport=keybindFrame.scroll:GetHeight() or 228; local maxScroll=math.max(0,contentHeight-viewport)
+  keybindFrame.scrollBar:SetMinMaxValues(0,maxScroll)
+  if maxScroll>0 then keybindFrame.scrollBar:Show() else keybindFrame.scrollBar:SetValue(0); keybindFrame.scroll:SetVerticalScroll(0); keybindFrame.scrollBar:Hide() end
+end
+
+local function ToggleKeybindFrame()
+  local frame = BuildKeybindFrame()
+  if frame:IsShown() then StopBindingCapture(); frame:Hide() else frame:Show(); RefreshKeybindFrame() end
 end
 
 local function SetCellBorder(cell, red, green, blue, alpha)
@@ -1957,10 +2575,25 @@ local function BuildManager()
     refreshPending = true
   end)
 
+  managerFrame.keybinds = CreateFrame("Button", nil, managerFrame)
+  managerFrame.keybinds:SetSize(124, 26)
+  managerFrame.keybinds:SetPoint("LEFT", managerFrame.reset, "RIGHT", 8, 0)
+  managerFrame.keybinds:SetBackdrop({bgFile="Interface\Buttons\WHITE8X8", edgeFile="Interface\Buttons\WHITE8X8", edgeSize=1})
+  managerFrame.keybinds:SetBackdropColor(theme.panelStrong[1], theme.panelStrong[2], theme.panelStrong[3], 0.94)
+  managerFrame.keybinds:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.55)
+  managerFrame.keybinds.text = managerFrame.keybinds:CreateFontString(nil, "OVERLAY")
+  Font(managerFrame.keybinds.text, 9)
+  managerFrame.keybinds.text:SetPoint("CENTER")
+  managerFrame.keybinds.text:SetText("Keybinds")
+  managerFrame.keybinds.text:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
+  managerFrame.keybinds:SetScript("OnEnter", function(self) self:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 0.85) end)
+  managerFrame.keybinds:SetScript("OnLeave", function(self) self:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.55) end)
+  managerFrame.keybinds:SetScript("OnClick", function() ToggleKeybindFrame() end)
+
   managerFrame.empty = managerFrame.content:CreateFontString(nil, "OVERLAY")
   Font(managerFrame.empty, 10)
   managerFrame.empty:SetPoint("TOPLEFT", 6, -10)
-  managerFrame.empty:SetText("No learned Greater-capable class buffs were found for this character.")
+  managerFrame.empty:SetText("No learned class buffs were found for this character.")
   managerFrame.empty:SetTextColor(theme.muted[1], theme.muted[2], theme.muted[3], 1)
 
   managerFrame:Hide()
@@ -2106,20 +2739,33 @@ function RUI:ToggleBuffManager()
   RefreshCompact()
 end
 
-local function PrintStatus()
-  local className, families = CurrentClass()
-  RUI:Print("Buff Manager class: " .. tostring(className))
-  RUI:Print("Learned buff families: " .. tostring(#(families or {})))
-  local learnedShields = ResolvedSelfShields()
-  local _, selectedShield = CurrentSelfShield(learnedShields)
-  RUI:Print("Self Shield: " .. tostring(selectedShield) .. " (" .. tostring(#learnedShields) .. " learned)")
-  for _, familyRuntime in ipairs(families or {}) do
-    local names = {}
-    for _, entry in ipairs(familyRuntime.choices or {}) do
-      names[#names + 1] = entry.spell.name
-    end
-    RUI:Print((familyRuntime.definition.label or familyRuntime.definition.key) .. ": " .. table.concat(names, ", "))
-  end
+function RUI:ToggleBuffKeybindManager()
+  ToggleKeybindFrame()
+end
+
+function RUI:GetBuffManagerKeybind(className, familyKey, mode)
+  return CurrentFamilyBinding(className or select(1, CurrentClass()), familyKey, mode)
+end
+
+function RUI:GetSmartBuffManagerKeybind(className)
+  return CurrentFamilyBinding(className or select(1, CurrentClass()), SMART_FAMILY_KEY, SMART_BINDING_MODE)
+end
+
+function RUI:SetBuffManagerKeybind(className, familyKey, mode, key)
+  className = className or select(1, CurrentClass())
+  if mode ~= "normal" and mode ~= "greater" then return false end
+  RemoveDuplicateClassBinding(className, familyKey, mode, key)
+  local changed = SetFamilyBinding(className, familyKey, mode, key)
+  if changed then RefreshCompact() end
+  return changed
+end
+
+function RUI:SetSmartBuffManagerKeybind(className, key)
+  className = className or select(1, CurrentClass())
+  RemoveDuplicateClassBinding(className, SMART_FAMILY_KEY, SMART_BINDING_MODE, key)
+  local changed = SetFamilyBinding(className, SMART_FAMILY_KEY, SMART_BINDING_MODE, key)
+  if changed then RefreshCompact() end
+  return changed
 end
 
 SLASH_RETREATUIBUFFS1 = "/ruibuffs"
@@ -2127,13 +2773,13 @@ SlashCmdList.RETREATUIBUFFS = function(message)
   message = string.lower(tostring(message or "")):gsub("^%s+", ""):gsub("%s+$", "")
   if message == "manager" or message == "assign" or message == "assignments" then
     RUI:ToggleBuffAssignmentManager()
+  elseif message == "keybind" or message == "keybinds" or message == "bind" or message == "binds" then
+    RUI:ToggleBuffKeybindManager()
   elseif message == "reset" then
     local className = select(1, CurrentClass())
     ClearAssignments(className)
     RUI:Print("Buff assignments reset to automatic defaults for " .. tostring(className) .. ".")
     refreshPending = true
-  elseif message == "status" or message == "debug" then
-    PrintStatus()
   else
     RUI:ToggleBuffManager()
   end
@@ -2141,7 +2787,7 @@ end
 
 local events = CreateFrame("Frame")
 for _, eventName in ipairs({
-  "PLAYER_LOGIN", "PLAYER_REGEN_ENABLED", "GROUP_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED", "RAID_ROSTER_UPDATE", "UNIT_AURA",
+  "PLAYER_LOGIN", "PLAYER_ENTERING_WORLD", "PLAYER_REGEN_ENABLED", "GROUP_ROSTER_UPDATE", "PARTY_MEMBERS_CHANGED", "RAID_ROSTER_UPDATE", "UNIT_AURA", "UNIT_CONNECTION", "ZONE_CHANGED_NEW_AREA",
   "SPELLS_CHANGED", "PLAYER_TALENT_UPDATE", "CHARACTER_POINTS_CHANGED", "ACTIVE_TALENT_GROUP_CHANGED",
   "ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED", "ASCENSION_KNOWN_ENTRIES_UPDATED", "LEARNED_SPELL_IN_TAB",
   "PLAYER_ROLES_ASSIGNED",
@@ -2154,6 +2800,7 @@ events:SetScript("OnEvent", function(_, event)
     or event == "ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED"
     or event == "ASCENSION_KNOWN_ENTRIES_UPDATED" or event == "LEARNED_SPELL_IN_TAB" then
     if RUI.ScanSpellbook then RUI:ScanSpellbook() end
+    keybindsDirty = true
   end
   if event == "PLAYER_LOGIN" then
     BuildCompact()
@@ -2170,4 +2817,5 @@ events:SetScript("OnUpdate", function(_, elapsed)
   refreshPending = false
   RefreshCompact()
   RefreshManager()
+  if RefreshKeybindFrame then RefreshKeybindFrame() end
 end)

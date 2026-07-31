@@ -57,6 +57,9 @@ local function RefreshInstalledHUD(reason, serial, pass)
     local _, scanChanged = RUI:ScanSpellbook()
     changed = scanChanged == true
   end
+  if type(RUI.RefreshBuildProfile) == "function" then
+    RUI:RefreshBuildProfile(reason, false)
+  end
 
   -- Stock SPELLS_CHANGED is noisy (opening the spellbook can fire it). Only
   -- rebuild for that event when the learned spell signature actually changed.
@@ -141,6 +144,19 @@ local function ApplyRuntimeOnce()
     end)
   end
 
+  if type(RUI.InitializePartyUtilityTracker) == "function" then
+    RUI:After(0.72, function()
+      if IsSupported() then RUI:InitializePartyUtilityTracker() end
+    end)
+  end
+
+  if type(RUI.InitializeTrinketTracker) == "function" then
+    RUI:After(0.78, function()
+      if IsSupported() then RUI:InitializeTrinketTracker() end
+    end)
+  end
+
+
   -- Refresh only RetreatUI's lightweight ElvUI unitframe settings on login.
   -- This clears Ascension classbar/power percentage text such as the stray
   -- Necromancer "100%" without requiring the installer or resetting movers.
@@ -189,6 +205,7 @@ events:SetScript("OnEvent", function(_, event, addonName)
     playerLoggedIn = true
     -- Force a fresh scan now that the Ascension spellbook is fully available.
     if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
+    if type(RUI.RefreshBuildProfile) == "function" then RUI:RefreshBuildProfile("PLAYER_LOGIN", true) end
 
     if type(RUI.HandleVersionLogin) == "function" then
       local ok, err = pcall(RUI.HandleVersionLogin, RUI)
@@ -211,6 +228,7 @@ events:SetScript("OnEvent", function(_, event, addonName)
     -- after PLAYER_LOGIN. Rescan here so reloads do not lose the active class,
     -- primary resource bar or class-resource tracker.
     if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
+    if type(RUI.RefreshBuildProfile) == "function" then RUI:RefreshBuildProfile("PLAYER_ENTERING_WORLD", false) end
 
     if not IsSupported() then
       DisableUnsupportedUI()
