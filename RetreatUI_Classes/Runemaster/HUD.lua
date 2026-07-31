@@ -4,6 +4,7 @@ local RUI = RetreatUI
 -- The WA used compact centred rows with a seven-icon priority row and a
 -- secondary utility row. RetreatUI keeps that structure while using learned
 -- spell detection, native cooldowns, build profiles and active-only proc icons.
+-- The source WeakAura remains external and is never imported or modified.
 RUI:RegisterAdvancedClassHUD("Runemaster", {
   frameName = "RetreatUIRunemasterHUD",
   usesPrimaryPower = true,
