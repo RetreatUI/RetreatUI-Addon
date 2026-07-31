@@ -4,8 +4,9 @@ on:
   push:
     branches:
       - hotfix/beta18-runemaster
-    paths:
-      - ".github/workflows/beta18-source.yml"
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
