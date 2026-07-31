@@ -20,8 +20,13 @@ RUI:RegisterClassDefinition("Tinker", {
   primaryResource = "MANA",
   dynamicPrimaryResource = true,
   supportedLoadouts = {FIREARMS=true,INVENTION=true,MECHANICS=true},
+  aliases = {"TINKER"},
   detectionPriority = 100,
   detectionThreshold = 1,
-  detectionSpells = {"Makeshift Dynamite","Rocket Boots","Bomb Toss"},
+  detectionSpells = {
+    {id=504527, name="Makeshift Dynamite"},
+    {id=500241, name="Rocket Boots"},
+    {id=801005, name="Bomb Toss"},
+  },
   hudFrameName = "RetreatUITinkerHUD",
 })
