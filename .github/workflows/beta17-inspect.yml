@@ -25,3 +25,12 @@ jobs:
           grep -RniE 'RegisterClass|classModules|Register.*Module|supportedClasses|classDatabase' RetreatUI RetreatUI_Classes | head -n 300 || true
           echo '=== RUNES ==='
           grep -RniE 'rune|inscribed' RetreatUI RetreatUI_Classes | head -n 300 || true
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: beta17-source
+          path: |
+            RetreatUI
+            RetreatUI_Classes
+            .github/workflows/validate-and-publish.yml
+          include-hidden-files: true
