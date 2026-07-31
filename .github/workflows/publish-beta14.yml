@@ -1,0 +1,36 @@
+name: Publish RetreatUI beta.14 emergency hotfix
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  publish:
+    if: github.event.pull_request.head.ref == 'hotfix/v1.1.0-beta.14-trigger'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out canonical main source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1 zip
+
+      - name: Build and publish beta.14
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: python3 .github/scripts/publish_beta14.py
