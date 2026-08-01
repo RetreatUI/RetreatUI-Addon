@@ -3,14 +3,14 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.7",
-  summary = "Ascension-compatible Guardian Formation macro creation and stable HUD visuals.",
+  title = "RetreatUI v1.1.2-beta.8",
+  summary = "Legacy Ascension iconIndex support for Guardian Formation macros.",
   changes = {
-    "Fixed Guardian Formation macro creation on Ascension clients by using the safe dynamic question-mark macro icon instead of a full spell texture path.",
-    "Added real General and Character macro-slot counts before and after /ruiformacros so creation failures are no longer reported as a misleading full-slots message.",
-    "Added Wrath numeric and later boolean per-character API compatibility, with automatic General-macro fallback when the client rejects Character creation.",
-    "Added the actual CreateMacro or EditMacro error text when a macro still cannot be created.",
+    "Fixed Guardian Formation macro creation against Ascension's legacy CreateMacro signature by passing numeric iconIndex 1 instead of a string icon token.",
+    "Updated EditMacro to use the same numeric icon index so existing RetreatUI Formation macros can be refreshed safely.",
+    "Changed the General-macro fallback to call the exact three-argument CreateMacro form instead of supplying a fourth nil argument.",
+    "Retained real General and Character macro-slot counts and full API error reporting for future compatibility testing.",
     "Retained Tower Formation macros for Pulverize, Ram, Reprisal, Broad Sweep, Shield Challenge, Shield of Denial and Heavy Blow, plus Line Advance and Assault Battle Rush.",
-    "Retained the cooldown/aura ownership fix, Guardian event-burst coalescing and brief zero-cooldown stabilization from beta.6.",
+    "Retained the Guardian cooldown/aura flicker and event-burst stutter hotfixes.",
   },
 }
