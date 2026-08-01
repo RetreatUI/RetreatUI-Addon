@@ -19,10 +19,11 @@ local MACROS = {
   {name="RUI BattleRush", ability="Battle Rush", formation="assault"},
 }
 
--- The Ascension/Wrath macro API is safest with a macro-icon token rather than
--- the full spell texture path returned by GetSpellInfo. #showtooltip replaces
--- this question-mark icon with the correct ability icon after creation.
-local SAFE_MACRO_ICON = "INV_Misc_QuestionMark"
+-- Ascension's client uses the legacy CreateMacro signature:
+-- CreateMacro(name, iconIndex, body[, perCharacter]). The second argument must
+-- be a numeric macro-icon index, not a texture name or spell texture path.
+-- #showtooltip replaces icon index 1 with the correct live ability icon.
+local SAFE_MACRO_ICON_INDEX = 1
 
 local function Print(message)
   message = "|cff33ff77RetreatUI:|r " .. tostring(message or "")
@@ -123,7 +124,13 @@ local function TryCreateMacro(name, body, perCharacter)
   if type(CreateMacro) ~= "function" then return false, nil, "CreateMacro unavailable" end
 
   local beforeGeneral, beforeCharacter = MacroCounts()
-  local ok, result = pcall(CreateMacro, name, SAFE_MACRO_ICON, body, perCharacter)
+  local ok, result
+  if perCharacter == nil then
+    -- Use the exact three-argument legacy signature for a General macro.
+    ok, result = pcall(CreateMacro, name, SAFE_MACRO_ICON_INDEX, body)
+  else
+    ok, result = pcall(CreateMacro, name, SAFE_MACRO_ICON_INDEX, body, perCharacter)
+  end
   local afterGeneral, afterCharacter = MacroCounts()
   local index = ExistingMacroIndex(name)
 
@@ -132,7 +139,7 @@ local function TryCreateMacro(name, body, perCharacter)
   end
   if index > 0 then return true, index, nil end
   if perCharacter and afterCharacter > beforeCharacter then return true, nil, nil end
-  if not perCharacter and afterGeneral > beforeGeneral then return true, nil, nil end
+  if perCharacter == nil and afterGeneral > beforeGeneral then return true, nil, nil end
 
   return false, nil, ok and "CreateMacro returned no macro index" or tostring(result)
 end
@@ -140,8 +147,9 @@ end
 local function CreateWithFallback(name, body)
   local errors = {}
 
-  -- Wrath-era clients normally expect numeric 1; some Ascension branches use
-  -- the later boolean form. Try both before falling back to a General macro.
+  -- Numeric 1 is the native Wrath/Ascension per-character flag. Keep the
+  -- boolean attempt for compatible custom branches, then try an exact 3-arg
+  -- General macro call as the final fallback.
   for _, perCharacter in ipairs({1, true}) do
     local ok, index, reason = TryCreateMacro(name, body, perCharacter)
     if ok then return true, index, "created-character" end
@@ -159,7 +167,7 @@ local function UpsertMacro(spec, formIndex)
   local index = ExistingMacroIndex(spec.name)
 
   if index > 0 and type(EditMacro) == "function" then
-    local ok, result = pcall(EditMacro, index, spec.name, SAFE_MACRO_ICON, body)
+    local ok, result = pcall(EditMacro, index, spec.name, SAFE_MACRO_ICON_INDEX, body)
     if ok then return true, "updated" end
     return false, "EditMacro failed: " .. tostring(result)
   end
