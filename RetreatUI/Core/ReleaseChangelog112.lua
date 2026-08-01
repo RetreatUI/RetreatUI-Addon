@@ -3,14 +3,14 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.9",
-  summary = "Ascension action-tooltip nil-line safety for Guardian abilities and macros.",
+  title = "RetreatUI v1.1.2-beta.10",
+  summary = "Reliable party interrupt and utility cooldown detection on Ascension.",
   changes = {
-    "Fixed the Ascension FrameXML GameTooltipMods.lua lineText nil error triggered when hovering Guardian actionbar buttons or generated Formation macros, including spell ID 800319.",
-    "Normalised existing blank spell-tooltip FontStrings before Ascension's OnTooltipSetSpell modification reads them, preserving the complete tooltip instead of disabling it.",
-    "Added a narrow SetAction fallback that suppresses only the confirmed GameTooltipMods nil-line error after retaining the already populated tooltip.",
-    "Retained the Guardian live cooldown scanner exclusion for Standards, including Standard of Recovery tooltip safety.",
-    "Retained the working nine Guardian Formation macros and legacy numeric iconIndex creation introduced in beta.8.",
-    "Retained the Guardian cooldown/aura flicker and event-burst stutter hotfixes.",
+    "Fixed party interrupt and utility cooldown tracking when Ascension exposes CombatLogGetCurrentEventInfo but delivers the valid legacy combat-log payload directly through COMBAT_LOG_EVENT_UNFILTERED.",
+    "Added automatic fallback between direct legacy event arguments and the modern combat-log getter instead of silently accepting an empty payload.",
+    "Normalised both combat-log layouts before Party Utility V4 processes them, preserving source GUID, player name, spell ID and spell name consistently.",
+    "Added spell-name, alias and known-rank resolution so custom Ascension rank IDs map back to the tracked interrupt or party utility definition.",
+    "Added known utility aura-application fallback for custom abilities that do not emit a normal SPELL_CAST_SUCCESS event.",
+    "Retained the working Guardian Formation macros, cooldown/aura HUD stability and action-tooltip nil-line safety from the previous hotfixes.",
   },
 }
