@@ -82,7 +82,16 @@ end
 -- First WA row: high-frequency Vanguard mitigation and rotation.
 local core = {
   {name="Shield of Denial", id=704159, category="defensive", hudRow="core", forceMain=true, order=10},
-  {name="Reprisal", id=802740, category="rotation", hudRow="core", forceMain=true, order=20, trackCharges=true},
+  {
+    name="Reprisal", id=802740, category="rotation", hudRow="core", forceMain=true, order=20,
+    trackCharges=true,
+    -- Reprisal's six-second availability proc is a separate Ascension aura.
+    -- Track that aura on the existing Reprisal ability icon so the icon glows
+    -- and shows the remaining proc duration without creating a duplicate icon.
+    buff="Reprisal", auraID=504885, buffID=504885,
+    trackDuration=true, separateAuraTracker=false,
+    glowWhenAuraID={504885},
+  },
   {name="Heavy Blow", id=503119, category="rotation", hudRow="core", forceMain=true, order=30},
   {name="Hammer of the Law", id=704418, category="offensive", hudRow="core", forceMain=true, order=40, targetDebuff=true},
   {name="Shoulder the Burden", aliases={"Shoulder The Burden"}, id=572904, category="defensive", hudRow="core", forceMain=true, order=50},
@@ -133,7 +142,7 @@ AddOrMerge({
 
 -- The WA confirms Guardian's primary resource as Energy (power type 3).
 database.resources = {{key="primary", name="Energy", type="primary", position="power"}}
-database.guardianWAAuditRevision = 1
+database.guardianWAAuditRevision = 2
 database.guardianWASourceVersion = "5.21.2 Beta"
 database.guardianReminderIDs = {
   reinforcementSpell=653386,
