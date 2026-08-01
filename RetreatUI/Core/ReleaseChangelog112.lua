@@ -7,6 +7,8 @@ RUI.changelog = {
   summary = "Guardian Formation-dance macros and stable cooldown/aura HUD visuals.",
   changes = {
     "Fixed rapid HUD flickering when a duration-tracked Guardian ability was active while the same spell was on cooldown. Active aura timers now remain authoritative until the buff expires.",
+    "Coalesced Guardian Formation/cooldown event bursts into one short refresh window to reduce HUD stuttering after stance dancing and ability casts.",
+    "Stabilized brief zero-value cooldown samples from Ascension so icons no longer flash ready between cast, charge and action-bar updates.",
     "Added /ruiforms to print the live stance indices exposed by Ascension for Tower, Assault and Line Formation.",
     "Added /ruiformacros to create or update character-specific Formation-dance macros using the live stance indices instead of hardcoded assumptions.",
     "Generated Tower Formation macros for Pulverize, Ram, Reprisal, Broad Sweep, Shield Challenge, Shield of Denial and Heavy Blow.",
