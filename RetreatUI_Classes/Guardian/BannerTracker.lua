@@ -10,6 +10,10 @@ local KNOWN_DURATIONS = {
   ["standard of recovery"] = 300,
 }
 
+local KNOWN_AURA_NAMES = {
+  [500266] = "Standard of Recovery",
+}
+
 local function Normalize(value)
   value = string.lower(tostring(value or "")):gsub("’", "'")
   return value:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
@@ -108,6 +112,37 @@ local function GuardianHUDActive()
   return root and root.IsShown and root:IsShown() == true
 end
 
+local function ReadAuraStandard()
+  if type(UnitBuff) ~= "function" then return nil end
+  local now = GetTime()
+
+  for index = 1, 40 do
+    local name, _, icon, _, _, duration, expirationTime, _, _, _, spellID = UnitBuff("player", index)
+    if not name then break end
+
+    spellID = tonumber(spellID)
+    local canonicalName = KNOWN_AURA_NAMES[spellID] or name
+    if IsStandard(canonicalName) then
+      duration = tonumber(duration) or 0
+      expirationTime = tonumber(expirationTime) or 0
+      if duration <= 0 then duration = KNOWN_DURATIONS[Normalize(canonicalName)] or 20 end
+
+      local remaining = expirationTime > 0 and math.max(0, expirationTime - now) or duration
+      if remaining > 0.05 then
+        return {
+          name = canonicalName,
+          icon = icon,
+          spellID = spellID,
+          startTime = expirationTime > 0 and (expirationTime - duration) or now,
+          duration = duration,
+          remaining = remaining,
+          source = "aura",
+        }
+      end
+    end
+  end
+end
+
 local function ReadTotemStandard()
   if type(GetTotemInfo) ~= "function" then return nil end
   local now = GetTime()
@@ -190,7 +225,7 @@ local function UpdateTracker()
     if tracker then tracker:Hide() end
     return
   end
-  SetTrackerState(ReadTotemStandard() or ReadFallback())
+  SetTrackerState(ReadAuraStandard() or ReadTotemStandard() or ReadFallback())
 end
 
 local function CombatLogCast(...)
@@ -215,7 +250,7 @@ end
 
 local events = CreateFrame("Frame", "RetreatUIGuardianBannerTrackerDriver")
 for _, eventName in ipairs({
-  "PLAYER_LOGIN", "PLAYER_ENTERING_WORLD", "PLAYER_TOTEM_UPDATE",
+  "PLAYER_LOGIN", "PLAYER_ENTERING_WORLD", "PLAYER_TOTEM_UPDATE", "UNIT_AURA",
   "UNIT_SPELLCAST_SUCCEEDED", "COMBAT_LOG_EVENT_UNFILTERED",
   "SPELLS_CHANGED", "PLAYER_TALENT_UPDATE", "ACTIVE_TALENT_GROUP_CHANGED",
 }) do
@@ -228,6 +263,9 @@ events:SetScript("OnEvent", function(_, eventName, ...)
   elseif eventName == "UNIT_SPELLCAST_SUCCEEDED" then
     local unit, spellName, _, _, spellID = ...
     if unit == "player" and IsStandard(spellName) then StartFallback(spellName, spellID) end
+  elseif eventName == "UNIT_AURA" then
+    local unit = ...
+    if unit and unit ~= "player" then return end
   end
   UpdateTracker()
 end)
