@@ -84,9 +84,29 @@ if brace then
   brace.separateAuraTracker = false
 end
 
+-- Heroic Resolve is deliberately kept in the utility row even though it is a
+-- defensive cooldown. Its short reactive block belongs with situational tools
+-- rather than the primary Vanguard rotation sequence.
+local heroicResolve = FindByName("Heroic Resolve")
+if heroicResolve then
+  heroicResolve.category = "defensive"
+  heroicResolve.hudRow = "utility"
+  heroicResolve.forceMain = nil
+  heroicResolve.forceUtility = true
+  heroicResolve.order = 105
+  heroicResolve.trackCooldown = true
+  heroicResolve.buff = "Heroic Resolve"
+  heroicResolve.auraID = 504910
+  heroicResolve.buffID = 504910
+  heroicResolve.trackDuration = true
+  heroicResolve.separateAuraTracker = false
+  heroicResolve.guardianMainCooldownException = true
+end
+
 -- Guardian policy: every learned offensive or defensive cooldown belongs in
--- the main row. Mobility, control, interrupts, taunts, racials and ordinary
--- utility remain in the secondary row. Active-only proc records are untouched.
+-- the main row unless it has an explicit Guardian exception. Mobility, control,
+-- interrupts, taunts, racials and ordinary utility remain in the secondary row.
+-- Active-only proc records are untouched.
 for _, record in ipairs(database.spells) do
   if type(record) == "table" then
     local name = Normalize(record.name)
@@ -104,6 +124,10 @@ for _, record in ipairs(database.spells) do
       record.forceMain = nil
       record.forceUtility = nil
       record.bannerTracker = true
+    elseif record.guardianMainCooldownException == true then
+      record.hudRow = "utility"
+      record.forceMain = nil
+      record.forceUtility = true
     elseif record.auraTracker ~= true and hasCooldown
       and (category == "offensive" or category == "defensive") then
       record.hudRow = "core"
@@ -119,8 +143,9 @@ for _, record in ipairs(database.spells) do
   end
 end
 
-database.guardianWAAuditRevision = math.max(tonumber(database.guardianWAAuditRevision) or 0, 4)
-database.guardianMainCooldownPolicy = "offensive-and-defensive"
+database.guardianWAAuditRevision = math.max(tonumber(database.guardianWAAuditRevision) or 0, 5)
+database.guardianMainCooldownPolicy = "offensive-and-defensive-with-explicit-exceptions"
+database.guardianMainCooldownExceptions = {heroicResolve=true}
 database.guardianBannerTracker = true
 
 -- Guardian/HUD.lua registers a curated layout. Extend that registration with
@@ -136,12 +161,12 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     options = options or {}
     options.coreOrder = {
       "Shield of Denial", "Reprisal", "Raise Shield", "Ram", "Heavy Blow",
-      "Hammer of the Law", "Shoulder the Burden", "Heroic Resolve", "Brace",
+      "Hammer of the Law", "Shoulder the Burden", "Brace",
     }
     options.strictCoreOrder = false
     options.maxCore = 32
     options.utilityOrder = {
-      "Battle Rush", "Advance", "Glorious Arena",
+      "Heroic Resolve", "Battle Rush", "Advance", "Glorious Arena",
     }
     options.strictUtilityOrder = false
     options.maxUtility = 24
