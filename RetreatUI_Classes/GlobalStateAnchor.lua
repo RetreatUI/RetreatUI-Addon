@@ -72,7 +72,7 @@ function RUI:CreateClassStateTracker(parent, className, options)
   configured.anchorFrameName = "RetreatUIClassStateAnchor"
   configured.direction = "right"
   configured.x = size / 2 + gap
-  configured.y = -(size / 2)
+  configured.y = -(size / 2) + 3
   configured.fallbackX = nil
   configured.fallbackY = nil
 
