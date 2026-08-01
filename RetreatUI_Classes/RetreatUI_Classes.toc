@@ -2,13 +2,14 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.1
+## Version: 1.1.2-beta.1
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
 Loader.lua
 Registry.lua
 StateTracker.lua
+GlobalStateAnchor.lua
 BaselineHUD.lua
 AdvancedHUD.lua
 Necromancer\Definition.lua
@@ -64,6 +65,7 @@ Bloodmage\HUD.lua
 
 Guardian\Definition.lua
 Guardian\Data.lua
+Guardian\WAAudit.lua
 Guardian\HUD.lua
 
 Stormbringer\Definition.lua

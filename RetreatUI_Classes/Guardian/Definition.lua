@@ -19,7 +19,7 @@ RUI:RegisterClassDefinition("Guardian", {
   },
   primaryResource = "ENERGY",
   dynamicPrimaryResource = true,
-  supportedLoadouts = {GLADIATOR=true,INSPIRATION=true,PROTECTION=true},
+  supportedLoadouts = {GLADIATOR=true,INSPIRATION=true,PROTECTION=true,VANGUARD=true},
   detectionPriority = 100,
   detectionThreshold = 1,
   detectionSpells = {"Standard of Rallying","Heavy Blow","Centurion Strike"},
