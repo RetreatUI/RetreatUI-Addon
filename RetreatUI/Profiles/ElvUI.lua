@@ -1,7 +1,8 @@
 local RUI = RetreatUI
 
--- Baseline imported from the user-supplied RetreatUI ElvUI profile on 2026-07-30.
--- Runtime class accent coloring is still applied by the ElvUI integration.
+-- Baseline imported from the user-supplied RetreatUI ElvUI profile on 2026-08-01.
+-- Runtime class accent coloring and compatibility repairs are applied by the
+-- ElvUI integration after this clean profile baseline is installed.
 RUI.ElvUIProfile = {
   actionbar = {
     backdropSpacingConverted = true,
@@ -70,7 +71,6 @@ RUI.ElvUIProfile = {
     bankWidth = 472,
   },
   chat = {
-    editBoxPosition = "ABOVE_CHAT",
     font = "Fira Sans Heavy",
     fontOutline = "OUTLINE",
     fontSize = 11,
@@ -81,7 +81,7 @@ RUI.ElvUIProfile = {
     retreatHideRightChat = false,
     tabFontSize = 11,
   },
-  currentTutorial = 9,
+  currentTutorial = 10,
   databars = {
     experience = {
       height = 10,
@@ -121,9 +121,9 @@ RUI.ElvUIProfile = {
     },
     valuecolor = {
       a = 1,
-      b = 0.15,
-      g = 0.1,
-      r = 0.94,
+      b = 0.04,
+      g = 0.28,
+      r = 1,
     },
     watchFrameHeight = 360,
   },
@@ -140,13 +140,13 @@ RUI.ElvUIProfile = {
     ElvBar_Pet = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-365,4",
     ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55",
     ElvUF_BossMover = "RIGHT,ElvUIParent,RIGHT,-255,62",
-    ElvUF_FocusMover = "BOTTOM,ElvUIParent,BOTTOM,0,275",
+    ElvUF_FocusMover = "BOTTOMRIGHT,ElvUIParent,BOTTOMRIGHT,-539,221",
     ElvUF_PartyMover = "TOPLEFT,ElvUIParent,BOTTOMLEFT,313,659",
-    ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-310,404",
-    ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-310,326",
+    ElvUF_PetMover = "BOTTOM,ElvUIParent,BOTTOM,-313,320",
+    ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,0,281",
     ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-310,350",
-    ElvUF_Raid40Mover = "TOPLEFT,ElvUIParent,BOTTOMLEFT,8,503",
-    ElvUF_RaidMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,4,318",
+    ElvUF_Raid40Mover = "TOPLEFT,ElvUIParent,BOTTOMLEFT,4,616",
+    ElvUF_RaidMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,4,325",
     ElvUF_RaidpetMover = "TOPLEFT,ElvUIParent,BOTTOMLEFT,4,737",
     ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,310,326",
     ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,310,350",
@@ -158,9 +158,10 @@ RUI.ElvUIProfile = {
     ReputationBarMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-2,-215",
     ShiftAB = "TOPLEFT,ElvUIParent,BOTTOMLEFT,649,32",
     TempEnchantMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-215,-4",
-    TotemBarMover = "BOTTOMLEFT,ElvUIParent,BOTTOMLEFT,504,86",
+    TimeManagerFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-4,-234",
+    TotemBarMover = "BOTTOM,ElvUIParent,BOTTOM,-314,259",
     VehicleSeatMover = "TOPLEFT,ElvUIParent,TOPLEFT,4,-4",
-    WatchFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-148,-205",
+    WatchFrameMover = "TOPRIGHT,ElvUIParent,TOPRIGHT,-256,-234",
   },
   nameplates = {
     enable = false,
@@ -270,46 +271,13 @@ RUI.ElvUIProfile = {
       },
       party = {
         buffs = {
-          enable = false,
-          perrow = 4,
-          numrows = 1,
-          attachTo = "FRAME",
-          anchorPoint = "LEFT",
           countFont = "Fira Sans Heavy",
-          countFontOutline = "OUTLINE",
-          countFontSize = 12,
-          durationPosition = "CENTER",
-          clickThrough = false,
-          sortMethod = "TIME_REMAINING",
-          sortDirection = "DESCENDING",
-          minDuration = 0,
-          maxDuration = 300,
-          priority = "Blacklist,TurtleBuffs",
           sizeOverride = 0,
-          xOffset = 0,
-          yOffset = 0,
         },
         debuffs = {
-          enable = true,
-          perrow = 4,
-          numrows = 1,
-          attachTo = "FRAME",
-          anchorPoint = "RIGHT",
           countFont = "Fira Sans Heavy",
-          countFontOutline = "OUTLINE",
-          countFontSize = 12,
-          durationPosition = "CENTER",
-          clickThrough = false,
-          sortMethod = "TIME_REMAINING",
-          sortDirection = "DESCENDING",
-          minDuration = 0,
-          maxDuration = 300,
-          priority = "Blacklist,RaidDebuffs,CCDebuffs,Dispellable,Whitelist",
           sizeOverride = 20,
-          xOffset = 0,
-          yOffset = 0,
         },
-        smartAuraPosition = "DISABLED",
         growthDirection = "DOWN_RIGHT",
         height = 38,
         horizontalSpacing = 3,
@@ -321,6 +289,7 @@ RUI.ElvUIProfile = {
         rdebuffs = {
           font = "Fira Sans Heavy",
         },
+        smartAuraPosition = "DISABLED",
         width = 190,
       },
       pet = {
@@ -364,20 +333,25 @@ RUI.ElvUIProfile = {
         castbar = {
           insideInfoPanel = false,
           spark = false,
-          width = 260,
+          width = 365,
         },
         classbar = {
           enable = false,
           height = 0,
         },
         debuffs = {
+          countFont = "Fira Sans Heavy",
           enable = false,
+          maxDuration = 300,
+          perrow = 4,
+          priority = "",
+          sizeOverride = 0,
         },
         disableMouseoverGlow = true,
         health = {
           frequentUpdates = true,
           position = "RIGHT",
-          text_format = "|cfff01a26[health:current]|r",
+          text_format = "|cffff470a[health:current]|r",
           xOffset = -7,
         },
         height = 46,
@@ -386,7 +360,7 @@ RUI.ElvUIProfile = {
           fontOutline = "OUTLINE",
           fontSize = 11,
           position = "LEFT",
-          text_format = "|cfff01a26[name:medium]|r",
+          text_format = "|cffff470a[name:medium]|r",
           xOffset = 7,
         },
         orientation = "RIGHT",
@@ -424,14 +398,14 @@ RUI.ElvUIProfile = {
         resurrectIcon = {
           attachTo = "BOTTOMRIGHT",
         },
-        visibility = "[@raid6,noexists] hide;show",
+        visibility = "[@raid26,exists] hide; [@raid1,exists] show; hide",
       },
       raid40 = {
-        enable = false,
         height = 34,
         rdebuffs = {
           font = "Fira Sans Heavy",
         },
+        visibility = "[@raid26,exists] show; hide",
         width = 72,
       },
       target = {
@@ -442,7 +416,13 @@ RUI.ElvUIProfile = {
           enable = false,
         },
         buffs = {
+          anchorPoint = "TOPLEFT",
+          countFont = "Fira Sans Heavy",
           enable = false,
+          maxDuration = 300,
+          perrow = 4,
+          priority = "",
+          sizeOverride = 0,
         },
         castbar = {
           displayTarget = false,
@@ -452,13 +432,19 @@ RUI.ElvUIProfile = {
           width = 260,
         },
         debuffs = {
+          anchorPoint = "TOPLEFT",
+          attachTo = "FRAME",
+          countFont = "Fira Sans Heavy",
           enable = false,
+          perrow = 4,
+          priority = "",
+          sizeOverride = 0,
         },
         disableMouseoverGlow = true,
         health = {
           frequentUpdates = true,
           position = "LEFT",
-          text_format = "|cfff01a26[health:current]|r",
+          text_format = "|cffff470a[health:current]|r",
           xOffset = 7,
         },
         height = 46,
@@ -467,7 +453,7 @@ RUI.ElvUIProfile = {
           fontOutline = "OUTLINE",
           fontSize = 11,
           position = "RIGHT",
-          text_format = "|cfff01a26[name:medium]|r",
+          text_format = "|cffff470a[name:medium]|r",
           xOffset = -7,
         },
         orientation = "LEFT",
@@ -493,7 +479,7 @@ RUI.ElvUIProfile = {
           font = "Fira Sans Heavy",
           fontOutline = "OUTLINE",
           fontSize = 10,
-          text_format = "|cfff01a26[name:short]|r",
+          text_format = "|cffff470a[name:short]|r",
         },
         power = {
           enable = false,
