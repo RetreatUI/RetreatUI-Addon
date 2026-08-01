@@ -74,6 +74,7 @@ local function EnsureHeatBlacklist(E)
   filters.Blacklist.type = "Blacklist"
   filters.Blacklist.spells = filters.Blacklist.spells or {}
   filters.Blacklist.spells[HEAT_SPELL_ID] = {enable = true, priority = 0}
+  filters.Blacklist.spells[tostring(HEAT_SPELL_ID)] = {enable = true, priority = 0}
   filters.Blacklist.spells.Heat = {enable = true, priority = 0}
   return true
 end
@@ -165,11 +166,26 @@ local function RetreatElvUIProfileIsActive()
   return not E or CurrentElvUIProfile(E) == "RetreatUI"
 end
 
+local function ShouldHideDetailsChat()
+  return DetailsProfileIsActive() and RetreatElvUIProfileIsActive()
+end
+
 local function HideChatFrame(frame)
   if not frame then return false end
+  if frame.Hide then pcall(frame.Hide, frame) end
   if frame.SetAlpha then pcall(frame.SetAlpha, frame, 0) end
   if frame.EnableMouse then pcall(frame.EnableMouse, frame, false) end
   frame.RetreatUIHiddenBehindDetails = true
+
+  if not frame.RetreatUIHideHooked and type(frame.HookScript) == "function" then
+    frame.RetreatUIHideHooked = true
+    frame:HookScript("OnShow", function(chatFrame)
+      if ShouldHideDetailsChat() then
+        if chatFrame.Hide then pcall(chatFrame.Hide, chatFrame) end
+        if chatFrame.SetAlpha then pcall(chatFrame.SetAlpha, chatFrame, 0) end
+      end
+    end)
+  end
 
   local frameName = ObjectName(frame)
   if frameName then
@@ -186,7 +202,7 @@ local function HideChatFrame(frame)
 end
 
 function RUI:ApplyDetailsChatSeparation()
-  if not DetailsProfileIsActive() or not RetreatElvUIProfileIsActive() then return false end
+  if not ShouldHideDetailsChat() then return false end
 
   local hidden = false
   local count = tonumber(NUM_CHAT_WINDOWS) or 10
