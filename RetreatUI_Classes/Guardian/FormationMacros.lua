@@ -19,6 +19,11 @@ local MACROS = {
   {name="RUI BattleRush", ability="Battle Rush", formation="assault"},
 }
 
+-- The Ascension/Wrath macro API is safest with a macro-icon token rather than
+-- the full spell texture path returned by GetSpellInfo. #showtooltip replaces
+-- this question-mark icon with the correct ability icon after creation.
+local SAFE_MACRO_ICON = "INV_Misc_QuestionMark"
+
 local function Print(message)
   message = "|cff33ff77RetreatUI:|r " .. tostring(message or "")
   if DEFAULT_CHAT_FRAME and DEFAULT_CHAT_FRAME.AddMessage then
@@ -90,29 +95,78 @@ local function MacroBody(ability, formation, index)
   }, "\n")
 end
 
-local function MacroIcon(ability)
-  if type(GetSpellInfo) == "function" then
-    local _, _, icon = GetSpellInfo(ability)
-    if icon then return icon end
+local function MacroCounts()
+  if type(GetNumMacros) ~= "function" then return 0, 0 end
+  local ok, general, character = pcall(GetNumMacros)
+  if not ok then return 0, 0 end
+  return tonumber(general) or 0, tonumber(character) or 0
+end
+
+local function MacroLimits()
+  return tonumber(MAX_ACCOUNT_MACROS) or 36, tonumber(MAX_CHARACTER_MACROS) or 18
+end
+
+local function PrintMacroCounts(prefix)
+  local general, character = MacroCounts()
+  local generalLimit, characterLimit = MacroLimits()
+  Print(string.format("%s macro slots: General %d/%d, Character %d/%d.",
+    tostring(prefix or "Current"), general, generalLimit, character, characterLimit))
+end
+
+local function ExistingMacroIndex(name)
+  if type(GetMacroIndexByName) ~= "function" then return 0 end
+  local ok, index = pcall(GetMacroIndexByName, name)
+  return ok and (tonumber(index) or 0) or 0
+end
+
+local function TryCreateMacro(name, body, perCharacter)
+  if type(CreateMacro) ~= "function" then return false, nil, "CreateMacro unavailable" end
+
+  local beforeGeneral, beforeCharacter = MacroCounts()
+  local ok, result = pcall(CreateMacro, name, SAFE_MACRO_ICON, body, perCharacter)
+  local afterGeneral, afterCharacter = MacroCounts()
+  local index = ExistingMacroIndex(name)
+
+  if ok and (tonumber(result) or 0) > 0 then
+    return true, tonumber(result), nil
   end
-  return "INV_Misc_QuestionMark"
+  if index > 0 then return true, index, nil end
+  if perCharacter and afterCharacter > beforeCharacter then return true, nil, nil end
+  if not perCharacter and afterGeneral > beforeGeneral then return true, nil, nil end
+
+  return false, nil, ok and "CreateMacro returned no macro index" or tostring(result)
+end
+
+local function CreateWithFallback(name, body)
+  local errors = {}
+
+  -- Wrath-era clients normally expect numeric 1; some Ascension branches use
+  -- the later boolean form. Try both before falling back to a General macro.
+  for _, perCharacter in ipairs({1, true}) do
+    local ok, index, reason = TryCreateMacro(name, body, perCharacter)
+    if ok then return true, index, "created-character" end
+    errors[#errors + 1] = tostring(reason or "unknown character-macro error")
+  end
+
+  local ok, index, reason = TryCreateMacro(name, body, nil)
+  if ok then return true, index, "created-general" end
+  errors[#errors + 1] = tostring(reason or "unknown general-macro error")
+  return false, nil, table.concat(errors, " | ")
 end
 
 local function UpsertMacro(spec, formIndex)
-  if type(GetMacroIndexByName) ~= "function" then return false, "macro API unavailable" end
   local body = MacroBody(spec.ability, FORMATION_NAMES[spec.formation], formIndex)
-  local icon = MacroIcon(spec.ability)
-  local index = tonumber(GetMacroIndexByName(spec.name)) or 0
+  local index = ExistingMacroIndex(spec.name)
 
   if index > 0 and type(EditMacro) == "function" then
-    local ok = pcall(EditMacro, index, spec.name, icon, body)
-    return ok, ok and "updated" or "update failed"
+    local ok, result = pcall(EditMacro, index, spec.name, SAFE_MACRO_ICON, body)
+    if ok then return true, "updated" end
+    return false, "EditMacro failed: " .. tostring(result)
   end
 
-  if type(CreateMacro) ~= "function" then return false, "CreateMacro unavailable" end
-  local ok, created = pcall(CreateMacro, spec.name, icon, body, 1)
-  if not ok or not created then return false, "character macro slots may be full" end
-  return true, "created"
+  local ok, _, statusOrError = CreateWithFallback(spec.name, body)
+  if ok then return true, statusOrError end
+  return false, statusOrError
 end
 
 local function CreateFormationMacros()
@@ -123,7 +177,9 @@ local function CreateFormationMacros()
 
   local forms = DiscoverFormations()
   PrintFormationIndices(forms)
-  local created, updated, failed = 0, 0, 0
+  PrintMacroCounts("Before")
+
+  local characterCreated, generalCreated, updated, failed = 0, 0, 0, 0
 
   for _, spec in ipairs(MACROS) do
     local formIndex = forms[spec.formation]
@@ -132,8 +188,12 @@ local function CreateFormationMacros()
       Print("Skipped " .. spec.ability .. ": " .. FORMATION_NAMES[spec.formation] .. " index was not found.")
     else
       local ok, status = UpsertMacro(spec, formIndex)
-      if ok and status == "created" then created = created + 1
-      elseif ok then updated = updated + 1
+      if ok and status == "created-character" then
+        characterCreated = characterCreated + 1
+      elseif ok and status == "created-general" then
+        generalCreated = generalCreated + 1
+      elseif ok then
+        updated = updated + 1
       else
         failed = failed + 1
         Print("Could not create " .. spec.name .. ": " .. tostring(status) .. ".")
@@ -141,13 +201,17 @@ local function CreateFormationMacros()
     end
   end
 
-  Print(string.format("Formation macros complete: %d created, %d updated, %d skipped/failed.", created, updated, failed))
+  Print(string.format(
+    "Formation macros complete: %d Character created, %d General created, %d updated, %d failed.",
+    characterCreated, generalCreated, updated, failed))
+  PrintMacroCounts("After")
   Print("The first key press changes Formation when required; press again if Ascension's one-second Formation cooldown prevents the ability from firing immediately.")
 end
 
 SLASH_RUIGUARDIANFORMATIONS1 = "/ruiforms"
 SlashCmdList.RUIGUARDIANFORMATIONS = function()
   PrintFormationIndices(DiscoverFormations())
+  PrintMacroCounts("Current")
 end
 
 SLASH_RUIGUARDIANFORMATIONMACROS1 = "/ruiformacros"
