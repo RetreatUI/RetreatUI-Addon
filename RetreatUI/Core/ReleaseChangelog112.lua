@@ -3,16 +3,14 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.6",
-  summary = "Guardian Formation-dance macros and stable cooldown/aura HUD visuals.",
+  title = "RetreatUI v1.1.2-beta.7",
+  summary = "Ascension-compatible Guardian Formation macro creation and stable HUD visuals.",
   changes = {
-    "Fixed rapid HUD flickering when a duration-tracked Guardian ability was active while the same spell was on cooldown. Active aura timers now remain authoritative until the buff expires.",
-    "Coalesced Guardian Formation/cooldown event bursts into one short refresh window to reduce HUD stuttering after stance dancing and ability casts.",
-    "Stabilized brief zero-value cooldown samples from Ascension so icons no longer flash ready between cast, charge and action-bar updates.",
-    "Added /ruiforms to print the live stance indices exposed by Ascension for Tower, Assault and Line Formation.",
-    "Added /ruiformacros to create or update character-specific Formation-dance macros using the live stance indices instead of hardcoded assumptions.",
-    "Generated Tower Formation macros for Pulverize, Ram, Reprisal, Broad Sweep, Shield Challenge, Shield of Denial and Heavy Blow.",
-    "Generated a Line Formation macro for Advance and an Assault Formation macro for Battle Rush.",
-    "Retained direct Standard of Recovery aura tracking, Guardian tooltip-scanner safety, Heroic Resolve in utility, rank-safe Ram tracking and the restored left chat.",
+    "Fixed Guardian Formation macro creation on Ascension clients by using the safe dynamic question-mark macro icon instead of a full spell texture path.",
+    "Added real General and Character macro-slot counts before and after /ruiformacros so creation failures are no longer reported as a misleading full-slots message.",
+    "Added Wrath numeric and later boolean per-character API compatibility, with automatic General-macro fallback when the client rejects Character creation.",
+    "Added the actual CreateMacro or EditMacro error text when a macro still cannot be created.",
+    "Retained Tower Formation macros for Pulverize, Ram, Reprisal, Broad Sweep, Shield Challenge, Shield of Denial and Heavy Blow, plus Line Advance and Assault Battle Rush.",
+    "Retained the cooldown/aura ownership fix, Guardian event-burst coalescing and brief zero-cooldown stabilization from beta.6.",
   },
 }
