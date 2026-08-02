@@ -1,0 +1,49 @@
+name: Publish RetreatUI v1.1.2-beta.21
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/publish-v1.1.2-beta.21.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate package source
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '## Version: 1.1.2-beta.21' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.2-beta.21' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'Core\CharacterAdvancementSafety.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'RUI._characterAdvancementDirectQueriesDisabled = true' RetreatUI/Core/CharacterAdvancementSafety.lua
+          ! grep -Fq 'Core\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\RetreatCD.lua' RetreatUI/RetreatUI.toc
+      - name: Create ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          zip -qr RetreatUI_v1.1.2-beta.21.zip RetreatUI RetreatUI_Classes
+      - name: Publish pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG='v1.1.2-beta.21'
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          fi
+          gh release create "$TAG" RetreatUI_v1.1.2-beta.21.zip \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title 'RetreatUI v1.1.2-beta.21' \
+            --notes 'Native Character Advancement safety hotfix. RetreatUI now overrides direct native CA entry lookups and uses the live spellbook fallback. Includes beta.20 Buff Manager data. Party utility and interrupt tracking remain removed.' \
+            --prerelease
