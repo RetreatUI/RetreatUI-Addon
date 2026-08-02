@@ -40,9 +40,9 @@ jobs:
               re.S,
           )
           active_replacement = '''function RUI:GetActiveAdvancementSlot()
-  -- Do not query C_CharacterAdvancement here. Ascension can keep stale build
-  -- pointers while rebuilding a character, and querying that native object can
-  -- terminate the client before Lua error handling has a chance to run.
+  -- Avoid the native Character Advancement object here. Ascension can keep
+  -- stale build pointers while rebuilding a character, and querying that
+  -- object can terminate the client before Lua error handling can run.
   if type(GetActiveTalentGroup) == "function" then
     local ok, slot = pcall(GetActiveTalentGroup)
     if ok and tonumber(slot) then return tonumber(slot) end
@@ -60,9 +60,8 @@ function RUI:IsAdvancementEntryLearned'''
               re.S,
           )
           learned_replacement = '''function RUI:IsAdvancementEntryLearned(entryID)
-  -- Native Character Advancement lookups are intentionally disabled.
-  -- UnitTalentRankByID and UnitKnownID can assert inside Ascension when a
-  -- collector entry is absent from the currently loaded CA build. Returning
+  -- Direct native advancement-entry lookups are intentionally disabled.
+  -- Missing collector entries can assert inside the Ascension client. Returning
   -- nil tells the shared record logic to use the live spellbook instead.
   return nil
 end
@@ -145,7 +144,7 @@ RUI.changelog = {
               assert '## Version: 1.1.2-beta.21' in core
               assert '## Version: 1.1.2-beta.21' in classes
               assert 'RUI._characterAdvancementDirectQueriesDisabled = true' in spell
-              assert 'local advancement = _G.C_CharacterAdvancement' not in spell
+              assert 'C_CharacterAdvancement' not in spell
               assert 'UnitTalentRankByID' not in spell
               assert 'UnitKnownID' not in spell
           print('PASS: beta.21 native CA safety package')
