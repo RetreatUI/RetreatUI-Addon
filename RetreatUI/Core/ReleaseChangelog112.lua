@@ -3,13 +3,14 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.18",
-  summary = "Emergency rollback after Ascension Character Advancement assertion failure.",
+  title = "RetreatUI v1.1.2-beta.19",
+  summary = "Party utility and interrupt tracking removed completely for client stability.",
   changes = {
-    "Removed RetreatCD, RetreatCDUnitGuard and RetreatCDDiscoveryV2 from the live TOC load order after the native Ascension client assertion CharacterAdvancementBuildEntry::UpdatePointers: entry 14265 not found returned during live testing.",
-    "Retained the stable Party Utility V4 base, Buff Manager, class HUDs, stance layout and all existing profiles.",
-    "Kept the RetreatCD source files in the repository for isolated investigation, but none of them are loaded by beta.18.",
-    "This is a client-safety rollback; remote non-RetreatUI party cooldown detection is therefore disabled again.",
-    "No SavedVariables or user profiles are deleted or reset by this rollback.",
+    "Removed PartyUtility, Party Utility V4, RetreatCD, discovery, unit-event guard, combat-log hotfix, interrupt curation and legacy bridge code from the active addon and from main.",
+    "Removed the Party Trackers option from the modular installer and force-disabled the old partyUtility and partyInterrupts SavedVariable flags.",
+    "No party combat-log parser, party addon-message cooldown sync, interrupt frame or utility tracker is initialized in this build.",
+    "Retained Buff Manager, class HUDs, trinket tracking, TurboPlates, NPC ability tracking, profiles and user assignments unchanged.",
+    "The removed tracker implementations remain available in Git history for a later isolated redesign.",
+    "A full game and launcher restart is required so no Lua state from an older build remains in memory.",
   },
 }
