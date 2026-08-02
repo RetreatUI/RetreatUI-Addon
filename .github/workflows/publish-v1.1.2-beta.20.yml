@@ -1,0 +1,106 @@
+name: Publish RetreatUI v1.1.2-beta.20
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/publish-v1.1.2-beta.20.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-retreatui-v1.1.2-beta.20
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Validate beta.20 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          grep -Fq '## Version: 1.1.2-beta.20' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.2-beta.20' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'local EQUIVALENT_BUFFS = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'MP5 = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'RESOURCE_COST = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Brutal Shout' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Enduring Shout' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Wild Blessing' RetreatUI/Core/BuffManager.lua
+          ! grep -Fq 'Core\\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\RetreatCD.lua' RetreatUI/RetreatUI.toc
+
+      - name: Validate Lua 5.1 syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Package and verify ZIP
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          zip -qr build/RetreatUI_v1.1.2-beta.20.zip RetreatUI RetreatUI_Classes
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+
+          archive = Path('build/RetreatUI_v1.1.2-beta.20.zip')
+          with zipfile.ZipFile(archive) as z:
+              names = z.namelist()
+              roots = sorted({name.split('/', 1)[0] for name in names if name})
+              assert roots == ['RetreatUI', 'RetreatUI_Classes'], roots
+              core_toc = z.read('RetreatUI/RetreatUI.toc').decode('utf-8')
+              classes_toc = z.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
+              buffs = z.read('RetreatUI/Core/BuffManager.lua').decode('utf-8')
+              assert '## Version: 1.1.2-beta.20' in core_toc
+              assert '## Version: 1.1.2-beta.20' in classes_toc
+              assert 'MP5 = {' in buffs and 'RESOURCE_COST = {' in buffs
+              assert 'Brutal Shout' in buffs and 'Enduring Shout' in buffs and 'Wild Blessing' in buffs
+              assert 'Core\\PartyUtility.lua' not in core_toc
+              assert 'Core\\PartyUtilityV4.lua' not in core_toc
+              assert 'Core\\RetreatCD.lua' not in core_toc
+          print('PASS: RetreatUI v1.1.2-beta.20 package')
+          PY
+
+      - name: Publish GitHub pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG='v1.1.2-beta.20'
+          TARGET=$(git rev-parse HEAD^)
+          ASSET='build/RetreatUI_v1.1.2-beta.20.zip'
+          NOTES=$(cat <<'EOF'
+          - Rebuilt Buff Manager coverage from the verified Conquest of Azeroth raid-buff table.
+          - Separated MP5 from resource-cost reduction so the two effects no longer incorrectly satisfy each other.
+          - Added Barbarian Brutal Shout and Enduring Shout, plus Ranger Wild Blessing.
+          - Corrected multi-effect coverage for Man'ari Intuition, Earthen Endurance, Mark of Zeliek, Devotion of Grace, Beetle Pheromones, Spirit Wuju and Knight's Edict.
+          - Mark of Blaumeux now covers spell power only; Honor remains exact-aura-only until its effect is verified.
+          - Party utility and interrupt tracking remain fully removed.
+          EOF
+          )
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          fi
+
+          gh release create "$TAG" "$ASSET" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$TARGET" \
+            --title 'RetreatUI v1.1.2-beta.20' \
+            --notes "$NOTES" \
+            --prerelease
