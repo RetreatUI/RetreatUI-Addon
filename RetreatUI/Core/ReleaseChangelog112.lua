@@ -3,18 +3,15 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.15",
-  summary = "RetreatCD: a safer OmniCD-style party cooldown event engine for CoA.",
+  title = "RetreatUI v1.1.2-beta.16",
+  summary = "Cleaner RetreatCD discovery after the first successful live party test.",
   changes = {
-    "Replaced the beta.14 bridge in the load order with the new isolated RetreatCD engine while keeping the old bridge file available for an easy rollback.",
-    "Combines party and party-pet UNIT_SPELLCAST_SUCCEEDED events with direct legacy COMBAT_LOG_EVENT_UNFILTERED arguments and a read-only API fallback.",
-    "Maps pet casts back to their party owner, stores activity by owner GUID and deduplicates the same cast when both event sources report it.",
-    "Uses name-first matching and binds changed runtime spell IDs to the stable ability name for the rest of the session.",
-    "Keeps RetreatUI addon sync and the existing Party Utility V4 display, so players with RetreatUI still provide the most exact cooldown state.",
-    "Adds support for shared cooldown metadata and cooldown-reset metadata without scanning tooltips or Character Advancement entries.",
-    "Includes verified Heartchill data, provisional Spellburn and Shield of Denial fallbacks, Chainwhip, Arcane Torrent and standard 3.3.5 interrupt fallbacks.",
-    "Unknown abilities that actually fire SPELL_INTERRUPT are learned safely for the current session with a conservative fallback duration.",
-    "Added /ruicd status, /ruicd unknown, /ruicd clear, /ruicd refresh and /ruicd find <ability> diagnostics.",
-    "Never replaces CombatLogGetCurrentEventInfo, never calls CombatLogClearEntries and never mutates the RetreatUI spell database.",
+    "Confirmed that RetreatCD receives Ascension's direct legacy combat-log payload and correctly associates casts with their party owners.",
+    "Added a separate discovery filter so ordinary rotational spells no longer dominate /ruicd unknown.",
+    "Utility candidates are prioritized when they fire SPELL_INTERRUPT, have a utility-like name, or show a clearly long observed interval between casts.",
+    "Marked the first live-test rotation noise set, including Blade of the Empire, Burning Slap, the Ballads, Sanity Tap and other rotational/offensive abilities, as hidden from the candidate view.",
+    "Added /ruicd raw to retain the complete unmatched-cast list for deeper development work.",
+    "The discovery filter maintains its own read-only event observations and does not change RetreatCD's cooldown state, Party Utility V4, spell database or combat-log functions.",
+    "Both RetreatUI addon sync and the safe UNIT_SPELLCAST_SUCCEEDED plus legacy combat-log engine remain unchanged from beta.15.",
   },
 }
