@@ -1,0 +1,37 @@
+name: Audit direct Character Advancement API usage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ca-api-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build CA API audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo '# Direct Character Advancement API audit'
+            echo
+            echo 'Generated from main.'
+            echo
+            grep -RInE 'C_CharacterAdvancement|UnitTalentRankByID|UnitKnownID|GetEntriesByClass|GetInspectInfo|ASCENSION_KNOWN_ENTRIES_UPDATED|ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED' RetreatUI RetreatUI_Classes --include='*.lua' || true
+          } > CA_API_AUDIT.txt
+      - name: Commit audit report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add CA_API_AUDIT.txt
+          git commit -m 'Record direct Character Advancement API audit'
+          git push origin HEAD:main
