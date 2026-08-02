@@ -3,16 +3,18 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.14",
-  summary = "Safe remote party cooldown tracking for Ascension's legacy combat log.",
+  title = "RetreatUI v1.1.2-beta.15",
+  summary = "RetreatCD: a safer OmniCD-style party cooldown event engine for CoA.",
   changes = {
-    "Added a small isolated bridge that prefers the legacy COMBAT_LOG_EVENT_UNFILTERED arguments Ascension actually sends and only reads CombatLogGetCurrentEventInfo as a fallback.",
-    "Removed the need to replace or temporarily disable any global combat-log function.",
-    "Uses name-first ability matching so a changed runtime spell ID can still resolve through the stable displayed spell name.",
-    "Feeds verified remote casts into the existing stable Party Utility V4 sync protocol instead of replacing the tracker UI or cooldown state engine.",
-    "Tracks known CoA interrupts Heartchill, Spellburn, Shield of Denial and Chainwhip, plus Arcane Torrent and standard kick names; unknown real kicks can be learned from an actual SPELL_INTERRUPT event.",
-    "Does not classify broad Data Collector interrupt entries as direct kicks, and performs no new tooltip scanning or runtime spell-database mutation.",
-    "Stops the Party Utility tracker from redrawing for every unrelated combat-log event; only relevant party casts trigger tracker updates.",
-    "Added /ruiutilitydebug to report whether the bridge is active, which payload source is being received and the latest matched party ability.",
+    "Replaced the beta.14 bridge in the load order with the new isolated RetreatCD engine while keeping the old bridge file available for an easy rollback.",
+    "Combines party and party-pet UNIT_SPELLCAST_SUCCEEDED events with direct legacy COMBAT_LOG_EVENT_UNFILTERED arguments and a read-only API fallback.",
+    "Maps pet casts back to their party owner, stores activity by owner GUID and deduplicates the same cast when both event sources report it.",
+    "Uses name-first matching and binds changed runtime spell IDs to the stable ability name for the rest of the session.",
+    "Keeps RetreatUI addon sync and the existing Party Utility V4 display, so players with RetreatUI still provide the most exact cooldown state.",
+    "Adds support for shared cooldown metadata and cooldown-reset metadata without scanning tooltips or Character Advancement entries.",
+    "Includes verified Heartchill data, provisional Spellburn and Shield of Denial fallbacks, Chainwhip, Arcane Torrent and standard 3.3.5 interrupt fallbacks.",
+    "Unknown abilities that actually fire SPELL_INTERRUPT are learned safely for the current session with a conservative fallback duration.",
+    "Added /ruicd status, /ruicd unknown, /ruicd clear, /ruicd refresh and /ruicd find <ability> diagnostics.",
+    "Never replaces CombatLogGetCurrentEventInfo, never calls CombatLogClearEntries and never mutates the RetreatUI spell database.",
   },
 }
