@@ -3,14 +3,16 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.19",
-  summary = "Party utility and interrupt tracking removed completely for client stability.",
+  title = "RetreatUI v1.1.2-beta.20",
+  summary = "Buff Manager raid-buff coverage rebuilt from the verified Conquest of Azeroth class-buff table.",
   changes = {
-    "Removed PartyUtility, Party Utility V4, RetreatCD, discovery, unit-event guard, combat-log hotfix, interrupt curation and legacy bridge code from the active addon and from main.",
-    "Removed the Party Trackers option from the modular installer and force-disabled the old partyUtility and partyInterrupts SavedVariable flags.",
-    "No party combat-log parser, party addon-message cooldown sync, interrupt frame or utility tracker is initialized in this build.",
-    "Retained Buff Manager, class HUDs, trinket tracking, TurboPlates, NPC ability tracking, profiles and user assignments unchanged.",
-    "The removed tracker implementations remain available in Git history for a later isolated redesign.",
-    "A full game and launcher restart is required so no Lua state from an older build remains in memory.",
+    "Replaced the Buff Manager raid-buff catalogue and equivalent-effect groups with the supplied Conquest of Azeroth class-buff reference.",
+    "Separated mana regeneration (MP5) from resource-cost reduction so one effect no longer incorrectly satisfies the other.",
+    "Added Barbarian Brutal Shout and Enduring Shout, plus Ranger Wild Blessing, using safe name-first spellbook resolution where IDs are not yet verified.",
+    "Corrected multi-effect coverage for Man'ari Intuition, Earthen Endurance, Mark of Zeliek, Devotion of Grace, Beetle Pheromones, Spirit Wuju and Knight's Edict.",
+    "Removed unverified raid-effect mappings and extra non-reference families from the active Buff Manager catalogue, including Demonfire Pact, Chill of the Tomb, Footpad's Adaptation and Runemaster resistance inscriptions.",
+    "Honor remains exact-aura-only until its effect is confirmed; Mark of Blaumeux now covers spell power only.",
+    "Added spelling aliases for Alysrazor/Alyrazor, Dextrous/Dexterous, Perseverance/Perseverence and optional 'the' variants in Runemaster Etchings.",
+    "Party utility and interrupt tracking remain fully removed and are not reintroduced by this update.",
   },
 }
