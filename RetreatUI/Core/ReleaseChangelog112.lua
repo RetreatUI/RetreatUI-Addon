@@ -3,13 +3,13 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.22",
-  summary = "Emergency full-code recovery to the last user-confirmed stable baseline.",
+  title = "RetreatUI v1.1.2-beta.23",
+  summary = "Stable beta.22 recovery baseline with the verified CoA raid-buff catalog restored.",
   changes = {
-    "Reset the complete active addon source to the beta.13 codebase that was confirmed stable in live Ascension testing.",
-    "Removed Party Utility and interrupt tracking from the addon load order and source package.",
-    "Added a recovery safety gate that removes Party Trackers from the modular installer and forces all saved tracker settings off.",
-    "Rolled back every beta.14 through beta.21 runtime change for isolated review before anything is reintroduced.",
-    "Preserved existing profiles and SavedVariables outside the retired party tracker settings.",
+    "Restored only the verified Buff Manager catalog previously tested in beta.20.",
+    "Separated MP5 from resource-cost reduction so those effects no longer satisfy each other incorrectly.",
+    "Restored Barbarian Brutal Shout and Enduring Shout, Ranger Wild Blessing, and the verified multi-effect raid buffs.",
+    "Kept the beta.22 recovery codebase unchanged outside BuffManager.lua, version metadata and this changelog.",
+    "Party utility and interrupt tracking remain physically removed and disabled.",
   },
 }

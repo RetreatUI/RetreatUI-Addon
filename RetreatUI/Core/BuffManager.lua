@@ -122,76 +122,104 @@ end
 -- character's own learned spell name and highest learned rank.
 local EQUIVALENT_BUFFS = {
   STAMINA = {
-    "Mark of Rivendare", "Greater Mark of Rivendare", "Enduring Shout",
+    "Enduring Shout",
     "Sanguinary Offering", "Greater Sanguinary Offering",
-    "Foul Mandate", "Greater Foul Mandate", "Rite of Resolve", "Greater Rite of Resolve",
+    "Mark of Rivendare", "Greater Mark of Rivendare",
+    "Foul Mandate", "Greater Foul Mandate",
+    "Rite of Resolve", "Greater Rite of Resolve",
   },
   STRENGTH = {
-    "Mark of Korth'azz", "Greater Mark of Korth'azz", "Honor", "Greater Honor",
+    "Mark of Korth'azz", "Greater Mark of Korth'azz",
     "Rite of Power", "Greater Rite of Power",
   },
-  MANA = {
-    "Devotion of Grace", "Greater Devotion of Grace", "Mark of Zeliek", "Greater Mark of Zeliek",
-    "Etching of the Magi", "Greater Etching of the Magi", "Resourceful Wuju", "Greater Resourceful Wuju",
-    "Whispers of Y'Shaarj", "Greater Whispers of Y'Shaarj", "Grove Instinct", "Greater Grove Instinct",
-    "Seal of Al'ar", "Greater Seal of Al'ar", "Call of the Wind", "Greater Call of the Wind",
-    "Mana Module", "Greater Mana Module", "Void Blessing", "Greater Void Blessing",
+  MP5 = {
+    "Whispers of Y'Shaarj", "Greater Whispers of Y'Shaarj",
+    "Grove Instinct", "Greater Grove Instinct",
+    "Seal of Al'ar", "Greater Seal of Al'ar",
+    "Call of the Wind", "Greater Call of the Wind",
+    "Devotion of Grace", "Greater Devotion of Grace",
+    "Mana Module", "Greater Mana Module",
+  },
+  RESOURCE_COST = {
+    "Mark of Zeliek", "Greater Mark of Zeliek",
+    "Etching of the Magi", "Greater Etching of the Magi",
+    "Etching of Magi", "Greater Etching of Magi",
+    "Devotion of Grace", "Greater Devotion of Grace",
+    "Resourceful Wuju", "Greater Resourceful Wuju",
   },
   ATTACK_POWER = {
-    "Devotion of Dawn", "Greater Devotion of Dawn", "Power Module", "Greater Power Module",
-    "Power Wuju", "Greater Power Wuju", "Primal Instinct", "Greater Primal Instinct",
     "Woodsman's Adaptation", "Greater Woodsman's Adaptation",
+    "Primal Instinct", "Greater Primal Instinct",
+    "Devotion of Dawn", "Greater Devotion of Dawn",
+    "Power Module", "Greater Power Module",
+    "Power Wuju", "Greater Power Wuju",
   },
   STATS = {
-    "Whispers of N'Zoth", "Greater Whispers of N'Zoth", "Devotion of Emperors", "Greater Devotion of Emperors",
-    "Crusader's Oath", "Greater Crusader's Oath", "Etching of the Leylines", "Greater Etching of the Leylines",
+    "Man'ari Intuition", "Greater Man'ari Intuition",
+    "Earthen Endurance", "Greater Earthen Endurance",
+    "Whispers of N'Zoth", "Greater Whispers of N'Zoth",
+    "Etching of the Leylines", "Greater Etching of the Leylines",
+    "Etching of Leylines", "Greater Etching of Leylines",
+    "Devotion of Emperors", "Greater Devotion of Emperors",
     "Gift of Fervor", "Greater Gift of Fervor",
+    "Crusader's Oath", "Greater Crusader's Oath",
+    "Beetle Pheromones", "Greater Beetle Pheromones",
+    "Knight's Edict", "Greater Knight's Edict",
   },
   SPELL_POWER = {
-    "Mark of Blaumeux", "Greater Mark of Blaumeux", "Whispers of C'Thun", "Greater Whispers of C'Thun",
-    "Devotion of Radiance", "Greater Devotion of Radiance", "Witching Edict", "Greater Witching Edict",
-    "Toxic Pheromones", "Greater Toxic Pheromones", "Grim Mandate", "Greater Grim Mandate",
+    "Whispers of C'Thun", "Greater Whispers of C'Thun",
+    "Mark of Blaumeux", "Greater Mark of Blaumeux",
+    "Grim Mandate", "Greater Grim Mandate",
+    "Devotion of Radiance", "Greater Devotion of Radiance",
+    "Toxic Pheromones", "Greater Toxic Pheromones",
+    "Witching Edict", "Greater Witching Edict",
   },
   AGILITY = {
-    "Brutal Shout", "Illidari Intuition", "Greater Illidari Intuition",
-    "Etching of the Dextrous", "Greater Etching of the Dextrous", "Gift of Zeal", "Greater Gift of Zeal",
-    "Inquisitor's Edict", "Greater Inquisitor's Edict", "Spider Pheromones", "Greater Spider Pheromones",
+    "Brutal Shout",
+    "Illidari Intuition", "Greater Illidari Intuition",
+    "Etching of the Dextrous", "Greater Etching of the Dextrous",
+    "Etching of Dexterous", "Greater Etching of Dexterous",
+    "Gift of Zeal", "Greater Gift of Zeal",
+    "Spider Pheromones", "Greater Spider Pheromones",
+    "Inquisitor's Edict", "Greater Inquisitor's Edict",
   },
   ARMOR = {
-    "Earthen Endurance", "Greater Earthen Endurance", "Man'ari Intuition", "Greater Man'ari Intuition",
-    "Footpad's Adaptation", "Greater Footpad's Adaptation", "Knight's Edict", "Greater Knight's Edict",
+    "Man'ari Intuition", "Greater Man'ari Intuition",
+    "Earthen Endurance", "Greater Earthen Endurance",
     "Beetle Pheromones", "Greater Beetle Pheromones",
+    "Knight's Edict", "Greater Knight's Edict",
   },
   INTELLECT = {
-    "Nozdormu's Wisdom", "Greater Nozdormu's Wisdom", "Seal of Alysrazor", "Greater Seal of Alysrazor",
-    "Celestial Mind", "Greater Celestial Mind", "Call of the Storm", "Greater Call of the Storm",
+    "Nozdormu's Wisdom", "Greater Nozdormu's Wisdom",
+    "Seal of Alysrazor", "Greater Seal of Alysrazor",
+    "Seal of Alyrazor", "Greater Seal of Alyrazor",
+    "Celestial Mind", "Greater Celestial Mind",
+    "Call of the Storm", "Greater Call of the Storm",
   },
   SPIRIT = {
-    "Chromie's Wisdom", "Greater Chromie's Wisdom", "Bloodsoaked Offering", "Greater Bloodsoaked Offering",
+    "Chromie's Wisdom", "Greater Chromie's Wisdom",
     "Spirit Wuju", "Greater Spirit Wuju",
   },
   ARCANE_RESISTANCE = {
-    "Arcane Protection", "Greater Arcane Protection", "Inscription: Arcane", "Greater Inscription: Arcane",
     "Mark of Zeliek", "Greater Mark of Zeliek",
+    "Arcane Protection", "Greater Arcane Protection",
   },
   FIRE_RESISTANCE = {
-    "Fire Protection", "Greater Fire Protection", "Inscription: Fire", "Greater Inscription: Fire",
     "Mark of Korth'azz", "Greater Mark of Korth'azz",
+    "Fire Protection", "Greater Fire Protection",
   },
   FROST_RESISTANCE = {
-    "Chill of the Tomb", "Greater Chill of the Tomb", "Inscription: Frost", "Greater Inscription: Frost",
     "Mark of Rivendare", "Greater Mark of Rivendare",
   },
   NATURE_RESISTANCE = {
-    "Essence of Nature", "Greater Essence of Nature", "Inscription: Nature", "Greater Inscription: Nature",
-    "Wild Blessing",
-  },
-  SHADOW_RESISTANCE = {
-    "Shadow Protection", "Prayer of Shadow Protection", "Mark of Blaumeux", "Greater Mark of Blaumeux",
+    "Essence of Nature", "Greater Essence of Nature",
+    "Wild Blessing", "Greater Wild Blessing",
   },
   ALL_RESISTANCE = {
-    "Call of the Lightning", "Greater Call of the Lightning", "Rite of Perseverance", "Greater Rite of Perseverance",
-    "Mark of the Wild", "Gift of the Wild", "Earthen Endurance", "Greater Earthen Endurance",
+    "Earthen Endurance", "Greater Earthen Endurance",
+    "Rite of Perseverance", "Greater Rite of Perseverance",
+    "Rite of Perseverence", "Greater Rite of Perseverence",
+    "Call of the Lightning", "Greater Call of the Lightning",
     "Spirit Wuju", "Greater Spirit Wuju",
   },
 }
@@ -208,16 +236,21 @@ end
 -- are the first example: one class/spec assignment can select Sanguinary,
 -- Bloodsoaked, OFF or the automatic class/resource rule, but never both.
 local BUFF_CATALOG = {
+  Barbarian = {
+    {key="brutal_shout", label="Brutal Shout", assignment="ALL", choices={
+      BuffPair("brutal", "Brutal Shout", nil, nil, nil, {categories={"AGILITY"}}),
+    }},
+    {key="enduring_shout", label="Enduring Shout", assignment="ALL", choices={
+      BuffPair("enduring", "Enduring Shout", nil, nil, nil, {categories={"STAMINA"}}),
+    }},
+  },
+
   Bloodmage = {
     {key="bloodthorns", label="Bloodthorns", assignment="ALL", choices={
       BuffPair("bloodthorns", "Bloodthorns", 501664, "Greater Bloodthorns", 572116),
     }},
-    {key="offering", label="Offering", assignment="BLOODMAGE_OFFERING", choices={
-      BuffPair("slaughterhouse", "Slaughterhouse Offering", 1108493, nil, nil, {
-        auraNames={"Slaughterhouse Offering"}, auraIDs={1108493},
-      }),
+    {key="offering", label="Sanguinary Offering", assignment="ALL", choices={
       BuffPair("sanguinary", "Sanguinary Offering", 707337, "Greater Sanguinary Offering", 680299, {categories={"STAMINA"}}),
-      BuffPair("bloodsoaked", "Bloodsoaked Offering", 572401, "Greater Bloodsoaked Offering", 572404, {categories={"SPIRIT"}}),
     }},
   },
 
@@ -238,27 +271,22 @@ local BUFF_CATALOG = {
       BuffPair("cthun", "Whispers of C'Thun", 572905, "Greater Whispers of C'thun", 573067, {categories={"SPELL_POWER"}}),
     }},
     {key="whispers_yshaarj", label="Whispers of Y'Shaarj", assignment="ALL", choices={
-      BuffPair("yshaarj", "Whispers of Y'shaarj", 561391, "Greater Whispers of Y'shaarj", 561392, {categories={"MANA"}}),
+      BuffPair("yshaarj", "Whispers of Y'shaarj", 561391, "Greater Whispers of Y'shaarj", 561392, {categories={"MP5"}}),
     }},
   },
 
   Felsworn = {
-    {key="demonfire_pact", label="Demonfire Pact", assignment="ALL", choices={
-      BuffPair("demonfire_pact", "Demonfire Pact", 800031, nil, nil, {
-        auraNames={"Demonfire Pact"}, auraIDs={800031},
-      }),
-    }},
     {key="illidari_intuition", label="Illidari Intuition", assignment="ALL", choices={
       BuffPair("agility", "Illidari Intuition", 501329, "Greater Illidari Intuition", 680308, {categories={"AGILITY"}}),
     }},
     {key="manari_intuition", label="Man'ari Intuition", assignment="ALL", choices={
-      BuffPair("armor_stats", "Man'ari Intuition", 523484, "Greater Man'ari Intuition", 523495, {categories={"ARMOR"}}),
+      BuffPair("armor_stats", "Man'ari Intuition", 523484, "Greater Man'ari Intuition", 523495, {categories={"ARMOR", "STATS"}}),
     }},
   },
 
   Guardian = {
     {key="honor", label="Honor", assignment="ALL", choices={
-      BuffPair("strength", "Honor", 301232, "Greater Honor", 680280, {categories={"STRENGTH"}}),
+      BuffPair("honor", "Honor", 301232, "Greater Honor", 680280),
     }},
     {key="fire_protection", label="Fire Protection", assignment="ALL", choices={
       BuffPair("fire_resistance", "Fire Protection", 582535, "Greater Fire Protection", 582536, {categories={"FIRE_RESISTANCE"}}),
@@ -268,9 +296,9 @@ local BUFF_CATALOG = {
   ["Knight of Xoroth"] = {
     {key="marks_of_xoroth", label="Marks of Xoroth", assignment="KNIGHT_MARK", choices={
       BuffPair("rivendare", "Mark of Rivendare", 803670, "Greater Mark of Rivendare", 803730, {categories={"STAMINA", "FROST_RESISTANCE"}}),
-      BuffPair("korthazz", "Mark of Korth'azz", 707345, "Greater Mark of Korth’azz", 680300, {categories={"STRENGTH", "FIRE_RESISTANCE"}}),
-      BuffPair("zeliek", "Mark of Zeliek", 803671, "Greater Mark of Zeliek", 803731, {categories={"MANA", "ARCANE_RESISTANCE"}}),
-      BuffPair("blaumeux", "Mark of Blaumeux", 707696, "Greater Mark of Blaumeux", 712460, {categories={"SPELL_POWER", "SHADOW_RESISTANCE"}}),
+      BuffPair("korthazz", "Mark of Korth'azz", 707345, "Greater Mark of Korth’azz", 680300, {categories={"STRENGTH", "FIRE_RESISTANCE"}, auraNames={"Mark of Korth’azz", "Greater Mark of Korth'azz"}}),
+      BuffPair("zeliek", "Mark of Zeliek", 803671, "Greater Mark of Zeliek", 803731, {categories={"ARCANE_RESISTANCE", "RESOURCE_COST"}}),
+      BuffPair("blaumeux", "Mark of Blaumeux", 707696, "Greater Mark of Blaumeux", 712460, {categories={"SPELL_POWER"}}),
     }},
   },
 
@@ -281,20 +309,17 @@ local BUFF_CATALOG = {
     {key="grim_mandate", label="Grim Mandate", assignment="ALL", choices={
       BuffPair("grim", "Grim Mandate", 572789, "Greater Grim Mandate", 572790, {categories={"SPELL_POWER"}}),
     }},
-    {key="chill_tomb", label="Chill of the Tomb", assignment="ALL", choices={
-      BuffPair("chill", "Chill of the Tomb", 572176, "Greater Chill of the Tomb", 572177, {categories={"FROST_RESISTANCE"}}),
-    }},
   },
 
   Primalist = {
     {key="grove_instinct", label="Grove Instinct", assignment="ALL", choices={
-      BuffPair("grove", "Grove Instinct", 572816, "Greater Grove Instinct", 572817, {categories={"MANA"}}),
+      BuffPair("grove", "Grove Instinct", 572816, "Greater Grove Instinct", 572817, {categories={"MP5"}}),
     }},
     {key="primal_instinct", label="Primal Instinct", assignment="ALL", choices={
       BuffPair("primal", "Primal Instinct", 573349, "Greater Primal Instinct", 680310, {categories={"ATTACK_POWER"}}),
     }},
     {key="earthen_endurance", label="Earthen Endurance", assignment="ALL", choices={
-      BuffPair("wild_defense", "Earthen Endurance", 570755, "Greater Earthen Endurance", 570756, {categories={"ARMOR", "ALL_RESISTANCE"}}),
+      BuffPair("wild_defense", "Earthen Endurance", 570755, "Greater Earthen Endurance", 570756, {categories={"ARMOR", "STATS", "ALL_RESISTANCE"}}),
     }},
     {key="essence_of_nature", label="Essence of Nature", assignment="ALL", choices={
       BuffPair("nature_resistance", "Essence of Nature", 581315, "Greater Essence of Nature", 582261, {categories={"NATURE_RESISTANCE"}}),
@@ -303,19 +328,19 @@ local BUFF_CATALOG = {
 
   Pyromancer = {
     {key="seal_alar", label="Seal of Al'ar", assignment="ALL", choices={
-      BuffPair("alar", "Seal of Al'ar", 808012, "Greater Seal of Al'ar", 808060, {categories={"MANA"}}),
+      BuffPair("alar", "Seal of Al'ar", 808012, "Greater Seal of Al'ar", 808060, {categories={"MP5"}}),
     }},
     {key="seal_alysrazor", label="Seal of Alysrazor", assignment="ALL", choices={
-      BuffPair("alysrazor", "Seal of Alysrazor", 800196, "Greater Seal of Alysrazor", 570170, {categories={"INTELLECT"}}),
+      BuffPair("alysrazor", "Seal of Alysrazor", 800196, "Greater Seal of Alysrazor", 570170, {categories={"INTELLECT"}, auraNames={"Seal of Alyrazor", "Greater Seal of Alyrazor"}}),
     }},
   },
 
   Ranger = {
-    {key="footpads_adaptation", label="Footpad's Adaptation", assignment="ALL", choices={
-      BuffPair("armor_stats", "Footpad's Adaptation", 523494, "Greater Footpad's Adaptation", 523513, {categories={"ARMOR"}}),
-    }},
     {key="woodsmans_adaptation", label="Woodsman's Adaptation", assignment="ALL", choices={
       BuffPair("attack_power", "Woodsman's Adaptation", 803666, "Greater Woodsman's Adaptation", 680294, {categories={"ATTACK_POWER"}}),
+    }},
+    {key="wild_blessing", label="Wild Blessing", assignment="ALL", choices={
+      BuffPair("nature_resistance", "Wild Blessing", nil, "Greater Wild Blessing", nil, {categories={"NATURE_RESISTANCE"}}),
     }},
   },
 
@@ -327,31 +352,19 @@ local BUFF_CATALOG = {
       BuffPair("resolve", "Rite of Resolve", 803314, "Greater Rite of Resolve", 680298, {categories={"STAMINA"}}),
     }},
     {key="rite_perseverance", label="Rite of Perseverance", assignment="ALL", choices={
-      BuffPair("perseverance", "Rite of Perseverance", 575841, "Greater Rite of Perseverance", 575842, {categories={"ALL_RESISTANCE"}}),
+      BuffPair("perseverance", "Rite of Perseverance", 575841, "Greater Rite of Perseverance", 575842, {categories={"ALL_RESISTANCE"}, auraNames={"Rite of Perseverence", "Greater Rite of Perseverence"}}),
     }},
   },
 
   Runemaster = {
     {key="etching_leylines", label="Etching of the Leylines", assignment="ALL", choices={
-      BuffPair("leylines", "Etching of the Leylines", 561236, "Greater Etching of the Leylines", 561242, {categories={"STATS"}}),
+      BuffPair("leylines", "Etching of the Leylines", 561236, "Greater Etching of the Leylines", 561242, {categories={"STATS"}, auraNames={"Etching of Leylines", "Greater Etching of Leylines"}}),
     }},
     {key="etching_dextrous", label="Etching of the Dextrous", assignment="ALL", choices={
-      BuffPair("dextrous", "Etching of the Dextrous", 561240, "Greater Etching of the Dextrous", 561241, {categories={"AGILITY"}}),
+      BuffPair("dextrous", "Etching of the Dextrous", 561240, "Greater Etching of the Dextrous", 561241, {categories={"AGILITY"}, auraNames={"Etching of Dexterous", "Greater Etching of Dexterous"}}),
     }},
     {key="etching_magi", label="Etching of the Magi", assignment="ALL", choices={
-      BuffPair("magi", "Etching of the Magi", 560295, "Greater Etching of the Magi", 561243, {categories={"MANA"}}),
-    }},
-    {key="inscription_arcane", label="Inscription: Arcane", assignment="ALL", choices={
-      BuffPair("arcane", "Inscription: Arcane", 561254, "Greater Inscription: Arcane", 561255, {categories={"ARCANE_RESISTANCE"}}),
-    }},
-    {key="inscription_fire", label="Inscription: Fire", assignment="ALL", choices={
-      BuffPair("fire", "Inscription: Fire", 561250, "Greater Inscription: Fire", 561251, {categories={"FIRE_RESISTANCE"}}),
-    }},
-    {key="inscription_frost", label="Inscription: Frost", assignment="ALL", choices={
-      BuffPair("frost", "Inscription: Frost", 561246, "Greater Inscription: Frost", 561247, {categories={"FROST_RESISTANCE"}}),
-    }},
-    {key="inscription_nature", label="Inscription: Nature", assignment="ALL", choices={
-      BuffPair("nature", "Inscription: Nature", 561258, "Greater Inscription: Nature", 561259, {categories={"NATURE_RESISTANCE"}}),
+      BuffPair("magi", "Etching of the Magi", 560295, "Greater Etching of the Magi", 561243, {categories={"RESOURCE_COST"}, auraNames={"Etching of Magi", "Greater Etching of Magi"}}),
     }},
   },
 
@@ -366,7 +379,7 @@ local BUFF_CATALOG = {
 
   Stormbringer = {
     {key="call_wind", label="Call of the Wind", assignment="ALL", choices={
-      BuffPair("wind", "Call of the Wind", 503323, "Greater Call of the Wind", 680291, {categories={"MANA"}}),
+      BuffPair("wind", "Call of the Wind", 503323, "Greater Call of the Wind", 680291, {categories={"MP5"}}),
     }},
     {key="call_storm", label="Call of the Storm", assignment="ALL", choices={
       BuffPair("storm", "Call of the Storm", 578315, "Greater Call of the Storm", 578316, {categories={"INTELLECT"}}),
@@ -387,15 +400,13 @@ local BUFF_CATALOG = {
       BuffPair("radiance", "Devotion of Radiance", 575043, "Greater Devotion of Radiance", 575045, {categories={"SPELL_POWER"}}),
     }},
     {key="devotion_grace", label="Devotion of Grace", assignment="ALL", choices={
-      BuffPair("grace", "Devotion of Grace", 300865, "Greater Devotion of Grace", 681160, {categories={"MANA"}}),
+      BuffPair("grace", "Devotion of Grace", 300865, "Greater Devotion of Grace", 681160, {categories={"MP5", "RESOURCE_COST"}}),
     }},
   },
 
   Templar = {
     {key="crusaders_oath", label="Crusader's Oath", assignment="ALL", choices={
-      -- The normal single-target version is named Gift of Fervor; the group
-      -- upgrade is named Greater Crusader's Oath in the Ascension client.
-      BuffPair("fervor", "Gift of Fervor", nil, "Greater Crusader's Oath", 572630, {categories={"STATS"}}),
+      BuffPair("fervor", "Gift of Fervor", nil, "Greater Crusader's Oath", 572630, {categories={"STATS"}, auraNames={"Crusader's Oath", "Greater Gift of Fervor"}}),
     }},
     {key="gift_zeal", label="Gift of Zeal", assignment="ALL", choices={
       BuffPair("zeal", "Gift of Zeal", 300924, "Greater Gift of Zeal", 680306, {categories={"AGILITY"}}),
@@ -404,7 +415,7 @@ local BUFF_CATALOG = {
 
   Tinker = {
     {key="mana_module", label="Mana Module", assignment="ALL", choices={
-      BuffPair("mana", "Mana Module", 803663, "Greater Mana Module", 803665, {categories={"MANA"}}),
+      BuffPair("mana", "Mana Module", 803663, "Greater Mana Module", 803665, {categories={"MP5"}}),
     }},
     {key="power_module", label="Power Module", assignment="ALL", choices={
       BuffPair("power", "Power Module", 707688, "Greater Power Module", 680315, {categories={"ATTACK_POWER"}}),
@@ -413,7 +424,7 @@ local BUFF_CATALOG = {
 
   Venomancer = {
     {key="beetle_pheromones", label="Beetle Pheromones", assignment="ALL", choices={
-      BuffPair("beetle", "Beetle Pheromones", 803655, "Greater Beetle Pheromones", 803657, {categories={"ARMOR"}}),
+      BuffPair("beetle", "Beetle Pheromones", 803655, "Greater Beetle Pheromones", 803657, {categories={"ARMOR", "STATS"}}),
     }},
     {key="toxic_pheromones", label="Toxic Pheromones", assignment="ALL", choices={
       BuffPair("toxic", "Toxic Pheromones", 707692, "Greater Toxic Pheromones", 712459, {categories={"SPELL_POWER"}}),
@@ -425,7 +436,7 @@ local BUFF_CATALOG = {
 
   ["Witch Doctor"] = {
     {key="resourceful_wuju", label="Resourceful Wuju", assignment="ALL", choices={
-      BuffPair("cost_reduction", "Resourceful Wuju", 578344, "Greater Resourceful Wuju", 800195, {categories={"MANA"}}),
+      BuffPair("cost_reduction", "Resourceful Wuju", 578344, "Greater Resourceful Wuju", 800195, {categories={"RESOURCE_COST"}}),
     }},
     {key="power_wuju", label="Power Wuju", assignment="ALL", choices={
       BuffPair("power", "Power Wuju", 707677, "Greater Power Wuju", 712458, {categories={"ATTACK_POWER"}}),
@@ -443,7 +454,7 @@ local BUFF_CATALOG = {
       BuffPair("agility", "Inquisitor's Edict", 707355, "Greater Inquisitor's Edict", 680303, {categories={"AGILITY"}}),
     }},
     {key="knights_edict", label="Knight's Edict", assignment="ALL", choices={
-      BuffPair("armor_stats", "Knight's Edict", 523488, "Greater Knight's Edict", 523510, {categories={"ARMOR"}}),
+      BuffPair("armor_stats", "Knight's Edict", 523488, "Greater Knight's Edict", 523510, {categories={"ARMOR", "STATS"}}),
     }},
   },
 }
