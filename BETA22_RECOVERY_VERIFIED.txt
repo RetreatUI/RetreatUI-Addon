@@ -1,3 +1,0 @@
-tag=v1.1.2-beta.22
-prerelease=true
-asset=RetreatUI_v1.1.2-beta.22.zip
