@@ -1,0 +1,46 @@
+name: Verify beta.22 recovery release
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/verify-beta22-recovery.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify release and asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release view v1.1.2-beta.22 --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,assets > /tmp/release.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path('/tmp/release.json').read_text())
+          assert data['tagName'] == 'v1.1.2-beta.22'
+          assert data['isPrerelease'] is True
+          names = [asset['name'] for asset in data.get('assets', [])]
+          assert 'RetreatUI_v1.1.2-beta.22.zip' in names, names
+          Path('BETA22_RECOVERY_VERIFIED.txt').write_text(
+              'tag=v1.1.2-beta.22\nprerelease=true\nasset=RetreatUI_v1.1.2-beta.22.zip\n',
+              encoding='utf-8'
+          )
+          PY
+      - name: Commit verification marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add BETA22_RECOVERY_VERIFIED.txt
+          git commit -m 'Confirm beta.22 recovery release asset'
+          git push origin HEAD:main
