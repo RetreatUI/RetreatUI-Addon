@@ -3,13 +3,13 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.13",
-  summary = "Emergency stability rollback for the party interrupt and utility tracker.",
+  title = "RetreatUI v1.1.2-beta.22",
+  summary = "Emergency full-code recovery to the last user-confirmed stable baseline.",
   changes = {
-    "Disabled the beta.10 combat-log compatibility layer that temporarily replaced CombatLogGetCurrentEventInfo while processing party casts.",
-    "Disabled the beta.11 live tooltip curation layer that repeatedly scanned Ascension custom spell tooltips on login and spellbook changes.",
-    "Returned the party interrupt and utility tracker to the standalone Party Utility V4 implementation while the class-by-class interrupt list is rebuilt from verified data.",
-    "Kept all profiles, SavedVariables, Guardian Formation macros, HUD cooldown stability fixes and the beta.12 global stance/form layout.",
-    "No interrupt database corrections from the unfinished audit have been applied in this emergency build.",
+    "Reset the complete active addon source to the beta.13 codebase that was confirmed stable in live Ascension testing.",
+    "Removed Party Utility and interrupt tracking from the addon load order and source package.",
+    "Added a recovery safety gate that removes Party Trackers from the modular installer and forces all saved tracker settings off.",
+    "Rolled back every beta.14 through beta.21 runtime change for isolated review before anything is reintroduced.",
+    "Preserved existing profiles and SavedVariables outside the retired party tracker settings.",
   },
 }
