@@ -1,0 +1,160 @@
+name: Restore verified Buff Manager data in beta.23
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/restore-buff-manager-beta23.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: retreatui-restore-buff-manager-beta23
+  cancel-in-progress: false
+
+jobs:
+  restore:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout stable beta.22 baseline
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Restore only verified Buff Manager data
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --force --tags origin
+
+          grep -Fq '## Version: 1.1.2-beta.22' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.2-beta.22' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'Core\\RecoverySafety.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+          test ! -e RetreatUI/Core/PartyUtility.lua
+          test ! -e RetreatUI/Core/PartyUtilityV4.lua
+
+          git show v1.1.2-beta.20:RetreatUI/Core/BuffManager.lua > RetreatUI/Core/BuffManager.lua
+
+          python - <<'PY'
+          from pathlib import Path
+
+          for path in (
+              Path('RetreatUI/RetreatUI.toc'),
+              Path('RetreatUI_Classes/RetreatUI_Classes.toc'),
+          ):
+              text = path.read_text(encoding='utf-8')
+              text = text.replace('## Version: 1.1.2-beta.22', '## Version: 1.1.2-beta.23', 1)
+              path.write_text(text, encoding='utf-8')
+
+          Path('RetreatUI/Core/ReleaseChangelog112.lua').write_text('''local RUI = RetreatUI
+if not RUI then return end
+
+RUI.changelog = {
+  version = RUI.version,
+  title = "RetreatUI v1.1.2-beta.23",
+  summary = "Stable beta.22 recovery baseline with the verified CoA raid-buff catalog restored.",
+  changes = {
+    "Restored only the verified Buff Manager catalog previously tested in beta.20.",
+    "Separated MP5 from resource-cost reduction so those effects no longer satisfy each other incorrectly.",
+    "Restored Barbarian Brutal Shout and Enduring Shout, Ranger Wild Blessing, and the verified multi-effect raid buffs.",
+    "Kept the beta.22 recovery codebase unchanged outside BuffManager.lua, version metadata and this changelog.",
+    "Party utility and interrupt tracking remain physically removed and disabled.",
+  },
+}
+''', encoding='utf-8')
+          PY
+
+          grep -Fq 'local EQUIVALENT_BUFFS = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'MP5 = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'RESOURCE_COST = {' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Brutal Shout' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Enduring Shout' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Wild Blessing' RetreatUI/Core/BuffManager.lua
+          grep -Fq 'Core\\RecoverySafety.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+
+          mapfile -t changed < <(git diff --name-only | sort)
+          printf '%s\n' "${changed[@]}"
+          expected=(
+            'RetreatUI/Core/BuffManager.lua'
+            'RetreatUI/Core/ReleaseChangelog112.lua'
+            'RetreatUI/RetreatUI.toc'
+            'RetreatUI_Classes/RetreatUI_Classes.toc'
+          )
+          mapfile -t expected_sorted < <(printf '%s\n' "${expected[@]}" | sort)
+          test "$(printf '%s\n' "${changed[@]}")" = "$(printf '%s\n' "${expected_sorted[@]}")"
+
+      - name: Validate Lua 5.1 syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Commit isolated beta.23 update
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add RetreatUI/Core/BuffManager.lua RetreatUI/Core/ReleaseChangelog112.lua RetreatUI/RetreatUI.toc RetreatUI_Classes/RetreatUI_Classes.toc
+          git commit -m 'Restore verified Buff Manager catalog in beta.23'
+          git push origin HEAD:main
+
+      - name: Package beta.23
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p build
+          zip -qr build/RetreatUI_v1.1.2-beta.23.zip RetreatUI RetreatUI_Classes
+          python - <<'PY'
+          import zipfile
+          archive = 'build/RetreatUI_v1.1.2-beta.23.zip'
+          with zipfile.ZipFile(archive) as z:
+              names = set(z.namelist())
+              assert 'RetreatUI/Core/BuffManager.lua' in names
+              assert 'RetreatUI/Core/RecoverySafety.lua' in names
+              assert 'RetreatUI/Core/PartyUtility.lua' not in names
+              assert 'RetreatUI/Core/PartyUtilityV4.lua' not in names
+              core = z.read('RetreatUI/RetreatUI.toc').decode('utf-8')
+              classes = z.read('RetreatUI_Classes/RetreatUI_Classes.toc').decode('utf-8')
+              buffs = z.read('RetreatUI/Core/BuffManager.lua').decode('utf-8')
+              assert '## Version: 1.1.2-beta.23' in core
+              assert '## Version: 1.1.2-beta.23' in classes
+              assert 'MP5 = {' in buffs and 'RESOURCE_COST = {' in buffs
+              assert all(name in buffs for name in ('Brutal Shout', 'Enduring Shout', 'Wild Blessing'))
+          PY
+
+      - name: Publish beta.23 pre-release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG='v1.1.2-beta.23'
+          TARGET=$(git rev-parse HEAD)
+          ASSET='build/RetreatUI_v1.1.2-beta.23.zip'
+          NOTES=$(cat <<'EOF'
+          - Restores only the verified Buff Manager catalog from beta.20 on top of the stable beta.22 recovery baseline.
+          - Separates MP5 and resource-cost reduction.
+          - Restores verified raid buffs including Brutal Shout, Enduring Shout and Wild Blessing.
+          - Party utility and interrupt tracking remain completely removed.
+          EOF
+          )
+
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release delete "$TAG" --repo "$GITHUB_REPOSITORY" --cleanup-tag --yes
+          fi
+
+          gh release create "$TAG" "$ASSET" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$TARGET" \
+            --title 'RetreatUI v1.1.2-beta.23' \
+            --notes "$NOTES" \
+            --prerelease
