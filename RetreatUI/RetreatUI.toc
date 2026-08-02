@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.2-beta.15
+## Version: 1.1.2-beta.16
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core
 ## DefaultState: Enabled
@@ -26,6 +26,7 @@ Core\TrinketTrackerCompat.lua
 Core\PartyUtility.lua
 Core\PartyUtilityV4.lua
 Core\RetreatCD.lua
+Core\RetreatCDDiscovery.lua
 Core\TankFramework.lua
 Core\Modules.lua
 Core\ModularModules.lua
