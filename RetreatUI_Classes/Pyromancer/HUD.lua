@@ -1,16 +1,16 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- Pyrolancer is a Pyromancer build. The supplied WeakAura packs load on
--- PYROMANCER, so RetreatUI keeps normal class detection while applying the
--- tester-curated cooldown/proc/debuff profile and a clean Heat + Ember layout.
+-- Pyrolancer and Flameweaving are Pyromancer builds. RetreatUI keeps normal
+-- class detection while applying one clean Heat + Ember layout and the learned
+-- cooldown/proc profile for every Pyromancer specialization.
 local module = RUI:RegisterAdvancedClassHUD("Pyromancer", {
   frameName = "RetreatUIPyromancerHUD",
   usesPrimaryPower = true,
-  supportedLoadouts = {DESTRUCTION=true,DRACONIC=true,INCINERATION=true,PYROLANCER=true},
-  maxCore = 18,
-  maxUtility = 14,
-  maxProcs = 12,
+  supportedLoadouts = {DESTRUCTION=true,DRACONIC=true,INCINERATION=true,PYROLANCER=true,FLAMEWEAVING=true},
+  maxCore = 24,
+  maxUtility = 18,
+  maxProcs = 16,
   maxTargetDebuffs = 12,
 })
 
@@ -76,8 +76,6 @@ local function CreateEmberFrame()
   emberFrame:SetFrameStrata("MEDIUM")
   emberFrame.segments = {}
 
-  -- The five segments are self-explanatory and intentionally have no EMBERS
-  -- label. This keeps the resource block compact and aligned with the Heat bar.
   for index = 1, 5 do
     local segment = CreateFrame("Frame", nil, emberFrame)
     segment:SetHeight(9)
@@ -96,6 +94,9 @@ local function CreateEmberFrame()
     emberFrame.segments[index] = segment
   end
   emberFrame:Hide()
+  if type(RUI.RegisterHUDVisibilityFrame) == "function" then
+    RUI:RegisterHUDVisibilityFrame(emberFrame, IsPyrolancerBuild)
+  end
   return emberFrame
 end
 
@@ -146,9 +147,6 @@ local function UpdateEmbers()
   frame:Show()
 end
 
--- Pyromancer always renders a visible 0 / 100 Heat bar through the shared HUD.
--- Once that bar exists, the native Ascension class-resource widget is a true
--- duplicate and may be suppressed even while Heat is currently zero.
 if module then
   module.customResourcesComplete = function()
     local root = _G.RetreatUIPyromancerHUD
