@@ -4,6 +4,9 @@ local autoScheduled = false
 local runtimeApplied = false
 local hudRefreshSerial = 0
 local playerLoggedIn = false
+local firstWorldEntry = true
+local deferredCombatReason
+local refreshPassState = {}
 
 local HUD_REFRESH_EVENTS = {
   SPELLS_CHANGED = true,
@@ -15,6 +18,44 @@ local HUD_REFRESH_EVENTS = {
   ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED = true,
   ASCENSION_KNOWN_ENTRIES_UPDATED = true,
 }
+
+-- These events can alter the selected build even when the spellbook signature
+-- remains identical, so the build fingerprint still needs one cached check.
+local PROFILE_CHECK_EVENTS = {
+  PLAYER_TALENT_UPDATE = true,
+  CHARACTER_POINTS_CHANGED = true,
+  ACTIVE_TALENT_GROUP_CHANGED = true,
+  ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED = true,
+  ASCENSION_KNOWN_ENTRIES_UPDATED = true,
+}
+
+-- Ascension may populate replacement spell IDs shortly after the first event.
+-- One quiet settlement scan is enough; the old system performed four complete
+-- passes here and another four in BuildProfiles.
+local SETTLEMENT_EVENTS = {
+  SPELLS_CHANGED = true,
+  PLAYER_TALENT_UPDATE = true,
+  CHARACTER_POINTS_CHANGED = true,
+  ACTIVE_TALENT_GROUP_CHANGED = true,
+  LEARNED_SPELL_IN_TAB = true,
+  PLAYER_LEVEL_UP = true,
+  ASCENSION_CA_SPECIALIZATION_ACTIVE_ID_CHANGED = true,
+  ASCENSION_KNOWN_ENTRIES_UPDATED = true,
+}
+
+RUI.performanceRefreshStats = RUI.performanceRefreshStats or {
+  scheduled = 0,
+  executed = 0,
+  deferred = 0,
+  hudRebuilds = 0,
+}
+local performanceStats = RUI.performanceRefreshStats
+
+local function IsInCombat()
+  if type(InCombatLockdown) ~= "function" then return false end
+  local ok, locked = pcall(InCombatLockdown)
+  return ok and locked == true
+end
 
 local function IsSupported()
   return type(RUI.IsSupportedCharacter) == "function" and RUI:IsSupportedCharacter()
@@ -55,41 +96,96 @@ local function ClassHUDSelectedAndReady()
   return installed == true, detectedClass
 end
 
-local function RefreshInstalledHUD(reason, serial, pass)
-  if serial ~= hudRefreshSerial then return end
-  local changed = true
-  if type(RUI.ScanSpellbook) == "function" then
-    local _, scanChanged = RUI:ScanSpellbook()
-    changed = scanChanged == true
+local function ScanSpellbook(force)
+  if type(RUI.ScanSpellbook) ~= "function" then return true end
+  local ok, _, changed = pcall(RUI.ScanSpellbook, RUI, force == true)
+  if not ok then
+    RUI:Print("Spellbook refresh failed: " .. tostring(_))
+    return false
   end
-  if type(RUI.RefreshBuildProfile) == "function" then RUI:RefreshBuildProfile(reason, false) end
-  local forceThisPass = reason ~= "SPELLS_CHANGED" and pass == 1
-  if not changed and not forceThisPass then return end
+  return changed == true
+end
+
+local function RefreshBuildProfile(reason)
+  if type(RUI.RefreshBuildProfile) ~= "function" then return false end
+  local ok, changed = pcall(RUI.RefreshBuildProfile, RUI, reason, false, true)
+  if not ok then
+    RUI:Print("Build profile refresh failed after " .. tostring(reason) .. ": " .. tostring(changed))
+    return false
+  end
+  return changed == true
+end
+
+local function RefreshInstalledHUD(reason, serial, settlement)
+  if serial ~= hudRefreshSerial then return end
+  local passState = refreshPassState[serial]
+  if not passState then return end
+
+  if IsInCombat() then
+    deferredCombatReason = reason
+    performanceStats.deferred = (tonumber(performanceStats.deferred) or 0) + 1
+    return
+  end
+
+  performanceStats.executed = (tonumber(performanceStats.executed) or 0) + 1
+  local spellbookChanged = ScanSpellbook(settlement == true)
+  local profileChanged = false
+  if spellbookChanged or (not settlement and PROFILE_CHECK_EVENTS[reason]) then
+    profileChanged = RefreshBuildProfile(reason)
+  end
+
+  if settlement then refreshPassState[serial] = nil end
+  if not spellbookChanged and not profileChanged then return end
 
   local ready, detectedClass = ClassHUDSelectedAndReady()
   if not ready then DisableClassHUD(); return end
   if type(RUI.InvalidateRacialCache) == "function" then RUI:InvalidateRacialCache() end
+
   if type(RUI.ActivateClassHUD) == "function" then
     local ok, activated, mode = pcall(RUI.ActivateClassHUD, RUI, true)
     if not ok then
       RUI:Print("HUD refresh failed after " .. tostring(reason) .. ": " .. tostring(activated))
       return
     end
-    if activated and type(RUI.SetModuleStatus) == "function" and pass == 1 then
-      RUI:SetModuleStatus("classHUD", "success", tostring(detectedClass or "Class") .. " HUD refreshed")
-    elseif not activated and pass == 1 then
+    if activated then
+      performanceStats.hudRebuilds = (tonumber(performanceStats.hudRebuilds) or 0) + 1
+      if type(RUI.SetModuleStatus) == "function" and not settlement then
+        RUI:SetModuleStatus("classHUD", "success", tostring(detectedClass or "Class") .. " HUD refreshed")
+      end
+    elseif not settlement then
       RUI:Print(tostring(detectedClass or "Class") .. " HUD could not refresh (" .. tostring(mode or "unknown") .. ").")
     end
   end
 end
 
-local function ScheduleHUDRefresh(reason)
-  if not ModuleEnabled("classHUD") then return end
+function RUI:ScheduleHUDRefresh(reason)
+  if not ModuleEnabled("classHUD") then return false end
+  reason = tostring(reason or "HUD_REFRESH")
+
+  if IsInCombat() then
+    deferredCombatReason = reason
+    performanceStats.deferred = (tonumber(performanceStats.deferred) or 0) + 1
+    return true
+  end
+
   hudRefreshSerial = hudRefreshSerial + 1
   local serial = hudRefreshSerial
-  for pass, delay in ipairs({0.05, 0.30, 0.80, 1.60}) do
-    RUI:After(delay, function() RefreshInstalledHUD(reason, serial, pass) end)
+  refreshPassState[serial] = {reason=reason}
+  performanceStats.scheduled = (tonumber(performanceStats.scheduled) or 0) + 1
+
+  -- Event bursts collapse into this single primary refresh. Older callbacks see
+  -- a stale serial and exit before scanning the spellbook or rebuilding rows.
+  self:After(0.18, function()
+    RefreshInstalledHUD(reason, serial, false)
+    if not SETTLEMENT_EVENTS[reason] then refreshPassState[serial] = nil end
+  end)
+
+  if SETTLEMENT_EVENTS[reason] then
+    self:After(0.95, function()
+      RefreshInstalledHUD(reason, serial, true)
+    end)
   end
+  return true
 end
 
 local function ApplyRuntimeOnce()
@@ -130,11 +226,19 @@ end
 events:RegisterEvent("ADDON_LOADED")
 events:RegisterEvent("PLAYER_LOGIN")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
+events:RegisterEvent("PLAYER_REGEN_ENABLED")
 for eventName in pairs(HUD_REFRESH_EVENTS) do pcall(events.RegisterEvent, events, eventName) end
 
 events:SetScript("OnEvent", function(_, event, addonName)
   if HUD_REFRESH_EVENTS[event] then
-    if playerLoggedIn then ScheduleHUDRefresh(event) end
+    if playerLoggedIn then RUI:ScheduleHUDRefresh(event) end
+    return
+  end
+
+  if event == "PLAYER_REGEN_ENABLED" then
+    local reason = deferredCombatReason
+    deferredCombatReason = nil
+    if reason then RUI:ScheduleHUDRefresh(reason) end
     return
   end
 
@@ -145,8 +249,11 @@ events:SetScript("OnEvent", function(_, event, addonName)
 
   if event == "PLAYER_LOGIN" then
     playerLoggedIn = true
-    if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
-    if type(RUI.RefreshBuildProfile) == "function" then RUI:RefreshBuildProfile("PLAYER_LOGIN", true) end
+    ScanSpellbook(true)
+    if type(RUI.RefreshBuildProfile) == "function" then
+      local ok, err = pcall(RUI.RefreshBuildProfile, RUI, "PLAYER_LOGIN", true, true)
+      if not ok then RUI:Print("Initial build profile failed: " .. tostring(err)) end
+    end
     if type(RUI.HandleVersionLogin) == "function" then
       local ok, err = pcall(RUI.HandleVersionLogin, RUI)
       if not ok then RUI:Print("Version notification failed: " .. tostring(err)) end
@@ -157,8 +264,8 @@ events:SetScript("OnEvent", function(_, event, addonName)
   end
 
   if event == "PLAYER_ENTERING_WORLD" then
-    if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
-    if type(RUI.RefreshBuildProfile) == "function" then RUI:RefreshBuildProfile("PLAYER_ENTERING_WORLD", false) end
+    local spellbookChanged = ScanSpellbook(false)
+    if spellbookChanged or not RUI._currentBuildState then RefreshBuildProfile("PLAYER_ENTERING_WORLD") end
 
     local ready, detectedClass = ClassHUDSelectedAndReady()
     if ready then
@@ -177,14 +284,11 @@ events:SetScript("OnEvent", function(_, event, addonName)
     ApplyRuntimeOnce()
     ScheduleInstaller()
 
-    if ModuleEnabled("classHUD") then
-      for _, delay in ipairs({0.25, 1.00}) do
-        RUI:After(delay, function()
-          if type(RUI.ScanSpellbook) == "function" then RUI:ScanSpellbook() end
-          local delayedReady = ClassHUDSelectedAndReady()
-          if delayedReady and type(RUI.ActivateClassHUD) == "function" then RUI:ActivateClassHUD(true) end
-        end)
-      end
+    -- One delayed first-login settlement replaces the former pair of complete
+    -- scans and forced HUD activations on every world transition.
+    if firstWorldEntry and ModuleEnabled("classHUD") then
+      firstWorldEntry = false
+      RUI:After(0.75, function() RUI:ScheduleHUDRefresh("PLAYER_ENTERING_WORLD_SETTLE") end)
     end
   end
 end)
