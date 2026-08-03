@@ -1,1 +1,107 @@
-[]
+[
+  {
+    "display": "Divine_Stand",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Divine_Stand",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Divine_Stand",
+    "index": 2,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Divine_Stand",
+    "index": 3,
+    "code": "timed"
+  },
+  {
+    "display": "Divine_Stand_Remove",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Divine_Stand_Remove",
+    "index": 1,
+    "code": "timed"
+  },
+  {
+    "display": "Divine_Stand_Remove",
+    "index": 2,
+    "code": "event"
+  },
+  {
+    "display": "Divine_Stand_Remove",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Personal_Buff",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Personal_Buff",
+    "index": 1,
+    "code": "timed"
+  },
+  {
+    "display": "Personal_Buff",
+    "index": 2,
+    "code": "event"
+  },
+  {
+    "display": "Personal_Buff",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Templar_Energy_Bar",
+    "index": 0,
+    "code": "status"
+  },
+  {
+    "display": "Templar_Energy_Bar",
+    "index": 1,
+    "code": "function()\n    if aura_env.powerCur and aura_env.powerMax then\n        return aura_env.powerCur, aura_env.powerMax, true\n    end\n    return 0, 100, false\nend\n"
+  },
+  {
+    "display": "Templar_Energy_Bar",
+    "index": 2,
+    "code": "function()\n    aura_env.timestamp = aura_env.timestamp or GetTime()\n    if aura_env.timestamp < GetTime() - 0.5 then\n        aura_env.timestamp = GetTime()\n        aura_env.powerCur = UnitPower(\"player\", 3)\n        aura_env.powerMax = UnitPowerMax(\"player\", 3)\n    end\n    return true\nend"
+  },
+  {
+    "display": "Templar_Energy_Bar",
+    "index": 3,
+    "code": "timed"
+  },
+  {
+    "display": "Templar_Energy_Bar",
+    "index": 4,
+    "code": "function()\n    if aura_env.powerCur then\n        return aura_env.powerCur\n    end\n    return 0\nend"
+  },
+  {
+    "display": "Templar_Oath_Chain",
+    "index": 0,
+    "code": "status"
+  },
+  {
+    "display": "Templar_Oath_Chain",
+    "index": 1,
+    "code": "timed"
+  },
+  {
+    "display": "Templar_Personal_Buff_Duration",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "Tithe_Buffs",
+    "index": 0,
+    "code": "timed"
+  }
+]

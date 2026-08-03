@@ -1,1 +1,38 @@
 status	display	currentMatch	parent	regionType	spellRefs	auraRefs
+	A	Ai		icon	true,	
+	A	Au		icon	true,	
+	D	De		icon	true,	
+	E	Eu		icon	true,	503553
+	F	Fr		icon	true,	
+	K	Ki		icon	true,	
+	M	Ma		icon	true,	
+	M	Me		icon	true,	
+	M	My		icon	true,	
+	R	Ro		icon	true,	
+	Z	Za		icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon		
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	[			icon	true,	
+	A			icon		
+	D			icon	true,	
+	N			icon	80355	803552
+	N			icon	50256	502561
+	N			icon	80170	801709
+	N			icon	true,	
+	O			icon	true,	
+	P			icon	true	
+	R			icon	true,	
+	R			icon	true,	
+	R			icon	true,	
+	T			aura		
+	T			aura		

@@ -1,8 +1,8 @@
 source=Chronomancer
 class=Chronomancer
 root_id=
-display_count=0
-review_candidates=0
+display_count=19
+review_candidates=9
 current_names=62
 custom_code_blocks=0
 import_found=true

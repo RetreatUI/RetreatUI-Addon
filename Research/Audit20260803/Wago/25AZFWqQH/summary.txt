@@ -1,9 +1,9 @@
 source=Bloodmage Pack
 class=Bloodmage
 root_id=
-display_count=0
-review_candidates=0
+display_count=169
+review_candidates=85
 current_names=93
-custom_code_blocks=0
+custom_code_blocks=30
 encoded_length=23652
 metadata=[]

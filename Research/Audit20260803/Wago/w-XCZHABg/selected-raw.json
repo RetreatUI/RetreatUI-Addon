@@ -1,1 +1,7756 @@
-{}
+{
+  "Perp's Tinker": {
+    "yOffset": -5,
+    "version": 2,
+    "information": [],
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "uid": "24MD9DVVzmR",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "controlledChildren": [
+      "Tinker Mana",
+      "Tinker Pet Mana",
+      "Tinker Buff Bar",
+      "Tinker Main Bar",
+      "Tinker Supp Bar",
+      "Tinker Reminders"
+    ],
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "semver": "1.0.1",
+    "subRegions": [],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "tocversion": 30300,
+    "borderSize": 2,
+    "groupIcon": "Interface\\Icons\\_PotionFlammeColor_LightBlue",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "borderBackdrop": "Blizzard Tooltip",
+    "borderOffset": 4,
+    "frameStrata": 4,
+    "xOffset": 0,
+    "wagoID": "w-XCZHABg",
+    "conditions": [],
+    "config": [],
+    "borderInset": 1,
+    "anchorPoint": "CENTER",
+    "id": "Perp's Tinker",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "authorOptions": [],
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "regionType": "group",
+    "scale": 1,
+    "alpha": 1,
+    "selfPoint": "CENTER"
+  },
+  "Tinker Mana": {
+    "icon_side": "RIGHT",
+    "desaturate": false,
+    "information": [],
+    "parent": "Perp's Tinker",
+    "regionType": "aurabar",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "sparkOffsetX": 0,
+    "yOffset": -152,
+    "texture": "Clean",
+    "version": 2,
+    "width": 252,
+    "iconSource": -1,
+    "sparkWidth": 10,
+    "xOffset": 0,
+    "useAdjustededMin": false,
+    "useAdjustededMax": false,
+    "uid": "3RympIDu8Tx",
+    "semver": "1.0.1",
+    "authorOptions": [],
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "debuffType": "HELPFUL",
+          "use_powertype": true,
+          "use_unit": true,
+          "powertype": 0,
+          "use_absorbMode": true,
+          "names": [],
+          "event": "Power",
+          "type": "unit",
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "subeventPrefix": "SPELL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "textureSource": "LSM",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "type": "subforeground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchorXOffset": 0,
+        "text_text_format_1.percentpower_format": "Number",
+        "text_text_format_p.percentpower_pad_max": 8,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_1.percentpower_pad_max": 8,
+        "text_font": "Accidental Presidency",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%1.percentpower",
+        "text_text_format_p.percentpower_pad": false,
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "anchor_point": "INNER_CENTER",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_text_format_p.percentpower_pad_mode": "left",
+        "type": "subtext",
+        "text_visible": true,
+        "text_justify": "CENTER",
+        "text_fontSize": 15,
+        "text_shadowXOffset": 1,
+        "text_anchorYOffset": 6,
+        "text_text_format_1.percentpower_pad_mode": "left",
+        "anchorYOffset": 0,
+        "text_text_format_1.percentpower_decimal_precision": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p.percentpower_format": "Number",
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "text_text_format_1.percentpower_pad": false,
+        "text_text_format_1.percentpower_round_type": "floor",
+        "text_text_format_p.percentpower_decimal_precision": 1,
+        "text_fixedWidth": 64
+      }
+    ],
+    "height": 4,
+    "gradientOrientation": "HORIZONTAL",
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "orientation": "HORIZONTAL",
+    "id": "Tinker Mana",
+    "sparkBlendMode": "ADD",
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "sparkHidden": "NEVER",
+    "internalVersion": 86,
+    "backgroundColor": [
+      0,
+      0,
+      0,
+      0.5
+    ],
+    "barColor": [
+      0,
+      1,
+      0.94509803921569,
+      1
+    ],
+    "sparkTexture": "Interface\\CastingBar\\UI-CastingBar-Spark",
+    "anchorPoint": "CENTER",
+    "sparkRotationMode": "AUTO",
+    "sparkRotation": 0,
+    "sparkOffsetY": 0,
+    "zoom": 0,
+    "sparkHeight": 30,
+    "frameStrata": 3,
+    "icon": false,
+    "alpha": 1,
+    "conditions": [
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0.019607843137255,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0.77647058823529,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              0,
+              0.83529411764706,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0,
+              0.94509803921569,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "icon_color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "spark": false,
+    "config": [],
+    "inverse": false,
+    "load": {
+      "use_class": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "enableGradient": false,
+    "adjustedMax": "",
+    "sparkColor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "barColor2": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "anchorFrameType": "SCREEN"
+  },
+  "Tinker Pet Mana": {
+    "icon_side": "RIGHT",
+    "desaturate": false,
+    "information": [],
+    "parent": "Perp's Tinker",
+    "regionType": "aurabar",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "sparkOffsetX": 0,
+    "yOffset": -149,
+    "texture": "Clean",
+    "version": 2,
+    "width": 252,
+    "iconSource": -1,
+    "sparkWidth": 10,
+    "xOffset": 0,
+    "useAdjustededMin": false,
+    "useAdjustededMax": false,
+    "uid": "i9Gr9FQS3AX",
+    "semver": "1.0.1",
+    "authorOptions": [],
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "pet",
+          "debuffType": "HELPFUL",
+          "use_powertype": true,
+          "use_unit": true,
+          "powertype": 0,
+          "use_absorbMode": true,
+          "names": [],
+          "event": "Power",
+          "type": "unit",
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "subeventPrefix": "SPELL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "textureSource": "LSM",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "type": "subforeground"
+      }
+    ],
+    "height": 4,
+    "gradientOrientation": "HORIZONTAL",
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "orientation": "HORIZONTAL",
+    "id": "Tinker Pet Mana",
+    "sparkBlendMode": "ADD",
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "sparkHidden": "NEVER",
+    "internalVersion": 86,
+    "backgroundColor": [
+      0,
+      0,
+      0,
+      0.5
+    ],
+    "barColor": [
+      1,
+      0.090196078431373,
+      0,
+      1
+    ],
+    "sparkTexture": "Interface\\CastingBar\\UI-CastingBar-Spark",
+    "anchorPoint": "CENTER",
+    "sparkRotationMode": "AUTO",
+    "sparkRotation": 0,
+    "sparkOffsetY": 0,
+    "zoom": 0,
+    "sparkHeight": 30,
+    "frameStrata": 3,
+    "icon": false,
+    "alpha": 1,
+    "conditions": [
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0.019607843137255,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0.77647058823529,
+              0,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              0,
+              0.83529411764706,
+              1,
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0,
+              0.94509803921569,
+              1
+            ]
+          }
+        ]
+      }
+    ],
+    "icon_color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "spark": false,
+    "config": [],
+    "inverse": false,
+    "load": {
+      "use_class": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "enableGradient": false,
+    "adjustedMax": "",
+    "sparkColor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "barColor2": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "anchorFrameType": "SCREEN"
+  },
+  "Tinker Buff Bar": {
+    "yOffset": -150,
+    "version": 2,
+    "centerType": "LR",
+    "parent": "Perp's Tinker",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Eureka!",
+      "Nanobot Recharger Buff",
+      "Nanobot Reconstruction Buff",
+      "Nanobot Swarm Buff"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "w-XCZHABg",
+    "animate": true,
+    "authorOptions": [],
+    "uid": "Uw8eyMEP41Z",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Tinker Buff Bar",
+    "space": 2,
+    "rotation": 0,
+    "grow": "HORIZONTAL",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.1",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 0.8,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Eureka!": {
+    "yOffset": -7,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Buff Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_visible": true,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 24,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_format": "none",
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": false,
+    "height": 32,
+    "config": [],
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "useAdjustededMin": false,
+    "alpha": 1,
+    "width": 45,
+    "version": 2,
+    "anchorFrameFrame": "WeakAurasDisplayButton4",
+    "zoom": 0.35,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 5,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_priest_voidform",
+    "conditions": [],
+    "uid": "QQtO70mgBJx",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "spellIds": [],
+          "unit": "player",
+          "type": "aura2",
+          "event": "Health",
+          "subeventPrefix": "SPELL",
+          "subeventSuffix": "_CAST_START",
+          "names": [],
+          "auraspellids": [
+            "503553"
+          ]
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "inverse": false,
+    "load": {
+      "knowntalent": 503552,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 501780
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Eureka!",
+    "regionType": "icon"
+  },
+  "Nanobot Recharger Buff": {
+    "yOffset": -7,
+    "desaturate": true,
+    "information": [],
+    "parent": "Tinker Buff Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Proc",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1.5,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": false,
+    "height": 32,
+    "config": [],
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "useAdjustededMin": false,
+    "alpha": 1,
+    "width": 45,
+    "version": 2,
+    "anchorFrameFrame": "WeakAurasDisplayButton4",
+    "zoom": 0.35,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 5,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_priest_voidform",
+    "conditions": [],
+    "uid": "wb58)2aZ8Cg",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "useRem": true,
+          "remOperator": "<=",
+          "auraspellids": [
+            "803552"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "showClones": false,
+          "unit": "player",
+          "spellIds": [],
+          "fetchTooltip": false,
+          "ownOnly": true,
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "matchesShowOn": "showOnMissing"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "useRem": true,
+          "remOperator": "<=",
+          "auraspellids": [
+            "803552"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "showClones": false,
+          "unit": "player",
+          "spellIds": [],
+          "fetchTooltip": false,
+          "ownOnly": true,
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "matchesShowOn": "showOnActive"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "inverse": false,
+    "load": {
+      "knowntalent": 503552,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": true,
+      "spellknown": 803552,
+      "use_mounted": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Nanobot Recharger Buff",
+    "regionType": "icon"
+  },
+  "Nanobot Reconstruction Buff": {
+    "yOffset": -7,
+    "desaturate": true,
+    "information": [],
+    "parent": "Tinker Buff Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Proc",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1.5,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": false,
+    "height": 32,
+    "config": [],
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "useAdjustededMin": false,
+    "alpha": 1,
+    "width": 45,
+    "version": 2,
+    "anchorFrameFrame": "WeakAurasDisplayButton4",
+    "zoom": 0.35,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 5,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_priest_voidform",
+    "conditions": [],
+    "uid": "rshYEHd9Oeq",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "group_count": "0",
+          "useRem": true,
+          "remOperator": "<=",
+          "auraspellids": [
+            "502561"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "unit": "group",
+          "useGroup_count": true,
+          "spellIds": [],
+          "matchesShowOn": "showOnActive",
+          "subeventPrefix": "SPELL",
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "group_countOperator": ">",
+          "ownOnly": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "group_count": "0",
+          "useRem": false,
+          "remOperator": "<=",
+          "auraspellids": [
+            "502561"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "unit": "group",
+          "useGroup_count": true,
+          "spellIds": [],
+          "matchesShowOn": "showOnActive",
+          "subeventPrefix": "SPELL",
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "group_countOperator": "==",
+          "ownOnly": true
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "inverse": false,
+    "load": {
+      "knowntalent": 503552,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": true,
+      "spellknown": 502561,
+      "use_mounted": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Nanobot Reconstruction Buff",
+    "regionType": "icon"
+  },
+  "Nanobot Swarm Buff": {
+    "yOffset": -7,
+    "desaturate": true,
+    "information": [],
+    "parent": "Tinker Buff Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Proc",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1.5,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": false,
+    "height": 32,
+    "config": [],
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "useAdjustededMin": false,
+    "alpha": 1,
+    "width": 45,
+    "version": 2,
+    "anchorFrameFrame": "WeakAurasDisplayButton4",
+    "zoom": 0.35,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 5,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_priest_voidform",
+    "conditions": [],
+    "uid": "AvKiI)yj2M0",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "group_count": "0",
+          "useRem": true,
+          "remOperator": "<=",
+          "auraspellids": [
+            "801709"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "unit": "group",
+          "useGroup_count": true,
+          "spellIds": [],
+          "matchesShowOn": "showOnActive",
+          "subeventPrefix": "SPELL",
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "group_countOperator": ">",
+          "ownOnly": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "rem": "5",
+          "debuffType": "HELPFUL",
+          "group_count": "0",
+          "useRem": false,
+          "remOperator": "<=",
+          "auraspellids": [
+            "801709"
+          ],
+          "names": [],
+          "useExactSpellId": true,
+          "unit": "group",
+          "useGroup_count": true,
+          "spellIds": [],
+          "matchesShowOn": "showOnActive",
+          "subeventPrefix": "SPELL",
+          "event": "Health",
+          "type": "aura2",
+          "subeventSuffix": "_CAST_START",
+          "group_countOperator": "==",
+          "ownOnly": true
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "inverse": false,
+    "load": {
+      "knowntalent": 801709,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 502561
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Nanobot Swarm Buff",
+    "regionType": "icon"
+  },
+  "Tinker Main Bar": {
+    "yOffset": -188.88888888889,
+    "version": 2,
+    "centerType": "LR",
+    "parent": "Perp's Tinker",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Med Pack",
+      "Zap!",
+      "Kinetic Shield",
+      "My Greatest Invention!",
+      "Recharge Station",
+      "Overcharge",
+      "Resto Beacon"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "w-XCZHABg",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "1mufS8aIVzj",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Tinker Main Bar",
+    "space": 2,
+    "rotation": 0,
+    "grow": "HORIZONTAL",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.1",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 0.9,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Med Pack": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "MQrsBLvj29N",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 800347,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 800347
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Med Pack",
+    "regionType": "icon"
+  },
+  "Zap!": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "3MBYdbYcNKf",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 680196,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 680196,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 680196
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Zap!",
+    "regionType": "icon"
+  },
+  "Kinetic Shield": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "rkXsZuxVFYn",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 806224,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 806224,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 680196
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Kinetic Shield",
+    "regionType": "icon"
+  },
+  "My Greatest Invention!": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "PGRAMga0gJt",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 805305,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 805305,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 680196
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "My Greatest Invention!",
+    "regionType": "icon"
+  },
+  "Recharge Station": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "NqgkpCjWx0K",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 805308,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 805308,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 807197
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Recharge Station",
+    "regionType": "icon"
+  },
+  "Overcharge": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 12,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Proc",
+        "glowThickness": 1.4,
+        "glowYOffset": 0,
+        "glowLength": 9,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          {
+            "property": "sub.3.glow"
+          }
+        ]
+      },
+      {
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ],
+        "linked": true,
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        }
+      }
+    ],
+    "uid": "RsEuRvuGbhY",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 524835,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "pet",
+          "debuffType": "HELPFUL",
+          "use_behavior": false,
+          "spellName": [
+            "Build: Shield Beacon",
+            "Build: Replenishment Beacon",
+            "Build: Restorative Beacon"
+          ],
+          "use_unit": true,
+          "use_spellName": true,
+          "use_absorbMode": true,
+          "event": "Combat Log",
+          "type": "combatlog",
+          "subeventSuffix": "_SUMMON",
+          "subeventPrefix": "SPELL",
+          "duration": "20"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": 1
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 524835,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 524835
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Overcharge",
+    "regionType": "icon"
+  },
+  "Resto Beacon": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Main Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_format": "none",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          1,
+          0.96862745098039,
+          0.96862745098039,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 24
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_c_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_LEFT",
+        "anchorXOffset": 0,
+        "text_anchorYOffset": -9,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_visible": true,
+        "text_text_format_s_format": "none",
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_format": "timed",
+        "text_color": [
+          1,
+          0.84313725490196,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": -3,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAurasDisplayButton4",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 5,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "op": "<",
+          "trigger": 1,
+          "variable": "charges",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "FQI7RgdKcyi",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_charges": false,
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 801801,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 801801
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Resto Beacon",
+    "regionType": "icon"
+  },
+  "Tinker Supp Bar": {
+    "yOffset": -265,
+    "version": 2,
+    "centerType": "LR",
+    "parent": "Perp's Tinker",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "arcLength": 360,
+    "controlledChildren": [
+      "[Tinker] Berserking",
+      "[Tinker] Will of the Forsaken ",
+      "[Tinker] Blood Fury",
+      "[Tinker] Escape Artist",
+      "[Tinker] Stoneform ",
+      "[Tinker] Arcane Torrent",
+      "[Tinker] War Stomp",
+      "[Tinker] Pet Recharge",
+      "[Tinker] Pet Disarm",
+      "[Tinker] Pet Bomb",
+      "[Tinker] Pet Interrupt",
+      "[Tinker] Pet Mana",
+      "Air Strike",
+      "Deathball",
+      "Auto Resuscitation Device",
+      "Discombobulate!",
+      "Freeze Ray",
+      "Macro-Gravity Zone",
+      "Repulsion Unit",
+      "Noise Box",
+      "Rocket Boots"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "w-XCZHABg",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "XYbq56GT4vN",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Tinker Supp Bar",
+    "space": 2,
+    "rotation": 0,
+    "grow": "HORIZONTAL",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.1",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 0.75,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "[Tinker] Berserking": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "Z)ssTv)eud6",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 26297,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 26297
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Berserking",
+    "regionType": "icon"
+  },
+  "[Tinker] Will of the Forsaken ": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "4MwLhlEDzZ5",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 7744,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 7744
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Will of the Forsaken ",
+    "regionType": "icon"
+  },
+  "[Tinker] Blood Fury": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "zYU3ibveIGf",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 33697,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 33697
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Blood Fury",
+    "regionType": "icon"
+  },
+  "[Tinker] Escape Artist": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "NG82tPvcotf",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 20589,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 20589
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Escape Artist",
+    "regionType": "icon"
+  },
+  "[Tinker] Stoneform ": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "DRmdcDrw3R5",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 20594,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 20594
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Stoneform ",
+    "regionType": "icon"
+  },
+  "[Tinker] Arcane Torrent": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "Qq4nPFVyV3p",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 814287,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 814287
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Arcane Torrent",
+    "regionType": "icon"
+  },
+  "[Tinker] War Stomp": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "hzYuXtBsDVS",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 20549,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 20549
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] War Stomp",
+    "regionType": "icon"
+  },
+  "[Tinker] Pet Recharge": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "BDByP1N0qcr",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 808010,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 808010
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Pet Recharge",
+    "regionType": "icon"
+  },
+  "[Tinker] Pet Disarm": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "oYVwI2ORFM8",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 578123,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 578123
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Pet Disarm",
+    "regionType": "icon"
+  },
+  "[Tinker] Pet Bomb": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "XJXFR9zn9vD",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 578124,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 578124
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Pet Bomb",
+    "regionType": "icon"
+  },
+  "[Tinker] Pet Interrupt": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "(osZgB9CDOh",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 581313,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 581313
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Pet Interrupt",
+    "regionType": "icon"
+  },
+  "[Tinker] Pet Mana": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "cYfWfFAQ)8y",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 578122,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 578122
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "[Tinker] Pet Mana",
+    "regionType": "icon"
+  },
+  "Air Strike": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMLEFT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_anchorYOffset": -3,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_format": "none",
+        "text_visible": true,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_color": [
+          1,
+          0.81176470588235,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": -4,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "jt9oIJsjQLH",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 801744,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 801744,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 706969
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Air Strike",
+    "regionType": "icon"
+  },
+  "Deathball": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMLEFT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_anchorYOffset": -3,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_format": "none",
+        "text_visible": true,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_color": [
+          1,
+          0.81176470588235,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": -4,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "d0rNnVeEbG9",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 500236,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 500236,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 706969
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Deathball",
+    "regionType": "icon"
+  },
+  "Auto Resuscitation Device": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMLEFT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_anchorYOffset": -3,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_format": "none",
+        "text_visible": true,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_color": [
+          1,
+          0.81176470588235,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": -4,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "1uHgNqLaGIY",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 520445,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 520445,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 706969
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Auto Resuscitation Device",
+    "regionType": "icon"
+  },
+  "Discombobulate!": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "GcLbLMe(gf8",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 807197,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 807197
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Discombobulate!",
+    "regionType": "icon"
+  },
+  "Freeze Ray": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "k0gYX)G(F9T",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 806157,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 806157
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Freeze Ray",
+    "regionType": "icon"
+  },
+  "Macro-Gravity Zone": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "X7CTHGtsSA)",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 707104,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 707104,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 707104
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Macro-Gravity Zone",
+    "regionType": "icon"
+  },
+  "Repulsion Unit": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "Y4LrhOoNWtv",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 706904,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 706904,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 706904
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Repulsion Unit",
+    "regionType": "icon"
+  },
+  "Noise Box": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "E78le5KJEat",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 807723,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 807723,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 807197
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Noise Box",
+    "regionType": "icon"
+  },
+  "Rocket Boots": {
+    "yOffset": 0,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Supp Bar",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_decimal_precision": 0,
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_p_pad": false,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_s_format": "none",
+        "text_text_format_p_round_type": "floor",
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_text_format_p_format": "Number",
+        "text_font": "Accidental Presidency",
+        "text_justify": "CENTER",
+        "text_text_format_p_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_pad_max": 8,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 0,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 23
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_anchorYOffset": -5,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_format": "none",
+        "text_visible": true,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_color": [
+          1,
+          0.81176470588235,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": 4,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      }
+    ],
+    "cooldown": true,
+    "height": 32,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "alpha": 1,
+    "version": 2,
+    "width": 45,
+    "anchorFrameFrame": "WeakAuras:Gaze of C'Thun",
+    "zoom": 0.35,
+    "useAdjustededMin": false,
+    "frameStrata": 1,
+    "icon": true,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "Lua1UmWxH7y",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "subeventPrefix": "SPELL",
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_spellName": true,
+          "spellName": 500241,
+          "genericShowOn": "showAlways",
+          "use_exact_spellName": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "knowntalent": 500241,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_class": true,
+      "spellknown": 706969
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "anchorPoint": "CENTER",
+    "authorOptions": [],
+    "id": "Rocket Boots",
+    "regionType": "icon"
+  },
+  "Tinker Reminders": {
+    "yOffset": 0,
+    "version": 2,
+    "centerType": "LR",
+    "parent": "Perp's Tinker",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/w-XCZHABg/2",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Augmentation Reminder",
+      "Pet Reminder",
+      "[Tinker] Group Buff Reminder"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "w-XCZHABg",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "biubCtL51Y3",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Tinker Reminders",
+    "space": 150,
+    "rotation": 0,
+    "grow": "HORIZONTAL",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.1",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 1,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Augmentation Reminder": {
+    "yOffset": 330,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Reminders",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "OUTER_BOTTOM",
+        "anchorXOffset": 0,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "AUGMENTATION MISSING",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": -5,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 60,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 60,
+    "version": 2,
+    "zoom": 0.3,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\inv_engineering_reavesmodule",
+    "conditions": [],
+    "uid": "BUw8aiYNLhp",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_itemName": true,
+          "use_weapon": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "names": [],
+          "custom_type": "status",
+          "check": "update",
+          "onUpdateThrottle": 0.5,
+          "custom_hide": "timed",
+          "showOn": "showOnMissing",
+          "weapon": "ranged",
+          "genericShowOn": "showOnCooldown",
+          "subeventPrefix": "SPELL",
+          "spellIds": [],
+          "event": "Weapon Enchant",
+          "type": "item",
+          "subeventSuffix": "_CAST_START",
+          "use_showOn": true,
+          "unit": "player"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_combat": true,
+      "use_never": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_mounted": false,
+      "size": {
+        "multi": []
+      }
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Augmentation Reminder",
+    "regionType": "icon"
+  },
+  "Pet Reminder": {
+    "yOffset": 330,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Reminders",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "OUTER_BOTTOM",
+        "anchorXOffset": 0,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "PET MISSING",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": -5,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 60,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 60,
+    "version": 2,
+    "zoom": 0.3,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\INV_Misc_Head_ClockworkGnome_01",
+    "conditions": [],
+    "uid": "tSBhTvXIsKR",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_itemName": true,
+          "use_weapon": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "custom": "function()\n    -- Triggers if you have no pet out, or if your pet is currently dead/ghost\n    return not UnitExists(\"pet\") or UnitIsDeadOrGhost(\"pet\")\nend",
+          "names": [],
+          "custom_type": "status",
+          "check": "update",
+          "onUpdateThrottle": 0.5,
+          "custom_hide": "timed",
+          "showOn": "showOnMissing",
+          "weapon": "ranged",
+          "unit": "player",
+          "use_spellName": true,
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "genericShowOn": "showOnCooldown",
+          "event": "Health",
+          "type": "custom",
+          "subeventSuffix": "_CAST_START",
+          "use_showOn": true,
+          "use_track": true
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_combat": true,
+      "use_never": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "use_mounted": false,
+      "size": {
+        "multi": []
+      }
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Pet Reminder",
+    "regionType": "icon"
+  },
+  "[Tinker] Group Buff Reminder": {
+    "yOffset": 330,
+    "desaturate": false,
+    "information": [],
+    "parent": "Tinker Reminders",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": true,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.1",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "OUTER_BOTTOM",
+        "anchorXOffset": 0,
+        "text_fontType": "THICKOUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Accidental Presidency",
+        "text_fontSize": 20,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "BUFF THE PARTY",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": -5,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "buttonOverlay",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 60,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "w-XCZHABg",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 60,
+    "version": 2,
+    "zoom": 0.3,
+    "url": "https://wago.io/w-XCZHABg/2",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\Greater_Mana_Module",
+    "conditions": [],
+    "uid": "uPLC5ZXiOMw",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "onUpdateThrottle": 0.5,
+          "custom_hide": "timed",
+          "debuffType": "HELPFUL",
+          "unit": "player",
+          "type": "custom",
+          "custom": "function()\n    local units = {\"player\", \"party1\", \"party2\", \"party3\", \"party4\"}\n    \n    for _, unit in ipairs(units) do\n        if UnitExists(unit) and UnitIsConnected(unit) and not UnitIsDeadOrGhost(unit) then\n            if unit == \"player\" or UnitIsVisible(unit) then\n                \n                local hasBuff = false\n                local i = 1\n                local name, _, _, _, _, _, _, _, _, _, spellID = UnitBuff(unit, i)\n                \n                while name do\n                    if spellID == 707349 or spellID == 803661 or spellID == 803665 or spellID == 680315 then\n                        hasBuff = true\n                    end\n                    \n                    i = i + 1\n                    name, _, _, _, _, _, _, _, _, _, spellID = UnitBuff(unit, i)\n                end\n                \n                if not hasBuff then\n                    return true \n                end\n            end\n        end\n    end\n    \n    return false\nend",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "event": "Health",
+          "names": [],
+          "custom_type": "status",
+          "spellIds": [],
+          "check": "update"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "use_never": false,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_combat": true,
+      "use_mounted": false,
+      "class": {
+        "multi": [],
+        "single": "TINKER"
+      },
+      "ingroup": {
+        "multi": [],
+        "single": "group"
+      },
+      "use_class": true
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "[Tinker] Group Buff Reminder",
+    "regionType": "icon"
+  }
+}

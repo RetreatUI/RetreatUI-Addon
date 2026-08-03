@@ -1,1 +1,154 @@
 status	display	currentMatch	parent	regionType	spellRefs	auraRefs
+	_	Ma		icon	true,	
+	A	Ac		icon		562572
+	A	Ac		icon	true,	504710
+	A	Ad		icon		680675
+	A	Ag		icon		680745
+	A	An		icon	true,	573356
+	A	Ao		icon	true,	806212
+	A	Ap		icon	true,	804203
+	B	Ba		icon	true,	
+	B	Bl		icon	true,	
+	B	Bl		icon		572279
+	B	Bl		icon	true,	
+	B	Bl		icon		800780
+	B	Bl		icon	true,	706605
+	B	Bl		icon	true,	
+	B	Bl		icon	true,	801955
+	B	Bl		icon		801955
+	B	Bl		icon		802315
+	B	Bl		icon		560254
+	B	Bl		icon	true,	
+	B	Bl		icon	true,	504263
+	B	Bl		icon	true,	504263
+	B	Bl		icon	true,	504263
+	B	Bl		icon	true,	504263
+	B	Bl		icon	true,	
+	B	Bl		icon	true,	553267
+	C	Cr		icon		806424
+	D	Da		icon	false	712383
+	D	Da		icon	true,	680828
+	E	En		icon	true,	681190
+	E	En		icon		504157
+	E	Et		icon	false	800157
+	E	Et		icon	true,	801962
+	E	Et		icon		801962
+	F	Fi		icon	true,	524865
+	F	Fl		icon	true,	801952
+	F	Fl		icon	true,	801952
+	G	Go		icon	true,	804805
+	H	He		icon	true,	803681
+	H	He		icon	true,	681190
+	H	He		icon	true,	524907
+	H	He		icon	true,	681304
+	I	In		icon	true,	704624
+	I	In		icon	true,	681403
+	K	Ki		icon	false	704690
+	L	Li		icon	true,	806310
+	L	Lu		icon	true,	
+	M	Ma		icon	true,	704120
+	M	Mo		icon	true,	804811
+	P	Pu		icon	true,	680679
+	R	Re		icon	true,	
+	R	Ro		icon	true,	
+	S	Sa		icon	true,	
+	S	Sa		icon		800785
+	S	Sa		icon	false	680692
+	S	Sa		icon		504098
+	S	Sh		icon	true,	806177
+	S	Sh		icon		806177
+	S	So		icon		806049
+	T	Th		icon	true,	504103
+	T	Th		icon	true,	706613
+	T	Tr		icon	true,	
+	T	Tw		icon		704634
+	U	Ul		icon	false	704654
+	V	Va		icon	true,	706613
+	V	Ve		icon	true,	504260
+	W	Wi		icon		804207
+	W	Wi		icon	true,	804207
+	_			icon	true,	
+	A			icon		804203
+	A			icon	true,	804203
+	A			icon	true,	804203
+	A			icon	true,	804203
+	A			icon	true,	681077
+	A			icon	true,	
+	A			icon		680680
+	B			icon	true,	680687
+	B			icon	true,	
+	B			icon	true,	
+	B			icon	true,	
+	B			icon	70665	706654
+	B			icon	false	706623
+	B			icon	false	504296
+	B			icon		Blood 
+	B			icon	true,	
+	B			icon		
+	B			icon		
+	B			aura		704576
+	B			icon		Sangui
+	B			aura		
+	B			icon	true,	
+	B			icon	true,	
+	B			icon	true,	681514
+	B			icon	false	501662
+	B			icon		Bloodt
+	C			icon	true,	
+	D			icon		680732
+	D			icon	true,	680687
+	E			icon		806421
+	F			icon		17626,
+	F			icon	true,	801952
+	F			icon	true,	801952
+	F			icon	true,	801955
+	F			icon		Well F
+	G			icon		807788
+	H			icon		807563
+	H			icon		572305
+	I			icon	true,	706663
+	K			icon	true,	706613
+	M			icon		704120
+	N			icon		500124
+	N			icon	true,	680687
+	N			icon	true,	500124
+	P			icon		504290
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	P			aura	0,680	680687
+	R			icon	true,	65116,
+	R			icon	true,	
+	R			icon	true,	
+	R			icon	false	804197
+	S			icon	false	706630
+	S			icon	true,	806424
+	S			icon	true,	
+	S			icon	true,	
+	S			icon	true,	681514
+	S			icon		532125
+	S			icon	true,	806182
+	T			icon	false	802580
+	T			icon	false	802580
+	T			icon	false	802580
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			aura	0,706	706613
+	T			icon		504728
+	T			icon	true,	504728
+	U			icon		806428
+	V			icon	true,	706613
+	V			icon	true,	504275

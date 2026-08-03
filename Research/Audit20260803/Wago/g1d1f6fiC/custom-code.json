@@ -1,1 +1,142 @@
-[]
+[
+  {
+    "display": "Reborn from Ash",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Grace of Alexstrasza",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Neltharion's Resolve",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Supernova",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Gaze of Ysera",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Cataclysm",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Shadowmeld",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Lava Shard",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Lava Barrier",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "SpellBurn",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Dragon Leap",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Meteor",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Roaring Pyre",
+    "index": 0,
+    "code": "function(_, duration, progress)\n    return duration > 1.5 and progress or \"\"\nend"
+  },
+  {
+    "display": "Ember charges 5",
+    "index": 0,
+    "code": "event"
+  },
+  {
+    "display": "Ember charges 5",
+    "index": 1,
+    "code": "custom"
+  },
+  {
+    "display": "Ember charges 4",
+    "index": 0,
+    "code": "event"
+  },
+  {
+    "display": "Ember charges 4",
+    "index": 1,
+    "code": "custom"
+  },
+  {
+    "display": "Ember charges 3",
+    "index": 0,
+    "code": "event"
+  },
+  {
+    "display": "Ember charges 3",
+    "index": 1,
+    "code": "custom"
+  },
+  {
+    "display": "Ember charges 2",
+    "index": 0,
+    "code": "event"
+  },
+  {
+    "display": "Ember charges 2",
+    "index": 1,
+    "code": "custom"
+  },
+  {
+    "display": "Ember charges 1",
+    "index": 0,
+    "code": "event"
+  },
+  {
+    "display": "Ember charges 1",
+    "index": 1,
+    "code": "custom"
+  },
+  {
+    "display": "Pyro Heat",
+    "index": 0,
+    "code": "function()\n    local _,_,_,s = UnitDebuff(\"player\", 'Heat', nil, \"PLAYER\")\n    if not s then\n        s = 0\n    end\n    return s,100, function() return s,100 end\nend"
+  },
+  {
+    "display": "Pyro Heat",
+    "index": 1,
+    "code": "function()\n    return true\nend\n\n\n\n\n\n"
+  },
+  {
+    "display": "Pyro Heat",
+    "index": 2,
+    "code": "event"
+  },
+  {
+    "display": "Pyro Heat",
+    "index": 3,
+    "code": "custom"
+  },
+  {
+    "display": "Pyro Heat",
+    "index": 4,
+    "code": "function()\n    local _,_,_,s = UnitDebuff(\"player\", 'Insanity', nil, \"PLAYER\")\n    if not s then\n        s = 0\n    end\n    return s,100, function() return s,100 end\nend"
+  }
+]

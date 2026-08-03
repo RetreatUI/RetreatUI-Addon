@@ -1,1 +1,42 @@
-[]
+[
+  {
+    "display": "Augmentation Reminder",
+    "index": 0,
+    "code": "status"
+  },
+  {
+    "display": "Augmentation Reminder",
+    "index": 1,
+    "code": "timed"
+  },
+  {
+    "display": "Pet Reminder",
+    "index": 0,
+    "code": "function()\n    -- Triggers if you have no pet out, or if your pet is currently dead/ghost\n    return not UnitExists(\"pet\") or UnitIsDeadOrGhost(\"pet\")\nend"
+  },
+  {
+    "display": "Pet Reminder",
+    "index": 1,
+    "code": "status"
+  },
+  {
+    "display": "Pet Reminder",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "[Tinker] Group Buff Reminder",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "[Tinker] Group Buff Reminder",
+    "index": 1,
+    "code": "function()\n    local units = {\"player\", \"party1\", \"party2\", \"party3\", \"party4\"}\n    \n    for _, unit in ipairs(units) do\n        if UnitExists(unit) and UnitIsConnected(unit) and not UnitIsDeadOrGhost(unit) then\n            if unit == \"player\" or UnitIsVisible(unit) then\n                \n                local hasBuff = false\n                local i = 1\n                local name, _, _, _, _, _, _, _, _, _, spellID = UnitBuff(unit, i)\n                \n                while name do\n                    if spellID == 707349 or spellID == 803661 or spellID == 803665 or spellID == 680315 then\n                        hasBuff = true\n                    end\n                    \n                    i = i + 1\n                    name, _, _, _, _, _, _, _, _, _, spellID = UnitBuff(unit, i)\n                end\n                \n                if not hasBuff then\n                    return true \n                end\n            end\n        end\n    end\n    \n    return false\nend"
+  },
+  {
+    "display": "[Tinker] Group Buff Reminder",
+    "index": 2,
+    "code": "status"
+  }
+]

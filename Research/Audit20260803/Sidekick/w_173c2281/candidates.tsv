@@ -1,1 +1,100 @@
 status	display	currentMatch	parent	regionType	spellRefs	auraRefs
+	_	Ab		icon	true,	
+	_	Ba		icon	true,	
+	_	Et		icon	70530	705300
+	_	Gl		icon	true,	801481
+	_	Te		icon	80116	
+	_	Te		icon	80147	
+	_	Te		icon	50067	500678
+	_	Te		icon	true,	704409
+	_	To		icon	true,	807156
+	A	Ab		icon	80042	
+	A	Ar		icon	true,	
+	B	Be		icon	80337	
+	B	Bl		icon		705290
+	C	Ch		icon	true,	
+	C	Ch		icon	50313	301172
+	C	Ch		icon	true,	563269
+	D	De		icon		705256
+	D	Di		icon	true,	527023
+	D	Di		icon	true,	
+	D	Di		icon		705255
+	D	Du		icon		560834
+	F	Fo		icon	50069	500694
+	I	In		icon	56011	
+	I	Ir		icon		523712
+	L	Le		icon		806522
+	L	Li		icon	80144	801441
+	L	Li		icon		801441
+	L	Li		icon	true,	805423
+	L	Li		icon		805423
+	L	Li		icon	80146	801463
+	L	Li		icon		801463
+	L	Li		icon	80146	801461
+	L	Li		icon		801461
+	L	Li		icon	true,	801463
+	L	Li		icon		801466
+	M	Me		icon		806273
+	M	Mi		icon		803163
+	P	Pa		icon		560651
+	R	Re		icon	80542	
+	R	Ri		icon	true,	748502
+	R	Ri		icon	50156	807764
+	S	Sa		icon	74850	748502
+	S	Sa		icon		705274
+	S	Sc		icon		805415
+	S	Sc		icon		520812
+	S	Si		icon	true,	
+	S	Sp		icon	true,	
+	T	Te		icon	Hand 	
+	T	Te		icon	true,	804228
+	T	Te		icon	30051	300514
+	T	Te		icon	80145	801455
+	T	Ti		icon	80652	
+	T	Ti		icon	true,	
+	T	Ti		icon	80652	
+	T	Ti		icon	80478	
+	T	Tr		icon	80120	
+	U	Un		icon	true,	807648
+	W	Wa		icon		560648
+	B			icon		801409
+	B			icon	57827	
+	B			icon	true,	
+	B			icon	80388	
+	B			icon		801457
+	C			icon		804922
+	C			icon	56230	562302
+	C			icon	30051	300513
+	D			icon	false	807729
+	D			icon	false	807729
+	F			icon		17626,
+	F			icon		Well F
+	H			icon		806516
+	H			icon		804903
+	L			icon		561016
+	L			icon		524765
+	L			icon	true,	807814
+	N			icon	52473	524739
+	P			icon	false	Gift o
+	R			icon	true,	65116,
+	R			icon		804904
+	R			icon		805332
+	S			icon		680870
+	S			icon		102208
+	S			icon		301172
+	S			icon		706583
+	S			aura	true,	Holy S
+	T			icon		807274
+	T			icon		
+	T			icon		560653
+	T			icon		803872
+	T			icon		806864
+	T			aura		
+	T			aura		704576
+	T			icon		Gift o
+	T			icon		
+	T			icon		804816
+	T			icon		806354
+	T			icon		806934
+	T			icon		807004
+	V			icon	80144	

@@ -1,1 +1,152 @@
-[]
+[
+  {
+    "display": "Blood_Shield",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Blood_Shield",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Blood_Shield",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "Blood_Shield",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Eternal_Curse",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Eternal_Curse",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Eternal_Curse",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "Eternal_Curse",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Sanguine_Essence",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Sanguine_Essence",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Sanguine_Essence",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "Sanguine_Essence",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Bloodthorns",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Bloodthorns",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Bloodthorns",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "Bloodthorns",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Sanguinary_Offering",
+    "index": 0,
+    "code": "function()\n    return aura_env.icon\nend"
+  },
+  {
+    "display": "Sanguinary_Offering",
+    "index": 1,
+    "code": "event"
+  },
+  {
+    "display": "Sanguinary_Offering",
+    "index": 2,
+    "code": "timed"
+  },
+  {
+    "display": "Sanguinary_Offering",
+    "index": 3,
+    "code": "function()\n    if arg3 == UnitGUID(\"player\") and arg12 == \"MISS\" and aura_env.spells[arg10] then\n        aura_env.icon = select(3, GetSpellInfo(arg9))\n        return true\n    end\nend"
+  },
+  {
+    "display": "Bloodmage_Rage",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "Bloodmage_Rage",
+    "index": 1,
+    "code": "function()\n    aura_env.timestamp = aura_env.timestamp or GetTime()\n    if aura_env.timestamp < GetTime() - 0.5 then\n        aura_env.timestamp = GetTime()\n        aura_env.powerCur = UnitPower(\"player\", 1)   -- 1 = Rage\n        aura_env.powerMax = UnitPowerMax(\"player\", 1)\n    end\n    return true\nend"
+  },
+  {
+    "display": "Bloodmage_Rage",
+    "index": 2,
+    "code": "status"
+  },
+  {
+    "display": "Bloodmage_Rage",
+    "index": 3,
+    "code": "function()\n    if aura_env.powerCur and aura_env.powerMax then\n        return aura_env.powerCur, aura_env.powerMax, true\n    end\n    return 0, 100, false\nend"
+  },
+  {
+    "display": "Bloodmage_Rage",
+    "index": 4,
+    "code": "function()\n    if aura_env.powerCur then\n        return aura_env.powerCur\n    end\n    return 0\nend"
+  },
+  {
+    "display": "Bloodmage_Health",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "Bloodmage_Health",
+    "index": 1,
+    "code": "status"
+  },
+  {
+    "display": "Bloodmage_Offerings",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "Bloodthorns_",
+    "index": 0,
+    "code": "timed"
+  },
+  {
+    "display": "Blood_Shield_Buff",
+    "index": 0,
+    "code": "timed"
+  }
+]

@@ -1,1 +1,50 @@
 status	display	currentMatch	parent	regionType	spellRefs	auraRefs
+	C	Ca		icon	Icy P	
+	C	Ci		icon	true,	
+	D	Dr		icon	Icy P	
+	E	Em		icon	true,	680378
+	E	Es		icon	true,	
+	E	Es		icon	80423	804230
+	F	Fi		icon	true,	
+	G	Ga		icon	Icy P	
+	G	Gr		icon	Icy P	
+	I	Ig		icon	true,	804301
+	M	Me		icon	Icy P	
+	R	Ro		icon	Icy P	
+	R	Ro		icon	80423	804230
+	V	Vo		icon	true,	807621
+	V	Vo		icon	80423	804230
+	A			icon		504720
+	B			icon	57215	534601
+	C			aura		
+	D			icon		504720
+	E			text	80753	807533
+	E			text	80753	807533
+	E			text	80753	807533
+	E			text	80753	807533
+	E			text	80753	807533
+	E			icon		504720
+	E			icon	80423	804230
+	E			icon	80423	804230
+	F			icon	true,	
+	F			icon	true,	804301
+	H			text		807389
+	H			text		
+	K			icon	80423	804230
+	K			icon	80423	804230
+	L			icon	Icy P	
+	L			icon	Icy P	
+	L			icon	false	680367
+	M			icon		504720
+	M			aura		
+	N			icon	Icy P	
+	P			aura		
+	R			icon	Icy P	
+	S			prog		806783
+	S			prog		806783
+	S			icon	Icy P	
+	S			icon		504707
+	S			icon	false	Searin
+	S			icon	Icy P	
+	S			icon	80423	804230
+	S			icon	Icy P	

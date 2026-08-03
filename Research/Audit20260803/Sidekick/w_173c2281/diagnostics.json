@@ -46,6 +46,12 @@
       "length": 4523
     },
     {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 872
+    },
+    {
       "url": "https://ascensionsidekick.com/styles.css",
       "status": 200,
       "type": "text/css",
@@ -64,22 +70,16 @@
       "length": 1287
     },
     {
-      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.css",
+      "url": "https://ascensionsidekick.com/community.css",
       "status": 200,
       "type": "text/css",
-      "length": 872
+      "length": 7040
     },
     {
       "url": "https://ascensionsidekick.com/wf.css",
       "status": 200,
       "type": "text/css",
       "length": 7713
-    },
-    {
-      "url": "https://ascensionsidekick.com/community.css",
-      "status": 200,
-      "type": "text/css",
-      "length": 7040
     },
     {
       "url": "https://ascensionsidekick.com/util.js",
@@ -91,13 +91,13 @@
       "url": "https://www.clarity.ms/tag/xg9npy5ttd",
       "status": 200,
       "type": "application/x-javascript",
-      "length": 725
+      "length": 730
     },
     {
-      "url": "https://scripts.clarity.ms/0.8.67/clarity.js",
+      "url": "https://scripts.clarity.ms/0.8.67-beta/clarity.js",
       "status": 200,
       "type": "application/javascript;charset=utf-8",
-      "length": 74429
+      "length": 74747
     },
     {
       "url": "https://ascensionsidekick.com/builder-engine.js",

@@ -1,9 +1,9 @@
 source=Healer Tinker
 class=Tinker
 root_id=
-display_count=0
-review_candidates=0
+display_count=42
+review_candidates=26
 current_names=117
-custom_code_blocks=0
+custom_code_blocks=8
 encoded_length=8337
 metadata=[]

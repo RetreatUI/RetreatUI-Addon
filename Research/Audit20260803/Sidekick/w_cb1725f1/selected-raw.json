@@ -1,1 +1,3657 @@
-{}
+{
+  "Chronomancer heal group": {
+    "yOffset": -125,
+    "version": 1,
+    "information": [],
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "uid": "5((lTPOVBgj",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "controlledChildren": [
+      "Chronomancer Glow",
+      "Chronomancer Heal",
+      "Chronomancer Heal Cooldowns ",
+      "Chronomancer Selfbuffs"
+    ],
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "semver": "1.0.0",
+    "subRegions": [],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "tocversion": 30300,
+    "borderSize": 2,
+    "id": "Chronomancer heal group",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "borderBackdrop": "Blizzard Tooltip",
+    "borderOffset": 4,
+    "frameStrata": 1,
+    "xOffset": 0,
+    "conditions": [],
+    "wagoID": "Wj28ZPgD-",
+    "config": [],
+    "borderInset": 1,
+    "anchorPoint": "CENTER",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "authorOptions": [],
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "regionType": "group",
+    "scale": 1,
+    "alpha": 1,
+    "selfPoint": "CENTER"
+  },
+  "Chronomancer Glow": {
+    "yOffset": 134,
+    "version": 1,
+    "centerType": "LR",
+    "parent": "Chronomancer heal group",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "TOP",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Glow",
+      "Glow 2",
+      "Glow 3",
+      "Glow 4",
+      "Glow 5"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "Wj28ZPgD-",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "ygFW0r7sMg5",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Chronomancer Glow",
+    "space": 2,
+    "rotation": 0,
+    "grow": "DOWN",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.0",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 1,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Glow": {
+    "yOffset": -133.49997773995,
+    "wagoID": "Wj28ZPgD-",
+    "version": 1,
+    "id": "Glow",
+    "parent": "Chronomancer Glow",
+    "regionType": "empty",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "anchorPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "xOffset": 0.00004103234368813,
+    "width": 240,
+    "uid": "GmfVUPuiD97",
+    "frameStrata": 1,
+    "anchorFrameType": "SCREEN",
+    "tocversion": 30300,
+    "conditions": [],
+    "subRegions": [
+      {
+        "glowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "useGlowColor": true,
+        "glowLines": 12,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 2,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "internalVersion": 86,
+    "semver": "1.0.0",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "alpha": 1,
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "useExactSpellId": true,
+          "useName": false,
+          "unit": "player",
+          "useIgnoreName": false,
+          "debuffType": "HELPFUL",
+          "useStacks": true,
+          "type": "aura2",
+          "stacks": "5",
+          "auranames": [],
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": "==",
+          "event": "Health"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "ownOnly": true,
+          "auraspellids": [
+            "806290",
+            "806291",
+            "806292",
+            "806293"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "type": "aura2",
+          "matchesShowOn": "showOnMissing"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "information": [],
+    "authorOptions": [],
+    "height": 15,
+    "config": []
+  },
+  "Glow 2": {
+    "yOffset": -133.49997773995,
+    "wagoID": "Wj28ZPgD-",
+    "version": 1,
+    "id": "Glow 2",
+    "parent": "Chronomancer Glow",
+    "regionType": "empty",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "anchorPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "xOffset": 0.00004103234368813,
+    "width": 240,
+    "uid": "gicPCPrgZcu",
+    "frameStrata": 1,
+    "anchorFrameType": "SCREEN",
+    "tocversion": 30300,
+    "conditions": [],
+    "subRegions": [
+      {
+        "glowColor": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "useGlowColor": true,
+        "glowLines": 12,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 2,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "internalVersion": 86,
+    "semver": "1.0.0",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "alpha": 1,
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "useExactSpellId": true,
+          "useName": false,
+          "unit": "player",
+          "useIgnoreName": false,
+          "debuffType": "HELPFUL",
+          "useStacks": true,
+          "type": "aura2",
+          "stacks": "5",
+          "auranames": [],
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": "==",
+          "event": "Health"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "auraspellids": [
+            "806290"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "unit": "player",
+          "type": "aura2"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "information": [],
+    "authorOptions": [],
+    "height": 15,
+    "config": []
+  },
+  "Glow 3": {
+    "yOffset": -133.49997773995,
+    "wagoID": "Wj28ZPgD-",
+    "version": 1,
+    "id": "Glow 3",
+    "parent": "Chronomancer Glow",
+    "regionType": "empty",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "anchorPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "xOffset": 0.00004103234368813,
+    "width": 240,
+    "uid": "UY8uMkNsHWL",
+    "frameStrata": 1,
+    "anchorFrameType": "SCREEN",
+    "tocversion": 30300,
+    "conditions": [],
+    "subRegions": [
+      {
+        "glowColor": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": true,
+        "glowLines": 12,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 2,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "internalVersion": 86,
+    "semver": "1.0.0",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "alpha": 1,
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "useExactSpellId": true,
+          "useName": false,
+          "unit": "player",
+          "useIgnoreName": false,
+          "debuffType": "HELPFUL",
+          "useStacks": true,
+          "type": "aura2",
+          "stacks": "4",
+          "auranames": [],
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": ">=",
+          "event": "Health"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "auraspellids": [
+            "806291"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "unit": "player",
+          "type": "aura2"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "information": [],
+    "authorOptions": [],
+    "height": 15,
+    "config": []
+  },
+  "Glow 4": {
+    "yOffset": -133.49997773995,
+    "wagoID": "Wj28ZPgD-",
+    "version": 1,
+    "id": "Glow 4",
+    "parent": "Chronomancer Glow",
+    "regionType": "empty",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "anchorPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "xOffset": 0.00004103234368813,
+    "width": 240,
+    "uid": "5EvVSSx6ufh",
+    "frameStrata": 1,
+    "anchorFrameType": "SCREEN",
+    "tocversion": 30300,
+    "conditions": [],
+    "subRegions": [
+      {
+        "glowColor": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "useGlowColor": true,
+        "glowLines": 12,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 2,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "internalVersion": 86,
+    "semver": "1.0.0",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "alpha": 1,
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "useExactSpellId": true,
+          "useName": false,
+          "unit": "player",
+          "useIgnoreName": false,
+          "debuffType": "HELPFUL",
+          "useStacks": true,
+          "type": "aura2",
+          "stacks": "5",
+          "auranames": [],
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": "==",
+          "event": "Health"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "auraspellids": [
+            "806292"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "unit": "player",
+          "type": "aura2"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "information": [],
+    "authorOptions": [],
+    "height": 15,
+    "config": []
+  },
+  "Glow 5": {
+    "yOffset": -133.49997773995,
+    "wagoID": "Wj28ZPgD-",
+    "version": 1,
+    "id": "Glow 5",
+    "parent": "Chronomancer Glow",
+    "regionType": "empty",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "anchorPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "xOffset": 0.00004103234368813,
+    "width": 240,
+    "uid": "ufOIKQbWuo1",
+    "frameStrata": 1,
+    "anchorFrameType": "SCREEN",
+    "tocversion": 30300,
+    "conditions": [],
+    "subRegions": [
+      {
+        "glowColor": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "useGlowColor": true,
+        "glowLines": 12,
+        "glow": true,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 2,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "internalVersion": 86,
+    "semver": "1.0.0",
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "alpha": 1,
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "useExactSpellId": true,
+          "useName": false,
+          "unit": "player",
+          "useIgnoreName": false,
+          "debuffType": "HELPFUL",
+          "useStacks": true,
+          "type": "aura2",
+          "stacks": "5",
+          "auranames": [],
+          "spellIds": [],
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": "==",
+          "event": "Health"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "auraspellids": [
+            "806293"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "unit": "player",
+          "type": "aura2"
+        }
+      },
+      "activeTriggerMode": -10
+    },
+    "information": [],
+    "authorOptions": [],
+    "height": 15,
+    "config": []
+  },
+  "Chronomancer Heal": {
+    "yOffset": 0,
+    "version": 1,
+    "centerType": "LR",
+    "parent": "Chronomancer heal group",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "TOP",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Sands of Time",
+      "Mana"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "Wj28ZPgD-",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "6v8pmYaM2nW",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Chronomancer Heal",
+    "space": 40,
+    "rotation": 0,
+    "grow": "DOWN",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.0",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 1,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Sands of Time": {
+    "icon_side": "RIGHT",
+    "desaturate": false,
+    "information": [],
+    "parent": "Chronomancer Heal",
+    "regionType": "aurabar",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "sparkHeight": 30,
+    "selfPoint": "CENTER",
+    "yOffset": 0,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "useAdjustededMax": false,
+    "width": 240,
+    "texture": "Blizzard",
+    "sparkTexture": "Interface\\CastingBar\\UI-CastingBar-Spark",
+    "version": 1,
+    "iconSource": -1,
+    "useAdjustededMin": false,
+    "xOffset": 0,
+    "uid": "UThkYC8qKAT",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "use_absorbMode": true,
+          "ownOnly": true,
+          "useExactSpellId": true,
+          "debuffType": "HELPFUL",
+          "useStacks": false,
+          "unit": "player",
+          "stacks": "1",
+          "spellIds": [],
+          "type": "aura2",
+          "subeventPrefix": "SPELL",
+          "auraspellids": [
+            "804488"
+          ],
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "stacksOperator": ">=",
+          "event": "Power"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            806290
+          ],
+          "ownOnly": true,
+          "useName": true,
+          "type": "aura2",
+          "useStacks": false,
+          "unit": "player",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "3": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            "Aeon of Resilience"
+          ],
+          "ownOnly": true,
+          "useName": true,
+          "type": "aura2",
+          "useExactSpellId": false,
+          "unit": "player",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "4": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            806292
+          ],
+          "ownOnly": true,
+          "type": "aura2",
+          "useName": true,
+          "unit": "player",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "5": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            806293
+          ],
+          "ownOnly": true,
+          "type": "aura2",
+          "useName": true,
+          "unit": "player",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "6": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "unit": "player",
+          "event": "Conditions",
+          "debuffType": "HELPFUL",
+          "use_alwaystrue": true,
+          "use_absorbMode": true,
+          "type": "unit"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "semver": "1.0.0",
+    "authorOptions": [],
+    "textureSource": "Picker",
+    "textureInput": "Interface\\AddOns\\WeakAuras\\Media\\Textures\\Square_FullWhite",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "type": "subforeground"
+      },
+      {
+        "text_text_format_n_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_s_big_number_format": "AbbreviateNumbers",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_wordWrap": "WordWrap",
+        "text_visible": true,
+        "text_fixedWidth": 64,
+        "text_text_format_s_pad": false,
+        "text_text_format_s_pad_max": 8,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 20,
+        "text_text_format_s_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_s_format": "none",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_decimal_precision": 1,
+        "text_color": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      },
+      {
+        "text_text_format_n_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_s_big_number_format": "AbbreviateNumbers",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_wordWrap": "WordWrap",
+        "text_visible": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_pad": false,
+        "text_text_format_s_pad_max": 8,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 20,
+        "text_text_format_s_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_s_format": "none",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_decimal_precision": 1,
+        "text_color": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      },
+      {
+        "text_text_format_n_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_s_big_number_format": "AbbreviateNumbers",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_wordWrap": "WordWrap",
+        "text_visible": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_pad": false,
+        "text_text_format_s_pad_max": 8,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 20,
+        "text_text_format_s_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_s_format": "none",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_decimal_precision": 1,
+        "text_color": [
+          0,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      },
+      {
+        "text_text_format_n_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_s_big_number_format": "AbbreviateNumbers",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_wordWrap": "WordWrap",
+        "text_visible": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_pad": false,
+        "text_text_format_s_pad_max": 8,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 20,
+        "text_text_format_s_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_s_format": "none",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_decimal_precision": 1,
+        "text_color": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      },
+      {
+        "text_text_format_n_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_CENTER",
+        "anchorXOffset": 0,
+        "text_text_format_s_big_number_format": "AbbreviateNumbers",
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_wordWrap": "WordWrap",
+        "text_visible": false,
+        "text_fixedWidth": 64,
+        "text_text_format_s_pad": false,
+        "text_text_format_s_pad_max": 8,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 20,
+        "text_text_format_s_pad_mode": "left",
+        "text_selfPoint": "CENTER",
+        "text_text_format_s_format": "none",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_decimal_precision": 1,
+        "text_color": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorYOffset": 0,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      }
+    ],
+    "sparkWidth": 10,
+    "height": 15,
+    "gradientOrientation": "HORIZONTAL",
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "orientation": "HORIZONTAL",
+    "id": "Sands of Time",
+    "sparkBlendMode": "ADD",
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "sparkHidden": "NEVER",
+    "internalVersion": 86,
+    "backgroundColor": [
+      0.25490196078431,
+      0.25490196078431,
+      0.25490196078431,
+      0.5
+    ],
+    "barColor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "sparkRotationMode": "AUTO",
+    "anchorPoint": "CENTER",
+    "sparkRotation": 0,
+    "sparkOffsetY": 0,
+    "sparkOffsetX": 0,
+    "zoom": 0,
+    "alpha": 0.66,
+    "frameStrata": 1,
+    "icon": false,
+    "displayIcon": "Interface\\Icons\\spell_sandstorm",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              0,
+              1,
+              1,
+              1
+            ]
+          },
+          {
+            "property": "backgroundColor",
+            "value": [
+              0,
+              0.25490196078431,
+              0.25490196078431,
+              1
+            ]
+          },
+          {
+            "property": "sub.4.text_visible",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 3,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0,
+              0,
+              1
+            ]
+          },
+          {
+            "property": "backgroundColor",
+            "value": [
+              0.25490196078431,
+              0,
+              0,
+              1
+            ]
+          },
+          {
+            "property": "sub.5.text_visible",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 4,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              1,
+              0,
+              1
+            ]
+          },
+          {
+            "property": "backgroundColor",
+            "value": [
+              0.25490196078431,
+              0.25490196078431,
+              0,
+              1
+            ]
+          },
+          {
+            "property": "sub.6.text_visible",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 5,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "barColor",
+            "value": [
+              1,
+              0,
+              1,
+              1
+            ]
+          },
+          {
+            "property": "backgroundColor",
+            "value": [
+              0.25490196078431,
+              0,
+              0.25490196078431,
+              1
+            ]
+          },
+          {
+            "property": "sub.7.text_visible",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "value": false
+          }
+        ]
+      }
+    ],
+    "icon_color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "spark": false,
+    "config": [],
+    "inverse": false,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "enableGradient": false,
+    "adjustedMax": "",
+    "sparkColor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "barColor2": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "anchorFrameType": "SCREEN"
+  },
+  "Mana": {
+    "icon_side": "LEFT",
+    "desaturate": false,
+    "information": [],
+    "parent": "Chronomancer Heal",
+    "regionType": "aurabar",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "selfPoint": "CENTER",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "sparkOffsetX": 0,
+    "yOffset": 0,
+    "texture": "Clean",
+    "version": 1,
+    "width": 240,
+    "iconSource": -1,
+    "sparkWidth": 10,
+    "xOffset": 0,
+    "useAdjustededMin": false,
+    "useAdjustededMax": false,
+    "uid": "tJEvqFei5jk",
+    "semver": "1.0.0",
+    "authorOptions": [],
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "power_operator": [
+            ">"
+          ],
+          "unit": "player",
+          "use_unit": true,
+          "debuffType": "HELPFUL",
+          "type": "unit",
+          "use_percentpower": false,
+          "use_absorbMode": true,
+          "spellIds": [],
+          "percentpower_operator": [
+            "~="
+          ],
+          "use_power": false,
+          "percentpower": [
+            "100"
+          ],
+          "subeventPrefix": "SPELL",
+          "subeventSuffix": "_CAST_START",
+          "names": [],
+          "event": "Power"
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "unit": "player",
+          "event": "Conditions",
+          "debuffType": "HELPFUL",
+          "use_alwaystrue": true,
+          "use_absorbMode": true,
+          "type": "unit"
+        }
+      },
+      "3": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "auraspellids": [
+            "706774"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "type": "aura2"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "tocversion": 30300,
+    "textureSource": "LSM",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "type": "subforeground"
+      },
+      {
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_LEFT",
+        "anchorXOffset": 0,
+        "text_fontType": "None",
+        "text_shadowYOffset": -1,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 12,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%p",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": 100,
+        "text_shadowXOffset": 1,
+        "text_justify": "CENTER"
+      },
+      {
+        "useGlowColor": true,
+        "glowColor": [
+          1,
+          0.62352941176471,
+          0,
+          1
+        ],
+        "type": "subglow",
+        "glowLines": 14,
+        "glow": false,
+        "glowYOffset": 0,
+        "anchor_area": "bar",
+        "glowThickness": 2,
+        "glowXOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowFrequency": 0.25,
+        "glowType": "Pixel",
+        "glowDuration": 1,
+        "glowScale": 1
+      }
+    ],
+    "height": 15,
+    "gradientOrientation": "HORIZONTAL",
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "orientation": "HORIZONTAL_INVERSE",
+    "id": "Mana",
+    "sparkBlendMode": "ADD",
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "sparkHidden": "NEVER",
+    "internalVersion": 86,
+    "backgroundColor": [
+      0,
+      0,
+      0,
+      0.5
+    ],
+    "barColor": [
+      0,
+      0.37647058823529,
+      1,
+      1
+    ],
+    "sparkTexture": "Interface\\CastingBar\\UI-CastingBar-Spark",
+    "anchorPoint": "CENTER",
+    "sparkRotationMode": "AUTO",
+    "sparkRotation": 0,
+    "sparkOffsetY": 0,
+    "zoom": 0,
+    "sparkHeight": 30,
+    "frameStrata": 1,
+    "icon": false,
+    "alpha": 0.66,
+    "conditions": [
+      {
+        "check": {
+          "trigger": 3,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "sub.4.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "icon_color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "spark": false,
+    "config": [],
+    "inverse": false,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "groupSize_operator": [
+        ">"
+      ],
+      "use_spellknown": true,
+      "use_knowntalent": false,
+      "use_groupSize": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "enableGradient": false,
+    "adjustedMax": "",
+    "sparkColor": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "barColor2": [
+      1,
+      1,
+      0,
+      1
+    ],
+    "anchorFrameType": "SCREEN"
+  },
+  "Chronomancer Heal Cooldowns ": {
+    "yOffset": -35,
+    "version": 1,
+    "centerType": "LR",
+    "parent": "Chronomancer heal group",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "LEFT",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Fabric Time Aura",
+      "Fortify Timeline",
+      "Ripple",
+      "Hasten",
+      "Timeguard",
+      "Endless Sands"
+    ],
+    "useLimit": false,
+    "useAnchorPerUnit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": -120,
+    "wagoID": "Wj28ZPgD-",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "ThMGaqwXegc",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Chronomancer Heal Cooldowns ",
+    "space": 0,
+    "rotation": 0,
+    "grow": "RIGHT",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.0",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 1,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Fabric Time Aura": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_2.totalStacks_format": "none",
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_fontSize": 12,
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_anchorYOffset": 0,
+        "text_text": "%2.totalStacks",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_visible": true,
+        "text_color": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "type": "subtext",
+        "text_anchorXOffset": 0,
+        "text_shadowXOffset": 0,
+        "text_justify": "CENTER"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_monk_diffusemagic",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 2,
+          "variable": "totalStacks",
+          "value": "10"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "vk9eLmD7Lzw",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_absorbMode": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "track": "auto",
+          "names": [],
+          "use_direction": true,
+          "use_spellName": true,
+          "use_unit": true,
+          "spellName": 570177,
+          "genericShowOn": "showAlways",
+          "unit": "player",
+          "spellIds": [],
+          "event": "Cooldown Progress (Spell)",
+          "subeventPrefix": "SPELL",
+          "subeventSuffix": "_CAST_START",
+          "type": "spell",
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "auraspellids": [
+            "704482"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "type": "aura2"
+        }
+      },
+      "3": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "unit": "player",
+          "event": "Conditions",
+          "debuffType": "HELPFUL",
+          "use_alwaystrue": true,
+          "use_absorbMode": true,
+          "type": "unit"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Fabric Time Aura",
+    "regionType": "icon"
+  },
+  "Fortify Timeline": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      },
+      {
+        "text_text_format_2.totalStacks_format": "none",
+        "text_text_format_p_format": "timed",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "CENTER",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_text_format_p_time_legacy_floor": false,
+        "text_fixedWidth": 64,
+        "text_text_format_p_time_precision": 1,
+        "text_visible": true,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text_format_p_time_format": 0,
+        "text_text": "%2.totalStacks%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_text_format_s_format": "none",
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\achievement_guildperk_workingovertime_rank2",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "8RzW2CwtINo",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "subeventPrefix": "SPELL",
+          "unit": "player",
+          "use_spellName": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_direction": true,
+          "spellName": 807455,
+          "genericShowOn": "showAlways",
+          "use_absorbMode": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "unit": "player",
+          "event": "Conditions",
+          "debuffType": "HELPFUL",
+          "use_alwaystrue": true,
+          "use_absorbMode": true,
+          "type": "unit"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Fortify Timeline",
+    "regionType": "icon"
+  },
+  "Ripple": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_visible": true,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\inv_staff_2h_nazmirraid_d_01",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "<=",
+          "trigger": 2,
+          "variable": "expirationTime",
+          "value": "3.5"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "CmhPwHpKgO)",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "subeventPrefix": "SPELL",
+          "unit": "player",
+          "use_spellName": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_direction": true,
+          "spellName": 806296,
+          "genericShowOn": "showAlways",
+          "use_absorbMode": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            "Ripple"
+          ],
+          "ownOnly": true,
+          "useName": true,
+          "type": "aura2",
+          "useExactSpellId": false,
+          "unit": "player",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Ripple",
+    "regionType": "icon"
+  },
+  "Hasten": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_visible": true,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\nhi_magicspeed_Border",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 2,
+          "variable": "unitCount",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "z)vO3(icmJt",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "subeventPrefix": "SPELL",
+          "unit": "player",
+          "use_spellName": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_direction": true,
+          "spellName": 801304,
+          "genericShowOn": "showAlways",
+          "use_absorbMode": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            "801304"
+          ],
+          "ownOnly": true,
+          "type": "aura2",
+          "useName": true,
+          "unit": "group",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Hasten",
+    "regionType": "icon"
+  },
+  "Timeguard": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_visible": true,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\inv_belt_armor_waistoftime_d_01",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 2,
+          "variable": "unitCount",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "HvfnwlrP1jC",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "subeventPrefix": "SPELL",
+          "unit": "player",
+          "use_spellName": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_direction": true,
+          "spellName": 804441,
+          "genericShowOn": "showAlways",
+          "use_absorbMode": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [
+            "Timeguard"
+          ],
+          "ownOnly": true,
+          "type": "aura2",
+          "useName": true,
+          "unit": "multi",
+          "debuffType": "HELPFUL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Timeguard",
+    "regionType": "icon"
+  },
+  "Endless Sands": {
+    "yOffset": 0,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Heal Cooldowns ",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": 0,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_visible": true,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\inv_enchant_dustspirit",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "stacks",
+          "value": "5"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "dnZR8mTXfuF",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "ownOnly": true,
+          "debuffType": "HELPFUL",
+          "useName": true,
+          "useExactSpellId": true,
+          "unit": "player",
+          "auranames": [],
+          "type": "aura2",
+          "auraspellids": [
+            "806728"
+          ],
+          "event": "Health",
+          "subeventPrefix": "SPELL",
+          "subeventSuffix": "_CAST_START",
+          "names": [],
+          "spellIds": []
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "unit": "player",
+          "debuffType": "HELPFUL",
+          "use_unit": true,
+          "spellIds": [],
+          "use_alwaystrue": true,
+          "use_absorbMode": true,
+          "event": "Conditions",
+          "type": "unit",
+          "subeventSuffix": "_CAST_START",
+          "names": [],
+          "subeventPrefix": "SPELL"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": false,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Endless Sands",
+    "regionType": "icon"
+  },
+  "Chronomancer Selfbuffs": {
+    "yOffset": 0,
+    "version": 1,
+    "centerType": "LR",
+    "parent": "Chronomancer heal group",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "limit": 5,
+    "selfPoint": "TOP",
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "arcLength": 360,
+    "controlledChildren": [
+      "Time Out!"
+    ],
+    "useLimit": false,
+    "borderColor": [
+      0,
+      0,
+      0,
+      1
+    ],
+    "borderEdge": "Square Full White",
+    "xOffset": 0,
+    "wagoID": "Wj28ZPgD-",
+    "animate": false,
+    "authorOptions": [],
+    "uid": "ftMopL1DCw5",
+    "borderInset": 1,
+    "tocversion": 30300,
+    "subRegions": [],
+    "gridType": "RD",
+    "config": [],
+    "stepAngle": 15,
+    "borderSize": 2,
+    "stagger": 0,
+    "id": "Chronomancer Selfbuffs",
+    "space": 2,
+    "rotation": 0,
+    "grow": "DOWN",
+    "internalVersion": 86,
+    "border": false,
+    "sharedFrameLevel": true,
+    "semver": "1.0.0",
+    "borderBackdrop": "Blizzard Tooltip",
+    "scale": 1,
+    "borderOffset": 4,
+    "gridWidth": 5,
+    "rowSpace": 1,
+    "sort": "none",
+    "frameStrata": 1,
+    "regionType": "dynamicgroup",
+    "radius": 200,
+    "conditions": [],
+    "alpha": 1,
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "anchorPoint": "CENTER",
+    "columnSpace": 1,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "align": "CENTER",
+    "triggers": [
+      {
+        "untrigger": [],
+        "trigger": {
+          "spellIds": [],
+          "type": "aura2",
+          "unit": "player",
+          "event": "Health",
+          "debuffType": "HELPFUL",
+          "subeventSuffix": "_CAST_START",
+          "subeventPrefix": "SPELL",
+          "names": []
+        }
+      }
+    ],
+    "fullCircle": true,
+    "constantFactor": "RADIUS",
+    "backdropColor": [
+      1,
+      1,
+      1,
+      0.5
+    ],
+    "information": []
+  },
+  "Time Out!": {
+    "yOffset": 40,
+    "desaturate": true,
+    "information": [],
+    "parent": "Chronomancer Selfbuffs",
+    "anchorFrameType": "SCREEN",
+    "animation": {
+      "main": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "start": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      },
+      "finish": {
+        "type": "none",
+        "duration_type": "seconds",
+        "easeType": "none",
+        "easeStrength": 3
+      }
+    },
+    "keepAspectRatio": false,
+    "selfPoint": "CENTER",
+    "cooldownEdge": false,
+    "iconSource": -1,
+    "xOffset": -100,
+    "semver": "1.0.0",
+    "subRegions": [
+      {
+        "type": "subbackground"
+      },
+      {
+        "text_text_format_s_format": "none",
+        "text_automaticWidth": "Auto",
+        "anchor_point": "INNER_BOTTOMRIGHT",
+        "anchorXOffset": 0,
+        "text_fontType": "OUTLINE",
+        "text_shadowYOffset": 0,
+        "text_fixedWidth": 64,
+        "text_font": "Friz Quadrata TT",
+        "text_justify": "CENTER",
+        "text_wordWrap": "WordWrap",
+        "text_selfPoint": "AUTO",
+        "text_text": "%s",
+        "anchorYOffset": 0,
+        "text_shadowColor": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "text_color": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "type": "subtext",
+        "text_visible": true,
+        "text_shadowXOffset": 0,
+        "text_fontSize": 12
+      },
+      {
+        "glowColor": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "useGlowColor": false,
+        "glowLines": 8,
+        "glow": false,
+        "type": "subglow",
+        "glowType": "Pixel",
+        "glowThickness": 1,
+        "glowYOffset": 0,
+        "glowLength": 10,
+        "glowBorder": false,
+        "glowScale": 1,
+        "glowXOffset": 0,
+        "glowDuration": 1,
+        "glowFrequency": 0.25
+      }
+    ],
+    "cooldown": true,
+    "height": 40,
+    "tocversion": 30300,
+    "adjustedMin": "",
+    "wagoID": "Wj28ZPgD-",
+    "color": [
+      1,
+      1,
+      1,
+      1
+    ],
+    "useAdjustededMax": false,
+    "progressSource": [
+      -1,
+      ""
+    ],
+    "internalVersion": 86,
+    "anchorPoint": "CENTER",
+    "useAdjustededMin": false,
+    "width": 40,
+    "version": 1,
+    "zoom": 0.33,
+    "url": "https://wago.io/Wj28ZPgD-/1",
+    "frameStrata": 1,
+    "icon": true,
+    "displayIcon": "Interface\\Icons\\spell_nature_timestop",
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "spellUsable",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 2,
+          "variable": "unitCount",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ],
+    "uid": "1V1AQYNDWIi",
+    "triggers": {
+      "1": {
+        "untrigger": [],
+        "trigger": {
+          "use_unit": true,
+          "subeventPrefix": "SPELL",
+          "unit": "player",
+          "use_spellName": true,
+          "debuffType": "HELPFUL",
+          "use_genericShowOn": true,
+          "use_direction": true,
+          "spellName": 803897,
+          "genericShowOn": "showAlways",
+          "use_absorbMode": true,
+          "type": "spell",
+          "event": "Cooldown Progress (Spell)",
+          "names": [],
+          "subeventSuffix": "_CAST_START",
+          "spellIds": [],
+          "use_track": true
+        }
+      },
+      "2": {
+        "untrigger": [],
+        "trigger": {
+          "auranames": [],
+          "useName": true,
+          "ownOnly": true,
+          "auraspellids": [
+            "803897"
+          ],
+          "debuffType": "HELPFUL",
+          "useExactSpellId": true,
+          "unit": "group",
+          "type": "aura2"
+        }
+      },
+      "disjunctive": "any",
+      "activeTriggerMode": -10
+    },
+    "config": [],
+    "inverse": true,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CHRONOMANCER"
+      },
+      "spellknown": 806296,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false
+    },
+    "actions": {
+      "init": [],
+      "start": [],
+      "finish": []
+    },
+    "adjustedMax": "",
+    "alpha": 1,
+    "authorOptions": [],
+    "id": "Time Out!",
+    "regionType": "icon"
+  }
+}

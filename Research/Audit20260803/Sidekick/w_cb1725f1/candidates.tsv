@@ -1,1 +1,15 @@
 status	display	currentMatch	parent	regionType	spellRefs	auraRefs
+	E	En		icon	true,	806728
+	F	Fo		icon	true,	
+	R	Ri		icon	true,	Ripple
+	T	Ti		icon	true,	803897
+	T	Ti		icon	true,	Timegu
+	F			icon	true,	704482
+	G			empt	true,	804488
+	G			empt	true,	804488
+	G			empt	true,	804488
+	G			empt	true,	804488
+	G			empt	true,	804488
+	H			icon	true,	801304
+	M			aura	70677	706774
+	S			aura	true,	804488
