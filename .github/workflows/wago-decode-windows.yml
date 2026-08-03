@@ -37,62 +37,90 @@ jobs:
 
           const ids = ['PUx5f9aPr', 'Y5UDib4zq', 'TqH72U66p', 'PUjOUxmPt'];
 
-          function visit(node, parent, output) {
-            if (!node || typeof node !== 'object') return;
-            const id = typeof node.id === 'string' ? node.id : '';
+          function compactLoad(load) {
+            if (!load || typeof load !== 'object') return {};
+            const result = {};
+            for (const [key, value] of Object.entries(load)) {
+              if (value === undefined || value === null || value === false) continue;
+              if (typeof value === 'object' && !Array.isArray(value)) {
+                const multi = value.multi && typeof value.multi === 'object'
+                  ? Object.keys(value.multi).filter(k => value.multi[k])
+                  : [];
+                if (multi.length) result[key] = multi;
+                else if (value.single) result[key] = value.single;
+              } else if (value !== '') result[key] = value;
+            }
+            return result;
+          }
+
+          function triggerSummary(entry) {
+            const t = entry && entry.trigger ? entry.trigger : entry || {};
+            return {
+              type: t.type,
+              event: t.event,
+              unit: t.unit,
+              sourceUnit: t.sourceUnit,
+              destinationUnit: t.destinationUnit,
+              spellId: t.spellId,
+              spellIds: t.spellIds,
+              spellName: t.spellName,
+              name: t.name,
+              names: t.names,
+              auranames: t.auranames,
+              debuffType: t.debuffType,
+              ownOnly: t.ownOnly,
+              use_spellId: t.use_spellId,
+              use_spellName: t.use_spellName,
+              useName: t.useName,
+              use_unit: t.use_unit,
+              use_sourceUnit: t.use_sourceUnit,
+              use_destinationUnit: t.use_destinationUnit,
+              subeventPrefix: t.subeventPrefix,
+              subeventSuffix: t.subeventSuffix,
+              custom_type: t.custom_type,
+              events: t.events,
+              check: t.check,
+              custom: t.custom,
+              customVariables: t.customVariables,
+            };
+          }
+
+          function displaySummary(node, fallbackParent) {
             const triggers = Array.isArray(node.triggers) ? node.triggers : [];
-            if (id || node.regionType || triggers.length || node.controlledChildren) {
-              output.push({
-                id,
-                parent: parent || '',
-                regionType: node.regionType || '',
-                controlledChildren: node.controlledChildren || [],
-                anchorPoint: node.anchorPoint,
-                selfPoint: node.selfPoint,
-                xOffset: node.xOffset,
-                yOffset: node.yOffset,
-                width: node.width,
-                height: node.height,
-                grow: node.grow,
-                sort: node.sort,
-                frameStrata: node.frameStrata,
-                load: node.load || {},
-                triggers: triggers.map(entry => {
-                  const t = entry && entry.trigger ? entry.trigger : entry || {};
-                  return {
-                    type: t.type,
-                    event: t.event,
-                    unit: t.unit,
-                    spellId: t.spellId,
-                    spellIds: t.spellIds,
-                    spellName: t.spellName,
-                    names: t.names,
-                    auranames: t.auranames,
-                    use_spellId: t.use_spellId,
-                    use_unit: t.use_unit,
-                    sourceUnit: t.sourceUnit,
-                    use_sourceUnit: t.use_sourceUnit,
-                    subeventPrefix: t.subeventPrefix,
-                    subeventSuffix: t.subeventSuffix,
-                    custom_type: t.custom_type,
-                    events: t.events,
-                    custom: t.custom,
-                    customVariables: t.customVariables,
-                  };
-                }),
-                actions: node.actions || {},
-                conditions: node.conditions || [],
-                init: node.init,
-                customText: node.customText,
-                information: node.information,
-                url: node.url,
-                version: node.version,
-                semver: node.semver,
-              });
-            }
-            if (Array.isArray(node.d)) {
-              for (const child of node.d) visit(child, id || parent, output);
-            }
+            return {
+              id: typeof node.id === 'string' ? node.id : '',
+              uid: node.uid,
+              parent: node.parent || fallbackParent || '',
+              regionType: node.regionType || '',
+              controlledChildren: node.controlledChildren || [],
+              anchorFrameType: node.anchorFrameType,
+              anchorFrameFrame: node.anchorFrameFrame,
+              anchorPoint: node.anchorPoint,
+              selfPoint: node.selfPoint,
+              xOffset: node.xOffset,
+              yOffset: node.yOffset,
+              width: node.width,
+              height: node.height,
+              grow: node.grow,
+              sort: node.sort,
+              frameStrata: node.frameStrata,
+              load: compactLoad(node.load),
+              triggers: triggers.map(triggerSummary),
+              activeTriggerMode: node.activeTriggerMode,
+              actions: node.actions || {},
+              conditions: node.conditions || [],
+              init: node.init,
+              customText: node.customText,
+              customVariables: node.customVariables,
+              information: node.information,
+              url: node.url,
+              version: node.version,
+              semver: node.semver,
+            };
+          }
+
+          function addCode(code, display, source, value) {
+            if (typeof value === 'string' && value.trim()) code.push({display, source, code: value});
           }
 
           for (const slug of ids) {
@@ -100,26 +128,52 @@ jobs:
             const encoded = fs.readFileSync(path.join(dir, 'export.txt'), 'utf8').trim();
             const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
             fs.writeFileSync(path.join(dir, 'decoded.json'), JSON.stringify(decoded, null, 2));
-            const displays = [];
-            visit(decoded, '', displays);
+
+            const root = decoded && decoded.d && typeof decoded.d === 'object' ? decoded.d : decoded;
+            const children = decoded && Array.isArray(decoded.c) ? decoded.c : [];
+            const rootId = root && root.id ? root.id : '';
+            const rawDisplays = [root, ...children].filter(node => node && typeof node === 'object');
+            const displays = rawDisplays.map(node => displaySummary(node, node === root ? '' : rootId));
             fs.writeFileSync(path.join(dir, 'displays.json'), JSON.stringify(displays, null, 2));
 
             const code = [];
             for (const display of displays) {
               for (const trigger of display.triggers || []) {
-                if (typeof trigger.custom === 'string' && trigger.custom.trim()) code.push({display: display.id, source: 'trigger.custom', code: trigger.custom});
-                if (typeof trigger.customVariables === 'string' && trigger.customVariables.trim()) code.push({display: display.id, source: 'trigger.customVariables', code: trigger.customVariables});
+                addCode(code, display.id, 'trigger.custom', trigger.custom);
+                addCode(code, display.id, 'trigger.customVariables', trigger.customVariables);
               }
-              if (typeof display.init === 'string' && display.init.trim()) code.push({display: display.id, source: 'init', code: display.init});
-              if (typeof display.customText === 'string' && display.customText.trim()) code.push({display: display.id, source: 'customText', code: display.customText});
+              addCode(code, display.id, 'init', display.init);
+              addCode(code, display.id, 'customText', display.customText);
+              addCode(code, display.id, 'customVariables', display.customVariables);
+              for (const phase of ['init', 'start', 'finish']) {
+                const action = display.actions && display.actions[phase];
+                if (action) addCode(code, display.id, `actions.${phase}.custom`, action.custom);
+              }
             }
             fs.writeFileSync(path.join(dir, 'custom-code.json'), JSON.stringify(code, null, 2));
+
+            const inventory = [];
+            for (const display of displays) {
+              const triggerText = (display.triggers || []).map(t => {
+                const ids = [];
+                if (t.spellId !== undefined) ids.push(String(t.spellId));
+                if (Array.isArray(t.spellIds)) ids.push(...t.spellIds.map(String));
+                const names = [];
+                for (const value of [t.spellName, t.name]) if (value) names.push(String(value));
+                for (const list of [t.names, t.auranames]) if (Array.isArray(list)) names.push(...list.map(String));
+                return [t.type, t.event, t.unit, ids.length ? `ids=${ids.join(',')}` : '', names.length ? `names=${names.join(',')}` : '', t.custom ? 'custom' : ''].filter(Boolean).join(' / ');
+              }).join(' || ');
+              inventory.push(`${display.id}\t${display.regionType}\tparent=${display.parent}\t${triggerText}`);
+            }
+            fs.writeFileSync(path.join(dir, 'inventory.txt'), inventory.join('\n') + '\n');
             fs.writeFileSync(path.join(dir, 'summary.txt'), [
               `slug=${slug}`,
-              `root_id=${decoded && decoded.id ? decoded.id : ''}`,
+              `root_id=${rootId}`,
               `display_count=${displays.length}`,
               `custom_code_blocks=${code.length}`,
               `encoded_length=${encoded.length}`,
+              `package_version=${decoded && decoded.v !== undefined ? decoded.v : ''}`,
+              `source_version=${decoded && decoded.s ? decoded.s : ''}`,
             ].join('\n') + '\n');
           }
           '@ | Set-Content -Encoding UTF8 decode-wago.cjs
@@ -132,5 +186,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Research/Wago
-          git commit -m 'Decode RetreatUI Wago sources' || exit 0
+          git commit -m 'Parse wrapped RetreatUI Wago sources' || exit 0
           git push origin HEAD:temp/wago-fetch
