@@ -1,0 +1,61 @@
+name: Fetch Wago PUx5f9aPr source
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fetch-wago-pux5f9aPr-main.yml'
+      - '.github/workflows/fetch-wago-pux5f9apr-main.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout temporary research branch
+        uses: actions/checkout@v4
+        with:
+          ref: temp/wago-fetch
+          fetch-depth: 0
+
+      - name: Fetch Wago source
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p Research/Wago/PUx5f9aPr
+          curl -fL --retry 5 --retry-delay 2 \
+            -A 'Mozilla/5.0 RetreatUI integration audit' \
+            'https://wago.io/api/raw/PUx5f9aPr' \
+            -o Research/Wago/PUx5f9aPr/export.txt
+          curl -fL --retry 5 --retry-delay 2 \
+            -A 'Mozilla/5.0 RetreatUI integration audit' \
+            'https://data.wago.io/api/check/weakauras?ids=PUx5f9aPr' \
+            -o Research/Wago/PUx5f9aPr/metadata.json || true
+          curl -fL --retry 5 --retry-delay 2 \
+            -A 'Mozilla/5.0 RetreatUI integration audit' \
+            'https://wago.io/PUx5f9aPr' \
+            -o Research/Wago/PUx5f9aPr/page.html || true
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('Research/Wago/PUx5f9aPr/export.txt')
+          data = p.read_text(encoding='utf-8').strip()
+          if not data.startswith('!WA:'):
+              raise SystemExit(f'Unexpected Wago export prefix: {data[:100]!r}')
+          Path('Research/Wago/PUx5f9aPr/summary.txt').write_text(
+              f'export_prefix={data[:6]}\nexport_length={len(data)}\n',
+              encoding='utf-8'
+          )
+          PY
+
+      - name: Commit fetched source to temporary branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Research/Wago/PUx5f9aPr
+          git commit -m 'Store Wago PUx5f9aPr source for integration audit'
+          git push origin HEAD:temp/wago-fetch
