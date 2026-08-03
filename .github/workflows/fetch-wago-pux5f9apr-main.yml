@@ -1,11 +1,11 @@
-name: Fetch Wago PUx5f9aPr source
+name: Audit RetreatUI Wago sources
 
 on:
   push:
     branches:
       - main
     paths:
-      - '.github/wago-pux5f9apr-fetch-trigger'
+      - '.github/wago-audit-trigger'
       - '.github/workflows/fetch-wago-pux5f9apr-main.yml'
 
 permissions:
@@ -14,6 +14,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout temporary research branch
         uses: actions/checkout@v4
@@ -21,62 +22,134 @@ jobs:
           ref: temp/wago-fetch
           fetch-depth: 0
 
-      - name: Fetch Wago page and inspect client endpoints
+      - name: Install Playwright
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p Research/Wago/PUx5f9aPr/js
-          curl -sSL --retry 3 --retry-delay 2 \
-            -A 'Mozilla/5.0 RetreatUI integration audit' \
-            'https://wago.io/PUx5f9aPr' \
-            -o Research/Wago/PUx5f9aPr/page.html
+          npm init -y >/dev/null 2>&1
+          npm install playwright@1.54.2 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
 
-          python - <<'PY'
-          from pathlib import Path
-          import re
-          import urllib.request
+      - name: Capture Wago imports and metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat > /tmp/capture-wago.mjs <<'JS'
+          import { chromium } from 'playwright';
+          import fs from 'fs';
+          import path from 'path';
 
-          root = Path('Research/Wago/PUx5f9aPr')
-          html = root.joinpath('page.html').read_text(encoding='utf-8', errors='replace')
-          sources = re.findall(r'<script[^>]+src="([^"]+\.js)"', html)
-          headers = {'User-Agent': 'Mozilla/5.0 RetreatUI integration audit'}
-          snippets = []
-          interesting = re.compile(r'(?i)(data\.wago\.io|/api/|weakaura|encoded|import|download|raw|slug|versions?)')
-          endpoint = re.compile(r'(?i)(?:https://data\.wago\.io)?/[A-Za-z0-9_?&=./{}:$-]{3,160}')
+          const ids = ['PUx5f9aPr', 'Y5UDib4zq', 'TqH72U66p', 'PUjOUxmPt'];
+          const root = 'Research/Wago';
+          fs.mkdirSync(root, { recursive: true });
 
-          for index, src in enumerate(sources):
-              url = src if src.startswith('http') else 'https://wago.io' + src
-              req = urllib.request.Request(url, headers=headers)
-              try:
-                  data = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', errors='replace')
-              except Exception as exc:
-                  snippets.append(f'FETCH_ERROR {url}: {exc}')
-                  continue
-              name = f'{index:02d}-{Path(src).name}'
-              root.joinpath('js', name).write_text(data, encoding='utf-8')
-              seen = set()
-              for match in interesting.finditer(data):
-                  start = max(0, match.start() - 220)
-                  end = min(len(data), match.end() + 320)
-                  text = data[start:end].replace('\n', ' ')
-                  if text not in seen:
-                      seen.add(text)
-                      snippets.append(f'### {name}\n{text}')
-                      if len(seen) >= 80:
-                          break
+          const browser = await chromium.launch({ headless: true });
+          const context = await browser.newContext({
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) RetreatUI-Wago-Audit',
+            viewport: { width: 1600, height: 1200 },
+            permissions: ['clipboard-read', 'clipboard-write'],
+          });
 
-          root.joinpath('endpoint-snippets.txt').write_text('\n\n'.join(snippets), encoding='utf-8')
-          root.joinpath('bundle-summary.txt').write_text(
-              f'bundles={len(sources)}\nsnippets={len(snippets)}\n', encoding='utf-8'
-          )
-          PY
+          for (const id of ids) {
+            const out = path.join(root, id);
+            fs.mkdirSync(out, { recursive: true });
+            const page = await context.newPage();
+            const records = [];
+            const responseBodies = [];
+            const consoleLines = [];
+            let exportString = '';
 
-      - name: Commit client inspection to temporary branch
+            page.on('console', message => consoleLines.push(`${message.type()}: ${message.text()}`));
+            page.on('response', async response => {
+              const url = response.url();
+              if (!url.includes('wago.io')) return;
+              const type = response.headers()['content-type'] || '';
+              let body = '';
+              try {
+                if (/json|text|javascript|octet-stream/i.test(type)) body = await response.text();
+              } catch {}
+              records.push({ url, status: response.status(), type, length: body.length, prefix: body.slice(0, 500) });
+              if (body) {
+                const direct = body.trim();
+                if (!exportString && direct.startsWith('!WA:')) exportString = direct;
+                if (!exportString) {
+                  const match = body.match(/!WA:[0-9]+![A-Za-z0-9()_+\-./=]+/);
+                  if (match) exportString = match[0];
+                }
+                if (url.includes('data.wago.io') || /api|import|export|raw|version|slug/i.test(url)) {
+                  responseBodies.push({ url, body });
+                }
+              }
+            });
+
+            try {
+              await page.goto(`https://wago.io/${id}`, { waitUntil: 'domcontentloaded', timeout: 120000 });
+              await page.waitForTimeout(12000);
+
+              const controls = await page.locator('button, a, [role="button"]').allTextContents().catch(() => []);
+              fs.writeFileSync(path.join(out, 'controls.json'), JSON.stringify(controls, null, 2));
+
+              const patterns = [
+                /copy import string/i,
+                /copy import/i,
+                /import string/i,
+                /^copy$/i,
+                /load import/i,
+              ];
+
+              for (const pattern of patterns) {
+                const locator = page.getByText(pattern).first();
+                if (await locator.count().catch(() => 0)) {
+                  try {
+                    await locator.click({ timeout: 5000 });
+                    await page.waitForTimeout(2500);
+                    const clip = await page.evaluate(async () => {
+                      try { return await navigator.clipboard.readText(); } catch { return ''; }
+                    });
+                    if (clip && clip.startsWith('!WA:')) exportString = clip.trim();
+                  } catch {}
+                }
+                if (exportString) break;
+              }
+
+              const textareas = await page.locator('textarea, input').evaluateAll(elements =>
+                elements.map(element => ({ value: element.value || '', placeholder: element.placeholder || '' }))
+              ).catch(() => []);
+              for (const field of textareas) {
+                if (!exportString && field.value && field.value.startsWith('!WA:')) exportString = field.value.trim();
+              }
+
+              fs.writeFileSync(path.join(out, 'body.txt'), await page.locator('body').innerText().catch(() => ''));
+              fs.writeFileSync(path.join(out, 'dom.html'), await page.content());
+              await page.screenshot({ path: path.join(out, 'page.png'), fullPage: true }).catch(() => {});
+            } catch (error) {
+              consoleLines.push(`PAGE_ERROR: ${String(error)}`);
+            }
+
+            fs.writeFileSync(path.join(out, 'network.json'), JSON.stringify(records, null, 2));
+            fs.writeFileSync(path.join(out, 'response-bodies.json'), JSON.stringify(responseBodies, null, 2));
+            fs.writeFileSync(path.join(out, 'console.txt'), consoleLines.join('\n'));
+            if (exportString) fs.writeFileSync(path.join(out, 'export.txt'), exportString);
+            fs.writeFileSync(path.join(out, 'summary.txt'), [
+              `id=${id}`,
+              `export_found=${Boolean(exportString)}`,
+              `export_length=${exportString.length}`,
+              `responses=${records.length}`,
+              `captured_bodies=${responseBodies.length}`,
+            ].join('\n') + '\n');
+            await page.close();
+          }
+
+          await browser.close();
+          JS
+          node /tmp/capture-wago.mjs
+
+      - name: Commit audit to temporary branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Research/Wago/PUx5f9aPr
-          git commit -m 'Inspect Wago client endpoints for PUx5f9aPr' || exit 0
+          git add Research/Wago
+          git commit -m 'Capture RetreatUI Wago sources for HUD audit' || exit 0
           git push origin HEAD:temp/wago-fetch
