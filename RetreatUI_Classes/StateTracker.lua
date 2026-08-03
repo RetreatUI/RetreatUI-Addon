@@ -86,6 +86,15 @@ local CLASS_STATE_GROUPS = {
 
   ["Felsworn"] = {
     {
+      key="PACT",
+      members={
+        Member("Demonfire Pact", "DEMONFIRE", 800031),
+        Member("Slayer's Pact", "SLAYER", 803343),
+        Member("Vengeful Pact", "VENGEFUL", 803881),
+        Member("Legionfel Pact", "LEGIONFEL", 804764),
+      },
+    },
+    {
       key="DEMON_FORM",
       members={
         Member("Demon Form", "DEMON"),
@@ -208,6 +217,9 @@ local CLASS_STATE_GROUPS = {
     {
       key="ASPECT",
       members={
+        Member("Aspect of the Moonwell", "MOONWELL", 574360),
+        Member("Aspect of the Warden", "WARDEN", 801128),
+        Member("Aspect of the Stars", "STARS", 803887),
         Member("Aspect of the Cosmos", "COSMOS", 801123),
         Member("Aspect of the Goddess", "GODDESS", 802203),
       },

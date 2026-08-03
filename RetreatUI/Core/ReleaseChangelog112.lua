@@ -3,13 +3,14 @@ if not RUI then return end
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.2-beta.23",
-  summary = "Stable beta.22 recovery baseline with the verified CoA raid-buff catalog restored.",
+  title = "RetreatUI v1.1.2-beta.24",
+  summary = "Wago-sourced Starcaller, Felsworn, resource cleanup and Zul'Gurub coverage.",
   changes = {
-    "Restored only the verified Buff Manager catalog previously tested in beta.20.",
-    "Separated MP5 from resource-cost reduction so those effects no longer satisfy each other incorrectly.",
-    "Restored Barbarian Brutal Shout and Enduring Shout, Ranger Wild Blessing, and the verified multi-effect raid buffs.",
-    "Kept the beta.22 recovery codebase unchanged outside BuffManager.lua, version metadata and this changelog.",
-    "Party utility and interrupt tracking remain physically removed and disabled.",
+    "Added the missing Starcaller aspects, Lunar Phase, defensive tools, taunt, mobility and long cooldowns from the audited Starcaller package.",
+    "Added Felsworn pact states, missing active procs, Betray, Blood of Mannoroth, Blur, Eye of Archimonde and Fel Bargain from the audited Felsworn package.",
+    "Extended the safe native-resource cleanup with CoAMultiCastActionBarFrame and CoAResourceOrb from the audited resource-bar package.",
+    "Registered the original Zul'Gurub raid package through WeakAuras companion data; /ruizg opens the normal WeakAuras import review.",
+    "Does not import, delete, reposition or restyle any personal WeakAuras automatically.",
+    "Party utility and interrupt tracking remain removed.",
   },
 }

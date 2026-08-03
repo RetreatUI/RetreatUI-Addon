@@ -12,6 +12,7 @@ local cosmeticCandidates = {
   "CoAResourceSegmentBar",
   "CoAResourceSegmentBarContainer", "CoAResourceSegmentContainer",
   "CoAResourceBar", "CoAResourceFrame", "CoAResourceAnchor", "CoAResourceHolder",
+  "CoAMultiCastActionBarFrame", "CoAResourceOrb",
   "CoAClassResourceBar", "CoAClassResourceFrame", "CoAClassBar",
   "AscensionResourceBar", "AscensionResourceFrame", "AscensionResourceAnchor",
   "AscensionClassResourceBar", "AscensionClassResourceFrame", "AscensionClassBar",
@@ -61,6 +62,7 @@ end
 local function LooksLikeResourceFrameName(name)
   if type(name) ~= "string" or name == "" then return false end
   local lower = string.lower(name)
+  if lower == "coamulticastactionbarframe" or lower == "coaresourceorb" then return true end
   local hasNamespace = string.find(lower, "coa", 1, true)
     or string.find(lower, "ascension", 1, true)
     or string.find(lower, "classless", 1, true)
