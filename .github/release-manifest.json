@@ -1,5 +1,5 @@
 {
-  "publish": true,
+  "publish": false,
   "version": "1.1.2-beta.28",
   "title": "RetreatUI v1.1.2-beta.28",
   "notes_file": "RELEASE_NOTES.md",
