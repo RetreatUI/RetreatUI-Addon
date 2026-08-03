@@ -1,0 +1,55 @@
+name: Verify beta.25 release
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/beta25-release-trigger'
+      - '.github/workflows/verify-beta25-release.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/verify-beta25-release
+          fetch-depth: 0
+
+      - name: Wait for and verify release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag='v1.1.2-beta.25'
+          expected_asset='RetreatUI_v1.1.2-beta.25.zip'
+          found=''
+          for attempt in $(seq 1 24); do
+            if json=$(gh api "repos/${GITHUB_REPOSITORY}/releases/tags/${tag}" 2>/dev/null); then
+              prerelease=$(jq -r '.prerelease' <<<"$json")
+              asset=$(jq -r --arg expected "$expected_asset" '.assets[]? | select(.name == $expected) | .name' <<<"$json" | head -n1)
+              if [[ "$prerelease" == 'true' && "$asset" == "$expected_asset" ]]; then
+                found='yes'
+                break
+              fi
+            fi
+            sleep 5
+          done
+          [[ "$found" == 'yes' ]]
+          printf 'tag=%s\nprerelease=%s\nasset=%s\n' "$tag" "$prerelease" "$asset" > BETA25_RELEASE_VERIFIED.txt
+
+      - name: Commit verification marker
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add BETA25_RELEASE_VERIFIED.txt
+          git commit -m 'Verify beta.25 release asset' || exit 0
+          git push origin HEAD:temp/verify-beta25-release
