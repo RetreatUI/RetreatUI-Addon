@@ -1,0 +1,289 @@
+name: Audit Cultist Wago package
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/cultist-wago-trigger'
+      - '.github/workflows/cultist-wago-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout temporary audit branch
+        uses: actions/checkout@v4
+        with:
+          ref: temp/cultist-wago-audit
+          fetch-depth: 0
+
+      - name: Install WeakAuras decoder
+        shell: pwsh
+        run: |
+          npm init -y | Out-Null
+          npm install node-weakauras-parser@3.2.11
+
+      - name: Fetch, decode and compare Cultist package
+        shell: pwsh
+        run: |
+          @'
+          const fs = require('fs');
+          const path = require('path');
+          const parser = require('node-weakauras-parser');
+
+          const slug = 'dGSLgbxJP';
+          const outDir = path.join('Research', 'Wago', slug);
+          fs.mkdirSync(outDir, { recursive: true });
+
+          const normalize = value => String(value || '')
+            .toLowerCase()
+            .replace(/[’`]/g, "'")
+            .replace(/\|c[0-9a-f]{8}|\|r/gi, '')
+            .replace(/[^a-z0-9']+/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          const compact = value => {
+            if (value === undefined || value === null) return '';
+            if (typeof value === 'string') return value.replace(/[\r\n\t]+/g, ' ').trim();
+            try { return JSON.stringify(value); } catch (_) { return String(value); }
+          };
+
+          async function request(url, options = {}) {
+            const response = await fetch(url, {
+              ...options,
+              headers: {
+                'user-agent': 'RetreatUI-Cultist-Audit/1.0',
+                'accept': 'application/json,text/plain,*/*',
+                ...(options.headers || {}),
+              },
+            });
+            if (!response.ok) throw new Error(`${response.status} ${response.statusText}: ${url}`);
+            return response;
+          }
+
+          (async () => {
+            const metadataResponse = await request('https://data.wago.io/api/check/weakauras', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ ids: [slug] }),
+            });
+            const metadataText = await metadataResponse.text();
+            fs.writeFileSync(path.join(outDir, 'metadata.json'), metadataText);
+
+            const encodedResponse = await request(`https://data.wago.io/api/raw/encoded?id=${slug}`);
+            const encoded = (await encodedResponse.text()).trim();
+            const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
+
+            const cultistLua = fs.readFileSync(path.join('RetreatUI_Classes', 'Cultist', 'Data.lua'), 'utf8');
+            const currentNames = [];
+            for (const match of cultistLua.matchAll(/\bname\s*=\s*"([^"]+)"/g)) currentNames.push(match[1]);
+            for (const match of cultistLua.matchAll(/\baliases\s*=\s*\{([^}]*)\}/g)) {
+              for (const item of match[1].matchAll(/"([^"]+)"/g)) currentNames.push(item[1]);
+            }
+            const currentByNormalized = new Map(currentNames.map(name => [normalize(name), name]));
+
+            const displays = [];
+            const customCode = [];
+            const candidateMap = new Map();
+            const spellIds = new Set();
+
+            function addCandidate(value, source, displayId) {
+              if (Array.isArray(value)) {
+                for (const item of value) addCandidate(item, source, displayId);
+                return;
+              }
+              if (typeof value !== 'string') return;
+              const raw = value.replace(/[\r\n\t]+/g, ' ').trim();
+              if (!raw || raw.length > 120) return;
+              const key = normalize(raw);
+              if (!key || key.length < 3) return;
+              if (!candidateMap.has(key)) candidateMap.set(key, { value: raw, sources: new Set(), displays: new Set() });
+              const entry = candidateMap.get(key);
+              entry.sources.add(source);
+              if (displayId) entry.displays.add(displayId);
+            }
+
+            function collectSpellIds(object) {
+              if (!object || typeof object !== 'object') return;
+              for (const [key, value] of Object.entries(object)) {
+                if (/spell.*id/i.test(key)) {
+                  if (Array.isArray(value)) {
+                    for (const item of value) if (Number.isFinite(Number(item))) spellIds.add(Number(item));
+                  } else if (Number.isFinite(Number(value))) {
+                    spellIds.add(Number(value));
+                  }
+                }
+              }
+            }
+
+            function codeFrom(value, displayId, source) {
+              if (typeof value !== 'string' || !value.trim()) return;
+              customCode.push({ display: displayId || '', source, code: value });
+              for (const match of value.matchAll(/(?:GetSpellInfo|GetSpellCooldown|GetSpellCharges|IsPlayerSpell|IsSpellKnown)\s*\(\s*(\d+)/g)) {
+                spellIds.add(Number(match[1]));
+              }
+              for (const match of value.matchAll(/["']([^"'\r\n]{3,80})["']/g)) addCandidate(match[1], `code:${source}`, displayId);
+            }
+
+            function visit(node, parent) {
+              if (!node || typeof node !== 'object') return;
+              const id = typeof node.id === 'string' ? node.id : '';
+              const triggers = Array.isArray(node.triggers) ? node.triggers : [];
+              const looksLikeDisplay = Boolean(id || node.regionType || triggers.length || node.controlledChildren);
+
+              if (looksLikeDisplay) {
+                addCandidate(id, 'display.id', id || parent);
+                const triggerRows = [];
+                triggers.forEach((entry, index) => {
+                  const trigger = entry && entry.trigger ? entry.trigger : (entry || {});
+                  collectSpellIds(trigger);
+                  for (const key of ['spellName', 'names', 'auranames', 'name', 'debuffType']) {
+                    addCandidate(trigger[key], `trigger.${key}`, id || parent);
+                  }
+                  codeFrom(trigger.custom, id || parent, `trigger[${index}].custom`);
+                  codeFrom(trigger.customVariables, id || parent, `trigger[${index}].customVariables`);
+                  codeFrom(trigger.untrigger, id || parent, `trigger[${index}].untrigger`);
+                  triggerRows.push({
+                    index,
+                    type: trigger.type,
+                    event: trigger.event,
+                    unit: trigger.unit,
+                    sourceUnit: trigger.sourceUnit,
+                    spellId: trigger.spellId,
+                    spellIds: trigger.spellIds,
+                    spellName: trigger.spellName,
+                    names: trigger.names,
+                    auranames: trigger.auranames,
+                    use_spellId: trigger.use_spellId,
+                    use_unit: trigger.use_unit,
+                    use_sourceUnit: trigger.use_sourceUnit,
+                    subeventPrefix: trigger.subeventPrefix,
+                    subeventSuffix: trigger.subeventSuffix,
+                    custom_type: trigger.custom_type,
+                    events: trigger.events,
+                  });
+                });
+
+                codeFrom(node.init, id || parent, 'init');
+                codeFrom(node.customText, id || parent, 'customText');
+                if (node.actions && typeof node.actions === 'object') {
+                  for (const [phase, action] of Object.entries(node.actions)) {
+                    if (action && typeof action === 'object') codeFrom(action.custom, id || parent, `actions.${phase}.custom`);
+                  }
+                }
+
+                displays.push({
+                  id,
+                  parent: parent || '',
+                  regionType: node.regionType || '',
+                  controlledChildren: node.controlledChildren || [],
+                  anchorPoint: node.anchorPoint,
+                  selfPoint: node.selfPoint,
+                  xOffset: node.xOffset,
+                  yOffset: node.yOffset,
+                  width: node.width,
+                  height: node.height,
+                  grow: node.grow,
+                  sort: node.sort,
+                  frameStrata: node.frameStrata,
+                  load: node.load || {},
+                  triggers: triggerRows,
+                  conditions: node.conditions || [],
+                  information: node.information,
+                  url: node.url,
+                  version: node.version,
+                  semver: node.semver,
+                });
+              }
+
+              if (Array.isArray(node.d)) {
+                for (const child of node.d) visit(child, id || parent);
+              }
+            }
+
+            visit(decoded, '');
+
+            const candidateRows = [...candidateMap.entries()].map(([normalized, entry]) => ({
+              candidate: entry.value,
+              normalized,
+              currentMatch: currentByNormalized.get(normalized) || '',
+              status: currentByNormalized.has(normalized) ? 'present' : 'review',
+              sources: [...entry.sources].sort(),
+              displays: [...entry.displays].sort(),
+            })).sort((a, b) => a.status.localeCompare(b.status) || a.candidate.localeCompare(b.candidate));
+
+            const displayLines = ['id\tparent\tregionType\tx\ty\tload\ttriggers'];
+            for (const display of displays) {
+              const triggerText = display.triggers.map(t => [
+                `#${t.index}`,
+                t.type || '',
+                t.event || '',
+                t.unit || '',
+                compact(t.spellId || t.spellIds),
+                compact(t.spellName || t.names || t.auranames),
+                t.subeventPrefix || '',
+                t.subeventSuffix || '',
+              ].filter(Boolean).join(':')).join(' | ');
+              displayLines.push([
+                compact(display.id), compact(display.parent), compact(display.regionType),
+                compact(display.xOffset), compact(display.yOffset), compact(display.load), triggerText,
+              ].join('\t'));
+            }
+
+            const candidateLines = ['status\tcandidate\tcurrentMatch\tsources\tdisplays'];
+            for (const row of candidateRows) {
+              candidateLines.push([
+                row.status, compact(row.candidate), compact(row.currentMatch),
+                row.sources.join(','), row.displays.join(' | '),
+              ].join('\t'));
+            }
+
+            const metadata = (() => { try { return JSON.parse(metadataText); } catch (_) { return metadataText; } })();
+            const summary = [
+              `slug=${slug}`,
+              `root_id=${decoded && decoded.id ? decoded.id : ''}`,
+              `display_count=${displays.length}`,
+              `custom_code_blocks=${customCode.length}`,
+              `candidate_count=${candidateRows.length}`,
+              `candidate_review_count=${candidateRows.filter(row => row.status === 'review').length}`,
+              `current_cultist_names=${currentNames.length}`,
+              `spell_ids=${[...spellIds].sort((a, b) => a - b).join(',')}`,
+              `encoded_length=${encoded.length}`,
+              `metadata=${compact(metadata)}`,
+            ].join('\n') + '\n';
+
+            fs.writeFileSync(path.join(outDir, 'summary.txt'), summary);
+            fs.writeFileSync(path.join(outDir, 'displays.tsv'), displayLines.join('\n') + '\n');
+            fs.writeFileSync(path.join(outDir, 'candidates.tsv'), candidateLines.join('\n') + '\n');
+            fs.writeFileSync(path.join(outDir, 'audit.json'), JSON.stringify({
+              slug,
+              rootId: decoded && decoded.id,
+              metadata,
+              currentNames,
+              spellIds: [...spellIds].sort((a, b) => a - b),
+              displays,
+              candidates: candidateRows,
+              customCode,
+            }, null, 2));
+          })().catch(error => {
+            console.error(error);
+            process.exit(1);
+          });
+          '@ | Set-Content -Encoding UTF8 audit-cultist.cjs
+          node audit-cultist.cjs
+
+      - name: Commit audit output
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Research/Wago/dGSLgbxJP
+          git commit -m 'Audit Cultist Wago package' || exit 0
+          git push origin HEAD:temp/cultist-wago-audit
