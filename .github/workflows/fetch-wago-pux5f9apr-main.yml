@@ -1,4 +1,4 @@
-name: Audit RetreatUI Wago sources
+name: Fetch RetreatUI Wago sources
 
 on:
   push:
@@ -14,7 +14,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - name: Checkout temporary research branch
         uses: actions/checkout@v4
@@ -22,17 +22,10 @@ jobs:
           ref: temp/wago-fetch
           fetch-depth: 0
 
-      - name: Install WeakAuras decoder
+      - name: Download original Wago packages
         shell: bash
         run: |
-          set -euo pipefail
-          npm init -y >/dev/null 2>&1
-          npm install node-weakauras-parser@3.2.11 >/dev/null 2>&1
-
-      - name: Download and decode Wago packages
-        shell: bash
-        run: |
-          set -euo pipefail
+          set -u
           ids=(PUx5f9aPr Y5UDib4zq TqH72U66p PUjOUxmPt)
           mkdir -p Research/Wago
 
@@ -40,135 +33,31 @@ jobs:
           {"ids":["PUx5f9aPr","Y5UDib4zq","TqH72U66p","PUjOUxmPt"]}
           JSON
 
-          curl -fsSL --retry 5 --retry-delay 2 \
+          status=$(curl -sSL --retry 5 --retry-delay 2 \
             -H 'Content-Type: application/json' \
             --data-binary @/tmp/check.json \
+            -w '%{http_code}' \
             'https://data.wago.io/api/check/weakauras' \
-            -o Research/Wago/metadata.json
+            -o Research/Wago/metadata.json || printf 'curl_error')
+          printf 'metadata_http=%s\n' "$status" > Research/Wago/fetch-status.txt
 
           for id in "${ids[@]}"; do
             mkdir -p "Research/Wago/$id"
-            curl -fsSL --retry 5 --retry-delay 2 \
+            status=$(curl -sSL --retry 5 --retry-delay 2 \
+              -w '%{http_code}' \
               "https://data.wago.io/api/raw/encoded?id=$id" \
-              -o "Research/Wago/$id/export.txt"
+              -o "Research/Wago/$id/export.txt" || printf 'curl_error')
+            length=$(wc -c < "Research/Wago/$id/export.txt" 2>/dev/null || printf '0')
+            prefix=$(head -c 12 "Research/Wago/$id/export.txt" 2>/dev/null || true)
+            printf '%s_http=%s\n%s_length=%s\n%s_prefix=%q\n' "$id" "$status" "$id" "$length" "$id" "$prefix" >> Research/Wago/fetch-status.txt
           done
 
-          cat > /tmp/decode-wago.cjs <<'JS'
-          const fs = require('fs');
-          const path = require('path');
-          const parser = require('node-weakauras-parser');
-
-          const ids = ['PUx5f9aPr', 'Y5UDib4zq', 'TqH72U66p', 'PUjOUxmPt'];
-          const metadata = JSON.parse(fs.readFileSync('Research/Wago/metadata.json', 'utf8'));
-          const metadataBySlug = Object.fromEntries(metadata.map(item => [item.slug, item]));
-
-          function walk(node, output, parentName = '') {
-            if (!node || typeof node !== 'object') return;
-            const id = typeof node.id === 'string' ? node.id : '';
-            const regionType = node.regionType || node.regiontype || '';
-            const triggers = Array.isArray(node.triggers) ? node.triggers : [];
-            const load = node.load || {};
-            if (id || regionType || triggers.length) {
-              output.push({
-                id,
-                parent: parentName,
-                regionType,
-                anchorPoint: node.anchorPoint,
-                selfPoint: node.selfPoint,
-                xOffset: node.xOffset,
-                yOffset: node.yOffset,
-                width: node.width,
-                height: node.height,
-                grow: node.grow,
-                sort: node.sort,
-                controlledChildren: node.controlledChildren || [],
-                triggers: triggers.map(entry => {
-                  const trigger = entry && entry.trigger ? entry.trigger : entry || {};
-                  return {
-                    type: trigger.type,
-                    event: trigger.event,
-                    subeventPrefix: trigger.subeventPrefix,
-                    subeventSuffix: trigger.subeventSuffix,
-                    unit: trigger.unit,
-                    spellIds: trigger.spellIds,
-                    spellName: trigger.spellName,
-                    names: trigger.names,
-                    auranames: trigger.auranames,
-                    debuffType: trigger.debuffType,
-                    use_spellId: trigger.use_spellId,
-                    spellId: trigger.spellId,
-                    useName: trigger.useName,
-                    use_unit: trigger.use_unit,
-                    use_sourceUnit: trigger.use_sourceUnit,
-                    sourceUnit: trigger.sourceUnit,
-                    custom: trigger.custom,
-                    custom_type: trigger.custom_type,
-                    events: trigger.events,
-                    check: trigger.check,
-                  };
-                }),
-                load,
-                actions: node.actions || {},
-                customText: node.customText,
-                customVariables: node.customVariables,
-                init: node.init,
-                information: node.information,
-                url: node.url,
-                semver: node.semver,
-                version: node.version,
-              });
-            }
-            if (Array.isArray(node.d)) {
-              for (const child of node.d) walk(child, output, id || parentName);
-            }
-          }
-
-          for (const id of ids) {
-            const dir = path.join('Research', 'Wago', id);
-            const encoded = fs.readFileSync(path.join(dir, 'export.txt'), 'utf8').trim();
-            const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
-            fs.writeFileSync(path.join(dir, 'decoded.json'), JSON.stringify(decoded, null, 2));
-
-            const displays = [];
-            walk(decoded, displays);
-            const customCode = [];
-            for (const display of displays) {
-              for (const trigger of display.triggers || []) {
-                for (const key of ['custom', 'customVariables']) {
-                  if (typeof trigger[key] === 'string' && trigger[key].trim()) customCode.push({ display: display.id, key, code: trigger[key] });
-                }
-              }
-              for (const key of ['customText', 'customVariables', 'init']) {
-                if (typeof display[key] === 'string' && display[key].trim()) customCode.push({ display: display.id, key, code: display[key] });
-              }
-            }
-
-            fs.writeFileSync(path.join(dir, 'displays.json'), JSON.stringify(displays, null, 2));
-            fs.writeFileSync(path.join(dir, 'custom-code.json'), JSON.stringify(customCode, null, 2));
-            const rootId = decoded && decoded.id ? decoded.id : '';
-            const meta = metadataBySlug[id] || {};
-            fs.writeFileSync(path.join(dir, 'summary.txt'), [
-              `slug=${id}`,
-              `name=${meta.name || rootId}`,
-              `author=${meta.username || ''}`,
-              `wago_version=${meta.version || ''}`,
-              `version_string=${meta.versionString || ''}`,
-              `root_id=${rootId}`,
-              `display_count=${displays.length}`,
-              `custom_code_blocks=${customCode.length}`,
-              `encoded_length=${encoded.length}`,
-            ].join('\n') + '\n');
-          }
-          JS
-
-          node /tmp/decode-wago.cjs
-
-      - name: Commit decoded audit to temporary branch
+      - name: Commit fetched sources to temporary branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Research/Wago
-          git commit -m 'Decode RetreatUI Wago sources for HUD audit' || exit 0
+          git commit -m 'Fetch RetreatUI Wago source exports' || exit 0
           git push origin HEAD:temp/wago-fetch
