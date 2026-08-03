@@ -40,7 +40,7 @@ local function Patch(name, values)
   local record = Find(name)
   if not record then return nil end
   for key, value in pairs(values) do
-    if key == "runtimeIDs" or key == "learnedByAny" or key == "aliases" then
+    if key == "runtimeIDs" or key == "learnedByAny" or key == "aliases" or key == "glowWhenAuraID" then
       record[key] = MergeList(record[key], value)
     else
       record[key] = value
@@ -65,11 +65,11 @@ Patch("Chastise", {
   runtimeIDs={503135, 503141, 563269, 563270},
 })
 Patch("Righteous Tempest", {
-  auraID=748502, buffID=748502,
+  glowWhenAuraID={748502},
 })
 
 Add({
-  name="Oathkeeper Benediction", aliases={"Benediction"},
+  name="Oathkeeper Benediction",
   id=803375, auraID=803373, buffID=803373,
   learnedByAny={803375, 803373}, runtimeIDs={803375, 803373},
   category="rotation", hudRow="core", order=9, trackCooldown=true,
