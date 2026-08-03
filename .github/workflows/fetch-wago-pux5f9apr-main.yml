@@ -14,7 +14,7 @@ permissions:
 jobs:
   fetch:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - name: Checkout temporary research branch
         uses: actions/checkout@v4
@@ -22,134 +22,153 @@ jobs:
           ref: temp/wago-fetch
           fetch-depth: 0
 
-      - name: Install Playwright
+      - name: Install WeakAuras decoder
         shell: bash
         run: |
           set -euo pipefail
           npm init -y >/dev/null 2>&1
-          npm install playwright@1.54.2 >/dev/null 2>&1
-          npx playwright install --with-deps chromium >/dev/null 2>&1
+          npm install node-weakauras-parser@3.2.11 >/dev/null 2>&1
 
-      - name: Capture Wago imports and metadata
+      - name: Download and decode Wago packages
         shell: bash
         run: |
           set -euo pipefail
-          cat > /tmp/capture-wago.mjs <<'JS'
-          import { chromium } from 'playwright';
-          import fs from 'fs';
-          import path from 'path';
+          ids=(PUx5f9aPr Y5UDib4zq TqH72U66p PUjOUxmPt)
+          mkdir -p Research/Wago
+
+          cat > /tmp/check.json <<'JSON'
+          {"ids":["PUx5f9aPr","Y5UDib4zq","TqH72U66p","PUjOUxmPt"]}
+          JSON
+
+          curl -fsSL --retry 5 --retry-delay 2 \
+            -H 'Content-Type: application/json' \
+            --data-binary @/tmp/check.json \
+            'https://data.wago.io/api/check/weakauras' \
+            -o Research/Wago/metadata.json
+
+          for id in "${ids[@]}"; do
+            mkdir -p "Research/Wago/$id"
+            curl -fsSL --retry 5 --retry-delay 2 \
+              "https://data.wago.io/api/raw/encoded?id=$id" \
+              -o "Research/Wago/$id/export.txt"
+          done
+
+          cat > /tmp/decode-wago.cjs <<'JS'
+          const fs = require('fs');
+          const path = require('path');
+          const parser = require('node-weakauras-parser');
 
           const ids = ['PUx5f9aPr', 'Y5UDib4zq', 'TqH72U66p', 'PUjOUxmPt'];
-          const root = 'Research/Wago';
-          fs.mkdirSync(root, { recursive: true });
+          const metadata = JSON.parse(fs.readFileSync('Research/Wago/metadata.json', 'utf8'));
+          const metadataBySlug = Object.fromEntries(metadata.map(item => [item.slug, item]));
 
-          const browser = await chromium.launch({ headless: true });
-          const context = await browser.newContext({
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) RetreatUI-Wago-Audit',
-            viewport: { width: 1600, height: 1200 },
-            permissions: ['clipboard-read', 'clipboard-write'],
-          });
-
-          for (const id of ids) {
-            const out = path.join(root, id);
-            fs.mkdirSync(out, { recursive: true });
-            const page = await context.newPage();
-            const records = [];
-            const responseBodies = [];
-            const consoleLines = [];
-            let exportString = '';
-
-            page.on('console', message => consoleLines.push(`${message.type()}: ${message.text()}`));
-            page.on('response', async response => {
-              const url = response.url();
-              if (!url.includes('wago.io')) return;
-              const type = response.headers()['content-type'] || '';
-              let body = '';
-              try {
-                if (/json|text|javascript|octet-stream/i.test(type)) body = await response.text();
-              } catch {}
-              records.push({ url, status: response.status(), type, length: body.length, prefix: body.slice(0, 500) });
-              if (body) {
-                const direct = body.trim();
-                if (!exportString && direct.startsWith('!WA:')) exportString = direct;
-                if (!exportString) {
-                  const match = body.match(/!WA:[0-9]+![A-Za-z0-9()_+\-./=]+/);
-                  if (match) exportString = match[0];
-                }
-                if (url.includes('data.wago.io') || /api|import|export|raw|version|slug/i.test(url)) {
-                  responseBodies.push({ url, body });
-                }
-              }
-            });
-
-            try {
-              await page.goto(`https://wago.io/${id}`, { waitUntil: 'domcontentloaded', timeout: 120000 });
-              await page.waitForTimeout(12000);
-
-              const controls = await page.locator('button, a, [role="button"]').allTextContents().catch(() => []);
-              fs.writeFileSync(path.join(out, 'controls.json'), JSON.stringify(controls, null, 2));
-
-              const patterns = [
-                /copy import string/i,
-                /copy import/i,
-                /import string/i,
-                /^copy$/i,
-                /load import/i,
-              ];
-
-              for (const pattern of patterns) {
-                const locator = page.getByText(pattern).first();
-                if (await locator.count().catch(() => 0)) {
-                  try {
-                    await locator.click({ timeout: 5000 });
-                    await page.waitForTimeout(2500);
-                    const clip = await page.evaluate(async () => {
-                      try { return await navigator.clipboard.readText(); } catch { return ''; }
-                    });
-                    if (clip && clip.startsWith('!WA:')) exportString = clip.trim();
-                  } catch {}
-                }
-                if (exportString) break;
-              }
-
-              const textareas = await page.locator('textarea, input').evaluateAll(elements =>
-                elements.map(element => ({ value: element.value || '', placeholder: element.placeholder || '' }))
-              ).catch(() => []);
-              for (const field of textareas) {
-                if (!exportString && field.value && field.value.startsWith('!WA:')) exportString = field.value.trim();
-              }
-
-              fs.writeFileSync(path.join(out, 'body.txt'), await page.locator('body').innerText().catch(() => ''));
-              fs.writeFileSync(path.join(out, 'dom.html'), await page.content());
-              await page.screenshot({ path: path.join(out, 'page.png'), fullPage: true }).catch(() => {});
-            } catch (error) {
-              consoleLines.push(`PAGE_ERROR: ${String(error)}`);
+          function walk(node, output, parentName = '') {
+            if (!node || typeof node !== 'object') return;
+            const id = typeof node.id === 'string' ? node.id : '';
+            const regionType = node.regionType || node.regiontype || '';
+            const triggers = Array.isArray(node.triggers) ? node.triggers : [];
+            const load = node.load || {};
+            if (id || regionType || triggers.length) {
+              output.push({
+                id,
+                parent: parentName,
+                regionType,
+                anchorPoint: node.anchorPoint,
+                selfPoint: node.selfPoint,
+                xOffset: node.xOffset,
+                yOffset: node.yOffset,
+                width: node.width,
+                height: node.height,
+                grow: node.grow,
+                sort: node.sort,
+                controlledChildren: node.controlledChildren || [],
+                triggers: triggers.map(entry => {
+                  const trigger = entry && entry.trigger ? entry.trigger : entry || {};
+                  return {
+                    type: trigger.type,
+                    event: trigger.event,
+                    subeventPrefix: trigger.subeventPrefix,
+                    subeventSuffix: trigger.subeventSuffix,
+                    unit: trigger.unit,
+                    spellIds: trigger.spellIds,
+                    spellName: trigger.spellName,
+                    names: trigger.names,
+                    auranames: trigger.auranames,
+                    debuffType: trigger.debuffType,
+                    use_spellId: trigger.use_spellId,
+                    spellId: trigger.spellId,
+                    useName: trigger.useName,
+                    use_unit: trigger.use_unit,
+                    use_sourceUnit: trigger.use_sourceUnit,
+                    sourceUnit: trigger.sourceUnit,
+                    custom: trigger.custom,
+                    custom_type: trigger.custom_type,
+                    events: trigger.events,
+                    check: trigger.check,
+                  };
+                }),
+                load,
+                actions: node.actions || {},
+                customText: node.customText,
+                customVariables: node.customVariables,
+                init: node.init,
+                information: node.information,
+                url: node.url,
+                semver: node.semver,
+                version: node.version,
+              });
             }
-
-            fs.writeFileSync(path.join(out, 'network.json'), JSON.stringify(records, null, 2));
-            fs.writeFileSync(path.join(out, 'response-bodies.json'), JSON.stringify(responseBodies, null, 2));
-            fs.writeFileSync(path.join(out, 'console.txt'), consoleLines.join('\n'));
-            if (exportString) fs.writeFileSync(path.join(out, 'export.txt'), exportString);
-            fs.writeFileSync(path.join(out, 'summary.txt'), [
-              `id=${id}`,
-              `export_found=${Boolean(exportString)}`,
-              `export_length=${exportString.length}`,
-              `responses=${records.length}`,
-              `captured_bodies=${responseBodies.length}`,
-            ].join('\n') + '\n');
-            await page.close();
+            if (Array.isArray(node.d)) {
+              for (const child of node.d) walk(child, output, id || parentName);
+            }
           }
 
-          await browser.close();
-          JS
-          node /tmp/capture-wago.mjs
+          for (const id of ids) {
+            const dir = path.join('Research', 'Wago', id);
+            const encoded = fs.readFileSync(path.join(dir, 'export.txt'), 'utf8').trim();
+            const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
+            fs.writeFileSync(path.join(dir, 'decoded.json'), JSON.stringify(decoded, null, 2));
 
-      - name: Commit audit to temporary branch
+            const displays = [];
+            walk(decoded, displays);
+            const customCode = [];
+            for (const display of displays) {
+              for (const trigger of display.triggers || []) {
+                for (const key of ['custom', 'customVariables']) {
+                  if (typeof trigger[key] === 'string' && trigger[key].trim()) customCode.push({ display: display.id, key, code: trigger[key] });
+                }
+              }
+              for (const key of ['customText', 'customVariables', 'init']) {
+                if (typeof display[key] === 'string' && display[key].trim()) customCode.push({ display: display.id, key, code: display[key] });
+              }
+            }
+
+            fs.writeFileSync(path.join(dir, 'displays.json'), JSON.stringify(displays, null, 2));
+            fs.writeFileSync(path.join(dir, 'custom-code.json'), JSON.stringify(customCode, null, 2));
+            const rootId = decoded && decoded.id ? decoded.id : '';
+            const meta = metadataBySlug[id] || {};
+            fs.writeFileSync(path.join(dir, 'summary.txt'), [
+              `slug=${id}`,
+              `name=${meta.name || rootId}`,
+              `author=${meta.username || ''}`,
+              `wago_version=${meta.version || ''}`,
+              `version_string=${meta.versionString || ''}`,
+              `root_id=${rootId}`,
+              `display_count=${displays.length}`,
+              `custom_code_blocks=${customCode.length}`,
+              `encoded_length=${encoded.length}`,
+            ].join('\n') + '\n');
+          }
+          JS
+
+          node /tmp/decode-wago.cjs
+
+      - name: Commit decoded audit to temporary branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Research/Wago
-          git commit -m 'Capture RetreatUI Wago sources for HUD audit' || exit 0
+          git commit -m 'Decode RetreatUI Wago sources for HUD audit' || exit 0
           git push origin HEAD:temp/wago-fetch
