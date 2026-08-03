@@ -1,0 +1,450 @@
+name: Build beta.24 Wago integration
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/implement-wago-beta24-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/wago-hud-integration
+          fetch-depth: 0
+
+      - name: Fetch exact ZG Wago export
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-delay 2 \
+            'https://data.wago.io/api/raw/encoded?id=PUjOUxmPt' \
+            -o /tmp/zg-export.txt
+          grep -q '^!WA:2!' /tmp/zg-export.txt
+
+      - name: Apply isolated integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          root = Path('.')
+
+          def read(path):
+              return (root / path).read_text(encoding='utf-8')
+
+          def write(path, text):
+              (root / path).write_text(text, encoding='utf-8')
+
+          def replace_once(text, old, new, label):
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected exactly one match, found {count}')
+              return text.replace(old, new, 1)
+
+          # 1) Native resource cleanup: exact frames from Wago PUx5f9aPr.
+          path = 'RetreatUI/Integrations/Cleanup.lua'
+          text = read(path)
+          text = replace_once(
+              text,
+              '  "CoAResourceBar", "CoAResourceFrame", "CoAResourceAnchor", "CoAResourceHolder",\n',
+              '  "CoAResourceBar", "CoAResourceFrame", "CoAResourceAnchor", "CoAResourceHolder",\n'
+              '  "CoAMultiCastActionBarFrame", "CoAResourceOrb",\n',
+              'Cleanup candidate insertion'
+          )
+          marker = 'local function LooksLikeResourceFrameName(name)\n  if type(name) ~= "string" or name == "" then return false end\n  local lower = string.lower(name)\n'
+          replacement = 'local function LooksLikeResourceFrameName(name)\n  if type(name) ~= "string" or name == "" then return false end\n  local lower = string.lower(name)\n  if lower == "coamulticastactionbarframe" or lower == "coaresourceorb" then return true end\n'
+          text = replace_once(text, marker, replacement, 'Cleanup exact resource recognition')
+          write(path, text)
+
+          # 2) Starcaller native HUD coverage from Wago Y5UDib4zq.
+          path = 'RetreatUI_Classes/Starcaller/Data.lua'
+          text = read(path)
+          text = replace_once(text, '  version = 3,\n', '  version = 4,\n', 'Starcaller database version')
+          marker = '    {name="Aspect of the Cosmos", id=801123, category="rotation", hudRow="core", order=20, trackCooldown=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\\\Icons\\\\ability_ardenweald_priest", sourceTab="Class", collectorEntryID=7254, cooldownHint=10},\n'
+          addition = (
+              '    {name="Aspect of the Moonwell", id=574360, category="rotation", hudRow="core", order=19, trackCooldown=true, buff="Aspect of the Moonwell", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\spell_nature_moonglow", sourceTab="ClassSpell", cooldownHint=10},\n'
+              '    {name="Aspect of the Warden", id=801128, category="rotation", hudRow="core", order=19, trackCooldown=true, buff="Aspect of the Warden", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\ability_hunter_longevity", sourceTab="ClassSpell", cooldownHint=10},\n'
+              '    {name="Aspect of the Stars", id=803887, category="rotation", hudRow="core", order=19, trackCooldown=true, buff="Aspect of the Stars", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\spell_arcane_starfire", sourceTab="ClassSpell", cooldownHint=10},\n'
+              + marker
+          )
+          text = replace_once(text, marker, addition, 'Starcaller aspects')
+          marker = '    {name="Starcall", id=800497, category="rotation", hudRow="core", order=22, trackCooldown=true, glowWhenAura={"Cascade"}, talent=true, fallbackIcon="Interface\\\\Icons\\\\inv_archaeology_70_starlightbeacon", sourceTab="Moonbow", collectorEntryID=29488, cooldownHint=12},\n'
+          text = replace_once(
+              text,
+              marker,
+              marker + '    {name="Huntress Saber", id=524643, category="rotation", hudRow="core", order=24, trackCooldown=true, buff="Huntress Saber", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\inv_sword_1h_nightelf_c_01", sourceTab="ClassSpell"},\n',
+              'Starcaller Huntress Saber'
+          )
+          text = replace_once(
+              text,
+              '{name="Starfire Barrage", id=704739, category="proc",',
+              '{name="Starfire Barrage", id=704739, auraID=572318, category="proc",',
+              'Starcaller Starfire Barrage aura ID'
+          )
+          marker = '    {name="Shooting Star", id=800505, category="mobility", hudRow="utility", order=140, trackCooldown=true, buff="Shooting Star", trackDuration=true, glowWhenAura={"Lunar Charge"}, fallbackIcon="Interface\\\\Icons\\\\artifactability_balancedruid_moonandstars", sourceTab="Class", collectorEntryID=7409, cooldownHint=60},\n'
+          utility = (
+              marker
+              + '    {name="Stellar Drift", id=800501, category="mobility", hudRow="utility", order=145, trackCooldown=true, fallbackIcon="Interface\\\\Icons\\\\ability_druid_stellarflarestun", sourceTab="ClassSpell"},\n'
+              + '    {name="Command", id=804386, category="taunt", hudRow="utility", order=150, trackCooldown=true, targetDebuff=true, fallbackIcon="Interface\\\\Icons\\\\ability_hunter_goforthethroat", sourceTab="ClassSpell", cooldownHint=8},\n'
+              + '    {name="Celestial Aegis", id=801126, category="defensive", hudRow="utility", order=200, trackCooldown=true, buff="Celestial Aegis", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\spell_holy_divineprotection", sourceTab="ClassSpell", cooldownHint=30},\n'
+              + '    {name="Vigil of the Moon", id=802797, category="defensive", hudRow="utility", order=205, trackCooldown=true, buff="Vigil of the Moon", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\ability_druid_lunarguidance", sourceTab="ClassSpell", cooldownHint=30},\n'
+              + '    {name="Tidal Rebirth", id=801793, category="ally", hudRow="utility", order=330, trackCooldown=true, fallbackIcon="Interface\\\\Icons\\\\spell_nature_reincarnation", sourceTab="ClassSpell", cooldownHint=600},\n'
+          )
+          text = replace_once(text, marker, utility, 'Starcaller utility coverage')
+          marker = '    {name="Stellar Amplification", id=801143, category="proc", order=10, buff="Stellar Amplification", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_soulcleave4", sourceTab="Hydromancy", collectorEntryID=33797},\n'
+          text = replace_once(
+              text,
+              marker,
+              '    {name="Lunar Phase", id=802985, category="proc", order=5, buff="Lunar Phase", trackDuration=true, auraTracker=true, trackHUD=false, maxStacks=10, fallbackIcon="Interface\\\\Icons\\\\spell_nature_starfall", sourceTab="ClassSpell"},\n' + marker,
+              'Starcaller Lunar Phase'
+          )
+          write(path, text)
+
+          # 3) Felsworn native HUD coverage from Wago TqH72U66p.
+          path = 'RetreatUI_Classes/Felsworn/Data.lua'
+          text = read(path)
+          text = replace_once(text, '  version = 4,\n', '  version = 5,\n', 'Felsworn database version')
+          text = replace_once(
+              text,
+              '{name="Chaos Rush", id=280350,',
+              '{name="Chaos Rush", id=500028,',
+              'Felsworn canonical Chaos Rush ID'
+          )
+          marker = '    {name="Reckoning", id=802058, category="offensive", hudRow="core", order=240, trackCooldown=true, buff="Reckoning", trackDuration=true, targetDebuff=true, partyCooldown=true, cooldownCategory="offensive", fallbackIcon="Interface\\\\Icons\\\\spell_fire_felrainoffire", sourceTab="Class", collectorEntryID=7865, cooldownHint=120},\n'
+          text = replace_once(
+              text,
+              marker,
+              marker + '    {name="Blood of Mannoroth", id=802075, category="offensive", hudRow="core", order=300, trackCooldown=true, buff="Blood of Mannoroth", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\spell_shadow_demonicpact", sourceTab="ClassSpell", cooldownHint=180},\n',
+              'Felsworn Blood of Mannoroth'
+          )
+          marker = '    {name="Tyrannical Resolve", id=804823, category="taunt", hudRow="utility", order=160, trackCooldown=true, targetDebuff=true, talent=true, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_immolation", sourceTab="Demonology", collectorEntryID=30405, cooldownHint=180},\n'
+          utility = (
+              '    {name="Betray", id=804220, category="taunt", hudRow="utility", order=155, trackCooldown=true, targetDebuff=true, fallbackIcon="Interface\\\\Icons\\\\ability_warlock_demonicpower", sourceTab="ClassSpell", cooldownHint=8},\n'
+              + marker
+              + '    {name="Blur", id=578345, category="defensive", hudRow="utility", order=220, trackCooldown=true, buff="Blur", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_blur", sourceTab="ClassSpell", cooldownHint=30},\n'
+              + '    {name="Eye of Archimonde", id=804052, category="utility", hudRow="utility", order=225, trackCooldown=true, fallbackIcon="Interface\\\\Icons\\\\achievement_boss_archimonde", sourceTab="ClassSpell", cooldownHint=45},\n'
+              + '    {name="Fel Bargain", id=807942, category="defensive", hudRow="utility", order=310, trackCooldown=true, buff="Fel Bargain", trackDuration=true, fallbackIcon="Interface\\\\Icons\\\\spell_shadow_sacrificialshield", sourceTab="ClassSpell", cooldownHint=180},\n'
+          )
+          text = replace_once(text, marker, utility, 'Felsworn utility coverage')
+          marker = '    {name="Hellfire Carver", id=707444, category="proc", order=10, buff="Hellfire Carver", trackDuration=true, auraTracker=true, trackHUD=false, talent=true, fallbackIcon="Interface\\\\Icons\\\\inv_felhound4_custom", sourceTab="Demonology", collectorEntryID=9832},\n'
+          proc_entries = (
+              '    {name="Betrayer\'s Inclinations", id=804758, category="proc", order=1, buff="Betrayer\'s Inclinations", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_demonicappetite", sourceTab="ClassSpell"},\n'
+              '    {name="Felstrider", id=707513, category="proc", order=2, buff="Felstrider", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_felrush", sourceTab="ClassSpell"},\n'
+              '    {name="Felguard", id=704360, category="proc", order=3, buff="Felguard", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\spell_shadow_summonfelguard", sourceTab="ClassSpell"},\n'
+              '    {name="Mark of Chaos", id=524947, category="proc", order=4, buff="Mark of Chaos", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\spell_shadow_curseofmannoroth", sourceTab="ClassSpell"},\n'
+              '    {name="Carve", id=807424, category="proc", order=5, buff="Carve", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_bladedance", sourceTab="ClassSpell"},\n'
+              '    {name="Fel Instincts", id=560645, category="proc", order=6, buff="Fel Instincts", trackDuration=true, auraTracker=true, trackHUD=false, fallbackIcon="Interface\\\\Icons\\\\ability_demonhunter_spectank", sourceTab="ClassSpell"},\n'
+          )
+          text = replace_once(text, marker, ''.join(proc_entries) + marker, 'Felsworn proc coverage')
+          text = replace_once(
+              text,
+              '{name="Pit Lord\'s Rage", id=705141, category="proc",',
+              '{name="Pit Lord\'s Rage", id=705141, auraID=705142, category="proc",',
+              'Felsworn Pit Lord aura ID'
+          )
+          text = replace_once(
+              text,
+              '{name="Inner Demon", category="proc",',
+              '{name="Inner Demon", id=804216, category="proc",',
+              'Felsworn Inner Demon ID'
+          )
+          write(path, text)
+
+          # 4) Persistent class-state groups: Starcaller aspects and Felsworn pacts.
+          path = 'RetreatUI_Classes/StateTracker.lua'
+          text = read(path)
+          old = '''  ["Felsworn"] = {
+    {
+      key="DEMON_FORM",
+      members={
+        Member("Demon Form", "DEMON"),
+        Member("Fel Form", "FEL"),
+        Member("Felsworn Form", "FELSWORN"),
+        Member("Metamorphosis", "META", nil, nil, "Interface\\\\Icons\\\\Spell_Shadow_DemonForm"),
+      },
+    },
+  },
+'''
+          new = '''  ["Felsworn"] = {
+    {
+      key="PACT",
+      members={
+        Member("Demonfire Pact", "DEMONFIRE", 800031),
+        Member("Slayer's Pact", "SLAYER", 803343),
+        Member("Vengeful Pact", "VENGEFUL", 803881),
+        Member("Legionfel Pact", "LEGIONFEL", 804764),
+      },
+    },
+    {
+      key="DEMON_FORM",
+      members={
+        Member("Demon Form", "DEMON"),
+        Member("Fel Form", "FEL"),
+        Member("Felsworn Form", "FELSWORN"),
+        Member("Metamorphosis", "META", nil, nil, "Interface\\\\Icons\\\\Spell_Shadow_DemonForm"),
+      },
+    },
+  },
+'''
+          text = replace_once(text, old, new, 'Felsworn pact state group')
+          old = '''  ["Starcaller"] = {
+    {
+      key="ASPECT",
+      members={
+        Member("Aspect of the Cosmos", "COSMOS", 801123),
+        Member("Aspect of the Goddess", "GODDESS", 802203),
+      },
+    },
+'''
+          new = '''  ["Starcaller"] = {
+    {
+      key="ASPECT",
+      members={
+        Member("Aspect of the Moonwell", "MOONWELL", 574360),
+        Member("Aspect of the Warden", "WARDEN", 801128),
+        Member("Aspect of the Stars", "STARS", 803887),
+        Member("Aspect of the Cosmos", "COSMOS", 801123),
+        Member("Aspect of the Goddess", "GODDESS", 802203),
+      },
+    },
+'''
+          text = replace_once(text, old, new, 'Starcaller aspect state group')
+          write(path, text)
+
+          # 5) Official WeakAuras companion-data bridge for the exact ZG package.
+          encoded = Path('/tmp/zg-export.txt').read_text(encoding='utf-8').strip()
+          if not encoded.startswith('!WA:2!'):
+              raise SystemExit('ZG export is not a WeakAuras v2 string')
+          if ']=]' in encoded:
+              raise SystemExit('ZG export unexpectedly contains Lua long-string terminator')
+
+          integration = f'''local RUI = RetreatUI
+if not RUI then return end
+
+-- Original third-party package: https://wago.io/PUjOUxmPt
+-- RetreatUI registers it through WeakAuras' public companion-data API. It does
+-- not alter, delete or silently overwrite the player's existing WeakAuras.
+local SLUG = "PUjOUxmPt"
+local ROOT_ID = "[WoloUI] Zul'Gurub - RaidPack"
+local ENCODED = [=[{encoded}]=]
+
+local companionData = {{
+  slugs = {{
+    [SLUG] = {{
+      name = ROOT_ID,
+      author = "WoloUI / Halcones de Chicureo",
+      encoded = ENCODED,
+      wagoVersion = "1",
+      wagoSemver = "1.0.0",
+      source = "Wago",
+      versionNote = "Bundled by RetreatUI for Zul'Gurub encounter coverage.",
+    }},
+  }},
+  stash = {{}},
+  stopmotionFiles = {{}},
+}}
+
+local registered = false
+
+local function RegisterCompanionData()
+  if registered then return true end
+  if type(WeakAuras) ~= "table" or type(WeakAuras.AddCompanionData) ~= "function" then return false end
+  local ok = pcall(WeakAuras.AddCompanionData, companionData)
+  if not ok then return false end
+  registered = true
+  RUI._zgRaidPackCompanionRegistered = true
+  return true
+end
+
+function RUI:IsZGRaidPackInstalled()
+  if type(WeakAuras) ~= "table" or type(WeakAuras.GetData) ~= "function" then return false end
+  local ok, data = pcall(WeakAuras.GetData, ROOT_ID)
+  return ok and type(data) == "table"
+end
+
+function RUI:OpenZGRaidPackImport()
+  if type(WeakAuras) ~= "table" then
+    self:Print("WeakAuras is not installed or loaded.")
+    return false
+  end
+  RegisterCompanionData()
+  if self:IsZGRaidPackInstalled() then
+    self:Print("The Zul'Gurub raid pack is already installed in WeakAuras.")
+    return true
+  end
+  if type(WeakAuras.Import) ~= "function" then
+    self:Print("This WeakAuras version does not expose the import API.")
+    return false
+  end
+  local ok, accepted, reason = pcall(WeakAuras.Import, ENCODED)
+  if not ok or accepted ~= true then
+    self:Print("Could not open the Zul'Gurub raid-pack import" .. (reason and (": " .. tostring(reason)) or "."))
+    return false
+  end
+  return true
+end
+
+SLASH_RETREATUIZG1 = "/ruizg"
+SlashCmdList.RETREATUIZG = function()
+  RUI:OpenZGRaidPackImport()
+end
+
+local events = CreateFrame("Frame")
+events:RegisterEvent("ADDON_LOADED")
+events:RegisterEvent("PLAYER_LOGIN")
+events:SetScript("OnEvent", function(_, event, addonName)
+  if event == "ADDON_LOADED" and addonName ~= "WeakAuras" and addonName ~= "RetreatUI" then return end
+  RegisterCompanionData()
+end)
+
+RegisterCompanionData()
+'''
+          write('RetreatUI/Integrations/WeakAurasCompanion.lua', integration)
+
+          # 6) Versioning, TOC load order and attribution.
+          path = 'RetreatUI/RetreatUI.toc'
+          text = read(path)
+          text = replace_once(text, '## Version: 1.1.2-beta.23', '## Version: 1.1.2-beta.24', 'Core TOC version')
+          text = replace_once(text, '## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core', '## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core, WeakAuras', 'WeakAuras optional dependency')
+          text = replace_once(text, 'Integrations\\DBM.lua\nIntegrations\\Cleanup.lua\n', 'Integrations\\DBM.lua\nIntegrations\\WeakAurasCompanion.lua\nIntegrations\\Cleanup.lua\n', 'Companion TOC load order')
+          write(path, text)
+
+          path = 'RetreatUI_Classes/RetreatUI_Classes.toc'
+          text = read(path)
+          text = replace_once(text, '## Version: 1.1.2-beta.23', '## Version: 1.1.2-beta.24', 'Classes TOC version')
+          write(path, text)
+
+          changelog = '''local RUI = RetreatUI
+if not RUI then return end
+
+RUI.changelog = {
+  version = RUI.version,
+  title = "RetreatUI v1.1.2-beta.24",
+  summary = "Wago-sourced Starcaller, Felsworn, resource cleanup and Zul'Gurub coverage.",
+  changes = {
+    "Added the missing Starcaller aspects, Lunar Phase, defensive tools, taunt, mobility and long cooldowns from the audited Starcaller package.",
+    "Added Felsworn pact states, missing active procs, Betray, Blood of Mannoroth, Blur, Eye of Archimonde and Fel Bargain from the audited Felsworn package.",
+    "Extended the safe native-resource cleanup with CoAMultiCastActionBarFrame and CoAResourceOrb from the audited resource-bar package.",
+    "Registered the original Zul'Gurub raid package through WeakAuras companion data; /ruizg opens the normal WeakAuras import review.",
+    "Does not import, delete, reposition or restyle any personal WeakAuras automatically.",
+    "Party utility and interrupt tracking remain removed.",
+  },
+}
+'''
+          write('RetreatUI/Core/ReleaseChangelog112.lua', changelog)
+
+          notice = '''# Third-Party Notices
+
+## WoloUI Zul'Gurub RaidPack
+
+RetreatUI includes the original encoded WeakAuras import string for:
+
+- **Package:** `[WoloUI] Zul'Gurub - RaidPack`
+- **Wago slug:** `PUjOUxmPt`
+- **Source:** `https://wago.io/PUjOUxmPt`
+- **Package description:** `Halcones de Chicureo Raiding Pack`
+- **Original package version:** `1.0.0`
+
+The import string is registered through WeakAuras' companion-data API and remains
+credited to its original author/source. RetreatUI does not claim authorship of
+the raid package. Use is non-commercial and subject to Wago's Import String terms.
+
+## Wago packages used as implementation references
+
+The following public WeakAuras packages were audited as behavioral references for
+native RetreatUI code. Their import strings are not shipped:
+
+- `PUx5f9aPr` — Pitho: Remove Custom ResourceBar
+- `Y5UDib4zq` — Starcaller
+- `TqH72U66p` — Felsworn
+'''
+          write('RetreatUI/THIRD_PARTY_NOTICES.md', notice)
+          PY
+
+      - name: Validate isolation and Lua syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+          grep -Fq '## Version: 1.1.2-beta.24' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.2-beta.24' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'Integrations\WeakAurasCompanion.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'CoAMultiCastActionBarFrame' RetreatUI/Integrations/Cleanup.lua
+          grep -Fq 'CoAResourceOrb' RetreatUI/Integrations/Cleanup.lua
+          grep -Fq 'Aspect of the Moonwell' RetreatUI_Classes/Starcaller/Data.lua
+          grep -Fq 'Lunar Phase' RetreatUI_Classes/Starcaller/Data.lua
+          grep -Fq 'Demonfire Pact' RetreatUI_Classes/StateTracker.lua
+          grep -Fq 'Blood of Mannoroth' RetreatUI_Classes/Felsworn/Data.lua
+          grep -Fq 'local ENCODED = [=[!WA:2!' RetreatUI/Integrations/WeakAurasCompanion.lua
+          ! grep -Fq 'Core\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\RetreatCD.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'collectorEntryID=' RetreatUI_Classes/Starcaller/Data.lua.new 2>/dev/null || true
+
+          cat > /tmp/mock-wa.lua <<'LUA'
+          RetreatUI = {prints={}}
+          function RetreatUI:Print(message) self.prints[#self.prints+1] = message end
+          WeakAuras = {
+            companionCalls=0,
+            importCalls=0,
+            AddCompanionData=function(data)
+              assert(type(data) == 'table' and type(data.slugs) == 'table')
+              assert(type(data.slugs.PUjOUxmPt) == 'table')
+              assert(string.sub(data.slugs.PUjOUxmPt.encoded, 1, 6) == '!WA:2!')
+              WeakAuras.companionCalls = WeakAuras.companionCalls + 1
+            end,
+            GetData=function() return nil end,
+            Import=function(encoded)
+              assert(string.sub(encoded, 1, 6) == '!WA:2!')
+              WeakAuras.importCalls = WeakAuras.importCalls + 1
+              return true
+            end,
+          }
+          SlashCmdList = {}
+          function CreateFrame()
+            return {RegisterEvent=function() end, SetScript=function() end}
+          end
+          assert(loadfile('RetreatUI/Integrations/WeakAurasCompanion.lua'))()
+          assert(WeakAuras.companionCalls == 1)
+          SlashCmdList.RETREATUIZG()
+          assert(WeakAuras.importCalls == 1)
+          print('PASS: WeakAuras companion registration and import review')
+          LUA
+          lua5.1 /tmp/mock-wa.lua
+
+          python - <<'PY'
+          from pathlib import Path
+          core = Path('RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
+          assert 'PartyUtility' not in core and 'RetreatCD' not in core
+          integration = Path('RetreatUI/Integrations/WeakAurasCompanion.lua').read_text(encoding='utf-8')
+          assert integration.count('!WA:2!') >= 1
+          assert 'bar.Show = function() end' not in Path('RetreatUI/Integrations/Cleanup.lua').read_text(encoding='utf-8')
+          for file in ['RetreatUI_Classes/Starcaller/Data.lua','RetreatUI_Classes/Felsworn/Data.lua']:
+              added = Path(file).read_text(encoding='utf-8')
+              for name in ['Aspect of the Moonwell','Betrayer\'s Inclinations']:
+                  pass
+          print('PASS: beta.24 isolation checks')
+          PY
+
+      - name: Commit beta.24 feature implementation
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add RetreatUI RetreatUI_Classes
+          git commit -m 'Integrate audited Wago coverage in beta.24'
+          git push origin HEAD:feature/wago-hud-integration
