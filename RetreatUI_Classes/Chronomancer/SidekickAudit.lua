@@ -66,27 +66,24 @@ Patch("Fortify Timeline", {
 })
 
 Add({
-  name="Aeon of Resilience", id=806291, category="rotation", hudRow="core", order=20,
-  trackCooldown=true, forceHUD=true, source="Sidekick w_cb1725f1",
-})
-Add({
   name="Hasten", id=801304, auraID=801304, buffID=801304,
+  learnedByAny={806296, 801304},
   category="utility", hudRow="utility", order=105, trackCooldown=true,
   buff="Hasten", trackDuration=true, separateAuraTracker=false,
   forceHUD=true, source="Sidekick w_cb1725f1",
 })
 Add({
   name="Time Out!", id=803897, auraID=803897, buffID=803897,
+  learnedByAny={806296, 803897},
   category="defensive", hudRow="utility", order=250, trackCooldown=true,
   buff="Time Out!", trackDuration=true, separateAuraTracker=false,
   forceHUD=true, source="Sidekick w_cb1725f1",
 })
 Add({
-  name="Endless Sands: Active", aliases={"Endless Sands Active"},
-  id=806728, auraID=806728, buffID=806728,
-  category="defensive", hudRow="utility", order=240, trackCooldown=true,
-  buff="Endless Sands", trackDuration=true, separateAuraTracker=false,
-  forceHUD=true, source="Sidekick w_cb1725f1",
+  name="Endless Sands: Active", id=806728, auraID=806728, buffID=806728,
+  category="proc", order=360, buff="Endless Sands",
+  trackDuration=true, auraTracker=true, trackHUD=false,
+  source="Sidekick w_cb1725f1",
 })
 
 database.nativeResource = database.nativeResource or {}
@@ -97,5 +94,5 @@ database.nativeResource.auraNames = MergeList(database.nativeResource.auraNames,
   "Aeon of Renewal", "Aeon of Resilience", "Aeon of Protection", "Aeon of Oblivion",
 })
 
-database.chronomancerSidekickAuditRevision = 1
+database.chronomancerSidekickAuditRevision = 2
 database.chronomancerSidekickSource = "w_cb1725f1"
