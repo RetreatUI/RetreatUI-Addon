@@ -1,0 +1,136 @@
+name: Decode Wago HUD sources
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/wago-decode-windows-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  decode:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout temporary research branch
+        uses: actions/checkout@v4
+        with:
+          ref: temp/wago-fetch
+          fetch-depth: 0
+
+      - name: Install decoder
+        shell: pwsh
+        run: |
+          npm init -y | Out-Null
+          npm install node-weakauras-parser@3.2.11
+
+      - name: Decode packages
+        shell: pwsh
+        run: |
+          @'
+          const fs = require('fs');
+          const path = require('path');
+          const parser = require('node-weakauras-parser');
+
+          const ids = ['PUx5f9aPr', 'Y5UDib4zq', 'TqH72U66p', 'PUjOUxmPt'];
+
+          function visit(node, parent, output) {
+            if (!node || typeof node !== 'object') return;
+            const id = typeof node.id === 'string' ? node.id : '';
+            const triggers = Array.isArray(node.triggers) ? node.triggers : [];
+            if (id || node.regionType || triggers.length || node.controlledChildren) {
+              output.push({
+                id,
+                parent: parent || '',
+                regionType: node.regionType || '',
+                controlledChildren: node.controlledChildren || [],
+                anchorPoint: node.anchorPoint,
+                selfPoint: node.selfPoint,
+                xOffset: node.xOffset,
+                yOffset: node.yOffset,
+                width: node.width,
+                height: node.height,
+                grow: node.grow,
+                sort: node.sort,
+                frameStrata: node.frameStrata,
+                load: node.load || {},
+                triggers: triggers.map(entry => {
+                  const t = entry && entry.trigger ? entry.trigger : entry || {};
+                  return {
+                    type: t.type,
+                    event: t.event,
+                    unit: t.unit,
+                    spellId: t.spellId,
+                    spellIds: t.spellIds,
+                    spellName: t.spellName,
+                    names: t.names,
+                    auranames: t.auranames,
+                    use_spellId: t.use_spellId,
+                    use_unit: t.use_unit,
+                    sourceUnit: t.sourceUnit,
+                    use_sourceUnit: t.use_sourceUnit,
+                    subeventPrefix: t.subeventPrefix,
+                    subeventSuffix: t.subeventSuffix,
+                    custom_type: t.custom_type,
+                    events: t.events,
+                    custom: t.custom,
+                    customVariables: t.customVariables,
+                  };
+                }),
+                actions: node.actions || {},
+                conditions: node.conditions || [],
+                init: node.init,
+                customText: node.customText,
+                information: node.information,
+                url: node.url,
+                version: node.version,
+                semver: node.semver,
+              });
+            }
+            if (Array.isArray(node.d)) {
+              for (const child of node.d) visit(child, id || parent, output);
+            }
+          }
+
+          for (const slug of ids) {
+            const dir = path.join('Research', 'Wago', slug);
+            const encoded = fs.readFileSync(path.join(dir, 'export.txt'), 'utf8').trim();
+            const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
+            fs.writeFileSync(path.join(dir, 'decoded.json'), JSON.stringify(decoded, null, 2));
+            const displays = [];
+            visit(decoded, '', displays);
+            fs.writeFileSync(path.join(dir, 'displays.json'), JSON.stringify(displays, null, 2));
+
+            const code = [];
+            for (const display of displays) {
+              for (const trigger of display.triggers || []) {
+                if (typeof trigger.custom === 'string' && trigger.custom.trim()) code.push({display: display.id, source: 'trigger.custom', code: trigger.custom});
+                if (typeof trigger.customVariables === 'string' && trigger.customVariables.trim()) code.push({display: display.id, source: 'trigger.customVariables', code: trigger.customVariables});
+              }
+              if (typeof display.init === 'string' && display.init.trim()) code.push({display: display.id, source: 'init', code: display.init});
+              if (typeof display.customText === 'string' && display.customText.trim()) code.push({display: display.id, source: 'customText', code: display.customText});
+            }
+            fs.writeFileSync(path.join(dir, 'custom-code.json'), JSON.stringify(code, null, 2));
+            fs.writeFileSync(path.join(dir, 'summary.txt'), [
+              `slug=${slug}`,
+              `root_id=${decoded && decoded.id ? decoded.id : ''}`,
+              `display_count=${displays.length}`,
+              `custom_code_blocks=${code.length}`,
+              `encoded_length=${encoded.length}`,
+            ].join('\n') + '\n');
+          }
+          '@ | Set-Content -Encoding UTF8 decode-wago.cjs
+          node decode-wago.cjs
+
+      - name: Commit decoded sources
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Research/Wago
+          git commit -m 'Decode RetreatUI Wago sources' || exit 0
+          git push origin HEAD:temp/wago-fetch
