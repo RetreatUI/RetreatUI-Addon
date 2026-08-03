@@ -1,0 +1,4797 @@
+[
+  {
+    "path": "$.c.0",
+    "id": "Dreadnought Aura",
+    "parent": "",
+    "regionType": "progresstexture",
+    "xOffset": -75.938425039165,
+    "yOffset": 196.53437084122,
+    "width": 100,
+    "height": 175,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "tank": true
+        },
+        "single": "tank"
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 567549
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.1",
+    "id": "Herald of the Depths Aura",
+    "parent": "",
+    "regionType": "progresstexture",
+    "xOffset": -75.271986856297,
+    "yOffset": 191.3678104063,
+    "width": 100,
+    "height": 175,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "tank": true
+        },
+        "single": "tank"
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 520326
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.10",
+    "id": "Cultist Main Bar",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -4.1669310120208,
+    "yOffset": 32.13468326088,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Darkwither",
+      "Blade of the Empire 2",
+      "Twilight Shieldtoss",
+      "Netherstrike",
+      "Obliteration Beam",
+      "Gaze of C'thun Corruption",
+      "Hammer of TL",
+      "Entropic Slam",
+      "Gaze of C'Thun",
+      "Dark Infusion",
+      "Dreadfall",
+      "Eldritch Devastation",
+      "Rift Main",
+      "Ancient Curse",
+      "Dreadnought",
+      "Void Shield",
+      "Eldtrich Eye",
+      "Hand of Yogg-Saron",
+      "Herald of the Depths",
+      "Forbidden Ritual",
+      "End Times",
+      "Abyssal Ward Spell",
+      "Voidborne",
+      "Vision of Doom",
+      "Embrace the Void"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.100",
+    "id": "Twisted Seal",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 525065,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.101",
+    "id": "Hallucination",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.102",
+    "id": "Isolate",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 805114,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 800368
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.103",
+    "id": "Horrorbolt",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "caster": true,
+          "healer": true
+        }
+      },
+      "use_role": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.104",
+    "id": "Wrath of the Black Empire",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "caster": true,
+          "healer": true
+        }
+      },
+      "use_role": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.105",
+    "id": "Satiate",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 804275
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.106",
+    "id": "[Troll] Berserking",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.107",
+    "id": "[Undead] Will of the Forsaken",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 7744
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.108",
+    "id": "[Gnome] Escape Artist",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 20589
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.109",
+    "id": "[Dwarf] Stoneform",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 20594
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.11",
+    "id": "Darkwither",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        }
+      },
+      "use_spellknown": true,
+      "spellknown": 502220
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.110",
+    "id": "[Blood Elf] Arcane Torrent",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 28730
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.111",
+    "id": "[Tauren] War Stomp",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 20549
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.112",
+    "id": "Entropic Singularity",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 800430,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.12",
+    "id": "Blade of the Empire 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "<",
+          "trigger": 1,
+          "variable": "charges",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "sub.4.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.13",
+    "id": "Twilight Shieldtoss",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 804208,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": true,
+      "spellknown": 524876
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.14",
+    "id": "Netherstrike",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 806498,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 806222
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "<=",
+          "trigger": 2,
+          "variable": "percenthealth",
+          "value": "35"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": false
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 3,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.15",
+    "id": "Obliteration Beam",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 806498,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 806897
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "<=",
+          "variable": "percenthealth",
+          "value": "35"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": false
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate"
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.16",
+    "id": "Gaze of C'thun Corruption",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 300313,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502138
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "<=",
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.17",
+    "id": "Hammer of TL",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 806498,
+      "specialization": {
+        "multi": [
+          true
+        ],
+        "single": 1
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spellknown": 806830,
+      "spec": {
+        "multi": []
+      },
+      "spec_position": {
+        "multi": {
+          "melee": true
+        },
+        "single": "melee"
+      },
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        }
+      },
+      "use_spellknown": false,
+      "use_knowntalent": false,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.18",
+    "id": "Entropic Slam",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 806498,
+      "specialization": {
+        "multi": [
+          true
+        ],
+        "single": 1
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spellknown": 572846,
+      "spec": {
+        "multi": []
+      },
+      "spec_position": {
+        "multi": {
+          "melee": true
+        },
+        "single": "melee"
+      },
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        },
+        "single": "healer"
+      },
+      "use_spellknown": true,
+      "use_knowntalent": false,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.19",
+    "id": "Gaze of C'Thun",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "size": {
+        "multi": []
+      },
+      "use_role": false,
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        }
+      },
+      "use_spellknown": true,
+      "spellknown": 502138,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      }
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": ">=",
+          "trigger": 2,
+          "variable": "charges",
+          "value": "3"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.2",
+    "id": "Total Madness",
+    "parent": "",
+    "regionType": "progresstexture",
+    "xOffset": 0.35378413658691,
+    "yOffset": 190.97872739467,
+    "width": 200,
+    "height": 200,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "melee": true
+        },
+        "single": "melee"
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.20",
+    "id": "Dark Infusion",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 500721
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "<",
+          "trigger": 1,
+          "variable": "charges",
+          "value": "1"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.21",
+    "id": "Dreadfall",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 804208,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": true,
+      "spellknown": 524876
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.22",
+    "id": "Eldritch Devastation",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 804208,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": true,
+      "spellknown": 803398
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.23",
+    "id": "Rift Main",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 806250
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.24",
+    "id": "Ancient Curse",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500712,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 806250
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.25",
+    "id": "Dreadnought",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 567549
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        }
+      },
+      {
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 0
+        }
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.26",
+    "id": "Void Shield",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "specialization": {
+        "multi": {
+          "2": true
+        },
+        "single": 2
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spellknown": 502135,
+      "use_exact_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "spec_position": {
+        "multi": {
+          "melee": true
+        },
+        "single": "melee"
+      },
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true
+        },
+        "single": "tank"
+      },
+      "use_spellknown": false,
+      "use_knowntalent": true,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.27",
+    "id": "Eldtrich Eye",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 802049,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": true,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.28",
+    "id": "Hand of Yogg-Saron",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 704476,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.29",
+    "id": "Herald of the Depths",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 520326
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        }
+      },
+      {
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 0
+        }
+      },
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.3",
+    "id": "Black Blood Stacks",
+    "parent": "",
+    "regionType": "progresstexture",
+    "xOffset": 167.76599686574,
+    "yOffset": -46.632220191715,
+    "width": 75,
+    "height": 75,
+    "load": {
+      "knowntalent": 502241,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502241
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "unitCount",
+          "value": "0"
+        },
+        "changes": [
+          {
+            "property": "alpha"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.30",
+    "id": "Forbidden Ritual",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 800105,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.31",
+    "id": "End Times",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 805115
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        }
+      },
+      {
+        "changes": [
+          {
+            "property": "desaturate"
+          }
+        ],
+        "linked": false,
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 0
+        }
+      },
+      {
+        "check": {
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.32",
+    "id": "Abyssal Ward Spell",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 804670,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.33",
+    "id": "Voidborne",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 681104,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.34",
+    "id": "Vision of Doom",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 520388,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.35",
+    "id": "Embrace the Void",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 582591,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_exact_knowntalent": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.36",
+    "id": "Cultist - Mana 2 Group",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -0.87483882673541,
+    "yOffset": 3.1249137438567,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Cultist - Mana 2",
+      "Cultist - Insanity 2",
+      "Cultist - Castbar 2",
+      "Cultist - Disable Cast Bar"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.37",
+    "id": "Cultist - Mana 2",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": -20,
+    "width": 253.85,
+    "height": 8,
+    "load": {
+      "specialization": {
+        "multi": {
+          "1": true,
+          "3": true
+        },
+        "single": 1
+      },
+      "size": {
+        "multi": []
+      },
+      "use_namerealm": false,
+      "class": {
+        "multi": {
+          "SONOFARUGAL": true
+        },
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_ignoreNameRealm": false,
+      "namerealm": "123"
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.38",
+    "id": "Cultist - Insanity 2",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": -24,
+    "width": 253.85,
+    "height": 8,
+    "load": {
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_class": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.39",
+    "id": "Cultist - Castbar 2",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": -43,
+    "width": 253.85489007748,
+    "height": 15.343508060743,
+    "load": {
+      "specialization": {
+        "multi": {
+          "1": true,
+          "3": true
+        },
+        "single": 1
+      },
+      "size": {
+        "multi": []
+      },
+      "use_namerealm": false,
+      "class": {
+        "multi": {
+          "WARRIOR": true
+        },
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 48181,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "use_ignoreNameRealm": false,
+      "namerealm": "123",
+      "use_never": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.4",
+    "id": "Absorb Shield Amount",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": -1.0624538908601,
+    "yOffset": -49.498969579031,
+    "width": 253.85,
+    "height": 10,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.40",
+    "id": "Cultist - Disable Cast Bar",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 1340,
+    "yOffset": 870,
+    "width": 1,
+    "height": 1,
+    "load": {
+      "specialization": {
+        "multi": {
+          "1": true,
+          "3": true
+        },
+        "single": 1
+      },
+      "size": {
+        "multi": []
+      },
+      "use_namerealm": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 48181,
+      "spec": {
+        "multi": []
+      },
+      "use_class": false,
+      "use_spellknown": false,
+      "use_ignoreNameRealm": false,
+      "namerealm": "123",
+      "use_never": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.41",
+    "id": "Cultist - Tentacles",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -206.77063729781,
+    "yOffset": 278.47982607404,
+    "load": {
+      "talent": {
+        "multi": []
+      },
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Tentacle of C'Thun UP",
+      "Tentacle of Yogg-Saron UP",
+      "Tentacle of N'Zoth UP",
+      "Tentacle of Y'Shaarj UP"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.42",
+    "id": "Tentacle of C'Thun UP",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 150,
+    "height": 15,
+    "load": {
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 801801,
+      "spec": {
+        "multi": []
+      },
+      "talentknown": 802044,
+      "use_spellknown": false,
+      "use_talentknown": true,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.43",
+    "id": "Tentacle of Yogg-Saron UP",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 150,
+    "height": 15,
+    "load": {
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 801801,
+      "spec": {
+        "multi": []
+      },
+      "talentknown": 802044,
+      "use_spellknown": false,
+      "use_talentknown": true,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.44",
+    "id": "Tentacle of N'Zoth UP",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 150,
+    "height": 15,
+    "load": {
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 801801,
+      "spec": {
+        "multi": []
+      },
+      "talentknown": 802044,
+      "use_spellknown": false,
+      "use_talentknown": true,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.45",
+    "id": "Tentacle of Y'Shaarj UP",
+    "parent": "",
+    "regionType": "aurabar",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 150,
+    "height": 15,
+    "load": {
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "talent": {
+        "multi": []
+      },
+      "spellknown": 801801,
+      "spec": {
+        "multi": []
+      },
+      "talentknown": 802044,
+      "use_spellknown": false,
+      "use_talentknown": true,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": [],
+        "changes": [
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.46",
+    "id": "Cultist Buff Bar 2",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -1.5000693707789,
+    "yOffset": 96.500569517957,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Shadow of the Void",
+      "Presence of Cthun",
+      "Holy Strength - Crusader Enchant",
+      "Monstrosity Buff",
+      "Blessing of Yogg-Saron Buff",
+      "Hysterical Momentum",
+      "Abyssal Destruction Buff",
+      "Yawning Decay Buff",
+      "Dark Infusion Buff",
+      "Saronite Blessing Buff",
+      "Voidseeker",
+      "GRace of the Herald Buff",
+      "Rift",
+      "Voidborne Buff",
+      "Vision of Doom Buff",
+      "End Times Buff",
+      "Abyssal Ward Buff 2",
+      "Embrace the Void Buff 2",
+      "Void Shield Buff",
+      "CD Reset Dark Revelation",
+      "Hallucination Buff",
+      "Threat Gene",
+      "Eldtrich Eye Buff 2",
+      "Berserking Buff 2",
+      "BLood Fury Buff 1",
+      "Herald Buff 2",
+      "Dreadnought Buff 1",
+      "Void Reaver buff",
+      "Entropic Retaliation Buff",
+      "Empower Spells Inspired Malice",
+      "AoE Horrorbolt Volley",
+      "Void Barrier",
+      "10% Spell dmg buff",
+      " Corrupting Whispers",
+      "Malevolent Power 2"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.47",
+    "id": "Shadow of the Void",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.48",
+    "id": "Presence of Cthun",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.49",
+    "id": "Holy Strength - Crusader Enchant",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.5",
+    "id": "Missing Buffs",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -1.0416905332121,
+    "yOffset": 906.25012539387,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "AS Missing",
+      "Group Buff Reminder",
+      "Presence Reminder",
+      "Whisper Reminder"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.50",
+    "id": "Monstrosity Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "use_class": true,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "tank": true
+        },
+        "single": "tank"
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "specialization": {
+        "multi": {
+          "2": true
+        },
+        "single": 2
+      },
+      "spellknown": 801968
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.51",
+    "id": "Blessing of Yogg-Saron Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 807128,
+      "specialization": {
+        "multi": {
+          "2": true
+        },
+        "single": 2
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spellknown": 801968,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "tank": true
+        },
+        "single": "tank"
+      },
+      "use_spellknown": false,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.52",
+    "id": "Hysterical Momentum",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 300274,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.53",
+    "id": "Abyssal Destruction Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 300308,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.54",
+    "id": "Yawning Decay Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 706909,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.55",
+    "id": "Dark Infusion Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 570249
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.56",
+    "id": "Saronite Blessing Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 301262,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.57",
+    "id": "Voidseeker",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560320,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.58",
+    "id": "GRace of the Herald Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560320,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spellknown": 502116,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "use_itemequiped": true,
+      "use_knowntalent": false,
+      "itemequiped": [
+        212714
+      ]
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.59",
+    "id": "Rift",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.6",
+    "id": "AS Missing",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 60,
+    "height": 60,
+    "load": {
+      "knowntalent": 500751,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "ingroup": {
+        "multi": {
+          "raid": true,
+          "group": true
+        }
+      },
+      "use_knowntalent": true,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": [],
+      "use_ingroup": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "alpha"
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "unitCount",
+          "value": "0"
+        },
+        "changes": [
+          {
+            "property": "alpha",
+            "value": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.60",
+    "id": "Voidborne Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.61",
+    "id": "Vision of Doom Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 520388,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.62",
+    "id": "End Times Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.63",
+    "id": "Abyssal Ward Buff 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 804670,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.64",
+    "id": "Embrace the Void Buff 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 582591,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.65",
+    "id": "Void Shield Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.66",
+    "id": "CD Reset Dark Revelation",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 1,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": false,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.67",
+    "id": "Hallucination Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "sub.3.glow",
+            "value": false
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.68",
+    "id": "Threat Gene",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500715,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.69",
+    "id": "Eldtrich Eye Buff 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 802049,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.7",
+    "id": "Group Buff Reminder",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 60,
+    "height": 60,
+    "load": {
+      "use_class": true,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_ingroup": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "ingroup": {
+        "multi": {
+          "raid": true,
+          "group": true
+        },
+        "single": "group"
+      },
+      "spellknown": 561386
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.70",
+    "id": "Berserking Buff 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.71",
+    "id": "BLood Fury Buff 1",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 814285
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.72",
+    "id": "Herald Buff 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 520326
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.73",
+    "id": "Dreadnought Buff 1",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "use_class": true,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": false,
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "spec": {
+        "multi": []
+      },
+      "spellknown": 567524
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.74",
+    "id": "Void Reaver buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 800463,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": true,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "spellknown": 567524
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.75",
+    "id": "Entropic Retaliation Buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 802043,
+      "specialization": [],
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": true,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "use_spellknown": false,
+      "spellknown": 567524
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.76",
+    "id": "Empower Spells Inspired Malice",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 1,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": false,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.77",
+    "id": "AoE Horrorbolt Volley",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 1,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": false,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.78",
+    "id": "Void Barrier",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 300291,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.79",
+    "id": "10% Spell dmg buff",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 1,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": false,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.8",
+    "id": "Presence Reminder",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 60,
+    "height": 60,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.80",
+    "id": " Corrupting Whispers",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 1,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": false,
+      "spellknown": 26297
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.81",
+    "id": "Malevolent Power 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": -7,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 301183,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.82",
+    "id": "Cultist Supp Bar",
+    "parent": "",
+    "regionType": "dynamicgroup",
+    "xOffset": -6.6364882655826,
+    "yOffset": -2.2709081251382,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Malevolence",
+      "Eldritch Shock",
+      "Sanity Tap",
+      "Dark Veil",
+      "Trinket 2",
+      "Trinket 1",
+      "[Orc] Blood Fury",
+      "Sermon of Dread",
+      "Mass Nightmare",
+      "Corrupt Mind",
+      "Eldtritch Mending",
+      "Grasp of Zek'voz",
+      "Psychic Suppression",
+      "Test of Pride",
+      "Horrifying Presence",
+      "Empire's Grasp",
+      "Tentacle of N'zoth",
+      "Twisted Seal",
+      "Hallucination",
+      "Isolate",
+      "Horrorbolt",
+      "Wrath of the Black Empire",
+      "Satiate",
+      "[Troll] Berserking",
+      "[Undead] Will of the Forsaken",
+      "[Gnome] Escape Artist",
+      "[Dwarf] Stoneform",
+      "[Blood Elf] Arcane Torrent",
+      "[Tauren] War Stomp",
+      "Entropic Singularity"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  },
+  {
+    "path": "$.c.83",
+    "id": "Malevolence",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        }
+      },
+      "use_spellknown": false,
+      "spellknown": 502220
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.84",
+    "id": "Eldritch Shock",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 561313,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.85",
+    "id": "Sanity Tap",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 806498,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 0
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      },
+      {
+        "check": {
+          "op": ">=",
+          "trigger": 3,
+          "variable": "percentpower",
+          "value": "35"
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.86",
+    "id": "Dark Veil",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 520345,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_knowntalent": true,
+      "use_spellknown": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 502116
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "op": "==",
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          },
+          []
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.87",
+    "id": "Trinket 2",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "itemtypeequipped": {
+        "multi": {
+          "520": true,
+          "526": true
+        },
+        "single": 526
+      },
+      "use_class": false,
+      "use_itemequiped": false,
+      "spec": {
+        "multi": []
+      },
+      "itemequiped": [
+        188631
+      ]
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.88",
+    "id": "Trinket 1",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "itemtypeequipped": {
+        "multi": {
+          "520": true,
+          "526": true
+        },
+        "single": 526
+      },
+      "use_class": false,
+      "use_itemequiped": false,
+      "spec": {
+        "multi": []
+      },
+      "itemequiped": [
+        188631
+      ]
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.89",
+    "id": "[Orc] Blood Fury",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_spellknown": true,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "spellknown": 814285
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.9",
+    "id": "Whisper Reminder",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 60,
+    "height": 60,
+    "load": {
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": []
+  },
+  {
+    "path": "$.c.90",
+    "id": "Sermon of Dread",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "use_class": true,
+      "role": {
+        "multi": {
+          "healer": true,
+          "tank": true,
+          "melee": true
+        }
+      },
+      "use_spellknown": true,
+      "use_role": false,
+      "spellknown": 620612
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 2,
+          "variable": "show",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": false
+          },
+          {
+            "property": "sub.3.glow",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.91",
+    "id": "Mass Nightmare",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 805114,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.92",
+    "id": "Corrupt Mind",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 561313,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.93",
+    "id": "Eldtritch Mending",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.94",
+    "id": "Grasp of Zek'voz",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 573028,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.95",
+    "id": "Psychic Suppression",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 800432,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.96",
+    "id": "Test of Pride",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "role": {
+        "multi": {
+          "tank": true,
+          "melee": true
+        },
+        "single": "tank"
+      },
+      "use_role": false,
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": false
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.97",
+    "id": "Horrifying Presence",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 560301,
+      "size": {
+        "multi": []
+      },
+      "class": {
+        "multi": [],
+        "single": "CULTIST"
+      },
+      "use_knowntalent": false,
+      "spec": {
+        "multi": []
+      },
+      "spec_position": [],
+      "role": {
+        "multi": {
+          "tank": true,
+          "melee": true
+        },
+        "single": "tank"
+      },
+      "use_role": false,
+      "use_class": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.98",
+    "id": "Empire's Grasp",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 500704,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.c.99",
+    "id": "Tentacle of N'zoth",
+    "parent": "",
+    "regionType": "icon",
+    "xOffset": 0,
+    "yOffset": 0,
+    "width": 45,
+    "height": 32,
+    "load": {
+      "knowntalent": 572103,
+      "spec": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "use_never": false,
+      "use_spellknown": false,
+      "class": {
+        "multi": {
+          "CULTIST": true
+        },
+        "single": "CULTIST"
+      },
+      "use_class": true,
+      "use_knowntalent": true
+    },
+    "controlledChildren": [],
+    "triggers": [],
+    "conditions": [
+      {
+        "check": {
+          "trigger": 1,
+          "variable": "onCooldown",
+          "value": 1
+        },
+        "changes": [
+          {
+            "property": "desaturate",
+            "value": true
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "path": "$.d",
+    "id": "Cultist - Resources 2",
+    "parent": "",
+    "regionType": "group",
+    "xOffset": 1.067234806331,
+    "yOffset": -191.86775028351,
+    "load": {
+      "talent": {
+        "multi": []
+      },
+      "class": {
+        "multi": []
+      },
+      "size": {
+        "multi": []
+      },
+      "spec": {
+        "multi": []
+      }
+    },
+    "controlledChildren": [
+      "Dreadnought Aura",
+      "Herald of the Depths Aura",
+      "Total Madness",
+      "Black Blood Stacks",
+      "Absorb Shield Amount",
+      "Missing Buffs",
+      "Cultist Main Bar",
+      "Cultist - Mana 2 Group",
+      "Cultist - Tentacles",
+      "Cultist Buff Bar 2",
+      "Cultist Supp Bar"
+    ],
+    "triggers": [
+      {
+        "index": 0,
+        "type": "aura2",
+        "event": "Health",
+        "unit": "player",
+        "spellIds": [],
+        "names": [],
+        "subeventPrefix": "SPELL",
+        "subeventSuffix": "_CAST_START"
+      }
+    ],
+    "conditions": []
+  }
+]

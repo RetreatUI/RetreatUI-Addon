@@ -1,0 +1,182 @@
+[
+  {
+    "id": " Corrupting Whispers",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "10% Spell dmg buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "AoE Horrorbolt Volley",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Empower Spells Inspired Malice",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Entropic Retaliation Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Void Reaver buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Dreadnought Buff 1",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Herald Buff 2",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "BLood Fury Buff 1",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Berserking Buff 2",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Eldtrich Eye Buff 2",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Threat Gene",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Hallucination Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "CD Reset Dark Revelation",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Void Shield Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Embrace the Void Buff 2",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Abyssal Ward Buff 2",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "End Times Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Vision of Doom Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Voidborne Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Rift",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "GRace of the Herald Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Voidseeker",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Saronite Blessing Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Dark Infusion Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Yawning Decay Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Abyssal Destruction Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Hysterical Momentum",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Blessing of Yogg-Saron Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Monstrosity Buff",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Holy Strength - Crusader Enchant",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Presence of Cthun",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Shadow of the Void",
+    "source": "customText",
+    "value": "function()\n    if aura_env.charges and aura_env.charges > 0 and UnitBuff(\"player\", \"Eldritch Eye\") then\n        return tostring(aura_env.charges)\n    else\n        return \"\"\n    end\nend"
+  },
+  {
+    "id": "Cultist - Disable Cast Bar",
+    "source": "customText",
+    "value": "function()\nlocal p = math.max(0, UnitPower(\"player\")) / math.max(1, UnitPowerMax(\"player\")) * 100;\nreturn string.format(\"%.0f\", p);\nend"
+  },
+  {
+    "id": "Cultist - Castbar 2",
+    "source": "customText",
+    "value": "function()\nlocal p = math.max(0, UnitPower(\"player\")) / math.max(1, UnitPowerMax(\"player\")) * 100;\nreturn string.format(\"%.0f\", p);\nend"
+  },
+  {
+    "id": "Absorb Shield Amount",
+    "source": "customText",
+    "value": "function()\n    if UnitGetTotalAbsorbs then\n        local absorb = UnitGetTotalAbsorbs(\"player\") or 0\n        return absorb\n    end\n    return 0\nend"
+  }
+]
