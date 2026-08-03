@@ -1,0 +1,172 @@
+status	id	kind	display	parent	regionType	namePresent
+load-only	504720	spellknown	Ashen Skin		icon	false
+load-only	800796	knowntalent	Ashen Skin		icon	false
+load-only	572160	spellknown	Blaze fw		icon	false
+load-only	800796	knowntalent	Blaze fw		icon	false
+load-only	800796	knowntalent	Casting Bar		aurabar	false
+load-only	800796	knowntalent	Cataclysm		icon	true
+load-only	800796	knowntalent	Circle of Fire		icon	true
+load-only	997003	spellknown	Circle of Fire		icon	true
+load-only	800796	knowntalent	Dragon Leap		icon	true
+load-only	807616	spellknown	Dragon Leap		icon	true
+load-only	504720	spellknown	Dragon Skin		icon	false
+load-only	800796	knowntalent	Dragon Skin		icon	false
+load-only	800796	knowntalent	Ember charges 1		texture	false
+load-only	800796	knowntalent	Ember charges 2		texture	false
+load-only	800796	knowntalent	Ember charges 3		texture	false
+load-only	800796	knowntalent	Ember charges 4		texture	false
+load-only	800796	knowntalent	Ember charges 5		texture	false
+load-only	504720	spellknown	Ember Skin		icon	false
+load-only	800796	knowntalent	Ember Skin		icon	false
+load-only	800796	knowntalent	Emberheart		icon	true
+load-only	800103	spellknown	Eruption		icon	false
+load-only	800796	knowntalent	Eruption		icon	false
+load-only	800103	spellknown	Eruption buff		icon	false
+load-only	800796	knowntalent	Eruption buff		icon	false
+load-only	800796	knowntalent	Essence of Malygos		icon	true
+load-only	800796	knowntalent	Essence of Malygos buff		icon	true
+load-only	800796	knowntalent	Firestorm		icon	true
+load-only	800796	knowntalent	Flame Step-		icon	false
+load-only	801911	spellknown	Flame Step-		icon	false
+load-only	800796	knowntalent	Flamecasting stack		icon	false
+load-only	503229	spellknown	Gaze of Ysera		icon	true
+load-only	800796	knowntalent	Gaze of Ysera		icon	true
+load-only	800796	knowntalent	Grace of Alexstrasza		icon	true
+load-only	800796	knowntalent	Heat nbr		text	false
+load-only	800796	knowntalent	Ignis Ultimatus		icon	true
+load-only	800796	knowntalent	Kael's Command		icon	false
+load-only	800796	knowntalent	Kael's Command buff		icon	false
+load-only	535650	spellknown	Lava Barrier		icon	false
+load-only	800796	knowntalent	Lava Barrier		icon	false
+load-only	503233	spellknown	Lava Shard		icon	false
+load-only	800796	knowntalent	Lava Shard		icon	false
+load-only	800796	knowntalent	Lifebinder's Fire		icon	false
+load-only	504720	spellknown	Magma Skin		icon	false
+load-only	800796	knowntalent	Magma Skin		icon	false
+load-only	800796	knowntalent	Mana bar		aurabar	false
+load-only	500649	spellknown	Meteor		icon	true
+load-only	800796	knowntalent	Meteor		icon	true
+load-only	800796	knowntalent	Neltharion's Resolve		icon	false
+load-only	800796	knowntalent	Pyro Heat		aurabar	false
+load-only	800796	knowntalent	Reborn from Ash		icon	false
+load-only	804231	spellknown	Reborn from Ash		icon	false
+load-only	800796	knowntalent	Roaring Pyre		icon	true
+load-only	800796	knowntalent	Roaring Pyre buff		icon	true
+load-only	800796	knowntalent	Sageweaving text s1		progresstexture	false
+load-only	800796	knowntalent	Sageweaving text s2		progresstexture	false
+load-only	58984	spellknown	Shadowmeld		icon	false
+load-only	800796	knowntalent	Shadowmeld		icon	false
+load-only	801401	spellknown	Skin Tracks		icon	false
+load-only	801401	knowntalent	Skin Tracks		icon	false
+load-only	800796	knowntalent	Speed		icon	false
+load-only	800796	knowntalent	SpellBurn		icon	false
+load-only	800808	spellknown	SpellBurn		icon	false
+load-only	800796	knowntalent	Sunstridder Array		icon	false
+load-only	800796	knowntalent	Supernova		icon	false
+load-only	803546	spellknown	Supernova		icon	false
+load-only	800796	knowntalent	Volcanic Shell		icon	true
+load-only	807622	spellknown	Volcanic Shell		icon	true
+load-only	800796	knowntalent	Volcanic Shell buff		icon	true
+load-only	807622	spellknown	Volcanic Shell buff		icon	true
+missing-id	504707	aura	Ashen Skin		icon	false
+missing-id	504720	aura	Ashen Skin		icon	false
+missing-id	680387	aura	Ashen Skin		icon	false
+missing-id	681314	aura	Ashen Skin		icon	false
+missing-id	534601	aura	Blaze fw		icon	false
+missing-id	572159	spell	Blaze fw		icon	false
+missing-id	572159	aura	Blaze fw		icon	false
+missing-id	997003	spell	Circle of Fire		icon	true
+missing-id	807616	spell	Dragon Leap		icon	true
+missing-id	504707	aura	Dragon Skin		icon	false
+missing-id	504720	aura	Dragon Skin		icon	false
+missing-id	680387	aura	Dragon Skin		icon	false
+missing-id	681314	aura	Dragon Skin		icon	false
+missing-id	807533	spell	Ember charges 1		texture	false
+missing-id	807533	aura	Ember charges 1		texture	false
+missing-id	807533	spell	Ember charges 2		texture	false
+missing-id	807533	aura	Ember charges 2		texture	false
+missing-id	807533	spell	Ember charges 3		texture	false
+missing-id	807533	aura	Ember charges 3		texture	false
+missing-id	807533	spell	Ember charges 4		texture	false
+missing-id	807533	aura	Ember charges 4		texture	false
+missing-id	807533	spell	Ember charges 5		texture	false
+missing-id	807533	aura	Ember charges 5		texture	false
+missing-id	504707	aura	Ember Skin		icon	false
+missing-id	504720	aura	Ember Skin		icon	false
+missing-id	680387	aura	Ember Skin		icon	false
+missing-id	681314	aura	Ember Skin		icon	false
+missing-id	800103	spell	Eruption		icon	false
+missing-id	800103	aura	Eruption		icon	false
+missing-id	800103	aura	Eruption buff		icon	false
+missing-id	801911	spell	Flame Step-		icon	false
+missing-id	804301	spell	Flamecasting stack		icon	false
+missing-id	804301	aura	Flamecasting stack		icon	false
+missing-id	503229	spell	Gaze of Ysera		icon	true
+missing-id	807389	aura	Heat nbr		text	false
+missing-id	804301	aura	Ignis Ultimatus		icon	true
+missing-id	803950	spell	Lava Shard		icon	false
+missing-id	680367	aura	Lifebinder's Fire		icon	false
+missing-id	804301	spell	Lifebinder's Fire		icon	false
+missing-id	804301	aura	Lifebinder's Fire		icon	false
+missing-id	504707	aura	Magma Skin		icon	false
+missing-id	504720	aura	Magma Skin		icon	false
+missing-id	680387	aura	Magma Skin		icon	false
+missing-id	681314	aura	Magma Skin		icon	false
+missing-id	804231	spell	Reborn from Ash		icon	false
+missing-id	704279	aura	Roaring Pyre buff		icon	true
+missing-id	806783	aura	Sageweaving text s1		progresstexture	false
+missing-id	806783	aura	Sageweaving text s2		progresstexture	false
+missing-id	58984	spell	Shadowmeld		icon	false
+missing-id	504707	aura	Skin Tracks		icon	false
+missing-id	504720	aura	Skin Tracks		icon	false
+missing-id	680387	aura	Skin Tracks		icon	false
+missing-id	681314	aura	Skin Tracks		icon	false
+missing-id	804301	spell	Speed		icon	false
+missing-id	804301	aura	Speed		icon	false
+missing-id	800808	spell	SpellBurn		icon	false
+missing-id	803546	spell	Supernova		icon	false
+missing-id	807621	aura	Volcanic Shell		icon	true
+missing-id	807622	spell	Volcanic Shell		icon	true
+missing-id	807621	aura	Volcanic Shell buff		icon	true
+present	520218	spell	Cataclysm		icon	true
+present	520218	spellknown	Cataclysm		icon	true
+present	680378	spell	Emberheart		icon	true
+present	680378	aura	Emberheart		icon	true
+present	680378	spellknown	Emberheart		icon	true
+present	804230	spell	Eruption		icon	false
+present	804230	aura	Eruption		icon	false
+present	804230	spell	Eruption buff		icon	false
+present	804230	aura	Eruption buff		icon	false
+present	802120	spell	Essence of Malygos		icon	true
+present	802120	spellknown	Essence of Malygos		icon	true
+present	802120	aura	Essence of Malygos buff		icon	true
+present	802120	spellknown	Essence of Malygos buff		icon	true
+present	804230	spell	Essence of Malygos buff		icon	true
+present	804230	aura	Essence of Malygos buff		icon	true
+present	802791	spell	Firestorm		icon	true
+present	802791	spellknown	Firestorm		icon	true
+present	802167	spell	Grace of Alexstrasza		icon	true
+present	802167	spellknown	Grace of Alexstrasza		icon	true
+present	680369	spell	Ignis Ultimatus		icon	true
+present	680369	spellknown	Ignis Ultimatus		icon	true
+present	800816	spell	Kael's Command		icon	false
+present	800816	spellknown	Kael's Command		icon	false
+present	804230	spell	Kael's Command		icon	false
+present	804230	aura	Kael's Command		icon	false
+present	800816	spellknown	Kael's Command buff		icon	false
+present	804230	spell	Kael's Command buff		icon	false
+present	804230	aura	Kael's Command buff		icon	false
+present	504380	spell	Lava Barrier		icon	false
+present	500135	spell	Meteor		icon	true
+present	520488	spell	Neltharion's Resolve		icon	false
+present	520488	spellknown	Neltharion's Resolve		icon	false
+present	704278	spell	Roaring Pyre		icon	true
+present	704278	spellknown	Roaring Pyre		icon	true
+present	704278	spellknown	Roaring Pyre buff		icon	true
+present	804230	spell	Roaring Pyre buff		icon	true
+present	804230	aura	Roaring Pyre buff		icon	true
+present	804230	spell	Sunstridder Array		icon	false
+present	804230	aura	Sunstridder Array		icon	false
+present	804230	spellknown	Sunstridder Array		icon	false
+present	804230	spell	Volcanic Shell buff		icon	true
+present	804230	aura	Volcanic Shell buff		icon	true

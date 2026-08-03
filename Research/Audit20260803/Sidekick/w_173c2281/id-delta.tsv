@@ -1,0 +1,161 @@
+status	id	kind	display	parent	regionType	namePresent
+load-only	805409	knowntalent	Argent_Blade		icon	true
+load-only	705293	knowntalent	Benediction_		icon	true
+load-only	805409	knowntalent	Benediction_CD		icon	true
+load-only	805409	knowntalent	Blade_of_faith_spell		icon	true
+load-only	801446	knowntalent	Blade_of_faith_spell_		icon	true
+load-only	705293	knowntalent	Chastise_		icon	true
+load-only	805409	knowntalent	Chastise__		icon	true
+load-only	801446	knowntalent	Chastise___		icon	true
+load-only	705293	knowntalent	Divine_Stand		icon	false
+load-only	705293	knowntalent	Reckoning_		icon	true
+load-only	801446	knowntalent	Righteous Lunge_Oath_Buff_		icon	true
+load-only	805409	knowntalent	Righteous_Tempest_		icon	true
+load-only	801446	knowntalent	Righteous_Upheaval_		icon	true
+load-only	705293	knowntalent	Sacred_Swing		icon	true
+load-only	705293	knowntalent	Stagger_		aurabar	false
+load-only	705293	knowntalent	Titan_Strike		icon	true
+load-only	805409	knowntalent	Titan_Strike_		icon	true
+load-only	801446	knowntalent	Titan_Strike__		icon	true
+load-only	801446	knowntalent	Vindication_		icon	false
+missing-id	807268	spell	Argent_Blade		icon	true
+missing-id	803373	spell	Benediction_		icon	true
+missing-id	803375	spell	Benediction_		icon	true
+missing-id	563269	spell	Chastise___		icon	true
+missing-id	563269	aura	Chastise___		icon	true
+missing-id	563270	spell	Chastise___		icon	true
+missing-id	64859	aura	Divine_Stand		icon	false
+missing-id	807729	aura	Divine_Stand		icon	false
+missing-id	64859	aura	Divine_Stand_Remove		icon	false
+missing-id	807729	aura	Divine_Stand_Remove		icon	false
+missing-id	17626	aura	Flask_Notifier_		icon	false
+missing-id	17634	aura	Flask_Notifier_		icon	false
+missing-id	17636	aura	Flask_Notifier_		icon	false
+missing-id	17637	aura	Flask_Notifier_		icon	false
+missing-id	17638	aura	Flask_Notifier_		icon	false
+missing-id	64859	aura	Personal_Buff		icon	false
+missing-id	300886	aura	Personal_Buff		icon	false
+missing-id	20594	spell	Racials_Notifier_		icon	false
+missing-id	50613	spell	Racials_Notifier_		icon	false
+missing-id	59545	spell	Racials_Notifier_		icon	false
+missing-id	59752	spell	Racials_Notifier_		icon	false
+missing-id	59752	aura	Racials_Notifier_		icon	false
+missing-id	65116	spell	Racials_Notifier_		icon	false
+missing-id	65116	aura	Racials_Notifier_		icon	false
+missing-id	803237	spell	Stagger_		aurabar	false
+missing-id	803237	aura	Stagger_		aurabar	false
+missing-id	801446	spell	Vindication_		icon	false
+present	680953	spell	_Absolution		icon	true
+present	805417	spell	_Barrier of Light		icon	true
+present	705300	spell	_Eternal Blessing		icon	true
+present	705300	aura	_Eternal Blessing		icon	true
+present	801481	spell	_Glory		icon	true
+present	801481	aura	_Glory		icon	true
+present	801165	spell	_Temple Guardian		icon	true
+present	801478	spell	_Testament of Faith		icon	true
+present	500678	spell	_Testament of Fortitude		icon	true
+present	500678	aura	_Testament of Fortitude		icon	true
+present	704409	aura	_Testament of Hope		icon	true
+present	1397742	spell	_Testament of Hope		icon	true
+present	805422	spell	_Tome of Light		icon	true
+present	807156	aura	_Tome of Light		icon	true
+present	800424	spell	Absolution_		icon	true
+present	801409	aura	Benediction_Armor_Buff		icon	true
+present	578276	spell	Benediction_CD		icon	true
+present	803880	spell	Blade_of_faith_spell		icon	true
+present	803880	spell	Blade_of_faith_spell_		icon	true
+present	705290	aura	Blessing_of_Eonar_		icon	true
+present	801457	aura	Blinding_Scripture_		icon	false
+present	503135	spell	Chastise_		icon	true
+present	503141	spell	Chastise_		icon	true
+present	301065	spell	Chastise__		icon	true
+present	301172	aura	Chastise__		icon	true
+present	503135	spell	Chastise__		icon	true
+present	503141	spell	Chastise__		icon	true
+present	503135	spell	Chastise___		icon	true
+present	503141	spell	Chastise___		icon	true
+present	804922	aura	Condemn_Oath_Buff		icon	true
+present	562302	spell	Crusader's Presence_		icon	false
+present	562302	aura	Crusader's Presence_		icon	false
+present	300513	spell	Crusader's_Brand		icon	false
+present	300513	aura	Crusader's_Brand		icon	false
+present	705256	aura	Determined_		icon	true
+present	527023	spell	Divine_Charge_		icon	true
+present	527023	aura	Divine_Charge_		icon	true
+present	806153	spell	Divine_Force_		icon	true
+present	705255	aura	Divine_Strikes_		icon	true
+present	560834	aura	Duty_Calls		icon	true
+present	500694	spell	Force_of_Golganneth		icon	true
+present	500694	aura	Force_of_Golganneth		icon	true
+present	806516	aura	Heaven's_Finest		icon	false
+present	804903	aura	Holy Cleave_Oath_Buff		icon	true
+present	560116	spell	Interdict_		icon	true
+present	523712	aura	Iron_Penance_		icon	true
+present	806522	aura	Legacy_of_the_Silver_Hand_		icon	true
+present	801441	spell	Libram of Consecration_		icon	true
+present	801441	aura	Libram of Consecration_		icon	true
+present	801441	aura	Libram of Consecration__		icon	true
+present	805423	spell	Libram of Fervor_		icon	true
+present	805423	aura	Libram of Fervor_		icon	true
+present	805423	aura	Libram of Fervor__		icon	true
+present	801463	spell	Libram of Grace_		icon	true
+present	801463	aura	Libram of Grace_		icon	true
+present	801463	aura	Libram of Grace__		icon	true
+present	801461	spell	Libram of Tenacity_		icon	true
+present	801461	aura	Libram of Tenacity_		icon	true
+present	801461	aura	Libram of Tenacity__		icon	true
+present	801463	aura	Libram of Zeal_		icon	true
+present	801466	spell	Libram of Zeal_		icon	true
+present	801466	aura	Libram of Zeal__		icon	true
+present	561016	aura	Light_Keeper		icon	false
+present	524765	aura	Light's_Guidance		icon	false
+present	807814	spell	Lights_Hope		icon	false
+present	807814	aura	Lights_Hope		icon	false
+present	806273	aura	Mending_Ward		icon	true
+present	803163	aura	Might_of_Aggramar		icon	true
+present	524739	spell	Norgannon's_Wrath		icon	false
+present	524739	aura	Norgannon's_Wrath		icon	false
+present	560651	aura	Parry_Dance		icon	true
+present	805421	spell	Reckoning_		icon	true
+present	804904	aura	Righteous Lunge_Oath_Buff		icon	true
+present	805332	aura	Righteous Lunge_Oath_Buff_		icon	true
+present	748502	aura	Righteous_Tempest_		icon	true
+present	807274	spell	Righteous_Tempest_		icon	true
+present	501562	spell	Righteous_Upheaval_		icon	true
+present	748502	aura	Righteous_Upheaval_		icon	true
+present	807764	aura	Righteous_Upheaval_		icon	true
+present	680870	aura	Sacred Resistance_Armor_Buff		icon	false
+present	102208	aura	Sacred_Restraint_Notifier_		icon	false
+present	748502	spell	Sacred_Swing		icon	true
+present	748502	aura	Sacred_Swing		icon	true
+present	705274	aura	Sanctify_		icon	true
+present	805415	aura	Scarlet_Champion		icon	true
+present	520812	aura	Scarlet_Secrets_		icon	true
+present	301172	aura	Scarlet_Srusader_		icon	false
+present	801465	spell	Silverhand Incantation_		icon	true
+present	500757	spell	Spiritual_Ascension		icon	true
+present	706583	aura	Staffguard_Buff		icon	true
+present	807274	aura	Tempest_Aura_		icon	false
+present	560653	aura	Templar_Aura_		icon	true
+present	804914	spell	Templar_Beckon_		icon	true
+present	803872	aura	Templar_Blade_of_Faith_		icon	false
+present	806864	aura	Templar_Condemn_Stacks		icon	false
+present	704576	aura	Templar_Oath_Chain		aurabar	false
+present	804228	spell	Testament_of_Resolve		icon	true
+present	804228	aura	Testament_of_Resolve		icon	true
+present	300514	spell	Testament_of_Strength		icon	true
+present	300514	aura	Testament_of_Strength		icon	true
+present	801455	spell	Testament_of_Will		icon	true
+present	801455	aura	Testament_of_Will		icon	true
+present	806521	spell	Titan_Strike		icon	true
+present	806521	spell	Titan_Strike_		icon	true
+present	806521	spell	Titan_Strike__		icon	true
+present	804781	spell	Tithe_		icon	true
+present	804816	aura	Tithe_Buffs		icon	false
+present	806354	aura	Tome_of_Light_Barrier_of_Light		icon	false
+present	806934	aura	Tome_of_Light_Nimble_Movements		icon	false
+present	807004	aura	Tome_of_Light_Tranquil_Circle		icon	false
+present	801205	spell	Tranquil_Circle_		icon	true
+present	807648	spell	Unbroken_Creed		icon	true
+present	807648	aura	Unbroken_Creed		icon	true
+present	560648	aura	Warrior_of_Dawn		icon	true

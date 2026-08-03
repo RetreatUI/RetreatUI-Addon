@@ -1,0 +1,359 @@
+status	id	kind	display	parent	regionType	namePresent
+load-only	804197	knowntalent	Accursed_Form_		icon	true
+load-only	804197	knowntalent	Apetheosis		icon	false
+load-only	804197	knowntalent	Apotheosis		icon	true
+load-only	504728	knowntalent	Apotheosis_Fleshweaver 3		icon	false
+load-only	504728	knowntalent	Blood_bolt__		icon	false
+load-only	804197	knowntalent	Blood_Fang_Bite		icon	false
+load-only	804197	knowntalent	Blood_Pact		icon	true
+load-only	804197	knowntalent	Blood_Shield_Buff		icon	false
+load-only	804197	knowntalent	Blood_Veil		icon	true
+load-only	504728	knowntalent	Blood_Veil_		icon	true
+load-only	804197	knowntalent	Bloodbolt_		icon	false
+load-only	804197	knowntalent	Bloodfang Bite		icon	true
+load-only	804197	knowntalent	Bloodmage_Offerings		icon	false
+load-only	504728	knowntalent	Bloodmoon_Blast_		icon	false
+load-only	804197	knowntalent	Bloodsurge		icon	true
+load-only	804197	knowntalent	Bloodthorns_		icon	false
+load-only	804197	knowntalent	Claw_Sweep_		icon	false
+load-only	804197	knowntalent	Endure_the_curse		icon	true
+load-only	801446	knowntalent	Essence_Harvester		icon	false
+load-only	804197	knowntalent	Eternal_Curse		icon	true
+load-only	804197	knowntalent	Final_Embrace		icon	true
+load-only	804197	knowntalent	Fleshcraft		icon	true
+load-only	504728	knowntalent	Fleshcraft__2		icon	true
+load-only	804197	knowntalent	Hemoburst		icon	true
+load-only	504728	knowntalent	Insatiable		icon	false
+load-only	504728	knowntalent	Keleseth's_Calamity		icon	false
+load-only	804197	knowntalent	Malediction		icon	true
+load-only	804197	knowntalent	Night_Hunter's Howl_		icon	false
+load-only	804197	knowntalent	Ravenous_Strike		icon	false
+load-only	804197	knowntalent	Rotclaw_		icon	true
+load-only	804197	knowntalent	Rotclaw_Stacks		icon	false
+load-only	504728	knowntalent	Sanguine_Rupture_		icon	false
+load-only	504728	knowntalent	Taldaram_Torment 2		icon	false
+load-only	504728	knowntalent	Thirst		icon	true
+load-only	504728	knowntalent	Thirst_1		aurabar	true
+load-only	504728	knowntalent	Thirst_10		aurabar	true
+load-only	504728	knowntalent	Thirst_2		aurabar	true
+load-only	504728	knowntalent	Thirst_3		aurabar	true
+load-only	504728	knowntalent	Thirst_4		aurabar	true
+load-only	504728	knowntalent	Thirst_5		aurabar	true
+load-only	504728	knowntalent	Thirst_6		aurabar	true
+load-only	504728	knowntalent	Thirst_7		aurabar	true
+load-only	504728	knowntalent	Thirst_8		aurabar	true
+load-only	504728	knowntalent	Thirst_9		aurabar	true
+load-only	804197	knowntalent	Transgression_		icon	false
+load-only	504728	knowntalent	Valanar's_Vengeance		icon	false
+load-only	504728	knowntalent	Vampiric_Fang		icon	true
+load-only	804197	knowntalent	Wicked_Howl_		icon	true
+missing-id	500444	spell	_Bloodmoon_Blast		icon	false
+missing-id	800776	spell	_Malediction		icon	true
+missing-id	562572	aura	Accursed_Form		icon	true
+missing-id	573356	spell	Animated_Blood		icon	true
+missing-id	573356	aura	Animated_Blood		icon	true
+missing-id	563270	spell	Aortic_Assault		icon	true
+missing-id	681514	spell	Aortic_Assault		icon	true
+missing-id	681514	aura	Aortic_Assault		icon	true
+missing-id	681077	spell	Arteria_Bind		icon	false
+missing-id	681077	aura	Arteria_Bind		icon	false
+missing-id	572279	aura	Blood__Veil		icon	true
+missing-id	578305	spell	Blood_bolt_		icon	false
+missing-id	680687	spell	Blood_bolt_		icon	false
+missing-id	680687	aura	Blood_bolt_		icon	false
+missing-id	578305	spell	Blood_bolt__		icon	false
+missing-id	578305	spell	Blood_bolt__ 2		icon	false
+missing-id	504627	spell	Blood_bond		icon	true
+missing-id	1200012	spell	Blood_Covenant		icon	false
+missing-id	704120	aura	Blood_Fang_Bite		icon	false
+missing-id	706654	spell	Blood_Fang_Bite		icon	false
+missing-id	706654	aura	Blood_Fang_Bite		icon	false
+missing-id	706623	aura	Blood_Rituals		icon	false
+missing-id	560254	aura	Blood_Rush		icon	true
+missing-id	64859	aura	Blood_Shield		icon	false
+missing-id	504296	aura	Blood_Shield		icon	false
+missing-id	504263	spell	Blood_Veil		icon	true
+missing-id	504263	aura	Blood_Veil		icon	true
+missing-id	504263	spell	Blood_Veil 2		icon	true
+missing-id	504263	aura	Blood_Veil 2		icon	true
+missing-id	504263	spell	Blood_Veil_		icon	true
+missing-id	504263	aura	Blood_Veil_		icon	true
+missing-id	504263	spell	Blood_Veil_ 2		icon	true
+missing-id	504263	aura	Blood_Veil_ 2		icon	true
+missing-id	804685	spell	Bloodbolt_		icon	false
+missing-id	501695	spell	Bloodfang Bite		icon	true
+missing-id	704576	aura	Bloodmage_Health		aurabar	false
+missing-id	572403	aura	Bloodmage_Offerings		icon	false
+missing-id	572404	aura	Bloodmage_Offerings		icon	false
+missing-id	680299	aura	Bloodmage_Offerings		icon	false
+missing-id	1108493	aura	Bloodmage_Offerings		icon	false
+missing-id	501614	spell	Bloodmoon_Blast		icon	false
+missing-id	501614	spell	Bloodmoon_Blast_		icon	false
+missing-id	681514	spell	Bloodpale		icon	false
+missing-id	681514	aura	Bloodpale		icon	false
+missing-id	64859	aura	Bloodthorns		icon	false
+missing-id	501662	aura	Bloodthorns		icon	false
+missing-id	501961	aura	Bloodthorns		icon	false
+missing-id	572116	aura	Bloodthorns		icon	false
+missing-id	572214	aura	Bloodthorns		icon	false
+missing-id	572116	aura	Bloodthorns_		icon	false
+missing-id	572214	aura	Bloodthorns_		icon	false
+missing-id	500169	spell	Claw_Sweep_		icon	false
+missing-id	680732	aura	Dark_Essence		icon	false
+missing-id	680687	spell	Dark_Liturgy		icon	false
+missing-id	680687	aura	Dark_Liturgy		icon	false
+missing-id	800781	spell	Dark_Liturgy		icon	false
+missing-id	504264	spell	Darkcasting		icon	true
+missing-id	504264	aura	Darkcasting		icon	true
+missing-id	712383	aura	Darkcasting		icon	true
+missing-id	806421	aura	Essence_Harvester		icon	false
+missing-id	64859	aura	Eternal_Curse		icon	true
+missing-id	17626	aura	Flask_Notifier_ 3		icon	false
+missing-id	17634	aura	Flask_Notifier_ 3		icon	false
+missing-id	17636	aura	Flask_Notifier_ 3		icon	false
+missing-id	17637	aura	Flask_Notifier_ 3		icon	false
+missing-id	17638	aura	Flask_Notifier_ 3		icon	false
+missing-id	807788	aura	Gore_Tome		icon	false
+missing-id	807563	aura	Heartbreak		icon	false
+missing-id	803681	spell	Hemal_Excision		icon	true
+missing-id	803681	aura	Hemal_Excision		icon	true
+missing-id	681304	spell	Hemostasis		icon	true
+missing-id	681304	aura	Hemostasis		icon	true
+missing-id	572305	aura	Hypovolemic_Shock		icon	false
+missing-id	706663	spell	Insatiable		icon	false
+missing-id	706663	aura	Insatiable		icon	false
+missing-id	560249	spell	Keleseth's_Calamity		icon	false
+missing-id	706613	spell	Keleseth's_Calamity		icon	false
+missing-id	706613	aura	Keleseth's_Calamity		icon	false
+missing-id	504264	spell	Killer_Instinct		icon	true
+missing-id	504264	aura	Killer_Instinct		icon	true
+missing-id	806310	spell	Liquify		icon	true
+missing-id	806310	aura	Liquify		icon	true
+missing-id	704120	spell	Malediction		icon	true
+missing-id	704120	aura	Malediction		icon	true
+missing-id	704120	aura	Malediction_Stacks		icon	false
+missing-id	572895	spell	Night_Hunter's Howl_		icon	false
+missing-id	680687	spell	Night_Hunter's Howl_		icon	false
+missing-id	680687	aura	Night_Hunter's Howl_		icon	false
+missing-id	504290	aura	Packleader_		icon	false
+missing-id	680687	spell	Pooled_Vitality_1		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_1		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_10		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_10		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_2		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_2		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_3		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_3		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_4		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_4		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_5		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_5		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_6		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_6		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_7		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_7		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_8		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_8		aurabar	true
+missing-id	680687	spell	Pooled_Vitality_9		aurabar	true
+missing-id	680687	aura	Pooled_Vitality_9		aurabar	true
+missing-id	20594	spell	Racials_Notifier_ 3		icon	false
+missing-id	50613	spell	Racials_Notifier_ 3		icon	false
+missing-id	59545	spell	Racials_Notifier_ 3		icon	false
+missing-id	59752	spell	Racials_Notifier_ 3		icon	false
+missing-id	59752	aura	Racials_Notifier_ 3		icon	false
+missing-id	65116	spell	Racials_Notifier_ 3		icon	false
+missing-id	65116	aura	Racials_Notifier_ 3		icon	false
+missing-id	501671	spell	Ravenous_Strike		icon	false
+missing-id	572551	spell	Ravenous_Strike_		icon	false
+missing-id	800490	spell	Reave		icon	true
+missing-id	804197	spell	Rotclaw_		icon	true
+missing-id	503477	spell	Rotclaw_Stacks		icon	false
+missing-id	503477	aura	Rotclaw_Stacks		icon	false
+missing-id	804197	aura	Rotclaw_Stacks		icon	false
+missing-id	64859	aura	Sanguinary_Offering		icon	false
+missing-id	572403	aura	Sanguinary_Offering		icon	false
+missing-id	572404	aura	Sanguinary_Offering		icon	false
+missing-id	573295	aura	Sanguinary_Offering		icon	false
+missing-id	680299	aura	Sanguinary_Offering		icon	false
+missing-id	706630	aura	Sanguinary_Offering		icon	false
+missing-id	803668	aura	Sanguinary_Offering		icon	false
+missing-id	1108493	aura	Sanguinary_Offering		icon	false
+missing-id	64859	aura	Sanguine_Essence		icon	true
+missing-id	680692	aura	Sanguine_Essence		icon	true
+missing-id	504085	spell	Sanguine_Mend		icon	false
+missing-id	680687	spell	Sanguine_Mend		icon	false
+missing-id	680687	aura	Sanguine_Mend		icon	false
+missing-id	803880	spell	Sanguine_Mend		icon	false
+missing-id	572907	spell	Sanguine_Rupture		icon	false
+missing-id	572907	spell	Sanguine_Rupture_		icon	false
+missing-id	504264	spell	Sanguine_Scripture_		icon	false
+missing-id	504264	aura	Sanguine_Scripture_		icon	false
+missing-id	681514	aura	Sanguine_Scripture_		icon	false
+missing-id	532125	aura	Sated_Notifier		icon	false
+missing-id	504098	aura	Saturating_Sutures		icon	true
+missing-id	806182	spell	Shadow_Vigil		icon	false
+missing-id	806182	aura	Shadow_Vigil		icon	false
+missing-id	503477	spell	Taldaram_Torment		icon	false
+missing-id	503477	aura	Taldaram_Torment		icon	false
+missing-id	802580	aura	Taldaram_Torment		icon	false
+missing-id	503477	spell	Taldaram_Torment 2		icon	false
+missing-id	503477	aura	Taldaram_Torment 2		icon	false
+missing-id	802580	aura	Taldaram_Torment 2		icon	false
+missing-id	503477	spell	Taldaram_Torment 3		icon	false
+missing-id	503477	aura	Taldaram_Torment 3		icon	false
+missing-id	802580	aura	Taldaram_Torment 3		icon	false
+missing-id	706613	spell	Thirst		icon	true
+missing-id	706613	aura	Thirst		icon	true
+missing-id	706613	spell	Thirst_1		aurabar	true
+missing-id	706613	aura	Thirst_1		aurabar	true
+missing-id	706613	spell	Thirst_10		aurabar	true
+missing-id	706613	aura	Thirst_10		aurabar	true
+missing-id	706613	spell	Thirst_2		aurabar	true
+missing-id	706613	aura	Thirst_2		aurabar	true
+missing-id	706613	spell	Thirst_3		aurabar	true
+missing-id	706613	aura	Thirst_3		aurabar	true
+missing-id	706613	spell	Thirst_4		aurabar	true
+missing-id	706613	aura	Thirst_4		aurabar	true
+missing-id	706613	spell	Thirst_5		aurabar	true
+missing-id	706613	aura	Thirst_5		aurabar	true
+missing-id	706613	spell	Thirst_6		aurabar	true
+missing-id	706613	aura	Thirst_6		aurabar	true
+missing-id	706613	spell	Thirst_7		aurabar	true
+missing-id	706613	aura	Thirst_7		aurabar	true
+missing-id	706613	spell	Thirst_8		aurabar	true
+missing-id	706613	aura	Thirst_8		aurabar	true
+missing-id	706613	spell	Thirst_9		aurabar	true
+missing-id	706613	aura	Thirst_9		aurabar	true
+missing-id	504728	aura	Transgression		icon	false
+missing-id	504728	spell	Transgression_		icon	false
+missing-id	504728	aura	Transgression_		icon	false
+missing-id	504264	spell	Ultra_Instinct		icon	true
+missing-id	504264	aura	Ultra_Instinct		icon	true
+missing-id	806428	aura	Universal_Donor		icon	false
+missing-id	560315	spell	Valanar's_Vengeance		icon	false
+missing-id	706613	spell	Valanar's_Vengeance		icon	false
+missing-id	706613	aura	Valanar's_Vengeance		icon	false
+missing-id	706613	spell	Vampiric_Fang		icon	true
+missing-id	706613	aura	Vampiric_Fang		icon	true
+present	504710	knowntalent	_Bloodmoon_Blast		icon	false
+present	504710	spell	Accursed_Form_		icon	true
+present	504710	aura	Accursed_Form_		icon	true
+present	680675	aura	Adrenaline_Boost		icon	true
+present	680745	aura	Agonizing_Pain		icon	true
+present	504710	knowntalent	Aortic_Assault		icon	true
+present	806212	spell	Aortic_Assault		icon	true
+present	806212	aura	Aortic_Assault		icon	true
+present	804203	aura	Apetheosis		icon	false
+present	804203	spell	Apotheosis		icon	true
+present	804203	aura	Apotheosis		icon	true
+present	505188	knowntalent	Apotheosis_Fleshweaver		icon	false
+present	804203	spell	Apotheosis_Fleshweaver		icon	false
+present	804203	aura	Apotheosis_Fleshweaver		icon	false
+present	504710	knowntalent	Apotheosis_Fleshweaver 2		icon	false
+present	804203	spell	Apotheosis_Fleshweaver 2		icon	false
+present	804203	aura	Apotheosis_Fleshweaver 2		icon	false
+present	804203	spell	Apotheosis_Fleshweaver 3		icon	false
+present	804203	aura	Apotheosis_Fleshweaver 3		icon	false
+present	680680	spell	Atherann's__Anguish		icon	false
+present	680680	aura	Atherann's_Anguish		icon	false
+present	801957	spell	Bare_Fangs_		icon	true
+present	800780	spell	Blood__Craving		icon	true
+present	505188	knowntalent	Blood_bolt_		icon	false
+present	504710	knowntalent	Blood_bolt__ 2		icon	false
+present	800780	aura	Blood_Craving		icon	true
+present	706605	spell	Blood_Feast		icon	true
+present	706605	aura	Blood_Feast		icon	true
+present	800782	spell	Blood_Howl		icon	true
+present	801955	spell	Blood_Pact		icon	true
+present	801955	aura	Blood_Pact		icon	true
+present	801955	aura	Blood_Pact__		icon	true
+present	802315	aura	Blood_Parasites		icon	true
+present	707900	spell	Blood_Tap		icon	true
+present	505188	knowntalent	Blood_Veil 2		icon	true
+present	504710	knowntalent	Blood_Veil_ 2		icon	true
+present	505188	knowntalent	Bloodmoon_Blast		icon	false
+present	553267	spell	Bloodsurge		icon	true
+present	553267	aura	Bloodsurge		icon	true
+present	806424	aura	Crimson_Scion		icon	true
+present	505188	knowntalent	Dark_Liturgy		icon	false
+present	680828	spell	Darkfallen_Lament		icon	true
+present	680828	aura	Darkfallen_Lament		icon	true
+present	681190	spell	Endure_the_curse		icon	true
+present	681190	aura	Endure_the_curse		icon	true
+present	504157	aura	Enraging_Howl		icon	true
+present	800157	aura	Eternal_Curse		icon	true
+present	801962	spell	Eternal_Resolve		icon	true
+present	801962	aura	Eternal_Resolve		icon	true
+present	801962	aura	Eternal_Resolve___		icon	true
+present	524865	spell	Final_Embrace		icon	true
+present	524865	aura	Final_Embrace		icon	true
+present	801952	spell	Fleshcraft		icon	true
+present	801952	aura	Fleshcraft		icon	true
+present	505188	knowntalent	Fleshcraft 2		icon	true
+present	801952	spell	Fleshcraft 2		icon	true
+present	801952	aura	Fleshcraft 2		icon	true
+present	504710	knowntalent	Fleshcraft__1		icon	true
+present	801952	spell	Fleshcraft__1		icon	true
+present	801952	aura	Fleshcraft__1		icon	true
+present	801952	spell	Fleshcraft__2		icon	true
+present	801952	aura	Fleshcraft__2		icon	true
+present	505188	knowntalent	Fleshcraft_Fleshweaver		icon	false
+present	801955	spell	Fleshcraft_Fleshweaver		icon	false
+present	801955	aura	Fleshcraft_Fleshweaver		icon	false
+present	804805	spell	Gorge		icon	true
+present	804805	aura	Gorge		icon	true
+present	572855	spell	Hemoburst		icon	true
+present	681190	aura	Hemoburst		icon	true
+present	524907	spell	Hemoglobe		icon	true
+present	524907	aura	Hemoglobe		icon	true
+present	704624	spell	Infection		icon	true
+present	704624	aura	Infection		icon	true
+present	681403	spell	Infuse		icon	true
+present	681403	aura	Infuse		icon	true
+present	704690	aura	Killer_Instinct		icon	true
+present	500126	spell	Lunge_		icon	true
+present	804811	spell	Monstrous Hunger		icon	true
+present	804811	aura	Monstrous Hunger		icon	true
+present	500124	aura	Night_Hunter_Howl_		icon	false
+present	500124	spell	Night_Hunter's_Howl		icon	false
+present	500124	aura	Night_Hunter's_Howl		icon	false
+present	505188	knowntalent	Pooled_Vitality_1		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_10		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_2		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_3		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_4		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_5		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_6		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_7		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_8		aurabar	true
+present	505188	knowntalent	Pooled_Vitality_9		aurabar	true
+present	680679	spell	Purify_Blood		icon	true
+present	680679	aura	Purify_Blood		icon	true
+present	504710	knowntalent	Ravenous_Strike_		icon	false
+present	504710	knowntalent	Reave		icon	true
+present	800785	spell	Sacrificial__Rite		icon	true
+present	800785	aura	Sacrificial_Rite		icon	true
+present	505188	knowntalent	Sanguine_Essence		icon	true
+present	505188	knowntalent	Sanguine_Mend		icon	false
+present	806424	aura	Sanguine_Mend		icon	false
+present	505188	knowntalent	Sanguine_Rupture		icon	false
+present	806177	spell	Shadow_Howl		icon	true
+present	806177	aura	Shadow_Howl		icon	true
+present	806177	aura	Shadow_Howl__		icon	true
+present	806049	aura	Sovereignty		icon	true
+present	505188	knowntalent	Taldaram_Torment		icon	false
+present	504710	knowntalent	Taldaram_Torment 3		icon	false
+present	504103	spell	The_Council_Assembled		icon	true
+present	504103	aura	The_Council_Assembled		icon	true
+present	705734	spell	Transfusion		icon	true
+present	704634	aura	Twisted_Magic		icon	true
+present	704654	aura	Ultra_Instinct		icon	true
+present	804726	spell	Vampiric_Fang		icon	true
+present	504275	spell	Vampyr_Kiss		icon	false
+present	504275	aura	Vampyr_Kiss		icon	false
+present	504260	spell	Veinburst		icon	true
+present	504260	aura	Veinburst		icon	true
+present	504710	knowntalent	Veinburst		icon	true
+present	804207	aura	Wicked__Howl		icon	true
+present	804207	spell	Wicked_Howl_		icon	true
+present	804207	aura	Wicked_Howl_		icon	true

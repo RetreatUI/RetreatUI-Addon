@@ -1,0 +1,85 @@
+status	id	kind	display	parent	regionType	namePresent
+load-only	814287	spellknown	[Tinker] Arcane Torrent		icon	false
+load-only	26297	spellknown	[Tinker] Berserking		icon	false
+load-only	33697	spellknown	[Tinker] Blood Fury		icon	false
+load-only	20589	spellknown	[Tinker] Escape Artist		icon	false
+load-only	578124	spellknown	[Tinker] Pet Bomb		icon	false
+load-only	578123	spellknown	[Tinker] Pet Disarm		icon	false
+load-only	581313	spellknown	[Tinker] Pet Interrupt		icon	false
+load-only	578122	spellknown	[Tinker] Pet Mana		icon	false
+load-only	808010	spellknown	[Tinker] Pet Recharge		icon	false
+load-only	20594	spellknown	[Tinker] Stoneform 		icon	false
+load-only	20549	spellknown	[Tinker] War Stomp		icon	false
+load-only	7744	spellknown	[Tinker] Will of the Forsaken 		icon	false
+load-only	706969	spellknown	Air Strike		icon	true
+load-only	706969	spellknown	Auto Resuscitation Device		icon	true
+load-only	706969	spellknown	Deathball		icon	true
+load-only	807197	spellknown	Discombobulate!		icon	false
+load-only	501780	spellknown	Eureka!		icon	true
+load-only	803552	spellknown	Nanobot Recharger Buff		icon	false
+load-only	502561	spellknown	Nanobot Reconstruction Buff		icon	false
+load-only	502561	spellknown	Nanobot Swarm Buff		icon	false
+load-only	807197	spellknown	Noise Box		icon	false
+load-only	524835	spellknown	Overcharge		icon	false
+load-only	524835	knowntalent	Overcharge		icon	false
+load-only	807197	spellknown	Recharge Station		icon	false
+load-only	706969	spellknown	Rocket Boots		icon	true
+missing-id	814287	spell	[Tinker] Arcane Torrent		icon	false
+missing-id	26297	spell	[Tinker] Berserking		icon	false
+missing-id	33697	spell	[Tinker] Blood Fury		icon	false
+missing-id	20589	spell	[Tinker] Escape Artist		icon	false
+missing-id	578124	spell	[Tinker] Pet Bomb		icon	false
+missing-id	578123	spell	[Tinker] Pet Disarm		icon	false
+missing-id	581313	spell	[Tinker] Pet Interrupt		icon	false
+missing-id	578122	spell	[Tinker] Pet Mana		icon	false
+missing-id	808010	spell	[Tinker] Pet Recharge		icon	false
+missing-id	20594	spell	[Tinker] Stoneform 		icon	false
+missing-id	20549	spell	[Tinker] War Stomp		icon	false
+missing-id	7744	spell	[Tinker] Will of the Forsaken 		icon	false
+missing-id	807197	spell	Discombobulate!		icon	false
+missing-id	503553	spell	Eureka!		icon	true
+missing-id	503553	aura	Eureka!		icon	true
+missing-id	803552	spell	Nanobot Recharger Buff		icon	false
+missing-id	803552	aura	Nanobot Recharger Buff		icon	false
+missing-id	502561	spell	Nanobot Reconstruction Buff		icon	false
+missing-id	502561	aura	Nanobot Reconstruction Buff		icon	false
+missing-id	524835	spell	Overcharge		icon	false
+present	801744	spell	Air Strike		icon	true
+present	801744	knowntalent	Air Strike		icon	true
+present	520445	spell	Auto Resuscitation Device		icon	true
+present	520445	knowntalent	Auto Resuscitation Device		icon	true
+present	500236	spell	Deathball		icon	true
+present	500236	knowntalent	Deathball		icon	true
+present	503552	knowntalent	Eureka!		icon	true
+present	806157	spell	Freeze Ray		icon	true
+present	806157	spellknown	Freeze Ray		icon	true
+present	680196	spellknown	Kinetic Shield		icon	true
+present	806224	spell	Kinetic Shield		icon	true
+present	806224	knowntalent	Kinetic Shield		icon	true
+present	707104	spell	Macro-Gravity Zone		icon	true
+present	707104	spellknown	Macro-Gravity Zone		icon	true
+present	707104	knowntalent	Macro-Gravity Zone		icon	true
+present	800347	spell	Med Pack		icon	true
+present	800347	spellknown	Med Pack		icon	true
+present	680196	spellknown	My Greatest Invention!		icon	true
+present	805305	spell	My Greatest Invention!		icon	true
+present	805305	knowntalent	My Greatest Invention!		icon	true
+present	503552	knowntalent	Nanobot Recharger Buff		icon	false
+present	503552	knowntalent	Nanobot Reconstruction Buff		icon	false
+present	801709	spell	Nanobot Swarm Buff		icon	false
+present	801709	aura	Nanobot Swarm Buff		icon	false
+present	801709	knowntalent	Nanobot Swarm Buff		icon	false
+present	807723	spell	Noise Box		icon	false
+present	807723	knowntalent	Noise Box		icon	false
+present	805308	spell	Recharge Station		icon	false
+present	805308	knowntalent	Recharge Station		icon	false
+present	706904	spell	Repulsion Unit		icon	false
+present	706904	spellknown	Repulsion Unit		icon	false
+present	706904	knowntalent	Repulsion Unit		icon	false
+present	801801	spell	Resto Beacon		icon	false
+present	801801	spellknown	Resto Beacon		icon	false
+present	500241	spell	Rocket Boots		icon	true
+present	500241	knowntalent	Rocket Boots		icon	true
+present	680196	spell	Zap!		icon	true
+present	680196	spellknown	Zap!		icon	true
+present	680196	knowntalent	Zap!		icon	true

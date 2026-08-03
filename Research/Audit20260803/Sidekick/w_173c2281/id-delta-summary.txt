@@ -1,0 +1,6 @@
+class=Templar
+current_ids=97
+current_names=87
+referenced_rows=160
+missing_id_rows=27
+missing_unique_ids=20

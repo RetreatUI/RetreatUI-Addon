@@ -64,16 +64,16 @@
       "length": 1287
     },
     {
-      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.css",
-      "status": 200,
-      "type": "text/css",
-      "length": 872
-    },
-    {
       "url": "https://ascensionsidekick.com/wf.css",
       "status": 200,
       "type": "text/css",
       "length": 7713
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 872
     },
     {
       "url": "https://ascensionsidekick.com/community.css",
@@ -91,13 +91,13 @@
       "url": "https://www.clarity.ms/tag/xg9npy5ttd",
       "status": 200,
       "type": "application/x-javascript",
-      "length": 730
+      "length": 725
     },
     {
-      "url": "https://scripts.clarity.ms/0.8.67-beta/clarity.js",
+      "url": "https://scripts.clarity.ms/0.8.67/clarity.js",
       "status": 200,
       "type": "application/javascript;charset=utf-8",
-      "length": 74747
+      "length": 74429
     },
     {
       "url": "https://ascensionsidekick.com/builder-engine.js",
@@ -130,16 +130,16 @@
       "length": 26735
     },
     {
-      "url": "https://ascensionsidekick.com/data.js",
-      "status": 200,
-      "type": "application/javascript",
-      "length": 3786428
-    },
-    {
       "url": "https://ascensionsidekick.com/app.js",
       "status": 200,
       "type": "application/javascript",
       "length": 158026
+    },
+    {
+      "url": "https://ascensionsidekick.com/data.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 3786428
     },
     {
       "url": "https://ascensionsidekick.com/api/community/item/w_cb1725f1",

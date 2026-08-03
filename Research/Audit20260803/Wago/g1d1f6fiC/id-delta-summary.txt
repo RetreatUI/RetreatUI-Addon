@@ -1,0 +1,6 @@
+class=Pyromancer
+current_ids=63
+current_names=64
+referenced_rows=171
+missing_id_rows=60
+missing_unique_ids=24

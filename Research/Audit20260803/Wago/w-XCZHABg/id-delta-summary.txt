@@ -1,0 +1,6 @@
+class=Tinker
+current_ids=113
+current_names=117
+referenced_rows=84
+missing_id_rows=20
+missing_unique_ids=17

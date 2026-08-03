@@ -1,0 +1,6 @@
+class=Chronomancer
+current_ids=61
+current_names=62
+referenced_rows=54
+missing_id_rows=28
+missing_unique_ids=9

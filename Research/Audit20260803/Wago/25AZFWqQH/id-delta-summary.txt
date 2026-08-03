@@ -1,0 +1,6 @@
+class=Bloodmage
+current_ids=81
+current_names=93
+referenced_rows=358
+missing_id_rows=188
+missing_unique_ids=77

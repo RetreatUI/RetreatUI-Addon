@@ -1,0 +1,55 @@
+status	id	kind	display	parent	regionType	namePresent
+missing-id	806728	spell	Endless Sands		icon	true
+missing-id	806728	aura	Endless Sands		icon	true
+missing-id	570177	spell	Fabric Time Aura		icon	false
+missing-id	704482	spell	Fabric Time Aura		icon	false
+missing-id	704482	aura	Fabric Time Aura		icon	false
+missing-id	807455	spell	Fortify Timeline		icon	true
+missing-id	804488	spell	Glow		empty	false
+missing-id	804488	aura	Glow		empty	false
+missing-id	806291	spell	Glow		empty	false
+missing-id	806291	aura	Glow		empty	false
+missing-id	804488	spell	Glow 2		empty	false
+missing-id	804488	aura	Glow 2		empty	false
+missing-id	804488	spell	Glow 3		empty	false
+missing-id	804488	aura	Glow 3		empty	false
+missing-id	806291	spell	Glow 3		empty	false
+missing-id	806291	aura	Glow 3		empty	false
+missing-id	804488	spell	Glow 4		empty	false
+missing-id	804488	aura	Glow 4		empty	false
+missing-id	804488	spell	Glow 5		empty	false
+missing-id	804488	aura	Glow 5		empty	false
+missing-id	801304	spell	Hasten		icon	false
+missing-id	801304	aura	Hasten		icon	false
+missing-id	706774	spell	Mana		aurabar	false
+missing-id	706774	aura	Mana		aurabar	false
+missing-id	804488	spell	Sands of Time		aurabar	false
+missing-id	804488	aura	Sands of Time		aurabar	false
+missing-id	803897	spell	Time Out!		icon	true
+missing-id	803897	aura	Time Out!		icon	true
+present	806296	spellknown	Endless Sands		icon	true
+present	806296	spellknown	Fabric Time Aura		icon	false
+present	806296	spellknown	Fortify Timeline		icon	true
+present	806290	spell	Glow		empty	false
+present	806290	aura	Glow		empty	false
+present	806292	spell	Glow		empty	false
+present	806292	aura	Glow		empty	false
+present	806293	spell	Glow		empty	false
+present	806293	aura	Glow		empty	false
+present	806290	spell	Glow 2		empty	false
+present	806290	aura	Glow 2		empty	false
+present	806292	spell	Glow 4		empty	false
+present	806292	aura	Glow 4		empty	false
+present	806293	spell	Glow 5		empty	false
+present	806293	aura	Glow 5		empty	false
+present	806296	spellknown	Hasten		icon	false
+present	806296	spellknown	Mana		aurabar	false
+present	806296	spell	Ripple		icon	true
+present	806296	spellknown	Ripple		icon	true
+present	806290	aura	Sands of Time		aurabar	false
+present	806292	aura	Sands of Time		aurabar	false
+present	806293	aura	Sands of Time		aurabar	false
+present	806296	spellknown	Sands of Time		aurabar	false
+present	806296	spellknown	Time Out!		icon	true
+present	804441	spell	Timeguard		icon	true
+present	806296	spellknown	Timeguard		icon	true
