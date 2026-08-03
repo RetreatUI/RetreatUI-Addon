@@ -44,6 +44,10 @@ jobs:
               "try { await page.goto(target.url, { waitUntil: 'domcontentloaded', timeout: 30000 }); } catch (_) {}"
           )
           text = text.replace(
+              "    if (Array.isArray(node.d)) for (const child of node.d) visit(child, id || parent);\n    if (Array.isArray(node.children)) for (const child of node.children) visit(child, id || parent);",
+              "    for (const [childKey, child] of Object.entries(node)) { if (childKey === 'parent' || childKey === 'raw') continue; if (Array.isArray(child)) { for (const item of child) if (item && typeof item === 'object') visit(item, id || parent); } else if (child && typeof child === 'object') { visit(child, id || parent); } }"
+          )
+          text = text.replace(
               "for (const target of SIDEKICK_TARGETS) await auditSidekick(target, browser);",
               "for (const target of SIDEKICK_TARGETS) { try { await auditSidekick(target, browser); } catch (error) { const dir = path.join(ROOT, 'Sidekick', target.id); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'summary.txt'), `source=${target.label}\\nclass=${target.className}\\naudit_error=${compact(String(error), 2000)}\\n`); } }"
           )
