@@ -100,3 +100,10 @@ KnightOfXoroth\HUD.lua
 Templar\Definition.lua
 Templar\Data.lua
 Templar\HUD.lua
+
+Ranger\Definition.lua
+Ranger\Data.lua
+Ranger\WAAudit.lua
+Ranger\HUD.lua
+WagoCurated.lua
+Bloodmage\VanthirsGift.lua
