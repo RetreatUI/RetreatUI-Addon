@@ -3,9 +3,10 @@ if not RUI then return end
 
 -- Ascension sometimes exposes a selected talent/base spell in the spellbook,
 -- while the actual button uses another internal ID for cooldowns or charges.
--- These optional record fields keep detection and runtime tracking separate:
---   learnedBySpellID / learnedBySpell / learnedByAny
---   runtimeID / chargeSpellID
+-- Learning and runtime tracking are deliberately separate:
+--   learnedBySpellID / learnedBySpell / learnedByAny decide visibility
+--   runtimeID / runtimeIDs / chargeSpellID / chargeSpellIDs read cooldown state
+-- Runtime IDs are never allowed to make an otherwise unlearned HUD record visible.
 local originalIsSpellRecordLearned = RUI.IsSpellRecordLearned
 local originalGetSpellRecordRuntimeID = RUI.GetSpellRecordRuntimeID
 
@@ -22,6 +23,11 @@ local function ReferenceLearned(self, value)
     return self.IsSpellLearned and self:IsSpellLearned(value) == true
   end
   if type(value) == "table" then
+    local entryID = value.collectorEntryID or value.entryID or value.talentID
+    if entryID and self.IsAdvancementEntryLearned then
+      local known = self:IsAdvancementEntryLearned(entryID)
+      if known ~= nil then return known == true end
+    end
     local spellID = value.spellID or value.id
     if spellID and self.IsSpellIDLearned and self:IsSpellIDLearned(spellID) then return true end
     if value.name and self.IsSpellLearned and self:IsSpellLearned(value.name) then return true end
@@ -29,27 +35,56 @@ local function ReferenceLearned(self, value)
   return false
 end
 
-function RUI:IsSpellRecordLearned(record)
-  if type(record) == "table" then
-    if record.learnedBySpellID and ReferenceLearned(self, tonumber(record.learnedBySpellID)) then return true end
-    if record.learnedBySpell and ReferenceLearned(self, record.learnedBySpell) then return true end
+local function AddCandidate(result, seen, value)
+  if value == nil then return end
+  value = tonumber(value) or value
+  local key = tostring(value)
+  if key == "" or seen[key] then return end
+  seen[key] = true
+  result[#result + 1] = value
+end
 
-    local values = record.learnedByAny
-    if values ~= nil then
-      if type(values) ~= "table" then values = {values} end
-      for _, value in ipairs(values) do
-        if ReferenceLearned(self, value) then return true end
-      end
+local function RuntimeCandidates(record)
+  local result, seen = {}, {}
+  if type(record) == "table" then
+    AddCandidate(result, seen, record.runtimeID)
+    for _, value in ipairs(record.runtimeIDs or {}) do AddCandidate(result, seen, value) end
+  end
+  return result
+end
+
+function RUI:IsSpellRecordLearned(record)
+  if type(record) ~= "table" then return false end
+
+  -- Collector records belong to one active Character Advancement slot. A
+  -- definite false from that slot must remain authoritative over stale IDs.
+  local advancementID = record.collectorEntryID or record.entryID or record.talentID
+  if advancementID ~= nil then
+    return originalIsSpellRecordLearned(self, record)
+  end
+
+  if record.learnedBySpellID and ReferenceLearned(self, tonumber(record.learnedBySpellID)) then return true end
+  if record.learnedBySpell and ReferenceLearned(self, record.learnedBySpell) then return true end
+
+  local values = record.learnedByAny
+  if values ~= nil then
+    if type(values) ~= "table" then values = {values} end
+    for _, value in ipairs(values) do
+      if ReferenceLearned(self, value) then return true end
     end
   end
 
+  -- Never use runtimeIDs as learning evidence. They may be replacement,
+  -- cooldown or aura IDs that exist even when the action is not selected.
   return originalIsSpellRecordLearned(self, record)
 end
 
 function RUI:GetSpellRecordRuntimeID(record)
-  if type(record) == "table" and record.runtimeID ~= nil then
-    return tonumber(record.runtimeID) or record.runtimeID
+  local candidates = RuntimeCandidates(record)
+  for _, value in ipairs(candidates) do
+    if ReferenceLearned(self, value) then return value end
   end
+  if candidates[1] ~= nil then return candidates[1] end
   return originalGetSpellRecordRuntimeID(self, record)
 end
 
@@ -59,14 +94,22 @@ if W then
     local originalReadSpellCooldown = W.ReadSpellCooldown
 
     function W:ReadSpellCooldown(definition)
-      local runtimeID = type(definition) == "table" and definition.runtimeID or nil
-      if runtimeID and GetSpellCooldown then
-        local ok, start, duration, enabled = pcall(GetSpellCooldown, runtimeID)
-        if ok and start ~= nil and duration ~= nil then
-          return tonumber(start) or 0, tonumber(duration) or 0, tonumber(enabled) or 0
+      local fallback
+      if GetSpellCooldown and type(definition) == "table" then
+        for _, runtimeID in ipairs(RuntimeCandidates(definition)) do
+          local ok, start, duration, enabled = pcall(GetSpellCooldown, runtimeID)
+          if ok and start ~= nil and duration ~= nil then
+            local snapshot = {tonumber(start) or 0, tonumber(duration) or 0, tonumber(enabled) or 0}
+            fallback = fallback or snapshot
+            if snapshot[2] > 0 then return snapshot[1], snapshot[2], snapshot[3] end
+          end
         end
       end
-      return originalReadSpellCooldown(self, definition)
+
+      local start, duration, enabled = originalReadSpellCooldown(self, definition)
+      if tonumber(duration) and tonumber(duration) > 0 then return start, duration, enabled end
+      if fallback then return fallback[1], fallback[2], fallback[3] end
+      return start, duration, enabled
     end
   end
 
@@ -74,12 +117,18 @@ if W then
     local originalReadSpellCharges = W.ReadSpellCharges
 
     function W:ReadSpellCharges(definition)
-      local chargeSpellID = type(definition) == "table" and definition.chargeSpellID or nil
-      if chargeSpellID and GetSpellCharges then
-        local ok, current, maximum, start, duration = pcall(GetSpellCharges, chargeSpellID)
-        current, maximum = tonumber(current), tonumber(maximum)
-        if ok and current and maximum and maximum > 0 then
-          return current, maximum, tonumber(start) or 0, tonumber(duration) or 0
+      if GetSpellCharges and type(definition) == "table" then
+        local candidates, seen = {}, {}
+        AddCandidate(candidates, seen, definition.chargeSpellID)
+        for _, value in ipairs(definition.chargeSpellIDs or {}) do AddCandidate(candidates, seen, value) end
+        for _, value in ipairs(RuntimeCandidates(definition)) do AddCandidate(candidates, seen, value) end
+
+        for _, spellID in ipairs(candidates) do
+          local ok, current, maximum, start, duration = pcall(GetSpellCharges, spellID)
+          current, maximum = tonumber(current), tonumber(maximum)
+          if ok and current and maximum and maximum > 0 then
+            return current, maximum, tonumber(start) or 0, tonumber(duration) or 0
+          end
         end
       end
       return originalReadSpellCharges(self, definition)
