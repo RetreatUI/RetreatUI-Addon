@@ -1,7 +1,7 @@
 {
-  "publish": false,
-  "version": "1.1.2-beta.29",
-  "title": "RetreatUI v1.1.2-beta.29",
+  "publish": true,
+  "version": "1.1.2-beta.30",
+  "title": "RetreatUI v1.1.2-beta.30",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true
 }
