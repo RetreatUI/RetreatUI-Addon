@@ -20,6 +20,7 @@ Core\BuildProfiles.lua
 Core\HUDEditor.lua
 Core\AscensionResources.lua
 Core\HUDWidgets.lua
+Core\SpellRecordRuntime.lua
 Core\MapVisibility.lua
 Integrations\HUDCooldownStability.lua
 Core\TrinketTracker.lua
