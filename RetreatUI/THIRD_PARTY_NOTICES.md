@@ -22,3 +22,4 @@ native RetreatUI code. Their import strings are not shipped:
 - `PUx5f9aPr` — Pitho: Remove Custom ResourceBar
 - `Y5UDib4zq` — Starcaller
 - `TqH72U66p` — Felsworn
+- `dGSLgbxJP` — Cultist
