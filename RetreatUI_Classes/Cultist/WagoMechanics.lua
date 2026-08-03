@@ -14,9 +14,10 @@ local MADNESS_ID = 803061
 local TENTACLE_SIZE = 28
 local TENTACLE_SPACING = 2
 local TENTACLE_Y = -118
+local FALLBACK_ICON = "Interface\\Icons\\INV_Misc_QuestionMark"
 
 local TENTACLE_DEFINITIONS = {
-  {slot=1, name="Tentacle of C'Thun", spellID=801153},
+  {slot=1, name="Tentacle of C'THun", spellID=801153},
   {slot=2, name="Tentacle of Yogg-Saron", spellID=802042},
   {slot=3, name="Tentacle of N'Zoth", spellID=500707},
   {slot=4, name="Tentacle of Y'Shaarj", spellID=802044},
@@ -48,6 +49,14 @@ local function AuraByID(unit, harmful, wantedID)
       }
     end
   end
+end
+
+local function SpellTexture(spellID)
+  if type(GetSpellInfo) == "function" then
+    local _, _, texture = GetSpellInfo(spellID)
+    if texture then return texture end
+  end
+  return FALLBACK_ICON
 end
 
 local function CreateTrackerIcon(parent, size)
@@ -91,13 +100,12 @@ end
 
 local function UpdateTentacles()
   local now = GetTime()
-  local active = 0
 
   for index, definition in ipairs(TENTACLE_DEFINITIONS) do
     local frame = tentacles[index]
-    local haveTotem, name, startTime, duration, icon
+    local haveTotem, _, startTime, duration, icon
     if type(GetTotemInfo) == "function" then
-      haveTotem, name, startTime, duration, icon = GetTotemInfo(definition.slot)
+      haveTotem, _, startTime, duration, icon = GetTotemInfo(definition.slot)
     end
 
     startTime = tonumber(startTime) or 0
@@ -106,13 +114,12 @@ local function UpdateTentacles()
     local shown = (haveTotem == true or haveTotem == 1) and remaining > 0.05
 
     if shown then
-      active = active + 1
       local width = #TENTACLE_DEFINITIONS * TENTACLE_SIZE + (#TENTACLE_DEFINITIONS - 1) * TENTACLE_SPACING
       local firstX = -width / 2 + TENTACLE_SIZE / 2
       frame:ClearAllPoints()
       frame:SetPoint("CENTER", UIParent, "CENTER",
         firstX + (index - 1) * (TENTACLE_SIZE + TENTACLE_SPACING), TENTACLE_Y)
-      frame.texture:SetTexture(icon or (GetSpellInfo and select(3, GetSpellInfo(definition.spellID))))
+      frame.texture:SetTexture(icon or SpellTexture(definition.spellID))
       if frame.texture.SetDesaturated then frame.texture:SetDesaturated(false) end
       frame.stackText:SetText("")
       SetIconTimer(frame, remaining)
@@ -122,19 +129,17 @@ local function UpdateTentacles()
       frame:Hide()
     end
   end
-
-  return active
 end
 
 local function UpdateMadness()
   local aura = AuraByID("player", true, MADNESS_ID)
   if not aura then
     madness:Hide()
-    return false
+    return
   end
 
   local remaining = aura.expires > 0 and math.max(0, aura.expires - GetTime()) or 0
-  madness.texture:SetTexture(aura.icon or (GetSpellInfo and select(3, GetSpellInfo(MADNESS_ID))))
+  madness.texture:SetTexture(aura.icon or SpellTexture(MADNESS_ID))
   if madness.texture.SetDesaturated then madness.texture:SetDesaturated(false) end
   madness.stackText:SetText(aura.count and aura.count > 0 and tostring(aura.count) or "")
   SetIconTimer(madness, remaining)
@@ -148,7 +153,6 @@ local function UpdateMadness()
     W:SetBorder(madness, theme.accent, 1)
   end
   madness:Show()
-  return true
 end
 
 local function Update()
