@@ -1,13 +1,13 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- Pyrolancer is a Pyromancer build. The supplied WeakAura packs load on
--- PYROMANCER, so RetreatUI keeps normal class detection while applying the
--- tester-curated cooldown/proc/debuff profile and a clean Heat + Ember layout.
+-- Pyrolancer and Flameweaving are Pyromancer builds. The supplied WeakAura
+-- packs load on PYROMANCER, so RetreatUI keeps normal class detection while
+-- preserving the tester-curated row limits and clean Heat + Ember layout.
 local module = RUI:RegisterAdvancedClassHUD("Pyromancer", {
   frameName = "RetreatUIPyromancerHUD",
   usesPrimaryPower = true,
-  supportedLoadouts = {DESTRUCTION=true,DRACONIC=true,INCINERATION=true,PYROLANCER=true},
+  supportedLoadouts = {DESTRUCTION=true,DRACONIC=true,INCINERATION=true,PYROLANCER=true,FLAMEWEAVING=true},
   maxCore = 18,
   maxUtility = 14,
   maxProcs = 12,
