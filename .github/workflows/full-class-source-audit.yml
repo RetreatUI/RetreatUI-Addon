@@ -35,14 +35,31 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('Tools/audit_sources.cjs')
+          text = path.read_text()
+          text = text.replace(
+              "await page.goto(target.url, { waitUntil: 'networkidle', timeout: 90000 });",
+              "try { await page.goto(target.url, { waitUntil: 'domcontentloaded', timeout: 30000 }); } catch (_) {}"
+          )
+          text = text.replace(
+              "for (const target of SIDEKICK_TARGETS) await auditSidekick(target, browser);",
+              "for (const target of SIDEKICK_TARGETS) { try { await auditSidekick(target, browser); } catch (error) { const dir = path.join(ROOT, 'Sidekick', target.id); fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'summary.txt'), `source=${target.label}\\nclass=${target.className}\\naudit_error=${compact(String(error), 2000)}\\n`); } }"
+          )
+          path.write_text(text)
+          PY
           node Tools/audit_sources.cjs
 
       - name: Commit audit output
+        if: always()
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add Research/Audit20260803
-          git commit -m 'Audit class packs and all class data' || exit 0
-          git push origin HEAD:temp/audit-packs-working3
+          if [ -d Research/Audit20260803 ]; then
+            git add Research/Audit20260803
+            git commit -m 'Audit class packs and all class data' || exit 0
+            git push origin HEAD:temp/audit-packs-working3
+          fi
