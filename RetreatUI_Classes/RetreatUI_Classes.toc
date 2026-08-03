@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.2-beta.27
+## Version: 1.1.2-beta.28
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -20,6 +20,7 @@ Necromancer\HUD.lua
 Pyromancer\Definition.lua
 Pyromancer\Data.lua
 Pyromancer\ResourceConfig.lua
+Pyromancer\HealerWAAudit.lua
 Pyromancer\HUD.lua
 
 Cultist\Definition.lua
@@ -39,7 +40,10 @@ SunCleric\HUD.lua
 Tinker\Definition.lua
 Tinker\Data.lua
 Tinker\WAAudit.lua
+Tinker\HealerWAAudit.lua
+Tinker\CuratedHUDLock.lua
 Tinker\HUD.lua
+Tinker\HealerPetTools.lua
 
 Runemaster\Definition.lua
 Runemaster\Data.lua
@@ -59,10 +63,12 @@ Venomancer\HUD.lua
 
 Chronomancer\Definition.lua
 Chronomancer\Data.lua
+Chronomancer\SidekickAudit.lua
 Chronomancer\HUD.lua
 
 Bloodmage\Definition.lua
 Bloodmage\Data.lua
+Bloodmage\PackAudit.lua
 Bloodmage\HUD.lua
 
 Guardian\Definition.lua
@@ -99,6 +105,7 @@ KnightOfXoroth\HUD.lua
 
 Templar\Definition.lua
 Templar\Data.lua
+Templar\SidekickAudit.lua
 Templar\HUD.lua
 
 Ranger\Definition.lua
@@ -107,3 +114,4 @@ Ranger\WAAudit.lua
 Ranger\HUD.lua
 WagoCurated.lua
 Bloodmage\VanthirsGift.lua
+AuditHUDGuard.lua
