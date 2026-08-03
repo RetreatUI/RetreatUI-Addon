@@ -8,6 +8,7 @@ on:
       - '.github/full-class-source-audit-trigger'
       - '.github/workflows/full-class-source-audit.yml'
       - 'Tools/audit_sources.cjs'
+      - 'Tools/report_source_deltas.cjs'
 
 permissions:
   contents: write
@@ -54,6 +55,7 @@ jobs:
           path.write_text(text)
           PY
           node Tools/audit_sources.cjs
+          node Tools/report_source_deltas.cjs
 
       - name: Commit audit output
         if: always()
