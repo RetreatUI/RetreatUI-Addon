@@ -148,7 +148,7 @@ Add({
 
 -- Accursed ------------------------------------------------------------------
 Add({
-  name="Accursed Bloodmoon Blast", aliases={"Bloodmoon Blast"}, id=500444,
+  name="Accursed Bloodmoon Blast", id=500444,
   category="rotation", hudRow="core", order=23, trackCooldown=true,
   forceHUD=true, sourceTab="Accursed", source="Wago 25AZFWqQH",
 })
@@ -174,6 +174,6 @@ for _, aura in ipairs({
   })
 end
 
-database.bloodmagePackAuditRevision = 1
+database.bloodmagePackAuditRevision = 2
 database.bloodmagePackSource = "25AZFWqQH"
 database.bloodmageEternalAuditPolicy = "read-only"
