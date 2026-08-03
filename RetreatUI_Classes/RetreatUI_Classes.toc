@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.2-beta.24
+## Version: 1.1.2-beta.25
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -24,6 +24,8 @@ Pyromancer\HUD.lua
 
 Cultist\Definition.lua
 Cultist\Data.lua
+Cultist\WagoCoverage.lua
+Cultist\WagoMechanics.lua
 Cultist\HUD.lua
 
 Starcaller\Definition.lua
@@ -98,10 +100,3 @@ KnightOfXoroth\HUD.lua
 Templar\Definition.lua
 Templar\Data.lua
 Templar\HUD.lua
-
-Ranger\Definition.lua
-Ranger\Data.lua
-Ranger\WAAudit.lua
-Ranger\HUD.lua
-WagoCurated.lua
-Bloodmage\VanthirsGift.lua
