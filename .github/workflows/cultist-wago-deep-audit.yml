@@ -1,0 +1,160 @@
+name: Deep audit Cultist Wago package
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/cultist-wago-deep-trigger'
+      - '.github/workflows/cultist-wago-deep-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cultist-wago-audit
+          fetch-depth: 0
+
+      - shell: pwsh
+        run: |
+          npm init -y | Out-Null
+          npm install node-weakauras-parser@3.2.11
+
+      - shell: pwsh
+        run: |
+          @'
+          const fs = require('fs');
+          const path = require('path');
+          const parser = require('node-weakauras-parser');
+
+          const slug = 'dGSLgbxJP';
+          const outDir = path.join('Research', 'Wago', slug);
+          fs.mkdirSync(outDir, {recursive: true});
+
+          async function get(url, options = {}) {
+            const response = await fetch(url, { ...options, headers: { 'user-agent': 'RetreatUI-Audit/1.0', ...(options.headers || {}) } });
+            if (!response.ok) throw new Error(`${response.status} ${url}`);
+            return response;
+          }
+
+          function flat(value) {
+            if (value === undefined || value === null) return '';
+            if (typeof value === 'string') return value.replace(/[\r\n\t]+/g, ' ').trim();
+            try { return JSON.stringify(value); } catch (_) { return String(value); }
+          }
+
+          (async () => {
+            const response = await get(`https://data.wago.io/api/raw/encoded?id=${slug}`);
+            const encodedRaw = await response.text();
+            const encoded = encodedRaw.trim();
+            const decoded = parser.decodeSync(encoded, 512 * 1024 * 1024);
+
+            const shape = [
+              `encoded_prefix=${encoded.slice(0, 80)}`,
+              `encoded_suffix=${encoded.slice(-80)}`,
+              `encoded_length=${encoded.length}`,
+              `decoded_type=${typeof decoded}`,
+              `decoded_array=${Array.isArray(decoded)}`,
+              `decoded_constructor=${decoded && decoded.constructor ? decoded.constructor.name : ''}`,
+              `decoded_keys=${decoded && typeof decoded === 'object' ? Object.keys(decoded).join(',') : ''}`,
+              `decoded_json_prefix=${JSON.stringify(decoded).slice(0, 2000)}`,
+            ];
+
+            const displays = [];
+            const code = [];
+            const seen = new Set();
+            const stack = [{value: decoded, path: '$', parentId: ''}];
+            while (stack.length) {
+              const {value, path: objectPath, parentId} = stack.pop();
+              if (!value || typeof value !== 'object' || seen.has(value)) continue;
+              seen.add(value);
+
+              const id = typeof value.id === 'string' ? value.id : '';
+              const regionType = value.regionType || value.regiontype || '';
+              const triggers = Array.isArray(value.triggers) ? value.triggers : [];
+              if (id || regionType || triggers.length || Array.isArray(value.controlledChildren)) {
+                const triggerRows = triggers.map((entry, index) => {
+                  const trigger = entry && entry.trigger ? entry.trigger : (entry || {});
+                  for (const key of ['custom','customVariables','untrigger']) {
+                    if (typeof trigger[key] === 'string' && trigger[key].trim()) code.push({id: id || parentId, source: `trigger[${index}].${key}`, value: trigger[key]});
+                  }
+                  return {
+                    index,
+                    type: trigger.type,
+                    event: trigger.event,
+                    unit: trigger.unit,
+                    sourceUnit: trigger.sourceUnit,
+                    spellId: trigger.spellId,
+                    spellIds: trigger.spellIds,
+                    spellName: trigger.spellName,
+                    names: trigger.names,
+                    auranames: trigger.auranames,
+                    subeventPrefix: trigger.subeventPrefix,
+                    subeventSuffix: trigger.subeventSuffix,
+                    use_spellId: trigger.use_spellId,
+                    use_unit: trigger.use_unit,
+                    custom_type: trigger.custom_type,
+                    events: trigger.events,
+                  };
+                });
+                for (const key of ['init','customText','customVariables']) {
+                  if (typeof value[key] === 'string' && value[key].trim()) code.push({id: id || parentId, source: key, value: value[key]});
+                }
+                displays.push({
+                  path: objectPath,
+                  id,
+                  parent: parentId,
+                  regionType,
+                  xOffset: value.xOffset,
+                  yOffset: value.yOffset,
+                  width: value.width,
+                  height: value.height,
+                  load: value.load || {},
+                  controlledChildren: value.controlledChildren || [],
+                  triggers: triggerRows,
+                  conditions: value.conditions || [],
+                });
+              }
+
+              for (const [key, child] of Object.entries(value)) {
+                if (child && typeof child === 'object') {
+                  stack.push({value: child, path: `${objectPath}.${key}`, parentId: id || parentId});
+                }
+              }
+            }
+
+            displays.sort((a,b) => a.path.localeCompare(b.path));
+            const lines = ['path\tid\tparent\tregionType\tx\ty\tload\tcontrolledChildren\ttriggers'];
+            for (const d of displays) {
+              const triggers = d.triggers.map(t => [
+                `#${t.index}`, t.type, t.event, t.unit, flat(t.spellId || t.spellIds),
+                flat(t.spellName || t.names || t.auranames), t.subeventPrefix, t.subeventSuffix,
+              ].filter(Boolean).join(':')).join(' | ');
+              lines.push([d.path,d.id,d.parent,d.regionType,flat(d.xOffset),flat(d.yOffset),flat(d.load),flat(d.controlledChildren),triggers].join('\t'));
+            }
+
+            shape.push(`visited_objects=${seen.size}`);
+            shape.push(`display_count=${displays.length}`);
+            shape.push(`custom_code_blocks=${code.length}`);
+            fs.writeFileSync(path.join(outDir, 'deep-shape.txt'), shape.join('\n') + '\n');
+            fs.writeFileSync(path.join(outDir, 'deep-displays.tsv'), lines.join('\n') + '\n');
+            fs.writeFileSync(path.join(outDir, 'deep-code.json'), JSON.stringify(code, null, 2));
+            fs.writeFileSync(path.join(outDir, 'deep-displays.json'), JSON.stringify(displays, null, 2));
+          })().catch(error => { console.error(error); process.exit(1); });
+          '@ | Set-Content -Encoding UTF8 deep-audit.cjs
+          node deep-audit.cjs
+
+      - shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Research/Wago/dGSLgbxJP
+          git commit -m 'Deep audit Cultist Wago package' || exit 0
+          git push origin HEAD:temp/cultist-wago-audit
