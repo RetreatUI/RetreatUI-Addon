@@ -51,21 +51,29 @@ local function RuntimeCandidates(record, includeDefault)
 end
 
 function RUI:IsSpellRecordLearned(record)
-  if type(record) == "table" then
-    if record.learnedBySpellID and ReferenceLearned(self, tonumber(record.learnedBySpellID)) then return true end
-    if record.learnedBySpell and ReferenceLearned(self, record.learnedBySpell) then return true end
+  if type(record) ~= "table" then return false end
 
-    local values = record.learnedByAny
-    if values ~= nil then
-      if type(values) ~= "table" then values = {values} end
-      for _, value in ipairs(values) do
-        if ReferenceLearned(self, value) then return true end
-      end
-    end
+  -- Collector entries belong to one active Character Advancement slot. The
+  -- original resolver must remain authoritative so stale spellbook/runtime IDs
+  -- from the previous specialization cannot keep an old icon visible.
+  local advancementID = record.collectorEntryID or record.entryID or record.talentID
+  if advancementID ~= nil then
+    return originalIsSpellRecordLearned(self, record)
+  end
 
-    for _, value in ipairs(record.runtimeIDs or {}) do
+  if record.learnedBySpellID and ReferenceLearned(self, tonumber(record.learnedBySpellID)) then return true end
+  if record.learnedBySpell and ReferenceLearned(self, record.learnedBySpell) then return true end
+
+  local values = record.learnedByAny
+  if values ~= nil then
+    if type(values) ~= "table" then values = {values} end
+    for _, value in ipairs(values) do
       if ReferenceLearned(self, value) then return true end
     end
+  end
+
+  for _, value in ipairs(record.runtimeIDs or {}) do
+    if ReferenceLearned(self, value) then return true end
   end
 
   return originalIsSpellRecordLearned(self, record)
