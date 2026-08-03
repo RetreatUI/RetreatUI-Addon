@@ -48,113 +48,154 @@ local function Upsert(values)
   return Merge(record, values)
 end
 
+local function UpsertHUD(values)
+  values.forceHUD = true
+  values.trackCooldown = values.trackCooldown ~= false
+  return Upsert(values)
+end
+
 -- Main Cultist bar -----------------------------------------------------------
-Upsert({
+UpsertHUD({
   name="Darkwither", id=502220, category="rotation", hudRow="core", order=12,
-  trackCooldown=true, targetDebuff=true, debuff="Darkwither", auraID=620610,
+  targetDebuff=true, debuff="Darkwither", auraID=620610,
   source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Blade of the Empire", id=502118, aliases={"Blade of the Empire 2"},
-  category="rotation", hudRow="core", order=14, trackCooldown=true,
-  trackCharges=true, buff="Blade of the Empire", auraID=502133, buffID=502133,
+  learnedBySpellID=502116,
+  category="rotation", hudRow="core", order=14, trackCharges=true,
+  buff="Blade of the Empire", auraID=502133, buffID=502133,
   trackDuration=true, separateAuraTracker=false, source="Wago dGSLgbxJP",
 })
 
 Patch("Gaze of C'Thun", {
   id=502138,
+  runtimeID=502138,
+  chargeSpellID=502117,
   trackCharges=true,
+  forceHUD=true,
   source="RetreatUI collector + Wago dGSLgbxJP runtime correction",
 })
 
-Upsert({
+UpsertHUD({
   name="Gaze of C'Thun: Corruption",
   aliases={"Gaze of C'thun Corruption", "Gaze of C'Thun Corruption"},
-  id=502141, category="rotation", hudRow="core", order=82,
-  trackCooldown=true, glowWhenAura={"Dark Revelation"},
+  id=502141, runtimeID=502141,
+  learnedByAny={300313, 502141},
+  requiresSpellID=502138,
+  category="rotation", hudRow="core", order=82,
+  glowWhenAura={"Dark Revelation"},
+  fallbackIcon="Interface\\icons\\nhi_arcanearrow_Border",
   source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Hammer of the Twisting Light", aliases={"Hammer of TL"}, id=806830,
-  category="rotation", hudRow="core", order=84, trackCooldown=true,
+  category="rotation", hudRow="core", order=84,
   source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Entropic Slam", id=572846, category="rotation", hudRow="core", order=86,
-  trackCooldown=true, glowWhenUsable=true, source="Wago dGSLgbxJP",
+  glowWhenUsable=true, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Eldritch Devastation", id=803398, category="offensive", hudRow="core", order=205,
-  trackCooldown=true, source="Wago dGSLgbxJP",
+  source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Dreadnought", id=567549, category="defensive", hudRow="core", order=210,
-  trackCooldown=true, buff="Dreadnought", auraID=567549, buffID=567549,
+  buff="Dreadnought", auraID=567549, buffID=567549,
   trackDuration=true, separateAuraTracker=false, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Void Shield", id=500715, category="defensive", hudRow="core", order=220,
-  trackCooldown=true, buff="Void Shield", auraID=500715, buffID=500715,
+  buff="Void Shield", auraID=500715, buffID=500715,
   trackDuration=true, separateAuraTracker=false, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Herald of the Depths", id=520326, category="defensive", hudRow="core", order=230,
-  trackCooldown=true, buff="Herald of the Depths", auraID=520326, buffID=520326,
+  buff="Herald of the Depths", auraID=520326, buffID=520326,
   trackDuration=true, separateAuraTracker=false, source="Wago dGSLgbxJP",
 })
 
 -- Support bar ---------------------------------------------------------------
-Upsert({
+UpsertHUD({
   name="Malevolence", id=502241, category="utility", hudRow="utility", order=35,
-  trackCooldown=true, source="Wago dGSLgbxJP",
-})
-
-Upsert({
-  name="Eldritch Shock", id=808037, category="control", hudRow="utility", order=40,
-  trackCooldown=true, targetDebuff=true, source="Wago dGSLgbxJP",
-})
-
-Upsert({
-  name="Sanity Tap", id=802575, category="utility", hudRow="utility", order=45,
-  trackCooldown=true, glowWhenUsable=true, source="Wago dGSLgbxJP",
-})
-
-Upsert({
-  name="Sermon of Dread", id=620612, category="control", hudRow="utility", order=75,
-  trackCooldown=true, targetDebuff=true, source="Wago dGSLgbxJP",
-})
-
-Upsert({
-  name="Eldritch Mending", aliases={"Eldtritch Mending"}, id=502228,
-  category="ally", hudRow="utility", order=95, trackCooldown=true,
   source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
+  name="Eldritch Shock", id=808037, category="control", hudRow="utility", order=40,
+  targetDebuff=true, source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
+  name="Sanity Tap", id=802575, category="utility", hudRow="utility", order=45,
+  glowWhenUsable=true, source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
+  name="Sermon of Dread", id=620612, category="control", hudRow="utility", order=75,
+  targetDebuff=true, source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
+  name="Eldritch Mending", aliases={"Eldtritch Mending"}, id=502228,
+  category="ally", hudRow="utility", order=95,
+  source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
   name="Test of Pride", id=804412, category="taunt", hudRow="utility", order=150,
-  trackCooldown=true, targetDebuff=true, source="Wago dGSLgbxJP",
+  targetDebuff=true, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Horrifying Presence", id=500723, category="taunt", hudRow="utility", order=155,
-  trackCooldown=true, targetDebuff=true, source="Wago dGSLgbxJP",
+  targetDebuff=true, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
   name="Isolate", id=800368, category="control", hudRow="utility", order=185,
-  trackCooldown=true, targetDebuff=true, source="Wago dGSLgbxJP",
+  targetDebuff=true, source="Wago dGSLgbxJP",
 })
 
-Upsert({
+UpsertHUD({
+  name="Horrorbolt", id=502174, category="utility", hudRow="utility", order=190,
+  source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
+  name="Wrath of the Black Empire", id=502167,
+  category="utility", hudRow="utility", order=195,
+  source="Wago dGSLgbxJP",
+})
+
+UpsertHUD({
   name="Satiate", id=804275, category="utility", hudRow="utility", order=300,
-  trackCooldown=true, source="Wago dGSLgbxJP",
+  source="Wago dGSLgbxJP",
+})
+
+-- Replacement/runtime corrections ------------------------------------------
+Patch("Obliteration Beam", {
+  learnedBySpellID=806897,
+  runtimeID=805572,
+})
+Patch("Dreadfall", {
+  learnedBySpellID=524876,
+  runtimeID=806175,
+})
+Patch("Empire's Grasp", {
+  runtimeID=804533,
+})
+Patch("Forbidden Ritual", {
+  runtimeID=502267,
 })
 
 -- Exact active effects ------------------------------------------------------
@@ -162,13 +203,13 @@ Patch("Dark Infusion", {
   buff="Dark Infusion", auraID=570249, buffID=570249,
   trackDuration=true, separateAuraTracker=false,
 })
-Patch("Forbidden Ritual", {id=502267})
 Patch("Eldritch Eye", {
   buff="Eldritch Eye", auraID=802049, buffID=802049,
   trackDuration=true, separateAuraTracker=false,
 })
 Patch("Rift", {
-  buff="Rift", trackDuration=true, separateAuraTracker=false,
+  buff="Rift", auraID=806250, buffID=806250,
+  trackDuration=true, separateAuraTracker=false,
 })
 Patch("End Times", {
   buff="End Times", auraID=805115, buffID=805115,
@@ -180,6 +221,10 @@ Patch("Abyssal Ward", {
 })
 Patch("Voidborne", {
   buff="Voidborne", auraID=681104, buffID=681104,
+  trackDuration=true, separateAuraTracker=false,
+})
+Patch("Vision of Doom", {
+  buff="Vision of Doom", auraID=520388, buffID=520388,
   trackDuration=true, separateAuraTracker=false,
 })
 Patch("Embrace the Void", {
@@ -204,6 +249,20 @@ Upsert({
   source="Wago dGSLgbxJP",
 })
 
+Upsert({
+  name="Saronite Blessing", id=301262, auraID=600327,
+  category="proc", order=12, buff="Saronite Blessing",
+  trackDuration=true, auraTracker=true, trackHUD=false,
+  source="Wago dGSLgbxJP",
+})
+
+Upsert({
+  name="Threat Gene", id=500717, auraID=500717,
+  category="proc", order=14, buff="Threat Gene",
+  trackDuration=true, auraTracker=true, trackHUD=false,
+  source="Wago dGSLgbxJP",
+})
+
 database.version = math.max(tonumber(database.version) or 1, 4)
-database.cultistWagoAuditRevision = 1
+database.cultistWagoAuditRevision = 2
 database.cultistWagoSource = "dGSLgbxJP"
