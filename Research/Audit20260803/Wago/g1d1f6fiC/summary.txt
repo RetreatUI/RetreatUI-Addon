@@ -1,0 +1,9 @@
+source=Healer Pyromancer
+class=Pyromancer
+root_id=
+display_count=0
+review_candidates=0
+current_names=64
+custom_code_blocks=0
+encoded_length=13454
+metadata=[]

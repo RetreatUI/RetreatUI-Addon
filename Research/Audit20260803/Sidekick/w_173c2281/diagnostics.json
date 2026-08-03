@@ -1,0 +1,163 @@
+{
+  "url": "https://ascensionsidekick.com/weakauras/w_173c2281",
+  "title": "Templar Pack — Conquest of Azeroth WeakAura | Ascension Sidekick",
+  "buttons": [
+    "⌕Search classes & specs…",
+    "Browse classes",
+    "More ▾",
+    "",
+    "☰",
+    "Back",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "▸",
+    "WeakAuras",
+    "▲9",
+    "Copy import string",
+    "Suggest an edit",
+    "✎Send feedback",
+    "✕",
+    "Send feedback"
+  ],
+  "clipboardLength": 22666,
+  "responseUrls": [
+    {
+      "url": "https://ascensionsidekick.com/weakauras/w_173c2281",
+      "status": 200,
+      "type": "text/html",
+      "length": 4523
+    },
+    {
+      "url": "https://ascensionsidekick.com/styles.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 97748
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/leaflet.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 14145
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.Default.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 1287
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/MarkerCluster.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 872
+    },
+    {
+      "url": "https://ascensionsidekick.com/wf.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 7713
+    },
+    {
+      "url": "https://ascensionsidekick.com/community.css",
+      "status": 200,
+      "type": "text/css",
+      "length": 7040
+    },
+    {
+      "url": "https://ascensionsidekick.com/util.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 2268
+    },
+    {
+      "url": "https://www.clarity.ms/tag/xg9npy5ttd",
+      "status": 200,
+      "type": "application/x-javascript",
+      "length": 725
+    },
+    {
+      "url": "https://scripts.clarity.ms/0.8.67/clarity.js",
+      "status": 200,
+      "type": "application/javascript;charset=utf-8",
+      "length": 74429
+    },
+    {
+      "url": "https://ascensionsidekick.com/builder-engine.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 16187
+    },
+    {
+      "url": "https://ascensionsidekick.com/wf-engine.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 1325
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/leaflet.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 147552
+    },
+    {
+      "url": "https://ascensionsidekick.com/vendor/leaflet/markercluster.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 34136
+    },
+    {
+      "url": "https://ascensionsidekick.com/community.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 26735
+    },
+    {
+      "url": "https://ascensionsidekick.com/data.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 3786428
+    },
+    {
+      "url": "https://ascensionsidekick.com/app.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 158026
+    },
+    {
+      "url": "https://ascensionsidekick.com/api/community/item/w_173c2281",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "length": 23224
+    },
+    {
+      "url": "https://ascensionsidekick.com/tree.js",
+      "status": 200,
+      "type": "application/javascript",
+      "length": 1202421
+    }
+  ],
+  "importCandidates": [
+    {
+      "length": 22666,
+      "prefix": "!WA:2!S33c8XXz196zvCCYMayPe7K48AJG4iL44S7kT6HdUoA1RvY65(Ws2jKDND3z3zS2DMXZmRKwtc"
+    }
+  ]
+}

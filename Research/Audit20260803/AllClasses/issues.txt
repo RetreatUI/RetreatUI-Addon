@@ -1,0 +1,17 @@
+Bloodmage: 1 duplicate normalized base names
+Bloodmage: 12 base records without id
+KnightOfXoroth: 16 base records without id
+Necromancer: 4 duplicate normalized base names
+Necromancer: 5 duplicate base spell IDs
+Necromancer: 7 base records without id
+Primalist: 2 duplicate normalized base names
+Ranger: 1 duplicate normalized base names
+Runemaster: 1 duplicate normalized base names
+Runemaster: 18 base records without id
+SunCleric: 1 duplicate normalized base names
+SunCleric: 4 base records without id
+Templar: 2 duplicate normalized base names
+Venomancer: 3 duplicate normalized base names
+WitchDoctor: 1 duplicate normalized base names
+WitchDoctor: 4 base records without id
+WitchHunter: 1 duplicate normalized base names
