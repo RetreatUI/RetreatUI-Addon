@@ -86,8 +86,8 @@ if W then
     local originalReadSpellCooldown = W.ReadSpellCooldown
 
     function W:ReadSpellCooldown(definition)
+      local fallback
       if GetSpellCooldown and type(definition) == "table" then
-        local fallback
         for _, runtimeID in ipairs(RuntimeCandidates(definition, false)) do
           local ok, start, duration, enabled = pcall(GetSpellCooldown, runtimeID)
           if ok and start ~= nil and duration ~= nil then
@@ -96,9 +96,12 @@ if W then
             if snapshot[2] > 0 then return snapshot[1], snapshot[2], snapshot[3] end
           end
         end
-        if fallback then return fallback[1], fallback[2], fallback[3] end
       end
-      return originalReadSpellCooldown(self, definition)
+
+      local start, duration, enabled = originalReadSpellCooldown(self, definition)
+      if tonumber(duration) and tonumber(duration) > 0 then return start, duration, enabled end
+      if fallback then return fallback[1], fallback[2], fallback[3] end
+      return start, duration, enabled
     end
   end
 
