@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - '.github/workflows/fetch-wago-pux5f9aPr-main.yml'
+      - '.github/wago-pux5f9apr-fetch-trigger'
       - '.github/workflows/fetch-wago-pux5f9apr-main.yml'
 
 permissions:
