@@ -9,6 +9,11 @@ if not RUI then return end
 local originalIsSpellRecordLearned = RUI.IsSpellRecordLearned
 local originalGetSpellRecordRuntimeID = RUI.GetSpellRecordRuntimeID
 
+if type(originalIsSpellRecordLearned) ~= "function"
+  or type(originalGetSpellRecordRuntimeID) ~= "function" then
+  return
+end
+
 local function ReferenceLearned(self, value)
   if type(value) == "number" then
     return self.IsSpellIDLearned and self:IsSpellIDLearned(value) == true
@@ -49,19 +54,36 @@ function RUI:GetSpellRecordRuntimeID(record)
 end
 
 local W = RUI.HUDWidgets
-if W and type(W.ReadSpellCharges) == "function" then
-  local originalReadSpellCharges = W.ReadSpellCharges
+if W then
+  if type(W.ReadSpellCooldown) == "function" then
+    local originalReadSpellCooldown = W.ReadSpellCooldown
 
-  function W:ReadSpellCharges(definition)
-    local chargeSpellID = type(definition) == "table" and definition.chargeSpellID or nil
-    if chargeSpellID and GetSpellCharges then
-      local ok, current, maximum, start, duration = pcall(GetSpellCharges, chargeSpellID)
-      current, maximum = tonumber(current), tonumber(maximum)
-      if ok and current and maximum and maximum > 0 then
-        return current, maximum, tonumber(start) or 0, tonumber(duration) or 0
+    function W:ReadSpellCooldown(definition)
+      local runtimeID = type(definition) == "table" and definition.runtimeID or nil
+      if runtimeID and GetSpellCooldown then
+        local ok, start, duration, enabled = pcall(GetSpellCooldown, runtimeID)
+        if ok and start ~= nil and duration ~= nil then
+          return tonumber(start) or 0, tonumber(duration) or 0, tonumber(enabled) or 0
+        end
       end
+      return originalReadSpellCooldown(self, definition)
     end
-    return originalReadSpellCharges(self, definition)
+  end
+
+  if type(W.ReadSpellCharges) == "function" then
+    local originalReadSpellCharges = W.ReadSpellCharges
+
+    function W:ReadSpellCharges(definition)
+      local chargeSpellID = type(definition) == "table" and definition.chargeSpellID or nil
+      if chargeSpellID and GetSpellCharges then
+        local ok, current, maximum, start, duration = pcall(GetSpellCharges, chargeSpellID)
+        current, maximum = tonumber(current), tonumber(maximum)
+        if ok and current and maximum and maximum > 0 then
+          return current, maximum, tonumber(start) or 0, tonumber(duration) or 0
+        end
+      end
+      return originalReadSpellCharges(self, definition)
+    end
   end
 end
 
