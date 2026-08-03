@@ -1,0 +1,131 @@
+name: Run beta.24 Wago integration
+
+on:
+  pull_request_target:
+    branches:
+      - main
+    paths:
+      - '.github/implement-wago-beta24-trigger'
+
+env:
+  FEATURE_BRANCH: feature/wago-hud-integration
+
+permissions:
+  contents: write
+
+jobs:
+  implement:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'feature/wago-hud-integration'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout trusted main workflow source
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: trusted-main
+          fetch-depth: 1
+
+      - name: Extract trusted implementation script
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+          text = Path('trusted-main/.github/workflows/implement-wago-beta24.yml').read_text(encoding='utf-8')
+          start_marker = "          python - <<'PY'\n"
+          start = text.index(start_marker) + len(start_marker)
+          end = text.index("\n          PY\n", start)
+          lines = text[start:end].splitlines()
+          script = '\n'.join(line[10:] if line.startswith('          ') else line for line in lines) + '\n'
+          Path('/tmp/implement-beta24.py').write_text(script, encoding='utf-8')
+          compile(script, '/tmp/implement-beta24.py', 'exec')
+          print('PASS: trusted patch script extracted')
+          PY
+
+      - name: Checkout feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/wago-hud-integration
+          path: feature
+          fetch-depth: 0
+
+      - name: Fetch exact ZG Wago export
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-delay 2 \
+            'https://data.wago.io/api/raw/encoded?id=PUjOUxmPt' \
+            -o /tmp/zg-export.txt
+          grep -q '^!WA:2!' /tmp/zg-export.txt
+
+      - name: Apply isolated implementation
+        working-directory: feature
+        shell: bash
+        run: |
+          set -euo pipefail
+          python /tmp/implement-beta24.py
+
+      - name: Validate Lua and isolation
+        working-directory: feature
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+          grep -Fq '## Version: 1.1.2-beta.24' RetreatUI/RetreatUI.toc
+          grep -Fq '## Version: 1.1.2-beta.24' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq 'Integrations\WeakAurasCompanion.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'CoAMultiCastActionBarFrame' RetreatUI/Integrations/Cleanup.lua
+          grep -Fq 'CoAResourceOrb' RetreatUI/Integrations/Cleanup.lua
+          grep -Fq 'Aspect of the Moonwell' RetreatUI_Classes/Starcaller/Data.lua
+          grep -Fq 'Lunar Phase' RetreatUI_Classes/Starcaller/Data.lua
+          grep -Fq 'Demonfire Pact' RetreatUI_Classes/StateTracker.lua
+          grep -Fq 'Blood of Mannoroth' RetreatUI_Classes/Felsworn/Data.lua
+          grep -Fq 'local ENCODED = [=[!WA:2!' RetreatUI/Integrations/WeakAurasCompanion.lua
+          ! grep -Fq 'Core\PartyUtility.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\PartyUtilityV4.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Core\RetreatCD.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'bar.Show = function() end' RetreatUI/Integrations/Cleanup.lua
+
+          cat > /tmp/mock-wa.lua <<'LUA'
+          RetreatUI = {prints={}}
+          function RetreatUI:Print(message) self.prints[#self.prints+1] = message end
+          WeakAuras = {
+            companionCalls=0,
+            importCalls=0,
+            AddCompanionData=function(data)
+              assert(type(data) == 'table' and type(data.slugs.PUjOUxmPt) == 'table')
+              assert(string.sub(data.slugs.PUjOUxmPt.encoded, 1, 6) == '!WA:2!')
+              WeakAuras.companionCalls = WeakAuras.companionCalls + 1
+            end,
+            GetData=function() return nil end,
+            Import=function(encoded)
+              assert(string.sub(encoded, 1, 6) == '!WA:2!')
+              WeakAuras.importCalls = WeakAuras.importCalls + 1
+              return true
+            end,
+          }
+          SlashCmdList = {}
+          function CreateFrame()
+            return {RegisterEvent=function() end, SetScript=function() end}
+          end
+          assert(loadfile('RetreatUI/Integrations/WeakAurasCompanion.lua'))()
+          assert(WeakAuras.companionCalls == 1)
+          SlashCmdList.RETREATUIZG()
+          assert(WeakAuras.importCalls == 1)
+          print('PASS: WeakAuras companion integration')
+          LUA
+          lua5.1 /tmp/mock-wa.lua
+
+      - name: Commit implementation to feature branch
+        working-directory: feature
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add RetreatUI RetreatUI_Classes
+          git commit -m 'Integrate audited Wago coverage in beta.24'
+          git push origin HEAD:feature/wago-hud-integration
