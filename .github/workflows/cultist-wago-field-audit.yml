@@ -1,0 +1,123 @@
+name: Inspect Cultist Wago fields
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/cultist-wago-field-trigger'
+      - '.github/workflows/cultist-wago-field-audit.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: temp/cultist-wago-audit
+          fetch-depth: 0
+
+      - shell: pwsh
+        run: |
+          npm init -y | Out-Null
+          npm install node-weakauras-parser@3.2.11
+
+      - shell: pwsh
+        run: |
+          @'
+          const fs = require('fs');
+          const path = require('path');
+          const parser = require('node-weakauras-parser');
+
+          const slug = 'dGSLgbxJP';
+          const selectedIds = new Set([
+            'Dreadnought Aura','Herald of the Depths Aura','Total Madness','Black Blood Stacks','Absorb Shield Amount',
+            'Darkwither','Blade of the Empire 2','Gaze of C\'thun Corruption','Hammer of TL','Entropic Slam',
+            'Gaze of C\'Thun','Dark Infusion','Dreadfall','Eldritch Devastation','Rift Main','Ancient Curse',
+            'Dreadnought','Void Shield','Eldtrich Eye','Hand of Yogg-Saron','Herald of the Depths','Forbidden Ritual',
+            'End Times','Abyssal Ward Spell','Voidborne','Vision of Doom','Embrace the Void',
+            'Tentacle of C\'Thun UP','Tentacle of Yogg-Saron UP','Tentacle of N\'Zoth UP','Tentacle of Y\'Shaarj UP',
+            'Shadow of the Void','Presence of Cthun','Monstrosity Buff','Blessing of Yogg-Saron Buff',
+            'Saronite Blessing Buff','GRace of the Herald Buff','Threat Gene','Empower Spells Inspired Malice',
+            'AoE Horrorbolt Volley','10% Spell dmg buff',' Corrupting Whispers','Dark Infusion Buff','Rift',
+            'End Times Buff','Vision of Doom Buff','Voidborne Buff','Abyssal Ward Buff 2','Embrace the Void Buff 2',
+            'Void Shield Buff','Hallucination Buff','Eldtrich Eye Buff 2','Dreadnought Buff 1','Herald Buff 2',
+            'Malevolence','Eldritch Shock','Sanity Tap','Sermon of Dread','Mass Nightmare','Corrupt Mind',
+            'Eldtritch Mending','Grasp of Zek\'voz','Psychic Suppression','Test of Pride','Horrifying Presence',
+            'Empire\'s Grasp','Tentacle of N\'zoth','Twisted Seal','Hallucination','Isolate','Horrorbolt',
+            'Wrath of the Black Empire','Satiate','Entropic Singularity','AS Missing','Group Buff Reminder',
+            'Presence Reminder','Whisper Reminder'
+          ]);
+
+          const outDir = path.join('Research','Wago',slug);
+          fs.mkdirSync(outDir,{recursive:true});
+
+          const skip = /^(animation|color|border|backdrop|font|fontSize|fontFlags|frameStrata|xOffset|yOffset|width|height|scale|alpha|anchorPoint|selfPoint|anchorFrameType|textureWrapMode|zoom|desaturate|rotate|rotation|orientation|grow|sort|space|columnSpace|rowSpace|gridType|gridWidth|limit|align|centerType|constantFactor|useLimit|stagger|subRegions|authorOptions|config|uid|internalVersion|tocversion|version|semver|source|url|wagoID|information)$/i;
+
+          function flatten(value, prefix, lines, depth = 0) {
+            if (depth > 10 || value === undefined) return;
+            if (value === null || typeof value !== 'object') {
+              const text = typeof value === 'string' ? value.replace(/[\r\n]+/g,'\\n') : String(value);
+              if (text !== '' && text !== 'false' && text !== '0') lines.push(`${prefix}=${text}`);
+              return;
+            }
+            if (Array.isArray(value)) {
+              if (value.every(item => item === null || typeof item !== 'object')) {
+                if (value.length) lines.push(`${prefix}=${JSON.stringify(value)}`);
+              } else {
+                value.forEach((item,index) => flatten(item, `${prefix}[${index}]`, lines, depth + 1));
+              }
+              return;
+            }
+            for (const [key, child] of Object.entries(value)) {
+              if (skip.test(key) && !['subRegions'].includes(key)) continue;
+              flatten(child, prefix ? `${prefix}.${key}` : key, lines, depth + 1);
+            }
+          }
+
+          (async () => {
+            const response = await fetch(`https://data.wago.io/api/raw/encoded?id=${slug}`, {headers:{'user-agent':'RetreatUI-Audit/1.0'}});
+            if (!response.ok) throw new Error(`${response.status} Wago fetch failed`);
+            const decoded = parser.decodeSync((await response.text()).trim(), 512 * 1024 * 1024);
+            const roots = [];
+            if (decoded && decoded.d) roots.push(decoded.d);
+            if (decoded && Array.isArray(decoded.c)) roots.push(...decoded.c);
+
+            const selected = {};
+            const report = [];
+            for (const display of roots) {
+              if (!display || !selectedIds.has(display.id)) continue;
+              selected[display.id] = display;
+              const lines = [];
+              flatten(display, '', lines);
+              report.push(`===== ${display.id} =====`);
+              report.push(...lines.sort());
+              report.push('');
+            }
+
+            const missingSelections = [...selectedIds].filter(id => !selected[id]).sort();
+            fs.writeFileSync(path.join(outDir,'selected-fields.txt'), [
+              `selected_found=${Object.keys(selected).length}`,
+              `selected_missing=${missingSelections.length}`,
+              `missing_ids=${missingSelections.join(' | ')}`,
+              '',
+              ...report,
+            ].join('\n'));
+            fs.writeFileSync(path.join(outDir,'selected-raw.json'), JSON.stringify(selected,null,2));
+          })().catch(error => { console.error(error); process.exit(1); });
+          '@ | Set-Content -Encoding UTF8 inspect-cultist.cjs
+          node inspect-cultist.cjs
+
+      - shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin temp/cultist-wago-audit
+          git add Research/Wago/dGSLgbxJP
+          git commit -m 'Inspect Cultist Wago fields' || exit 0
+          git push origin HEAD:temp/cultist-wago-audit
