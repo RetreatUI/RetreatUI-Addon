@@ -73,7 +73,7 @@ Add({
   id=803375, auraID=803373, buffID=803373,
   learnedByAny={803375, 803373}, runtimeIDs={803375, 803373},
   category="rotation", hudRow="core", order=9, trackCooldown=true,
-  buff="Benediction", trackDuration=true, separateAuraTracker=false,
+  buff=803373, trackDuration=true, separateAuraTracker=false,
   forceHUD=true, source="Sidekick w_173c2281",
 })
 Add({
@@ -87,8 +87,8 @@ Add({
   source="Sidekick w_173c2281",
 })
 Add({
-  name="Holy Stagger", aliases={"Stagger"}, id=803237, auraID=803237, buffID=803237,
-  category="proc", order=362, buff="Holy Stagger",
+  name="Holy Stagger", id=803237, auraID=803237, buffID=803237,
+  category="proc", order=362, buff=803237,
   trackDuration=true, auraTracker=true, trackHUD=false,
   source="Sidekick w_173c2281",
 })
@@ -97,5 +97,5 @@ database.nativeResource = database.nativeResource or {}
 database.nativeResource.spellIDs = MergeList(database.nativeResource.spellIDs, {704576})
 database.nativeResource.auraNames = MergeList(database.nativeResource.auraNames, {"Oath Chain"})
 
-database.templarSidekickAuditRevision = 1
+database.templarSidekickAuditRevision = 2
 database.templarSidekickSource = "w_173c2281"
