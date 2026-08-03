@@ -1,0 +1,10 @@
+slug=dGSLgbxJP
+root_id=
+display_count=0
+custom_code_blocks=0
+candidate_count=0
+candidate_review_count=0
+current_cultist_names=62
+spell_ids=
+encoded_length=21052
+metadata=[]
