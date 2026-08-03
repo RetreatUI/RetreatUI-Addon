@@ -53,6 +53,15 @@ jobs:
             return result;
           }
 
+          function triggerEntries(value) {
+            if (Array.isArray(value)) return value;
+            if (!value || typeof value !== 'object') return [];
+            return Object.keys(value)
+              .filter(key => /^\d+$/.test(key))
+              .sort((a, b) => Number(a) - Number(b))
+              .map(key => value[key]);
+          }
+
           function triggerSummary(entry) {
             const t = entry && entry.trigger ? entry.trigger : entry || {};
             return {
@@ -86,7 +95,7 @@ jobs:
           }
 
           function displaySummary(node, fallbackParent) {
-            const triggers = Array.isArray(node.triggers) ? node.triggers : [];
+            const entries = triggerEntries(node.triggers);
             return {
               id: typeof node.id === 'string' ? node.id : '',
               uid: node.uid,
@@ -105,8 +114,11 @@ jobs:
               sort: node.sort,
               frameStrata: node.frameStrata,
               load: compactLoad(node.load),
-              triggers: triggers.map(triggerSummary),
-              activeTriggerMode: node.activeTriggerMode,
+              triggers: entries.map(triggerSummary),
+              activeTriggerMode: node.activeTriggerMode !== undefined
+                ? node.activeTriggerMode
+                : (node.triggers && node.triggers.activeTriggerMode),
+              triggerDisjunctive: node.triggers && node.triggers.disjunctive,
               actions: node.actions || {},
               conditions: node.conditions || [],
               init: node.init,
@@ -186,5 +198,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Research/Wago
-          git commit -m 'Parse wrapped RetreatUI Wago sources' || exit 0
+          git commit -m 'Parse legacy RetreatUI Wago triggers' || exit 0
           git push origin HEAD:temp/wago-fetch
