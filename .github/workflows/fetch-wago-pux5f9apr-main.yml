@@ -21,47 +21,62 @@ jobs:
           ref: temp/wago-fetch
           fetch-depth: 0
 
-      - name: Fetch Wago source and diagnostics
+      - name: Fetch Wago page and inspect client endpoints
         shell: bash
         run: |
-          set -u
-          mkdir -p Research/Wago/PUx5f9aPr
-          : > Research/Wago/PUx5f9aPr/http-status.txt
-
-          fetch() {
-            name="$1"
-            url="$2"
-            output="$3"
-            code=$(curl -sSL --retry 3 --retry-delay 2 \
-              -A 'Mozilla/5.0 RetreatUI integration audit' \
-              -w '%{http_code}' \
-              "$url" \
-              -o "$output" || printf 'curl_error')
-            printf '%s=%s\n' "$name" "$code" >> Research/Wago/PUx5f9aPr/http-status.txt
-          }
-
-          fetch raw_wago 'https://wago.io/api/raw/PUx5f9aPr' Research/Wago/PUx5f9aPr/export-wago.txt
-          fetch raw_data 'https://data.wago.io/api/raw/PUx5f9aPr' Research/Wago/PUx5f9aPr/export-data.txt
-          fetch check_api 'https://data.wago.io/api/check/weakauras?ids=PUx5f9aPr' Research/Wago/PUx5f9aPr/metadata.json
-          fetch page 'https://wago.io/PUx5f9aPr' Research/Wago/PUx5f9aPr/page.html
+          set -euo pipefail
+          mkdir -p Research/Wago/PUx5f9aPr/js
+          curl -sSL --retry 3 --retry-delay 2 \
+            -A 'Mozilla/5.0 RetreatUI integration audit' \
+            'https://wago.io/PUx5f9aPr' \
+            -o Research/Wago/PUx5f9aPr/page.html
 
           python - <<'PY'
           from pathlib import Path
+          import re
+          import urllib.request
+
           root = Path('Research/Wago/PUx5f9aPr')
-          lines = [root.joinpath('http-status.txt').read_text(encoding='utf-8', errors='replace').strip()]
-          for name in ('export-wago.txt', 'export-data.txt', 'metadata.json', 'page.html'):
-              path = root / name
-              data = path.read_text(encoding='utf-8', errors='replace') if path.exists() else ''
-              lines.append(f'{name}: length={len(data)} prefix={data[:120]!r}')
-          root.joinpath('summary.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          html = root.joinpath('page.html').read_text(encoding='utf-8', errors='replace')
+          sources = re.findall(r'<script[^>]+src="([^"]+\.js)"', html)
+          headers = {'User-Agent': 'Mozilla/5.0 RetreatUI integration audit'}
+          snippets = []
+          interesting = re.compile(r'(?i)(data\.wago\.io|/api/|weakaura|encoded|import|download|raw|slug|versions?)')
+          endpoint = re.compile(r'(?i)(?:https://data\.wago\.io)?/[A-Za-z0-9_?&=./{}:$-]{3,160}')
+
+          for index, src in enumerate(sources):
+              url = src if src.startswith('http') else 'https://wago.io' + src
+              req = urllib.request.Request(url, headers=headers)
+              try:
+                  data = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', errors='replace')
+              except Exception as exc:
+                  snippets.append(f'FETCH_ERROR {url}: {exc}')
+                  continue
+              name = f'{index:02d}-{Path(src).name}'
+              root.joinpath('js', name).write_text(data, encoding='utf-8')
+              seen = set()
+              for match in interesting.finditer(data):
+                  start = max(0, match.start() - 220)
+                  end = min(len(data), match.end() + 320)
+                  text = data[start:end].replace('\n', ' ')
+                  if text not in seen:
+                      seen.add(text)
+                      snippets.append(f'### {name}\n{text}')
+                      if len(seen) >= 80:
+                          break
+
+          root.joinpath('endpoint-snippets.txt').write_text('\n\n'.join(snippets), encoding='utf-8')
+          root.joinpath('bundle-summary.txt').write_text(
+              f'bundles={len(sources)}\nsnippets={len(snippets)}\n', encoding='utf-8'
+          )
           PY
 
-      - name: Commit fetched diagnostics to temporary branch
+      - name: Commit client inspection to temporary branch
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add Research/Wago/PUx5f9aPr
-          git commit -m 'Store Wago PUx5f9aPr fetch diagnostics' || exit 0
+          git commit -m 'Inspect Wago client endpoints for PUx5f9aPr' || exit 0
           git push origin HEAD:temp/wago-fetch
