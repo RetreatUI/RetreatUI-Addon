@@ -1,0 +1,59 @@
+name: Fast Wago source audit
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/wago-audit-windows-trigger'
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout temporary research branch
+        uses: actions/checkout@v4
+        with:
+          ref: temp/wago-fetch
+          fetch-depth: 0
+
+      - name: Download Wago exports
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $ids = @('PUx5f9aPr','Y5UDib4zq','TqH72U66p','PUjOUxmPt')
+          New-Item -ItemType Directory -Force -Path 'Research/Wago' | Out-Null
+
+          $payload = @{ ids = $ids } | ConvertTo-Json -Compress
+          $metadata = Invoke-WebRequest -UseBasicParsing -Method Post `
+            -ContentType 'application/json' -Body $payload `
+            -Uri 'https://data.wago.io/api/check/weakauras'
+          [IO.File]::WriteAllText((Join-Path $PWD 'Research/Wago/metadata.json'), $metadata.Content)
+
+          $lines = @("metadata_http=$($metadata.StatusCode)")
+          foreach ($id in $ids) {
+            $dir = "Research/Wago/$id"
+            New-Item -ItemType Directory -Force -Path $dir | Out-Null
+            $response = Invoke-WebRequest -UseBasicParsing -Uri "https://data.wago.io/api/raw/encoded?id=$id"
+            $file = Join-Path $PWD "$dir/export.txt"
+            [IO.File]::WriteAllText($file, $response.Content)
+            $prefix = $response.Content.Substring(0, [Math]::Min(12, $response.Content.Length))
+            $lines += "${id}_http=$($response.StatusCode)"
+            $lines += "${id}_length=$($response.Content.Length)"
+            $lines += "${id}_prefix=$prefix"
+          }
+          [IO.File]::WriteAllLines((Join-Path $PWD 'Research/Wago/fetch-status.txt'), $lines)
+
+      - name: Commit Wago exports
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add Research/Wago
+          git commit -m 'Fetch RetreatUI Wago source exports' || exit 0
+          git push origin HEAD:temp/wago-fetch
