@@ -117,7 +117,7 @@ jobs:
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git pull --rebase origin temp/cultist-wago-audit
           git add Research/Wago/dGSLgbxJP
           git commit -m 'Inspect Cultist Wago fields' || exit 0
+          git pull --rebase origin temp/cultist-wago-audit
           git push origin HEAD:temp/cultist-wago-audit
