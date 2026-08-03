@@ -68,11 +68,6 @@ Patch("Eureka!", {
   buff="Eureka!", auraID=503553, buffID=503553,
   trackDuration=true,
 })
-Patch("Nanobot Barrier", {
-  aliases={"Nanobot Swarm"}, buff="Nanobot Swarm",
-  auraID=801709, buffID=801709,
-  trackDuration=true, separateAuraTracker=false,
-})
 Patch("Build: Battery Recharge Station", {
   aliases={"Recharge Station"},
 })
@@ -80,7 +75,7 @@ Patch("Build: Restorative Beacon", {
   aliases={"Resto Beacon"},
 })
 Patch("Build: Noise Box", {
-  aliases={"Noise Box"}, learnedByAny={807723, 807197}, runtimeID=807723,
+  aliases={"Noise Box"}, runtimeID=807723,
 })
 
 Upsert({
@@ -96,6 +91,7 @@ Upsert({
 })
 
 for _, aura in ipairs({
+  {name="Nanobot Swarm", id=801709, order=320},
   {name="Nanobot Recharger", id=803552, order=322},
   {name="Nanobot Reconstruction", id=502561, order=324},
 }) do
@@ -107,5 +103,5 @@ for _, aura in ipairs({
   })
 end
 
-database.tinkerHealerWAAuditRevision = 1
+database.tinkerHealerWAAuditRevision = 2
 database.tinkerHealerWagoSource = "w-XCZHABg"
