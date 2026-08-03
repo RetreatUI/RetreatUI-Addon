@@ -1,0 +1,97 @@
+name: Validate RetreatUI Addon
+
+on:
+  pull_request:
+    paths:
+      - 'RetreatUI/**'
+      - 'RetreatUI_Classes/**'
+      - 'RELEASE_NOTES.md'
+      - '.github/workflows/validate-addon.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'RetreatUI/**'
+      - 'RetreatUI_Classes/**'
+      - '.github/workflows/validate-addon.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Lua 5.1 and package validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Lua 5.1
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1 zip
+
+      - name: Validate Lua 5.1 syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate versions and TOC references
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          def toc_version(path: Path) -> str:
+              for line in path.read_text(encoding='utf-8').splitlines():
+                  if line.startswith('## Version:'):
+                      return line.split(':', 1)[1].strip()
+              raise AssertionError(f'Missing version in {path}')
+
+          def validate_toc(path: Path) -> None:
+              root = path.parent
+              for raw in path.read_text(encoding='utf-8').splitlines():
+                  line = raw.strip()
+                  if not line or line.startswith('##') or line.startswith('#'):
+                      continue
+                  target = root / line.replace('\\', '/')
+                  assert target.is_file(), f'Missing TOC file: {target}'
+
+          core = Path('RetreatUI/RetreatUI.toc')
+          classes = Path('RetreatUI_Classes/RetreatUI_Classes.toc')
+          core_version = toc_version(core)
+          class_version = toc_version(classes)
+          assert core_version == class_version, (core_version, class_version)
+          validate_toc(core)
+          validate_toc(classes)
+
+          core_text = core.read_text(encoding='utf-8')
+          assert 'Core\\SpellbookScanThrottle.lua' in core_text
+          assert 'Core\\PerformanceRefreshCoordinator.lua' in core_text
+          assert 'Integrations\\CharacterAdvancementCrashGuard.lua' in core_text
+          assert 'Core\\PartyUtility.lua' not in core_text
+          assert 'Core\\PartyUtilityV4.lua' not in core_text
+          assert 'Core\\RetreatCD.lua' not in core_text
+          print(f'Validated RetreatUI {core_version}')
+          PY
+
+      - name: Validate package roots
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/retreatui-package
+          mkdir -p /tmp/retreatui-package
+          zip -qr /tmp/retreatui-package/RetreatUI.zip RetreatUI RetreatUI_Classes
+          python - <<'PY'
+          import zipfile
+          with zipfile.ZipFile('/tmp/retreatui-package/RetreatUI.zip') as archive:
+              roots = sorted({name.split('/', 1)[0] for name in archive.namelist() if name})
+              assert roots == ['RetreatUI', 'RetreatUI_Classes'], roots
+          print('Validated package roots')
+          PY

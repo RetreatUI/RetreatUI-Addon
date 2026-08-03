@@ -3,15 +3,17 @@ local RUI = RetreatUI
 local MAX_ICONS = 4
 local ICON_SIZE = 18
 local ICON_SPACING = 2
-local UNKNOWN_DISPLAY = 4
-local UPDATE_INTERVAL = 0.10
+local UPDATE_INTERVAL = 0.15
 
 local activeContainers = {}
 local lastCastBySource = {}
+local nameplateByGUID = {}
 local spellIndexByNPC
+local cooldownStore
 local updateElapsed = 0
 local updater
 local initialized = false
+local nameplateRefreshSerial = 0
 
 local function Lower(value)
   return type(value) == "string" and string.lower(value) or nil
@@ -63,9 +65,11 @@ local function IsMobSpell(npcID, spellID, spellName)
 end
 
 local function GetCooldownStore()
+  if cooldownStore then return cooldownStore end
   local db = RUI:EnsureDB()
   db.integrations.mobSpellCooldowns = db.integrations.mobSpellCooldowns or {}
-  return db.integrations.mobSpellCooldowns
+  cooldownStore = db.integrations.mobSpellCooldowns
+  return cooldownStore
 end
 
 local function GetSpellKey(spellID, spellName)
@@ -190,13 +194,37 @@ local function GetContainer(nameplate, guid)
   return container
 end
 
-local function FindNameplateByGUID(guid)
-  if not guid or not C_NamePlateManager or type(C_NamePlateManager.EnumerateActiveNamePlates) ~= "function" then return nil end
+local function RebuildNameplateCache()
+  RUI:ClearTable(nameplateByGUID)
+  if not C_NamePlateManager or type(C_NamePlateManager.EnumerateActiveNamePlates) ~= "function" then return end
   for nameplate in C_NamePlateManager.EnumerateActiveNamePlates() do
     local unit = nameplate and nameplate._unit
-    if unit and UnitGUID(unit) == guid then return nameplate end
+    local guid = unit and UnitGUID(unit)
+    if guid then nameplateByGUID[guid] = nameplate end
   end
-  return nil
+end
+
+local function ScheduleNameplateCacheRefresh()
+  nameplateRefreshSerial = nameplateRefreshSerial + 1
+  local serial = nameplateRefreshSerial
+  RUI:After(0.05, function()
+    if serial == nameplateRefreshSerial then RebuildNameplateCache() end
+  end)
+end
+
+local function FindNameplateByGUID(guid)
+  if not guid then return nil end
+  local cached = nameplateByGUID[guid]
+  if cached then
+    local unit = cached._unit
+    if unit and UnitGUID(unit) == guid then return cached end
+    nameplateByGUID[guid] = nil
+  end
+
+  -- Populate all active GUIDs in one pass. Subsequent casts from the same pull
+  -- are O(1) instead of enumerating every nameplate for every combat-log event.
+  RebuildNameplateCache()
+  return nameplateByGUID[guid]
 end
 
 local function SortEntries(container)
@@ -230,10 +258,10 @@ local function DisplaySpell(nameplate, guid, spellID, spellName, duration)
 
   entry.spellID = spellID
   entry.spellName = spellName
+  entry.texture = texture
   entry.started = now
   entry.duration = duration
-  entry.expires = duration and (now + duration) or (now + UNKNOWN_DISPLAY)
-  entry.unknown = false
+  entry.expires = now + duration
 
   SortEntries(container)
   activeContainers[container] = true
@@ -255,27 +283,23 @@ local function RefreshContainer(container, now)
     return
   end
 
-  SortEntries(container)
   for index = 1, MAX_ICONS do
     local icon = container.icons[index]
     local entry = container.entries[index]
     if entry then
-      local _, _, texture = GetSpellInfo(entry.spellID or 0)
-      icon.texture:SetTexture(texture or "Interface\\Icons\\INV_Misc_QuestionMark")
+      icon.texture:SetTexture(entry.texture)
       icon.spellKey = entry.key
-      if texture then
-        local remain = math.max(0, entry.expires - now)
-        if remain >= 60 then
-          icon.text:SetText(math.ceil(remain / 60) .. "m")
-        elseif remain >= 10 then
-          icon.text:SetText(tostring(math.ceil(remain)))
-        else
-          icon.text:SetText(string.format("%.1f", remain))
-        end
-        local progress = entry.duration and remain / entry.duration or 0
-        icon.shade:SetAlpha(0.2 + (1 - progress) * 0.45)
-        icon:Show()
+      local remain = math.max(0, entry.expires - now)
+      if remain >= 60 then
+        icon.text:SetText(math.ceil(remain / 60) .. "m")
+      elseif remain >= 10 then
+        icon.text:SetText(tostring(math.ceil(remain)))
+      else
+        icon.text:SetText(string.format("%.1f", remain))
       end
+      local progress = entry.duration and remain / entry.duration or 0
+      icon.shade:SetAlpha(0.2 + (1 - progress) * 0.45)
+      icon:Show()
     else
       icon:Hide()
       icon.spellKey = nil
@@ -309,7 +333,10 @@ local function HandleCombatLog(...)
 
   if subevent == "UNIT_DIED" or subevent == "UNIT_DESTROYED" or subevent == "SPELL_INSTAKILL" then
     local destGUID = type(a3) == "boolean" and a8 or a6
-    if destGUID then lastCastBySource[destGUID] = nil end
+    if destGUID then
+      lastCastBySource[destGUID] = nil
+      nameplateByGUID[destGUID] = nil
+    end
     return
   end
 
@@ -352,6 +379,8 @@ function RUI:InitializeNPCSpellCooldowns()
   if initialized then return true, "NPC spell cooldown tracker already enabled" end
   if type(MobSpellsDB) ~= "table" then return false, "MobSpells is not loaded" end
   BuildSpellIndex()
+  GetCooldownStore()
+  RebuildNameplateCache()
   initialized = true
   local db = self:EnsureDB()
   db.integrations.npcSpellCooldowns = db.integrations.npcSpellCooldowns or {}
@@ -362,6 +391,7 @@ end
 
 function RUI:RefreshNPCSpellCooldowns()
   BuildSpellIndex()
+  RebuildNameplateCache()
   if not C_NamePlateManager or type(C_NamePlateManager.EnumerateActiveNamePlates) ~= "function" then return false end
   for nameplate in C_NamePlateManager.EnumerateActiveNamePlates() do
     local guid = nameplate._unit and UnitGUID(nameplate._unit)
@@ -375,14 +405,22 @@ local events = CreateFrame("Frame")
 events:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 events:RegisterEvent("PLAYER_ENTERING_WORLD")
 events:RegisterEvent("ADDON_LOADED")
+pcall(events.RegisterEvent, events, "NAME_PLATE_UNIT_ADDED")
+pcall(events.RegisterEvent, events, "NAME_PLATE_UNIT_REMOVED")
 events:SetScript("OnEvent", function(_, event, ...)
   if event == "COMBAT_LOG_EVENT_UNFILTERED" then
     HandleCombatLog(...)
     return
   end
 
+  if event == "NAME_PLATE_UNIT_ADDED" or event == "NAME_PLATE_UNIT_REMOVED" then
+    ScheduleNameplateCacheRefresh()
+    return
+  end
+
   if event == "PLAYER_ENTERING_WORLD" then
     RUI:ClearTable(lastCastBySource)
+    RUI:ClearTable(nameplateByGUID)
     for container in pairs(activeContainers) do ClearContainer(container) end
   end
 

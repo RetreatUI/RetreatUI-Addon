@@ -1,15 +1,23 @@
-# RetreatUI v1.1.2-beta.29
+# RetreatUI v1.1.2-beta.30
 
-Emergency hotfix for Ascension's native Character Advancement assertion:
+Performance and release-candidate test build based on the stable beta.29 crash fix.
 
-`CharacterAdvancementBuildEntry::UpdatePointers: entry ... not found`
+## Performance changes
 
-This failure is raised by Ascension.exe itself and cannot be caught by Lua `pcall`. It can occur when the active Character Advancement build contains a stale or removed entry and an addon queries Character Advancement or `IsSpellKnown` while the build pointers are being refreshed.
+- Centralized spell, talent and build refresh scheduling instead of running separate four-pass refresh loops in Core Events and BuildProfiles.
+- Added a short shared spellbook-scan cache so overlapping RetreatUI systems reuse the same live spellbook result.
+- Reduced a normal event burst from many repeated spellbook scans and HUD rebuilds to one debounced primary refresh and, where needed, one delayed settlement check.
+- Expensive build/profile reconstruction is deferred until combat ends if Ascension dispatches spellbook or talent events during a pull.
+- NPC cooldown tracking now caches active nameplates by GUID rather than enumerating every nameplate for every mob spell cast.
+- NPC cooldown icons cache their texture and no longer re-sort unchanged entries every update tick.
+- NPC cooldown text updates every 0.15 seconds instead of every 0.10 seconds.
 
-## Fix
+## Retained safety and class changes
 
-- RetreatUI no longer queries `C_CharacterAdvancement` from the live HUD path.
-- Collector entry IDs remain in the class databases as audit metadata, but are not queried at runtime.
-- Learned spell detection now uses the player's live spellbook and does not call `IsSpellKnown` as a fallback.
-- All beta.28 class changes, HUD whitelists and Eternal Bloodmage behavior remain included.
+- Keeps beta.29's protection against the native `CharacterAdvancementBuildEntry::UpdatePointers` crash.
+- Keeps all curated beta.28 Pyromancer, Tinker, non-Eternal Bloodmage, Templar and Chronomancer data.
+- Eternal Bloodmage remains isolated from non-Eternal audit records.
+- Audit records cannot automatically expand approved HUD rows.
 - Party utility and party interrupt tracking remain removed.
+
+This build is intended for dungeon and raid testing before `1.1.2-rc.1`.
