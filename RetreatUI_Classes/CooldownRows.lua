@@ -130,10 +130,14 @@ local function DedicatedRow(className, record)
   local explicit = ExplicitRow(className, record)
   if explicit == "offensive" or explicit == "defensive" then return explicit end
   if explicit == "core" or explicit == "utility" then return nil end
+  local cooldown = CooldownHint(record)
+  local cooldownCategory = Normalize(record.cooldownCategory)
+  if cooldownCategory == "offensive" and cooldown >= 30 then return "offensive" end
+  if cooldownCategory == "defensive" and cooldown >= 20 then return "defensive" end
   if record.forceCooldownRow ~= true and (record.forceMain == true or record.forceUtility == true) then
     return nil
   end
-  local category, cooldown = Normalize(record.category), CooldownHint(record)
+  local category = Normalize(record.category)
   if category == "offensive" and cooldown >= 30 then return "offensive" end
   if category == "defensive" and cooldown >= 20 then return "defensive" end
 end
@@ -337,6 +341,7 @@ local function EnsureActive(force)
   end
   if CurrentClass() ~= manager.lastClass or force then manager.needsBuild = true end
   if manager.needsBuild and not CombatLocked() then BuildRows() end
+  if not CombatLocked() then PositionRows() end
   UpdateRows()
 end
 
