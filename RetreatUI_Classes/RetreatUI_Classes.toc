@@ -115,3 +115,4 @@ Ranger\HUD.lua
 WagoCurated.lua
 Bloodmage\VanthirsGift.lua
 AuditHUDGuard.lua
+CooldownRows.lua
