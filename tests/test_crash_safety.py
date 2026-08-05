@@ -50,9 +50,9 @@ if 'self.spellbook.idSet[spellID] == true' not in registry:
     raise SystemExit('ClassRegistry must resolve spell IDs from the live spellbook only')
 
 toc = Path('RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
-if 'Core\\ReleaseChangelog113Beta2.lua' not in toc:
-    raise SystemExit('beta.2 changelog is not loaded by the core TOC')
-if toc.index('Core\\ReleaseChangelog112.lua') > toc.index('Core\\ReleaseChangelog113Beta2.lua'):
-    raise SystemExit('beta.2 changelog must load after the stable 1.1.2 changelog')
+if 'Core\\ReleaseChangelog113.lua' not in toc:
+    raise SystemExit('v1.1.3 changelog is not loaded by the core TOC')
+if toc.index('Core\\ReleaseChangelog112.lua') > toc.index('Core\\ReleaseChangelog113.lua'):
+    raise SystemExit('v1.1.3 changelog must load after the stable 1.1.2 changelog')
 
 print('RetreatUI Ascension crash-safety checks passed')
