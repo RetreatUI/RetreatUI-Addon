@@ -40,7 +40,26 @@ jobs:
             | xargs -0 -n1 luac5.1 -p
 
       - name: Validate HUD classification policy
-        run: lua5.1 tests/test_hud_policy.lua
+        shell: bash
+        run: |
+          set -euo pipefail
+          lua5.1 tests/test_hud_policy.lua
+          python3 - <<'PY'
+          from pathlib import Path
+
+          toc = Path('RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
+          preload = Path('RetreatUI_Classes/MainBarPolicyPreload.lua').read_text(encoding='utf-8')
+          policy = Path('RetreatUI_Classes/CooldownPolicy.lua').read_text(encoding='utf-8')
+
+          assert 'CooldownRows.lua' not in toc
+          assert 'MainBarPolicyPreload.lua' in toc
+          assert toc.index('AdvancedHUD.lua') < toc.index('MainBarPolicyPreload.lua')
+          assert toc.index('MainBarPolicyPreload.lua') < toc.index('Necromancer\\Definition.lua')
+          assert 'options.maxCore = 100' in preload
+          assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
+          assert 'RUI._singleMainCooldownRow = true' in policy
+          print('Validated single main-bar HUD layout policy')
+          PY
 
       - name: Validate versions and TOC file references
         shell: bash
@@ -89,11 +108,11 @@ jobs:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
 
-      - name: Upload HUD test package
+      - name: Upload main-bar test package
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: RetreatUI-HUD-Rows-Test-${{ github.event.pull_request.head.sha }}
+          name: RetreatUI-Main-Bar-Test-${{ github.event.pull_request.head.sha }}
           path: |
             RetreatUI
             RetreatUI_Classes
