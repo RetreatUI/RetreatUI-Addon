@@ -16,3 +16,4 @@ function RUI:RegisterAdvancedClassHUD(className, options)
 end
 
 RUI._mainBarPolicyPreloadInstalled = true
+RUI._offensiveMainDefensiveUtilityPolicy = true
