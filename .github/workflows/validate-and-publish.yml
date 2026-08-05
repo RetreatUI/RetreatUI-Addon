@@ -45,6 +45,7 @@ jobs:
           set -euo pipefail
           lua5.1 tests/test_hud_policy.lua
           lua5.1 tests/test_main_bar_wrap.lua
+          lua5.1 tests/test_bloodmage_eternal_classification.lua
           python3 - <<'PY'
           from pathlib import Path
 
@@ -52,13 +53,17 @@ jobs:
           preload = Path('RetreatUI_Classes/MainBarPolicyPreload.lua').read_text(encoding='utf-8')
           policy = Path('RetreatUI_Classes/CooldownPolicy.lua').read_text(encoding='utf-8')
           wrap = Path('RetreatUI_Classes/MainBarWrap.lua').read_text(encoding='utf-8')
+          eternal = Path('RetreatUI_Classes/Bloodmage/EternalClassification.lua').read_text(encoding='utf-8')
 
           assert 'CooldownRows.lua' not in toc
           assert 'MainBarPolicyPreload.lua' in toc
           assert 'MainBarWrap.lua' in toc
+          assert 'Bloodmage\\EternalClassification.lua' in toc
           assert toc.index('AdvancedHUD.lua') < toc.index('MainBarPolicyPreload.lua')
           assert toc.index('MainBarPolicyPreload.lua') < toc.index('MainBarWrap.lua')
           assert toc.index('MainBarWrap.lua') < toc.index('Necromancer\\Definition.lua')
+          assert toc.index('Bloodmage\\Data.lua') < toc.index('Bloodmage\\EternalClassification.lua')
+          assert toc.index('Bloodmage\\EternalClassification.lua') < toc.index('Bloodmage\\HUD.lua')
           assert 'options.maxCore = 100' in preload
           assert 'options.maxUtility = 100' in preload
           assert 'options.mainRowFirstLineMax = 9' in preload
@@ -68,7 +73,9 @@ jobs:
           assert 'RUI._mainOverflowMergedIntoUtility = true' not in wrap
           assert 'RUI._defensivesOnUtility = true' in policy
           assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
-          print('Validated all offensive abilities on Main and defensive/utility abilities on Utility')
+          assert '["wicked howl"]' in eternal and 'cooldownHint = 120' in eternal
+          assert '["eternal resolve"]' in eternal and 'cooldownHint = 180' in eternal
+          print('Validated all offensive abilities on Main, defensive/utility abilities on Utility, and Eternal Bloodmage corrections')
           PY
 
       - name: Validate versions and TOC file references
