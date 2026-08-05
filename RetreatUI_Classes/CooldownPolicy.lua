@@ -2,66 +2,118 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- RetreatUI HUD policy -------------------------------------------------------
--- Main Rotation is allowed to contain short learned cooldowns, including
--- 2-5 second filler buttons. Offensive and Defensive rows are deliberately
--- stricter: a spell must be explicitly curated as a major cooldown.
+-- Main Rotation is the single action/cooldown row. Every learned, castable and
+-- meaningful offensive or defensive class ability belongs there, together
+-- with rotational fillers and resource buttons that have a real cooldown.
+-- Interrupts, taunts, mobility, control and other utility stay on Utility.
+-- Persistent class states are removed afterwards by StateHUDGuard.
 local function Normalize(value)
   value = tostring(value or ""):gsub("’", "'")
   return string.lower(value:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
-local CORE_CATEGORIES = {
-  rotation=true,
-  resource=true,
-}
+local function AuditedSpell(name, id, category, cooldown)
+  return {
+    name=name,
+    id=id,
+    category=category,
+    hudRow="core",
+    forceHUD=true,
+    forceMain=true,
+    trackHUD=true,
+    trackCooldown=true,
+    cooldownHint=cooldown,
+    cooldownCategory=category,
+    source="CooldownSpreadsheetAudit",
+  }
+end
 
-local UTILITY_CATEGORIES = {
-  interrupt=true,
-  taunt=true,
-  control=true,
-  mobility=true,
-  defensive=true,
-  utility=true,
-  stance=true,
-  form=true,
-  ally=true,
-  racial=true,
-}
-
--- Manual corrections for abilities whose raw category does not describe the
--- actual combat decision. These are intentional HUD placements, not an
--- automatic import of every spell in the catalogue.
-local CURATED_ROWS = {
-  ["Bloodmage"]={
-    ["blood bond"]="defensive",
-    ["blood veil"]="defensive",
-    ["transfusion"]="defensive",
-    ["fleshcraft"]="defensive",
-  },
+-- High-confidence spreadsheet gaps. Ambiguous replacements and records with
+-- missing tooltips remain excluded until they are verified in game.
+local EXTRA_DEFINITIONS = {
+  ["Bloodmage"]={AuditedSpell("Blood Bond", 504627, "defensive", 120)},
   ["Chronomancer"]={
-    ["fortify timeline"]="defensive",
-    ["displacement"]="utility",
-    ["continuum restoration"]="defensive",
+    AuditedSpell("Timeline Guardian", 805845, "defensive", 60),
+    AuditedSpell("Timeline Destroyer", 805846, "offensive", 60),
   },
   ["Cultist"]={
-    ["voidborne"]="defensive",
+    AuditedSpell("Protection From Light", 804065, "defensive", 30),
+    AuditedSpell("Wrath of The Black Empire", 500724, "offensive", 60),
   },
+  ["Necromancer"]={AuditedSpell("Frigid Ward", 801735, "defensive", 30)},
   ["Pyromancer"]={
-    ["volcanic shell"]="defensive",
+    AuditedSpell("Burning Spheres", 801487, "offensive", 120),
+    AuditedSpell("Eruption", 800103, "offensive", 120),
+    AuditedSpell("Flames of Al'ar", 500202, "offensive", 120),
   },
   ["Ranger"]={
-    ["briar veil"]="defensive",
-    ["natural disguise"]="defensive",
-    ["adrenaline rush"]="defensive",
+    AuditedSpell("Power Shot", 500070, "offensive", 43),
+    AuditedSpell("Horn of Endurance", 806359, "defensive", 60),
+  },
+  ["Reaper"]={AuditedSpell("Shadow's Embrace", 524709, "defensive", 90)},
+  ["Runemaster"]={AuditedSpell("Augur's Shield", 804126, "defensive", 40)},
+  ["Sun Cleric"]={AuditedSpell("Wuju Tiki Shield", 807655, "defensive", 120)},
+}
+
+local function OverlayAuditedSpells()
+  if not RUI.GetClassSpellDatabase then return end
+  for className, additions in pairs(EXTRA_DEFINITIONS) do
+    local database = RUI:GetClassSpellDatabase(className)
+    if database then
+      database.spells = database.spells or {}
+      local byName = {}
+      for _, record in ipairs(database.spells) do
+        byName[Normalize(record.name)] = record
+      end
+      for _, addition in ipairs(additions) do
+        local key = Normalize(addition.name)
+        local record = byName[key]
+        if record then
+          for field, value in pairs(addition) do
+            if field ~= "name" then record[field] = value end
+          end
+        else
+          database.spells[#database.spells + 1] = addition
+          byName[key] = addition
+        end
+      end
+    end
+  end
+end
+OverlayAuditedSpells()
+
+-- Manual semantic corrections. "core" means an offensive/defensive action;
+-- "utility" means the spell is not part of the Main Rotation action row.
+local CURATED_ROWS = {
+  ["Bloodmage"]={
+    ["blood bond"]="core",
+    ["blood veil"]="core",
+    ["transfusion"]="core",
+    ["fleshcraft"]="core",
+  },
+  ["Chronomancer"]={
+    ["fortify timeline"]="core",
+    ["displacement"]="utility",
+    ["continuum restoration"]="core",
+  },
+  ["Cultist"]={
+    ["voidborne"]="core",
+  },
+  ["Pyromancer"]={
+    ["volcanic shell"]="core",
+  },
+  ["Ranger"]={
+    ["briar veil"]="core",
+    ["natural disguise"]="core",
+    ["adrenaline rush"]="core",
   },
   ["Reaper"]={
-    ["bolstered form"]="defensive",
-    ["spectral warden"]="defensive",
-    ["shadow's embrace"]="defensive",
+    ["spectral warden"]="core",
+    ["shadow's embrace"]="core",
   },
   ["Runemaster"]={
-    ["guarding rune"]="defensive",
-    ["warding rune"]="defensive",
+    ["guarding rune"]="core",
+    ["warding rune"]="core",
     ["echo rune"]="utility",
     ["phase out"]="utility",
     ["speed rune"]="utility",
@@ -71,24 +123,43 @@ local CURATED_ROWS = {
     ["reverse magic"]="utility",
   },
   ["Sun Cleric"]={
-    ["scroll of hope"]="defensive",
-    ["sunwell"]="defensive",
-    ["circle of valor"]="defensive",
+    ["scroll of hope"]="core",
+    ["sunwell"]="core",
+    ["circle of valor"]="core",
   },
   ["Templar"]={
-    ["temple guardian"]="defensive",
-    ["libram of tenacity"]="defensive",
+    ["temple guardian"]="core",
+    ["libram of tenacity"]="core",
   },
   ["Tinker"]={
-    ["auto resuscitation device"]="defensive",
-    ["med pack"]="defensive",
+    ["auto resuscitation device"]="core",
+    ["med pack"]="core",
   },
   ["Witch Doctor"]={
-    ["base: crystal water"]="defensive",
+    ["base: crystal water"]="core",
   },
   ["Witch Hunter"]={
     ["daring escape"]="utility",
   },
+}
+
+local CORE_CATEGORIES = {
+  rotation=true,
+  resource=true,
+  offensive=true,
+  defensive=true,
+  summon=true,
+}
+
+local UTILITY_CATEGORIES = {
+  interrupt=true,
+  taunt=true,
+  control=true,
+  mobility=true,
+  utility=true,
+  ally=true,
+  racial=true,
+  dispel=true,
 }
 
 local function CooldownHint(record)
@@ -98,28 +169,16 @@ local function CooldownHint(record)
   return tonumber(record and record.cooldownHint) or 0
 end
 
-local function ExplicitRow(className, record)
-  if type(record) ~= "table" then return nil end
+local function CuratedRow(className, record)
+  local rows = CURATED_ROWS[className]
+  return rows and rows[Normalize(record and record.name)] or nil
+end
 
-  local classRows = CURATED_ROWS[className]
-  local row = classRows and classRows[Normalize(record.name)]
-  if row then return row end
-
-  -- Spreadsheet/class-data curation is authoritative only when the record is
-  -- explicitly marked as a party/major cooldown. Merely having a long cooldown
-  -- or an Offensive/Defensive category is not enough.
-  local category = Normalize(record.cooldownCategory)
-  if record.partyCooldown == true and (category == "offensive" or category == "defensive") then
-    return category
-  end
-
-  row = Normalize(record.cooldownRow)
-  if record.forceCooldownRow == true
-    and (row == "offensive" or row == "defensive" or row == "core" or row == "utility")
-  then
-    return row
-  end
-  return nil
+local function IsMajorCategory(record)
+  local category = Normalize(record and record.category)
+  local cooldownCategory = Normalize(record and record.cooldownCategory)
+  return category == "offensive" or category == "defensive"
+    or cooldownCategory == "offensive" or cooldownCategory == "defensive"
 end
 
 local function IsVisible(className, record)
@@ -127,14 +186,13 @@ local function IsVisible(className, record)
     return false
   end
 
-  local explicit = ExplicitRow(className, record)
-  if record.trackHUD == false and not explicit then return false end
+  -- Audit/source-reference files are data-only unless explicitly approved.
+  if record.auditRecord == true and record.hudApproved ~= true then return false end
 
-  if record.showStateActivationOnHUD ~= true and RUI.IsClassStateName
-    and RUI:IsClassStateName(className, record.buff or record.name)
-  then
-    return false
-  end
+  local curated = CuratedRow(className, record)
+  local explicit = curated ~= nil or record.forceMain == true or record.forceUtility == true
+    or record.forceHUD == true or IsMajorCategory(record)
+  if record.trackHUD == false and not explicit then return false end
 
   if RUI.ShouldShowSpellRecord and not RUI:ShouldShowSpellRecord(record) then return false end
   if RUI.IsMeaningfulHUDCooldown and not RUI:IsMeaningfulHUDCooldown(record) then return false end
@@ -142,35 +200,28 @@ local function IsVisible(className, record)
   return RUI.IsSpellRecordLearned and RUI:IsSpellRecordLearned(record) or false
 end
 
-local function MainRow(className, record)
-  local explicit = ExplicitRow(className, record)
-  if explicit == "offensive" or explicit == "defensive" then return nil end
-  if explicit == "core" or explicit == "utility" then return explicit end
+local function DesiredRow(className, record)
+  local curated = CuratedRow(className, record)
+  if curated then return curated end
 
-  if record.forceMain == true then return "core" end
-  if record.forceUtility == true then return "utility" end
+  local category = Normalize(record and record.category)
+  local cooldownCategory = Normalize(record and record.cooldownCategory)
 
-  local category = Normalize(record.category)
-  if CORE_CATEGORIES[category] then return "core" end
-
-  -- Some class databases label short rotational attacks as Offensive rather
-  -- than Rotation. Keep those learned filler/cycle buttons on Main Rotation,
-  -- but do not promote long uncurated cooldowns into the HUD.
-  if category == "offensive" or category == "summon" then
-    local cooldown = CooldownHint(record)
-    if record.partyCooldown ~= true and cooldown > 1.5 and cooldown <= 30 then
-      return "core"
-    end
-    return nil
-  end
-
-  if UTILITY_CATEGORIES[category] then return "utility" end
-
-  local configured = Normalize(record.hudRow)
-  if configured == "core" and CooldownHint(record) > 1.5 and CooldownHint(record) <= 30 then
+  -- Offensive and defensive classification always wins over an old hudRow or
+  -- forceUtility flag. The user wants every such learned cooldown on Main.
+  if category == "offensive" or category == "defensive"
+    or cooldownCategory == "offensive" or cooldownCategory == "defensive"
+  then
     return "core"
   end
-  if configured == "utility" then return "utility" end
+
+  if CORE_CATEGORIES[category] then return "core" end
+  if record.forceMain == true then return "core" end
+  if record.forceUtility == true then return "utility" end
+  if UTILITY_CATEGORIES[category] then return "utility" end
+
+  local configured = Normalize(record and record.hudRow)
+  if configured == "core" or configured == "utility" then return configured end
   return nil
 end
 
@@ -179,59 +230,43 @@ local function SortRecords(records)
     local leftOrder = tonumber(left.cooldownRowOrder) or tonumber(left.order) or 9999
     local rightOrder = tonumber(right.cooldownRowOrder) or tonumber(right.order) or 9999
     if leftOrder ~= rightOrder then return leftOrder < rightOrder end
-    local leftCooldown = CooldownHint(left)
-    local rightCooldown = CooldownHint(right)
+    local leftCooldown, rightCooldown = CooldownHint(left), CooldownHint(right)
     if leftCooldown ~= rightCooldown then return leftCooldown < rightCooldown end
     return tostring(left.name or "") < tostring(right.name or "")
   end)
   return records
 end
 
-local function AddRecord(result, seen, className, record, row, dedicated)
-  if not IsVisible(className, record) then return end
-
-  local desired = dedicated and ExplicitRow(className, record) or MainRow(className, record)
-  if desired ~= row then return end
-
+local function AddRecord(result, seen, className, record, row)
+  if DesiredRow(className, record) ~= row or not IsVisible(className, record) then return end
   local key = Normalize(record.name or tostring(record.id or ""))
   if key == "" or seen[key] then return end
   seen[key] = true
   result[#result + 1] = record
 end
 
-function RUI:GetClassCooldownRowDefinitions(className, row)
-  className = className or (self.GetDetectedClass and self:GetDetectedClass())
-  if row ~= "offensive" and row ~= "defensive" then return {} end
-
-  local result, seen = {}, {}
-  for _, record in ipairs(self:GetClassSpellRecords(className) or {}) do
-    AddRecord(result, seen, className, record, row, true)
-  end
-
-  -- Live spellbook discovery is not used as a blanket source for major
-  -- cooldown rows. Exact class records and explicit curation must exist first.
-  return SortRecords(result)
+function RUI:GetClassCooldownRowDefinitions()
+  -- Dedicated Offensive/Defensive rows are retired in this layout. Their
+  -- contents are merged into Main Rotation through GetHUDSpellDefinitions.
+  return {}
 end
 
 function RUI:GetHUDSpellDefinitions(className, row)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
-  if row == "offensive" or row == "defensive" then
-    return self:GetClassCooldownRowDefinitions(className, row)
-  end
+  if row == "offensive" or row == "defensive" then return {} end
   if row ~= "core" and row ~= "utility" then return {} end
 
   local result, seen = {}, {}
   for _, record in ipairs(self:GetClassSpellRecords(className) or {}) do
-    AddRecord(result, seen, className, record, row, false)
+    AddRecord(result, seen, className, record, row)
   end
 
-  -- Keep the live safety net only for records that explicitly declare their
-  -- placement, such as Felsworn Chaos Rush. Generic discovered cooldowns are
-  -- excluded so the HUD cannot silently become a second action bar.
+  -- Live discovery remains a narrow safety net. Generic tooltip classification
+  -- is not trusted to decide that an unknown spell belongs on the HUD.
   if self.GetLiveClassCooldownDefinitions then
     for _, record in ipairs(self:GetLiveClassCooldownDefinitions(className) or {}) do
       if record.forceMain == true or record.forceUtility == true then
-        AddRecord(result, seen, className, record, row, false)
+        AddRecord(result, seen, className, record, row)
       end
     end
   end
@@ -240,3 +275,4 @@ function RUI:GetHUDSpellDefinitions(className, row)
 end
 
 RUI._strictCooldownHUDPolicyInstalled = true
+RUI._singleMainCooldownRow = true
