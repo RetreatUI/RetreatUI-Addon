@@ -52,15 +52,7 @@ local STANCE_DEFINITIONS = {
 }
 
 local function HasImpcaller()
-  if RUI.IsAdvancementEntryLearned then
-    local known = RUI:IsAdvancementEntryLearned(34085)
-    if known ~= nil then return known end
-  end
-  if RUI:IsSpellLearned("Impcaller") then return true end
-  if IsSpellKnown then
-    local ok, known = pcall(IsSpellKnown, 706755)
-    if ok and known then return true end
-  end
+  if RUI.IsSpellLearned and RUI:IsSpellLearned("Impcaller") then return true end
   return RUI.IsSpellIDLearned and RUI:IsSpellIDLearned(706755) or false
 end
 
@@ -182,6 +174,28 @@ local function DefinitionTexture(definition)
   return RUI:GetSpellRecordTexture(definition)
 end
 
+local MAIN_FIRST_LINE_MAXIMUM = 9
+local MAIN_WRAP_GAP = 1
+
+local function MainRowScale()
+  if root and root.coreRow and type(root.coreRow.GetScale) == "function" then
+    return tonumber(root.coreRow:GetScale()) or 1
+  end
+  return 1
+end
+
+local function PositionUtilityRow()
+  if not root or not root.utilityRow then return end
+  local layout = RUI.layout.utility or {x=0, y=-224}
+  local shift = 0
+  if root.coreRow and root.coreRow.__ruiMainBarWrapped then
+    shift = -((38 + MAIN_WRAP_GAP) * MainRowScale())
+  end
+  root.utilityRow:ClearAllPoints()
+  root.utilityRow:SetPoint("CENTER", UIParent, "CENTER",
+    tonumber(layout.x) or 0, (tonumber(layout.y) or -224) + shift)
+end
+
 local function BuildRow(row, definitions, size, spacing)
   local visible = {}
   for _, definition in ipairs(definitions) do
@@ -194,17 +208,37 @@ local function BuildRow(row, definitions, size, spacing)
       table.insert(visible, definition)
     end
   end
+
   local count = #visible
-  local total = count > 0 and (count*size + (count-1)*spacing) or 0
+  local isMain = root and row == root.coreRow
+  local firstCount = isMain and math.min(MAIN_FIRST_LINE_MAXIMUM, count) or count
+  local overflowCount = isMain and math.max(0, count - MAIN_FIRST_LINE_MAXIMUM) or 0
+  local firstTotal = firstCount > 0 and (firstCount*size + (firstCount-1)*spacing) or 0
+  local overflowTotal = overflowCount > 0 and (overflowCount*size + (overflowCount-1)*spacing) or 0
+
   for index, definition in ipairs(visible) do
+    local lineIndex, total, y = index, firstTotal, 0
+    if isMain and index > MAIN_FIRST_LINE_MAXIMUM then
+      lineIndex = index - MAIN_FIRST_LINE_MAXIMUM
+      total = overflowTotal
+      y = -(size + MAIN_WRAP_GAP)
+    end
     local frame = EnsureSpellIcon(row, index, size)
     frame.definition = definition
     frame:ClearAllPoints()
-    frame:SetPoint("CENTER", row, "CENTER", -total/2 + size/2 + (index-1)*(size+spacing), 0)
+    frame:SetPoint("CENTER", row, "CENTER", -total/2 + size/2 + (lineIndex-1)*(size+spacing), y)
     frame.texture:SetTexture(DefinitionTexture(definition))
     frame:Show()
   end
   for index = count+1, #(row.icons or {}) do row.icons[index]:Hide() end
+
+  if isMain then
+    row.__ruiMainBarWrapped = overflowCount > 0
+    row.__ruiMainBarFirstLineCount = firstCount
+    row.__ruiMainBarOverflowCount = overflowCount
+    PositionUtilityRow()
+    RUI._knightCustomMainWrapInstalled = true
+  end
 end
 
 local function ReadSpellCooldown(definition)
@@ -770,12 +804,7 @@ end
 
 local function HasPestilenceOfApocalypse()
   if RUI.IsSpellIDLearned and RUI:IsSpellIDLearned(804786) then return true end
-  if RUI.IsSpellLearned and RUI:IsSpellLearned("Pestilence of Apocalypse") then return true end
-  if IsSpellKnown then
-    local ok, known = pcall(IsSpellKnown, 804786)
-    if ok and known then return true end
-  end
-  return false
+  return RUI.IsSpellLearned and RUI:IsSpellLearned("Pestilence of Apocalypse") or false
 end
 
 local function UpdateStanceTracker(auraState)
@@ -1283,6 +1312,7 @@ function module:refreshLayout()
     RUI:ApplyHUDFrameScale(root.coreRow, "core")
     RUI:ApplyHUDFrameScale(root.utilityRow, "utility")
   end
+  PositionUtilityRow()
 
   for index, icon in ipairs(root.demonfire or {}) do
     icon:ClearAllPoints()

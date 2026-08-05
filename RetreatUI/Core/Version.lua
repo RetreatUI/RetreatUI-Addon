@@ -2,14 +2,14 @@ local RUI = RetreatUI
 
 RUI.changelog = {
   version = RUI.version,
-  title = "RetreatUI v1.1.0",
-  summary = "The modular RetreatUI release with reliable native HUD systems.",
+  title = "RetreatUI v1.1.3-beta.2",
+  summary = "HUD classification, wrapping and Ascension crash-safety test build.",
   changes = {
-    "Added independent installer choices for Class HUD, layouts, trackers, nameplates and integrations.",
-    "Added reliable combat-log party cooldowns and a compact direct-interrupt tracker with Arcane Torrent support.",
-    "Added clean Ranger and Tinker HUD systems without duplicate tracking.",
-    "Added the live-tested slot-first Ascension trinket tracker.",
-    "Cleaned Pyromancer Heat and Ember resources and suppressed the duplicate Ascension resource bar.",
+    "All learned offensive cooldown abilities remain on Main; defensives and combat utility remain on Utility.",
+    "Main wraps after nine icons, including the custom Knight of Xoroth HUD.",
+    "Corrected Eternal Bloodmage: Wicked Howl is Defensive/Utility and Eternal Resolve is Offensive/Main.",
+    "Removed unsafe inspect, talent and broad learned-state API fallbacks from live addon paths.",
+    "Removed retired party tracker source files and fixed the Buff Manager keybind button texture path.",
   },
 }
 

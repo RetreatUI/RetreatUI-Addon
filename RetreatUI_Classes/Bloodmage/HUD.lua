@@ -80,10 +80,6 @@ local function HasEternalCurse()
     local ok, learned = pcall(RUI.IsSpellLearned, RUI, "Eternal Curse")
     if ok and learned then return true end
   end
-  if IsSpellKnown then
-    local ok, learned = pcall(IsSpellKnown, ETERNAL_CURSE_ID)
-    if ok and learned then return true end
-  end
   return false
 end
 

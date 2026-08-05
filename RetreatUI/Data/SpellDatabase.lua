@@ -9,12 +9,9 @@ local function Normalize(value)
   return string.lower(value):gsub("^%s+", ""):gsub("%s+$", "")
 end
 
-local advancementEntryCache = {}
-local advancementCacheSlot
-
 function RUI:InvalidateAdvancementEntryCache()
-  advancementEntryCache = {}
-  advancementCacheSlot = nil
+  -- Kept for callers that invalidate learned-state caches after a build swap.
+  -- Learned state itself is resolved from the live spellbook only.
 end
 
 
@@ -43,65 +40,16 @@ function RUI:GetClassResourceRecords(className)
   return database and database.resources or {}
 end
 
--- Character Advancement awareness. Spellbook names remain the primary runtime
--- reference for ranks and replacement spell IDs, but the active CA slot is the
--- authoritative answer to whether a talent/spec node is currently selected.
--- This prevents spells from a previous specialization remaining on the HUD
--- while Ascension is still rebuilding the spellbook.
+-- Ascension can terminate the client when stale Character Advancement entries
+-- are queried. Learned-state decisions therefore use only the live spellbook.
+-- These safe base implementations are also repeated by the crash guard so the
+-- policy remains intact regardless of load order.
 function RUI:GetActiveAdvancementSlot()
-  local specialization = _G.SpecializationUtil
-  if specialization and type(specialization.GetActiveSpecialization) == "function" then
-    local ok, slot = pcall(specialization.GetActiveSpecialization)
-    if ok and tonumber(slot) then return tonumber(slot) end
-  end
-
-  local advancement = _G.C_CharacterAdvancement
-  if advancement and type(advancement.GetInspectInfo) == "function" then
-    local ok, slot = pcall(advancement.GetInspectInfo, "player")
-    if ok and tonumber(slot) then return tonumber(slot) end
-  end
-
-  if type(GetActiveTalentGroup) == "function" then
-    local ok, slot = pcall(GetActiveTalentGroup)
-    if ok and tonumber(slot) then return tonumber(slot) end
-  end
   return 1
 end
 
-function RUI:IsAdvancementEntryLearned(entryID)
-  entryID = tonumber(entryID)
-  local advancement = _G.C_CharacterAdvancement
-  if not entryID or type(advancement) ~= "table" then return nil end
-  local slot = self:GetActiveAdvancementSlot()
-  if advancementCacheSlot ~= slot then
-    advancementEntryCache = {}
-    advancementCacheSlot = slot
-  end
-  if advancementEntryCache[entryID] ~= nil then return advancementEntryCache[entryID] end
-
-  local rankKnown
-  if type(advancement.UnitTalentRankByID) == "function" then
-    local ok, rank = pcall(advancement.UnitTalentRankByID, "player", entryID, slot)
-    if ok and type(rank) == "number" then
-      if rank > 0 then
-        advancementEntryCache[entryID] = true
-        return true
-      end
-      rankKnown = false
-    end
-  end
-
-  -- Ability nodes are not reported as talents on every Ascension build, so a
-  -- zero talent rank still gets a second authoritative check through UnitKnownID.
-  if type(advancement.UnitKnownID) == "function" then
-    local ok, known = pcall(advancement.UnitKnownID, "player", entryID, slot)
-    if ok and type(known) == "boolean" then
-      advancementEntryCache[entryID] = known
-      return known
-    end
-  end
-  advancementEntryCache[entryID] = rankKnown
-  return rankKnown
+function RUI:IsAdvancementEntryLearned(_)
+  return nil
 end
 
 function RUI:IsSpellRecordLearned(record)

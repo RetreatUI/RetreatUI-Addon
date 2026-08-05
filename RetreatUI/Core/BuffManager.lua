@@ -659,7 +659,7 @@ end
 
 local function IsLearned(name, spellID)
   -- Buff Manager visibility must be based on the live spellbook. Ascension can
-  -- report future class spells through IsSpellKnown/IsPlayerSpell before the
+  -- report future class spells through broad learned-state APIs before the
   -- character has actually learned them, which created empty party-buff icons.
   if name and RUI.GetSpellBookIndex and RUI:GetSpellBookIndex(name) then return true end
   if spellID and RUI.GetSpellBookIndexByID and RUI:GetSpellBookIndexByID(spellID) then return true end
@@ -870,51 +870,13 @@ local function InfoNameFromID(value)
   return nil
 end
 
-local function ProbeSpecFunction(functionName, unit)
-  local fn = _G and _G[functionName]
-  if type(fn) ~= "function" then return nil end
-  local ok, a, b = pcall(fn, unit)
-  if not ok then return nil end
-  if type(a) == "string" and a ~= "" then return a end
-  if type(b) == "string" and b ~= "" then return b end
-  return InfoNameFromID(a) or InfoNameFromID(b)
-end
-
-local function PlayerTalentSpec()
-  if not GetNumTalentTabs or not GetTalentTabInfo then return nil end
-  local ok, count = pcall(GetNumTalentTabs)
-  if not ok or type(count) ~= "number" then return nil end
-  local bestName, bestPoints = nil, -1
-  for index=1,count do
-    local tabOK, name, _, points = pcall(GetTalentTabInfo, index)
-    if tabOK and type(name) == "string" and type(points) == "number" and points > bestPoints then
-      bestName, bestPoints = name, points
-    end
-  end
-  return bestName
-end
-
-local function UnitSpecName(unit, className, role)
-  local probes = {"UnitSpec", "GetUnitSpec", "GetUnitSpecialization", "GetInspectSpecialization"}
-  local spec
-  for _, functionName in ipairs(probes) do
-    spec = ProbeSpecFunction(functionName, unit)
-    if spec then break end
-  end
-  if not spec and unit == "player" then spec = PlayerTalentSpec() end
-
+-- Remote specialization inspection is intentionally disabled. Ascension can
+-- dispatch native inspect/talent events for stale Character Advancement builds,
+-- so Buff Manager classifies units from their class and safe role only.
+local function UnitSpecName(_, className, role)
   local rule = CLASS_RULES[className]
-  if role == "TANK" and rule and rule.tankSpec then return rule.tankSpec end
-
-  if spec and spec ~= "" then
-    local specKey = NormalKey(spec)
-    if rule and rule.tankSpec and specKey == NormalKey(rule.tankSpec) then return rule.tankSpec end
-    for _, alias in ipairs(rule and rule.tankAliases or {}) do
-      if specKey == NormalKey(alias) then return rule.tankSpec end
-    end
-    return spec
-  end
-  return role == "TANK" and ((rule and rule.tankSpec) or "Tank") or "Other Specs"
+  if role == "TANK" then return (rule and rule.tankSpec) or "Tank" end
+  return "Other Specs"
 end
 
 local POWER_TYPE_NAMES = {
@@ -2589,7 +2551,7 @@ local function BuildManager()
   managerFrame.keybinds = CreateFrame("Button", nil, managerFrame)
   managerFrame.keybinds:SetSize(124, 26)
   managerFrame.keybinds:SetPoint("LEFT", managerFrame.reset, "RIGHT", 8, 0)
-  managerFrame.keybinds:SetBackdrop({bgFile="Interface\Buttons\WHITE8X8", edgeFile="Interface\Buttons\WHITE8X8", edgeSize=1})
+  managerFrame.keybinds:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
   managerFrame.keybinds:SetBackdropColor(theme.panelStrong[1], theme.panelStrong[2], theme.panelStrong[3], 0.94)
   managerFrame.keybinds:SetBackdropBorderColor(theme.dim[1], theme.dim[2], theme.dim[3], 0.55)
   managerFrame.keybinds.text = managerFrame.keybinds:CreateFontString(nil, "OVERLAY")

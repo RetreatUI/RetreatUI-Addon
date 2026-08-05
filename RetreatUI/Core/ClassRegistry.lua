@@ -116,12 +116,9 @@ function RUI:IsSpellIDLearned(spellID)
   spellID = tonumber(spellID)
   if not spellID then return false end
   if not self.spellbook then self:ScanSpellbook() end
-  if self.spellbook.idSet and self.spellbook.idSet[spellID] then return true end
-  if IsSpellKnown then
-    local ok, known = pcall(IsSpellKnown, spellID)
-    if ok and known then return true end
-  end
-  return false
+  return self.spellbook ~= nil
+    and self.spellbook.idSet ~= nil
+    and self.spellbook.idSet[spellID] == true
 end
 
 function RUI:GetSpellBookIndexByID(spellID)

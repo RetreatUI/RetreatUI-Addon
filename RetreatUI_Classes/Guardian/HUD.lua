@@ -41,13 +41,9 @@ local function SafeCall(fn, ...)
 end
 
 local function SpellKnown(spellID)
-  if RUI.IsSpellIDLearned then return RUI:IsSpellIDLearned(spellID) end
-  if type(IsSpellKnown) == "function" then
-    local known = SafeCall(IsSpellKnown, spellID)
-    if known then return true end
-  end
+  if RUI.IsSpellIDLearned and RUI:IsSpellIDLearned(spellID) then return true end
   local name = type(GetSpellInfo) == "function" and GetSpellInfo(spellID) or nil
-  return name and type(IsSpellKnown) == "function" and SafeCall(IsSpellKnown, name) == true
+  return name and RUI.IsSpellLearned and RUI:IsSpellLearned(name) or false
 end
 
 local function PlayerAura(spellIDs)
