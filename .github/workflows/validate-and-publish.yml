@@ -7,6 +7,7 @@ on:
     paths:
       - "RetreatUI/**"
       - "RetreatUI_Classes/**"
+      - "tests/**"
       - ".github/workflows/validate-and-publish.yml"
   push:
     branches:
@@ -14,6 +15,7 @@ on:
     paths:
       - "RetreatUI/**"
       - "RetreatUI_Classes/**"
+      - "tests/**"
       - ".github/workflows/validate-and-publish.yml"
 
 permissions:
@@ -36,6 +38,9 @@ jobs:
           find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 \
             | sort -z \
             | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate HUD classification policy
+        run: lua5.1 tests/test_hud_policy.lua
 
       - name: Validate versions and TOC file references
         shell: bash
@@ -83,6 +88,17 @@ jobs:
           if unexpected:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
+
+      - name: Upload HUD test package
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-HUD-Rows-Test-${{ github.event.pull_request.head.sha }}
+          path: |
+            RetreatUI
+            RetreatUI_Classes
+          if-no-files-found: error
+          retention-days: 14
 
       - name: Publish GitHub prerelease
         if: github.event_name == 'push'
