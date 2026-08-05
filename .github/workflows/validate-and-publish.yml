@@ -60,11 +60,14 @@ jobs:
           assert toc.index('MainBarPolicyPreload.lua') < toc.index('MainBarWrap.lua')
           assert toc.index('MainBarWrap.lua') < toc.index('Necromancer\\Definition.lua')
           assert 'options.maxCore = 100' in preload
+          assert 'options.maxUtility = 100' in preload
           assert 'options.mainRowFirstLineMax = 9' in preload
           assert 'local FIRST_LINE_MAXIMUM = 9' in wrap
+          assert 'RUI._mainOverflowMergedIntoUtility = true' in wrap
+          assert 'RUI._defensivesOnUtility = true' in policy
           assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
           assert 'RUI._singleMainCooldownRow = true' in policy
-          print('Validated two-line main-bar HUD layout policy')
+          print('Validated nine-icon Main with defensive and overflow Utility row')
           PY
 
       - name: Validate versions and TOC file references
@@ -114,11 +117,11 @@ jobs:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
 
-      - name: Upload main-bar test package
+      - name: Upload main-utility test package
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: RetreatUI-Main-Bar-Test-${{ github.event.pull_request.head.sha }}
+          name: RetreatUI-Main-Utility-Test-${{ github.event.pull_request.head.sha }}
           path: |
             RetreatUI
             RetreatUI_Classes
