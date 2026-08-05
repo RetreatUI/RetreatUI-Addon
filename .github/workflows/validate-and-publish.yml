@@ -62,12 +62,12 @@ jobs:
           assert 'options.maxCore = 100' in preload
           assert 'options.maxUtility = 100' in preload
           assert 'options.mainRowFirstLineMax = 9' in preload
+          assert 'RUI._offensiveMainDefensiveUtilityPolicy = true' in preload
           assert 'local FIRST_LINE_MAXIMUM = 9' in wrap
           assert 'RUI._offensiveOverflowStaysOnMain = true' in wrap
           assert 'RUI._mainOverflowMergedIntoUtility = true' not in wrap
           assert 'RUI._defensivesOnUtility = true' in policy
           assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
-          assert 'RUI._singleMainCooldownRow = true' in policy
           print('Validated all offensive abilities on Main and defensive/utility abilities on Utility')
           PY
 
