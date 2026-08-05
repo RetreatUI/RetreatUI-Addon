@@ -2,9 +2,10 @@ local RUI = RetreatUI
 if not RUI or type(RUI.RegisterAdvancedClassHUD) ~= "function" then return end
 if RUI._mainBarPolicyPreloadInstalled then return end
 
--- Main keeps rotation and offensive actions, capped visually at nine icons.
--- Defensives and any Main overflow share Utility, so both source lists must be
--- collected without old class-specific truncation before the final split.
+-- Main keeps rotation, resource and every learned offensive action. Defensive
+-- and utility actions stay on Utility. Both source lists are collected without
+-- old class-specific truncation; Main wraps after nine instead of spilling into
+-- Utility.
 local OriginalRegisterAdvancedClassHUD = RUI.RegisterAdvancedClassHUD
 function RUI:RegisterAdvancedClassHUD(className, options)
   options = options or {}
