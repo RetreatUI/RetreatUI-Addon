@@ -63,11 +63,12 @@ jobs:
           assert 'options.maxUtility = 100' in preload
           assert 'options.mainRowFirstLineMax = 9' in preload
           assert 'local FIRST_LINE_MAXIMUM = 9' in wrap
-          assert 'RUI._mainOverflowMergedIntoUtility = true' in wrap
+          assert 'RUI._offensiveOverflowStaysOnMain = true' in wrap
+          assert 'RUI._mainOverflowMergedIntoUtility = true' not in wrap
           assert 'RUI._defensivesOnUtility = true' in policy
           assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
           assert 'RUI._singleMainCooldownRow = true' in policy
-          print('Validated nine-icon Main with defensive and overflow Utility row')
+          print('Validated all offensive abilities on Main and defensive/utility abilities on Utility')
           PY
 
       - name: Validate versions and TOC file references
@@ -117,11 +118,11 @@ jobs:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
 
-      - name: Upload main-utility test package
+      - name: Upload offensive-main test package
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: RetreatUI-Main-Utility-Test-${{ github.event.pull_request.head.sha }}
+          name: RetreatUI-Offensive-Main-Defensive-Utility-Test-${{ github.event.pull_request.head.sha }}
           path: |
             RetreatUI
             RetreatUI_Classes
