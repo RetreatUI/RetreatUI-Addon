@@ -76,6 +76,7 @@ RUI.databases.Bloodmage = {
   {name="Uncurated Long Offensive", category="offensive", trackCooldown=true, cooldownHint=60},
   {name="Uncurated Long Defensive", category="defensive", trackCooldown=true, cooldownHint=60},
   {name="Hidden Offensive", category="offensive", trackCooldown=true, cooldownHint=45, trackHUD=false},
+  {name="Hidden Defensive", category="defensive", trackCooldown=true, cooldownHint=45, trackHUD=false},
   {name="Cursed Form", category="rotation", trackCooldown=true, cooldownHint=3},
   {name="Mortal Form", category="form", trackCooldown=true, cooldownHint=3},
   {name="Hidden Rotation", category="rotation", trackCooldown=true, cooldownHint=3, trackHUD=false},
@@ -85,24 +86,25 @@ RUI.databases.Bloodmage = {
     auditRecord=true},
 }
 
-AssertNames("Main Rotation must contain every learned offensive/defensive cooldown and rotational filler",
+AssertNames("Main Rotation must contain learned rotational/resource/offensive cooldowns only",
   RUI:GetHUDSpellDefinitions("Bloodmage", "core"), {
     "Explicit Live Safety Net",
     "Four Second Offensive Filler",
     "Hidden Offensive",
     "Major Burst",
-    "Major Wall",
     "Short Charge Filler",
     "Three Second Builder",
     "Two Second Resource Button",
-    "Uncurated Long Defensive",
     "Uncurated Long Offensive",
   })
 
-AssertNames("Utility must contain combat utility only",
+AssertNames("Utility must contain defensive cooldowns and combat utility",
   RUI:GetHUDSpellDefinitions("Bloodmage", "utility"), {
     "Aneurysm",
     "Dash",
+    "Hidden Defensive",
+    "Major Wall",
+    "Uncurated Long Defensive",
   })
 
 AssertNames("Dedicated Offensive row must be retired",
@@ -132,9 +134,12 @@ for className, spellName in pairs(stateCases) do
   AssertNames(className .. " state activation must never enter Main Rotation",
     RUI:GetHUDSpellDefinitions(className, "core"), {
       "Explicit Live Safety Net",
-      "Real Defensive",
       "Real Filler",
+    })
+  AssertNames(className .. " defensive must remain on Utility",
+    RUI:GetHUDSpellDefinitions(className, "utility"), {
+      "Real Defensive",
     })
 end
 
-print("RetreatUI single-main-row HUD policy tests passed")
+print("RetreatUI main-plus-defensive-utility HUD policy tests passed")
