@@ -1,0 +1,14 @@
+## Interface: 20505
+## Title: RetreatUI
+## Notes: RetreatUI core for TBC Classic Anniversary.
+## Author: Retreat
+## Version: 0.1.0-dev
+## SavedVariables: RetreatUITBCDB
+## OptionalDeps: ElvUI
+## DefaultState: Enabled
+
+Loader.lua
+Core\Theme.lua
+Core\Spellbook.lua
+Core\HUDWidgets.lua
+Core\Events.lua
