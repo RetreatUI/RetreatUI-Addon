@@ -2,8 +2,8 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- RetreatUI HUD policy -------------------------------------------------------
--- Main Rotation contains learned rotational, resource and offensive abilities
--- with meaningful cooldowns. Defensive cooldowns share the Utility row with
+-- Main contains learned rotational, resource and offensive abilities with
+-- meaningful cooldowns. Defensive cooldowns share the Utility row with
 -- interrupts, taunts, mobility, control and other combat utility. Persistent
 -- class states are removed afterwards by StateHUDGuard.
 local function Normalize(value)
@@ -276,5 +276,5 @@ function RUI:GetHUDSpellDefinitions(className, row)
 end
 
 RUI._strictCooldownHUDPolicyInstalled = true
-RUI._singleMainCooldownRow = true
 RUI._defensivesOnUtility = true
+RUI._offensivesOnMain = true
