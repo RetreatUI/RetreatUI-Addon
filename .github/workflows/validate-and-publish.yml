@@ -44,21 +44,27 @@ jobs:
         run: |
           set -euo pipefail
           lua5.1 tests/test_hud_policy.lua
+          lua5.1 tests/test_main_bar_wrap.lua
           python3 - <<'PY'
           from pathlib import Path
 
           toc = Path('RetreatUI_Classes/RetreatUI_Classes.toc').read_text(encoding='utf-8')
           preload = Path('RetreatUI_Classes/MainBarPolicyPreload.lua').read_text(encoding='utf-8')
           policy = Path('RetreatUI_Classes/CooldownPolicy.lua').read_text(encoding='utf-8')
+          wrap = Path('RetreatUI_Classes/MainBarWrap.lua').read_text(encoding='utf-8')
 
           assert 'CooldownRows.lua' not in toc
           assert 'MainBarPolicyPreload.lua' in toc
+          assert 'MainBarWrap.lua' in toc
           assert toc.index('AdvancedHUD.lua') < toc.index('MainBarPolicyPreload.lua')
-          assert toc.index('MainBarPolicyPreload.lua') < toc.index('Necromancer\\Definition.lua')
+          assert toc.index('MainBarPolicyPreload.lua') < toc.index('MainBarWrap.lua')
+          assert toc.index('MainBarWrap.lua') < toc.index('Necromancer\\Definition.lua')
           assert 'options.maxCore = 100' in preload
+          assert 'options.mainRowFirstLineMax = 9' in preload
+          assert 'local FIRST_LINE_MAXIMUM = 9' in wrap
           assert 'if row == "offensive" or row == "defensive" then return {} end' in policy
           assert 'RUI._singleMainCooldownRow = true' in policy
-          print('Validated single main-bar HUD layout policy')
+          print('Validated two-line main-bar HUD layout policy')
           PY
 
       - name: Validate versions and TOC file references
