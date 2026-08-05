@@ -12,6 +12,7 @@ StateTracker.lua
 GlobalStateAnchor.lua
 BaselineHUD.lua
 AdvancedHUD.lua
+MainBarPolicyPreload.lua
 Necromancer\Definition.lua
 Necromancer\Data.lua
 Necromancer\GuardianHUD.lua
@@ -115,6 +116,5 @@ Ranger\HUD.lua
 WagoCurated.lua
 Bloodmage\VanthirsGift.lua
 AuditHUDGuard.lua
-CooldownRows.lua
 CooldownPolicy.lua
 StateHUDGuard.lua
