@@ -46,6 +46,8 @@ jobs:
           lua5.1 tests/test_hud_policy.lua
           lua5.1 tests/test_main_bar_wrap.lua
           lua5.1 tests/test_bloodmage_eternal_classification.lua
+          python3 tests/test_crash_safety.py
+          python3 tests/test_knight_wrap.py
           python3 - <<'PY'
           from pathlib import Path
 
@@ -123,6 +125,9 @@ jobs:
           unexpected = sorted({name.split('/', 1)[0] for name in names if '/' in name} - {'RetreatUI', 'RetreatUI_Classes'})
           if unexpected:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
+          retired = [name for name in names if name.endswith('PartyInterruptCuration.lua') or name.endswith('PartyUtilityCombatLogHotfix.lua')]
+          if retired:
+              raise SystemExit(f'Retired party tracker files are still packaged: {retired}')
           PY
 
       - name: Upload offensive-main test package
