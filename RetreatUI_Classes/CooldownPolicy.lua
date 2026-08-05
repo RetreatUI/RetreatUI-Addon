@@ -2,24 +2,25 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- RetreatUI HUD policy -------------------------------------------------------
--- Main Rotation is the single action/cooldown row. Every learned, castable and
--- meaningful offensive or defensive class ability belongs there, together
--- with rotational fillers and resource buttons that have a real cooldown.
--- Interrupts, taunts, mobility, control and other utility stay on Utility.
--- Persistent class states are removed afterwards by StateHUDGuard.
+-- Main Rotation contains learned rotational, resource and offensive abilities
+-- with meaningful cooldowns. Defensive cooldowns share the Utility row with
+-- interrupts, taunts, mobility, control and other combat utility. Persistent
+-- class states are removed afterwards by StateHUDGuard.
 local function Normalize(value)
   value = tostring(value or ""):gsub("’", "'")
   return string.lower(value:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 local function AuditedSpell(name, id, category, cooldown)
+  local row = category == "defensive" and "utility" or "core"
   return {
     name=name,
     id=id,
     category=category,
-    hudRow="core",
+    hudRow=row,
     forceHUD=true,
-    forceMain=true,
+    forceMain=row == "core",
+    forceUtility=row == "utility",
     trackHUD=true,
     trackCooldown=true,
     cooldownHint=cooldown,
@@ -82,38 +83,38 @@ local function OverlayAuditedSpells()
 end
 OverlayAuditedSpells()
 
--- Manual semantic corrections. "core" means an offensive/defensive action;
--- "utility" means the spell is not part of the Main Rotation action row.
+-- Manual semantic corrections. Offensive actions remain on Main; defensives,
+-- recovery, support and movement belong on Utility.
 local CURATED_ROWS = {
   ["Bloodmage"]={
-    ["blood bond"]="core",
-    ["blood veil"]="core",
-    ["transfusion"]="core",
-    ["fleshcraft"]="core",
+    ["blood bond"]="utility",
+    ["blood veil"]="utility",
+    ["transfusion"]="utility",
+    ["fleshcraft"]="utility",
   },
   ["Chronomancer"]={
-    ["fortify timeline"]="core",
+    ["fortify timeline"]="utility",
     ["displacement"]="utility",
-    ["continuum restoration"]="core",
+    ["continuum restoration"]="utility",
   },
   ["Cultist"]={
     ["voidborne"]="core",
   },
   ["Pyromancer"]={
-    ["volcanic shell"]="core",
+    ["volcanic shell"]="utility",
   },
   ["Ranger"]={
-    ["briar veil"]="core",
-    ["natural disguise"]="core",
-    ["adrenaline rush"]="core",
+    ["briar veil"]="utility",
+    ["natural disguise"]="utility",
+    ["adrenaline rush"]="utility",
   },
   ["Reaper"]={
-    ["spectral warden"]="core",
-    ["shadow's embrace"]="core",
+    ["spectral warden"]="utility",
+    ["shadow's embrace"]="utility",
   },
   ["Runemaster"]={
-    ["guarding rune"]="core",
-    ["warding rune"]="core",
+    ["guarding rune"]="utility",
+    ["warding rune"]="utility",
     ["echo rune"]="utility",
     ["phase out"]="utility",
     ["speed rune"]="utility",
@@ -123,20 +124,20 @@ local CURATED_ROWS = {
     ["reverse magic"]="utility",
   },
   ["Sun Cleric"]={
-    ["scroll of hope"]="core",
-    ["sunwell"]="core",
-    ["circle of valor"]="core",
+    ["scroll of hope"]="utility",
+    ["sunwell"]="utility",
+    ["circle of valor"]="utility",
   },
   ["Templar"]={
-    ["temple guardian"]="core",
-    ["libram of tenacity"]="core",
+    ["temple guardian"]="utility",
+    ["libram of tenacity"]="utility",
   },
   ["Tinker"]={
-    ["auto resuscitation device"]="core",
-    ["med pack"]="core",
+    ["auto resuscitation device"]="utility",
+    ["med pack"]="utility",
   },
   ["Witch Doctor"]={
-    ["base: crystal water"]="core",
+    ["base: crystal water"]="utility",
   },
   ["Witch Hunter"]={
     ["daring escape"]="utility",
@@ -147,11 +148,11 @@ local CORE_CATEGORIES = {
   rotation=true,
   resource=true,
   offensive=true,
-  defensive=true,
   summon=true,
 }
 
 local UTILITY_CATEGORIES = {
+  defensive=true,
   interrupt=true,
   taunt=true,
   control=true,
@@ -207,18 +208,18 @@ local function DesiredRow(className, record)
   local category = Normalize(record and record.category)
   local cooldownCategory = Normalize(record and record.cooldownCategory)
 
-  -- Offensive and defensive classification always wins over an old hudRow or
-  -- forceUtility flag. The user wants every such learned cooldown on Main.
-  if category == "offensive" or category == "defensive"
-    or cooldownCategory == "offensive" or cooldownCategory == "defensive"
-  then
+  -- Semantic classification wins over old force flags and hudRow values.
+  if category == "defensive" or cooldownCategory == "defensive" then
+    return "utility"
+  end
+  if category == "offensive" or cooldownCategory == "offensive" then
     return "core"
   end
 
   if CORE_CATEGORIES[category] then return "core" end
+  if UTILITY_CATEGORIES[category] then return "utility" end
   if record.forceMain == true then return "core" end
   if record.forceUtility == true then return "utility" end
-  if UTILITY_CATEGORIES[category] then return "utility" end
 
   local configured = Normalize(record and record.hudRow)
   if configured == "core" or configured == "utility" then return configured end
@@ -246,8 +247,8 @@ local function AddRecord(result, seen, className, record, row)
 end
 
 function RUI:GetClassCooldownRowDefinitions()
-  -- Dedicated Offensive/Defensive rows are retired in this layout. Their
-  -- contents are merged into Main Rotation through GetHUDSpellDefinitions.
+  -- Dedicated Offensive/Defensive rows are retired. Offensive actions are on
+  -- Main and defensive actions are on Utility.
   return {}
 end
 
@@ -276,3 +277,4 @@ end
 
 RUI._strictCooldownHUDPolicyInstalled = true
 RUI._singleMainCooldownRow = true
+RUI._defensivesOnUtility = true
