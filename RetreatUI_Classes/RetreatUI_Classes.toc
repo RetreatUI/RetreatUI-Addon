@@ -13,6 +13,7 @@ GlobalStateAnchor.lua
 BaselineHUD.lua
 AdvancedHUD.lua
 MainBarPolicyPreload.lua
+MainBarWrap.lua
 Necromancer\Definition.lua
 Necromancer\Data.lua
 Necromancer\GuardianHUD.lua
