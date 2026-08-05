@@ -1,0 +1,86 @@
+name: Validate TBC Anniversary staging
+
+on:
+  push:
+    branches:
+      - feature/tbc-anniversary-feral-foundation
+    paths:
+      - "TBC/**"
+      - ".github/workflows/validate-tbc-staging.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "TBC/**"
+      - ".github/workflows/validate-tbc-staging.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+
+      - name: Validate Lua syntax
+        run: |
+          find TBC/Package -type f -name '*.lua' -print0 \
+            | sort -z \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate package structure
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          package = Path('TBC/Package')
+          expected_roots = {'RetreatUI', 'RetreatUI_Classes'}
+          roots = {path.name for path in package.iterdir() if path.is_dir()}
+          if roots != expected_roots:
+              raise SystemExit(f'Unexpected TBC package roots: {sorted(roots)}')
+
+          for toc_path in (
+              package / 'RetreatUI' / 'RetreatUI.toc',
+              package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc',
+          ):
+              text = toc_path.read_text(encoding='utf-8-sig')
+              if '## Interface: 20505' not in text:
+                  raise SystemExit(f'{toc_path}: expected TBC Anniversary interface 20505')
+              if '## Author: Retreat' not in text:
+                  raise SystemExit(f'{toc_path}: author must be Retreat')
+
+              root = toc_path.parent
+              missing = []
+              for raw in text.splitlines():
+                  line = raw.strip()
+                  if not line or line.startswith('#'):
+                      continue
+                  candidate = root / line.replace('\\', '/')
+                  if not candidate.is_file():
+                      missing.append(str(candidate))
+              if missing:
+                  raise SystemExit(f'{toc_path}: missing files: {missing}')
+
+          feral = (package / 'RetreatUI_Classes' / 'Druid' / 'Feral.lua').read_text(encoding='utf-8')
+          required = [
+              '"Mangle (Cat)"',
+              '"Shred"',
+              '"Rake"',
+              '"Rip"',
+              '"Ferocious Bite"',
+              '"Tiger\'s Fury"',
+              'mainLines > 1 and -303 or -263',
+          ]
+          for token in required:
+              if token not in feral:
+                  raise SystemExit(f'Feral foundation is missing {token}')
+
+          print('TBC Anniversary Feral staging package validated')
+          PY
