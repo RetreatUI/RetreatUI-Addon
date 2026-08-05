@@ -12,6 +12,10 @@ function RUI:GetDetectedClass() return self.testClass end
 function RUI:GetClassSpellRecords(className)
   return self.databases[className] or {}
 end
+function RUI:GetClassSpellDatabase(className)
+  local spells = self.databases[className]
+  return spells and {spells=spells} or nil
+end
 function RUI:GetSpellRecordCooldownHint(record)
   return tonumber(record and record.cooldownHint) or 0
 end
@@ -37,7 +41,7 @@ function RUI:GetLiveClassCooldownDefinitions()
 end
 
 -- StateTracker supplies the exact per-class state catalogue used by the final
--- action-row guard. Loading it here verifies names, aliases and prefixes.
+-- action-row guard. Loading it verifies names, aliases and prefixes.
 dofile("RetreatUI_Classes/StateTracker.lua")
 dofile("RetreatUI_Classes/CooldownPolicy.lua")
 dofile("RetreatUI_Classes/StateHUDGuard.lua")
@@ -50,6 +54,7 @@ local function Names(records)
 end
 
 local function AssertNames(label, actual, expected)
+  table.sort(expected)
   local got, want = Names(actual), table.concat(expected, "|")
   if got ~= want then
     error(string.format("%s\nexpected: %s\nactual:   %s", label, want, got), 2)
@@ -70,38 +75,42 @@ RUI.databases.Bloodmage = {
     partyCooldown=true, cooldownCategory="defensive"},
   {name="Uncurated Long Offensive", category="offensive", trackCooldown=true, cooldownHint=60},
   {name="Uncurated Long Defensive", category="defensive", trackCooldown=true, cooldownHint=60},
+  {name="Hidden Offensive", category="offensive", trackCooldown=true, cooldownHint=45, trackHUD=false},
   {name="Cursed Form", category="rotation", trackCooldown=true, cooldownHint=3},
   {name="Mortal Form", category="form", trackCooldown=true, cooldownHint=3},
-  {name="Hidden Spell", category="rotation", trackCooldown=true, cooldownHint=3, trackHUD=false},
-  {name="Passive Spell", category="rotation", trackCooldown=true, cooldownHint=3, passive=true},
-  {name="Unlearned Spell", category="rotation", trackCooldown=true, cooldownHint=3, learned=false},
+  {name="Hidden Rotation", category="rotation", trackCooldown=true, cooldownHint=3, trackHUD=false},
+  {name="Passive Offensive", category="offensive", trackCooldown=true, cooldownHint=60, passive=true},
+  {name="Unlearned Defensive", category="defensive", trackCooldown=true, cooldownHint=60, learned=false},
+  {name="Unapproved Audit Burst", category="offensive", trackCooldown=true, cooldownHint=60,
+    auditRecord=true},
 }
 
-AssertNames("Bloodmage Main Rotation must contain short learned rotational cooldowns only",
+AssertNames("Main Rotation must contain every learned offensive/defensive cooldown and rotational filler",
   RUI:GetHUDSpellDefinitions("Bloodmage", "core"), {
     "Explicit Live Safety Net",
     "Four Second Offensive Filler",
+    "Hidden Offensive",
+    "Major Burst",
+    "Major Wall",
     "Short Charge Filler",
     "Three Second Builder",
     "Two Second Resource Button",
+    "Uncurated Long Defensive",
+    "Uncurated Long Offensive",
   })
 
-AssertNames("Bloodmage Utility must contain combat utility, not stances",
+AssertNames("Utility must contain combat utility only",
   RUI:GetHUDSpellDefinitions("Bloodmage", "utility"), {
     "Aneurysm",
     "Dash",
-    "Uncurated Long Defensive",
   })
 
-AssertNames("Bloodmage Offensive row must contain only explicitly curated majors",
-  RUI:GetHUDSpellDefinitions("Bloodmage", "offensive"), {
-    "Major Burst",
-  })
-
-AssertNames("Bloodmage Defensive row must contain only explicitly curated majors",
-  RUI:GetHUDSpellDefinitions("Bloodmage", "defensive"), {
-    "Major Wall",
-  })
+AssertNames("Dedicated Offensive row must be retired",
+  RUI:GetHUDSpellDefinitions("Bloodmage", "offensive"), {})
+AssertNames("Dedicated Defensive row must be retired",
+  RUI:GetHUDSpellDefinitions("Bloodmage", "defensive"), {})
+AssertNames("Class cooldown-row API must be retired",
+  RUI:GetClassCooldownRowDefinitions("Bloodmage", "offensive"), {})
 
 local stateCases = {
   ["Sun Cleric"] = "Vow of Light",
@@ -118,14 +127,14 @@ for className, spellName in pairs(stateCases) do
     {name=spellName, category="offensive", trackCooldown=true, cooldownHint=3,
       partyCooldown=true, cooldownCategory="offensive", forceMain=true},
     {name="Real Filler", category="rotation", trackCooldown=true, cooldownHint=3},
+    {name="Real Defensive", category="defensive", trackCooldown=true, cooldownHint=90},
   }
   AssertNames(className .. " state activation must never enter Main Rotation",
     RUI:GetHUDSpellDefinitions(className, "core"), {
       "Explicit Live Safety Net",
+      "Real Defensive",
       "Real Filler",
     })
-  AssertNames(className .. " state activation must never enter Offensive Cooldowns",
-    RUI:GetHUDSpellDefinitions(className, "offensive"), {})
 end
 
-print("RetreatUI HUD policy tests passed")
+print("RetreatUI single-main-row HUD policy tests passed")
