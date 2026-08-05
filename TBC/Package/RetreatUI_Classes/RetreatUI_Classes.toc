@@ -1,0 +1,10 @@
+## Interface: 20505
+## Title: RetreatUI Classes
+## Notes: Class HUD modules for RetreatUI on TBC Classic Anniversary.
+## Author: Retreat
+## Version: 0.1.0-dev
+## Dependencies: RetreatUI
+## DefaultState: Enabled
+
+Loader.lua
+Druid\Feral.lua
