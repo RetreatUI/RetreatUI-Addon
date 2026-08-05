@@ -9,6 +9,7 @@ local OriginalRegisterAdvancedClassHUD = RUI.RegisterAdvancedClassHUD
 function RUI:RegisterAdvancedClassHUD(className, options)
   options = options or {}
   options.maxCore = 100
+  options.mainRowFirstLineMax = 9
   return OriginalRegisterAdvancedClassHUD(self, className, options)
 end
 
