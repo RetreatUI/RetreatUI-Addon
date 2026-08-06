@@ -68,6 +68,29 @@ jobs:
               if missing:
                   raise SystemExit(f'{toc_path}: missing files: {missing}')
 
+          class_toc = (package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc').read_text(encoding='utf-8-sig')
+          if 'Druid\\PowershiftMacro.lua' not in class_toc:
+              raise SystemExit('The powershift macro module is not loaded by RetreatUI_Classes.toc')
+          if class_toc.index('Druid\\PowershiftMacro.lua') > class_toc.index('Druid\\Feral.lua'):
+              raise SystemExit('The powershift macro module must load before the Feral HUD')
+
+          powershift = (package / 'RetreatUI_Classes' / 'Druid' / 'PowershiftMacro.lua').read_text(encoding='utf-8')
+          macro_body = '#showtooltip\\n/cancelaura Cat Form\\n/cast !Cat Form'
+          required_macro_tokens = [
+              'local MACRO_NAME = "RUI Powershift"',
+              f'local MACRO_BODY = "{macro_body}"',
+              'CreateMacro(MACRO_NAME, MACRO_ICON, MACRO_BODY, 1)',
+              'PLAYER_REGEN_ENABLED',
+              'RUI:RegisterModule("FeralPowershiftMacro", PowershiftMacro)',
+          ]
+          for token in required_macro_tokens:
+              if token not in powershift:
+                  raise SystemExit(f'Powershift macro module is missing {token}')
+
+          events = (package / 'RetreatUI' / 'Core' / 'Events.lua').read_text(encoding='utf-8')
+          if 'command == "macro"' not in events or '/ruitbc macro' not in events:
+              raise SystemExit('The /ruitbc macro command is missing')
+
           feral = (package / 'RetreatUI_Classes' / 'Druid' / 'Feral.lua').read_text(encoding='utf-8')
           required = [
               '"Mangle (Cat)"',
@@ -82,5 +105,5 @@ jobs:
               if token not in feral:
                   raise SystemExit(f'Feral foundation is missing {token}')
 
-          print('TBC Anniversary Feral staging package validated')
+          print('TBC Anniversary Feral staging package and powershift macro validated')
           PY
