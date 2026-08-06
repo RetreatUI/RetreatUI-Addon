@@ -1,4 +1,4 @@
-## Interface: 20505
+## Interface: 20506
 ## Title: RetreatUI
 ## Notes: RetreatUI core for TBC Classic Anniversary.
 ## Author: Retreat
@@ -9,6 +9,8 @@
 
 Loader.lua
 Core\Theme.lua
+Core\GeneratedTBCData.lua
 Core\Spellbook.lua
 Core\HUDWidgets.lua
+Core\RacialAndTrinketTracking.lua
 Core\Events.lua
