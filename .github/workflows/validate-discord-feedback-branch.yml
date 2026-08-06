@@ -1,0 +1,71 @@
+name: Validate Discord feedback branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/validate-discord-feedback-branch.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out active HUD branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/class-hud-cooldown-rows
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1 zip
+
+      - name: Validate Lua syntax
+        run: |
+          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 \
+            | sort -z \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate HUD duplicate protection and layout policy
+        run: |
+          set -euo pipefail
+          lua5.1 tests/test_hud_duplicates.lua
+          lua5.1 tests/test_hud_policy.lua
+          lua5.1 tests/test_main_bar_wrap.lua
+          lua5.1 tests/test_bloodmage_eternal_classification.lua
+          python3 tests/test_crash_safety.py
+          python3 tests/test_knight_wrap.py
+
+      - name: Validate TOC references
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for toc_path in (Path('RetreatUI/RetreatUI.toc'), Path('RetreatUI_Classes/RetreatUI_Classes.toc')):
+              root = toc_path.parent
+              missing = []
+              for raw in toc_path.read_text(encoding='utf-8-sig').splitlines():
+                  line = raw.strip()
+                  if not line or line.startswith('#'):
+                      continue
+                  candidate = root / line.replace('\\', '/')
+                  if not candidate.is_file():
+                      missing.append(str(candidate))
+              if missing:
+                  raise SystemExit(f'{toc_path}: missing references: {missing}')
+          print('Validated all TOC file references')
+          PY
+
+      - name: Build Discord feedback test package
+        run: zip -qr RetreatUI_Discord_Feedback_Test.zip RetreatUI RetreatUI_Classes
+
+      - name: Upload test package
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-Discord-Feedback-Test
+          path: RetreatUI_Discord_Feedback_Test.zip
+          if-no-files-found: error
+          retention-days: 14
