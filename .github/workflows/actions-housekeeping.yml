@@ -7,7 +7,7 @@ on:
     paths:
       - ".github/workflows/actions-housekeeping.yml"
   schedule:
-    - cron: "29 3 * * *"
+    - cron: "17 * * * *"
 
 permissions:
   actions: write
@@ -50,12 +50,8 @@ jobs:
           current_run_id = int(os.environ["CURRENT_RUN_ID"])
 
           def gh_json(path):
-              output = subprocess.check_output(
-                  ["gh", "api", "--paginate", path],
-                  text=True,
-              )
-              pages = [json.loads(line) for line in output.splitlines() if line.strip()]
-              return pages
+              output = subprocess.check_output(["gh", "api", "--paginate", path], text=True)
+              return [json.loads(line) for line in output.splitlines() if line.strip()]
 
           workflows = []
           for page in gh_json(f"/repos/{repo}/actions/workflows?per_page=100"):
@@ -64,9 +60,7 @@ jobs:
           for workflow in workflows:
               workflow_id = workflow["id"]
               runs = []
-              for page in gh_json(
-                  f"/repos/{repo}/actions/workflows/{workflow_id}/runs?status=completed&per_page=100"
-              ):
+              for page in gh_json(f"/repos/{repo}/actions/workflows/{workflow_id}/runs?status=completed&per_page=100"):
                   runs.extend(page.get("workflow_runs", []))
 
               runs.sort(key=lambda run: run.get("created_at", ""), reverse=True)
@@ -78,7 +72,4 @@ jobs:
                   if run_id in protected:
                       continue
                   print(f"Deleting completed run {run_id} from workflow {workflow_id}")
-                  subprocess.run(
-                      ["gh", "api", "--method", "DELETE", f"/repos/{repo}/actions/runs/{run_id}"],
-                      check=True,
-                  )
+                  subprocess.run(["gh", "api", "--method", "DELETE", f"/repos/{repo}/actions/runs/{run_id}"], check=True)
