@@ -1,25 +1,22 @@
-# RetreatUI v1.1.2
+# RetreatUI v1.1.4
 
-RetreatUI 1.1.2 promotes the current beta.30 codebase to the stable Release channel.
+RetreatUI 1.1.4 is a focused HUD, nameplate and party-frame reliability update.
 
-## Removed systems
+## TurboPlates
 
-Party utility and interrupt tracking have been permanently removed. This includes party interrupts, combat resurrection tracking, dispels, externals and group defensives. The component no longer appears in the modular installer, and an upgrade migration disables old SavedVariables so previous profiles cannot re-enable it.
+- Caster and mana-user nameplates remain blue during normal combat states.
+- Tanks now receive a clearly distinct orange-red state when they do not own threat on those enemies.
+- The threat state is refreshed after TurboPlates repaints its mana overlay, preventing the warning color from being immediately overwritten.
 
-## Performance and stability
+## Class HUDs
 
-- Centralized spell, talent and build refresh scheduling instead of overlapping multi-pass refresh loops.
-- Added a short shared spellbook-scan cache so RetreatUI systems reuse the same live spellbook result.
-- Defers expensive build/profile and HUD reconstruction until combat ends when Ascension dispatches relevant events during a pull.
-- NPC cooldown tracking caches active nameplates by GUID and caches spell textures.
-- Keeps protection against the native `CharacterAdvancementBuildEntry::UpdatePointers` crash.
+- Added a global duplicate guard for every supported class and HUD row.
+- Fixed duplicate Unleash Pestilence entries in the Knight of Xoroth Hellfire HUD.
+- Moved the Guardian stance tracker six pixels upward so it no longer overlaps the resource bar.
 
-## Class and HUD changes
+## Party frames
 
-- Includes the curated Pyromancer, Tinker, non-Eternal Bloodmage, Templar and Chronomancer class updates developed through beta.28-beta.30.
-- Eternal Bloodmage remains isolated from non-Eternal Bloodmage audit records.
-- Runtime replacement IDs can read cooldowns without making an unlearned ability appear on the HUD.
-- Audit records cannot automatically expand approved HUD rows.
-- Tinker remains locked to its curated HUD rows.
+- Reduced and realigned party-frame name and health text in the packaged RetreatUI ElvUI profile.
+- Removed party power text while keeping the power bar visible, reducing visual overlap on compact frames.
 
-This is the stable successor to RetreatUI 1.1.0 and replaces the beta.30 prerelease for Release-channel users.
+This release includes all RetreatUI fixes committed after 1.1.3 and is intended for the stable Release channel.
