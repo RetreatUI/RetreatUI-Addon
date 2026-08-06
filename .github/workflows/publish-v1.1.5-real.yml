@@ -1,6 +1,9 @@
 name: Publish real RetreatUI v1.1.5
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
   push:
     branches: [main]
     paths:
@@ -15,7 +18,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Stop when release already exists
+        id: existing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          if gh release view v1.1.5 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Validate addon versions
+        if: steps.existing.outputs.exists != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -25,6 +41,7 @@ jobs:
           test "$classes" = "1.1.5"
 
       - name: Package verified addon
+        if: steps.existing.outputs.exists != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -41,15 +58,12 @@ jobs:
           sha256sum dist/RetreatUI_v1.1.5.zip > dist/RetreatUI_v1.1.5.zip.sha256
 
       - name: Publish GitHub release
+        if: steps.existing.outputs.exists != 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if gh release view v1.1.5 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "v1.1.5 already exists"
-            exit 0
-          fi
           cat > release-notes.md <<'NOTES'
           ## RetreatUI 1.1.5
 
@@ -66,7 +80,8 @@ jobs:
             --notes-file release-notes.md \
             --latest
 
-      - name: Remove temporary workflow
+      - name: Remove temporary publisher after success
+        if: steps.existing.outputs.exists != 'true'
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
