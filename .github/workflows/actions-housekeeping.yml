@@ -1,0 +1,84 @@
+name: Actions housekeeping
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/actions-housekeeping.yml"
+  schedule:
+    - cron: "29 3 * * *"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: actions-housekeeping
+  cancel-in-progress: true
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete all Actions artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api --paginate "/repos/$REPO/actions/artifacts?per_page=100" \
+            --jq '.artifacts[].id' | while read -r artifact_id; do
+              [ -n "$artifact_id" ] || continue
+              echo "Deleting artifact $artifact_id"
+              gh api --method DELETE "/repos/$REPO/actions/artifacts/$artifact_id"
+            done
+
+      - name: Keep only five completed runs per workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          CURRENT_RUN_ID: ${{ github.run_id }}
+        shell: python
+        run: |
+          import json
+          import os
+          import subprocess
+
+          repo = os.environ["REPO"]
+          current_run_id = int(os.environ["CURRENT_RUN_ID"])
+
+          def gh_json(path):
+              output = subprocess.check_output(
+                  ["gh", "api", "--paginate", path],
+                  text=True,
+              )
+              pages = [json.loads(line) for line in output.splitlines() if line.strip()]
+              return pages
+
+          workflows = []
+          for page in gh_json(f"/repos/{repo}/actions/workflows?per_page=100"):
+              workflows.extend(page.get("workflows", []))
+
+          for workflow in workflows:
+              workflow_id = workflow["id"]
+              runs = []
+              for page in gh_json(
+                  f"/repos/{repo}/actions/workflows/{workflow_id}/runs?status=completed&per_page=100"
+              ):
+                  runs.extend(page.get("workflow_runs", []))
+
+              runs.sort(key=lambda run: run.get("created_at", ""), reverse=True)
+              protected = {run["id"] for run in runs[:5]}
+              protected.add(current_run_id)
+
+              for run in runs[5:]:
+                  run_id = run["id"]
+                  if run_id in protected:
+                      continue
+                  print(f"Deleting completed run {run_id} from workflow {workflow_id}")
+                  subprocess.run(
+                      ["gh", "api", "--method", "DELETE", f"/repos/{repo}/actions/runs/{run_id}"],
+                      check=True,
+                  )
