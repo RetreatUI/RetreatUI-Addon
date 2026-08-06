@@ -1,4 +1,5 @@
 ﻿Entity Type,ID,Class/Race,Expected Name,Source,Reason
+Excluded teaching spell,563,Druid,Moonfire,https://www.wowhead.com/tbc/spell=563,"Wowhead describes this ID as a spell-teaching record, not a castable player spell rank."
 Racial/Shared spell,23273,Shared,,https://www.wowhead.com/tbc/spell=23273,Could not fetch https://nether.wowhead.com/tbc/tooltip/spell/23273: HTTP 404
 Spell,407988,Druid,Savage Roar,https://www.wowhead.com/tbc/spell=407988,Could not fetch https://nether.wowhead.com/tbc/tooltip/spell/407988: HTTP 404
 Spell,407995,Druid,Mangle,https://www.wowhead.com/tbc/spell=407995,Could not fetch https://nether.wowhead.com/tbc/tooltip/spell/407995: HTTP 404

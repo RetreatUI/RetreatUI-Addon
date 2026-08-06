@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T09:12:06Z",
+  "generated_at": "2026-08-06T09:21:32Z",
   "canonical_source": "Wowhead TBC tooltip JSON",
   "wowhead_tooltip_endpoint": "https://nether.wowhead.com/tbc/tooltip/<spell|item>/<id>",
   "sources": {
@@ -18,16 +18,16 @@
     }
   },
   "counts": {
-    "all_spell_rows": 3261,
-    "unique_spell_ids": 3261,
+    "all_spell_rows": 3260,
+    "unique_spell_ids": 3260,
     "racial_shared_rows": 75,
     "racial_rows": 73,
     "trinket_proc_mappings": 34,
     "missing_tooltips": 134,
     "by_class": {
       "Druid": {
-        "rows": 400,
-        "ability_rows": 228,
+        "rows": 399,
+        "ability_rows": 227,
         "talent_rows": 193
       },
       "Hunter": {
@@ -72,6 +72,8 @@
       }
     },
     "excluded_non_tbc_candidates": 134,
+    "excluded_teaching_records": 1,
+    "excluded_total_candidates": 135,
     "unresolved_included_rows": 0
   },
   "tracking_policy": {
@@ -79,5 +81,5 @@
     "passive_proc_trinkets": "Static item-to-visible-buff mapping generated from LibSpellDB and verified through Wowhead tooltips.",
     "racials": "Filtered at runtime by UnitRace and categorized into Main/Utility/Data only."
   },
-  "coverage_note": "Rows unavailable from the Wowhead TBC tooltip endpoint are excluded from the canonical catalog and retained in missing_data.csv as an audit trail."
+  "coverage_note": "Rows unavailable from the Wowhead TBC tooltip endpoint and spell-teaching records are excluded from the canonical player catalog and retained in missing_data.csv as an audit trail."
 }

@@ -7,7 +7,6 @@ Balance,Ability,Hurricane,17402,16914,Rank 3,60,"Creates a violent storm in the 
 136 Nature damage to enemies every 1 sec, and increasing the time between attacks by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,1495 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=17402,
 Balance,Ability,Hurricane,27012,16914,Rank 4,70,"Creates a violent storm in the target area causing 
 206 Nature damage to enemies every 1 sec, and increasing the time between attacks by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,1905 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=27012,
-Balance,Ability,Moonfire,563,8921,Rank 6,,Teaches Moonfire (Rank 6).,Offensive,Main,0,12,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=563,
 Balance,Ability,Moonfire,8921,8921,Rank 2,4,"Burns the enemy for 
 9 to 
 12 Arcane damage and then an additional 12 Arcane damage over 9 sec.",Offensive,Main,0,12,25 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8921,
