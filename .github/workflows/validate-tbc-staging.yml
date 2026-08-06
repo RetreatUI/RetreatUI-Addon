@@ -155,11 +155,13 @@ jobs:
           manifest = json.loads((database / 'manifest.json').read_text(encoding='utf-8'))
           counts = manifest['counts']
           expected_counts = {
-              'all_spell_rows': 3261,
-              'unique_spell_ids': 3261,
+              'all_spell_rows': 3260,
+              'unique_spell_ids': 3260,
               'racial_rows': 73,
               'trinket_proc_mappings': 34,
               'excluded_non_tbc_candidates': 134,
+              'excluded_teaching_records': 1,
+              'excluded_total_candidates': 135,
               'unresolved_included_rows': 0,
           }
           for key, expected in expected_counts.items():
@@ -168,10 +170,21 @@ jobs:
 
           with (database / 'all_spells.csv').open(encoding='utf-8-sig', newline='') as handle:
               spell_rows = list(csv.DictReader(handle))
-          if len(spell_rows) != 3261:
-              raise SystemExit(f'Expected 3261 canonical spell/talent rows, got {len(spell_rows)}')
+          if len(spell_rows) != 3260:
+              raise SystemExit(f'Expected 3260 canonical spell/talent rows, got {len(spell_rows)}')
           if not {'Ability', 'Talent', 'Talent Ability'}.issuperset({row['Type'] for row in spell_rows}):
               raise SystemExit('Unknown row type in the generated TBC catalog')
+          if any(int(row['Spell ID']) == 563 for row in spell_rows):
+              raise SystemExit('Spell-teaching record 563 leaked into the canonical player catalog')
+
+          with (database / 'missing_data.csv').open(encoding='utf-8-sig', newline='') as handle:
+              missing_rows = list(csv.DictReader(handle))
+          teaching_rows = [
+              row for row in missing_rows
+              if row['Entity Type'] == 'Excluded teaching spell' and int(row['ID']) == 563
+          ]
+          if len(teaching_rows) != 1:
+              raise SystemExit('The excluded Moonfire teaching record is missing from the audit catalog')
 
           with (database / 'racials.csv').open(encoding='utf-8-sig', newline='') as handle:
               racial_rows = list(csv.DictReader(handle))
