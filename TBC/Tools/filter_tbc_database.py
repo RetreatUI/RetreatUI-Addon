@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Remove source candidates that do not exist in Wowhead's TBC dataset.
+"""Remove source candidates that are not canonical TBC player spells.
 
 LibSpellDB intentionally serves multiple Classic flavours. The Wowhead TBC
 endpoint is the final availability gate for RetreatUI's TBC catalog. Missing
 Talent rows are treated as fatal because WoWSims should enumerate only genuine
-TBC talent ranks; missing Era/SoD ability candidates are retained only in the
-Missing Data audit CSV.
+TBC talent ranks. Era/SoD candidates and spellbook-teaching records are retained
+only in the Missing Data audit CSV.
 """
 
 from __future__ import annotations
@@ -41,6 +41,11 @@ def lua_quote(value: str) -> str:
 def as_number(value: str) -> str:
     value = str(value or "").strip()
     return value if value else "0"
+
+
+def is_teaching_record(row: dict[str, str]) -> bool:
+    description = str(row.get("Description") or "").strip().lower()
+    return description.startswith("teaches ")
 
 
 def write_runtime_lua(racials: list[dict[str, str]], trinkets: list[dict[str, str]], manifest: dict[str, Any]) -> None:
@@ -87,7 +92,7 @@ def write_runtime_lua(racials: list[dict[str, str]], trinkets: list[dict[str, st
 
 
 def main() -> None:
-    _, missing_rows = read_csv(ROOT / "missing_data.csv")
+    missing_fields, missing_rows = read_csv(ROOT / "missing_data.csv")
     missing_talents = [row for row in missing_rows if row.get("Entity Type") == "Talent"]
     if missing_talents:
         details = ", ".join(f"{row['Class/Race']}:{row['ID']}" for row in missing_talents[:20])
@@ -110,13 +115,37 @@ def main() -> None:
     }
 
     all_fields, all_rows = read_csv(ROOT / "all_spells.csv")
-    filtered_all = [row for row in all_rows if int(row["Spell ID"]) not in missing_spell_ids]
+    teaching_rows = [row for row in all_rows if is_teaching_record(row)]
+    teaching_spell_ids = {int(row["Spell ID"]) for row in teaching_rows}
+
+    for row in teaching_rows:
+        missing_rows.append({
+            "Entity Type": "Excluded teaching spell",
+            "ID": row["Spell ID"],
+            "Class/Race": row["Class"],
+            "Expected Name": row["Name"],
+            "Source": row["Wowhead Source"],
+            "Reason": "Wowhead describes this ID as a spell-teaching record, not a castable player spell rank.",
+        })
+
+    missing_rows = list({
+        (row["Entity Type"], int(row["ID"]), row["Class/Race"]): row
+        for row in missing_rows
+    }.values())
+    missing_rows.sort(key=lambda row: (row["Entity Type"], row["Class/Race"], int(row["ID"])))
+    write_csv(ROOT / "missing_data.csv", missing_fields, missing_rows)
+
+    def keep_spell(row: dict[str, str]) -> bool:
+        spell_id = int(row["Spell ID"])
+        return spell_id not in missing_spell_ids and spell_id not in teaching_spell_ids
+
+    filtered_all = [row for row in all_rows if keep_spell(row)]
     write_csv(ROOT / "all_spells.csv", all_fields, filtered_all)
 
     for class_name in CLASSES:
         path = ROOT / f"{class_name.lower()}.csv"
         fields, rows = read_csv(path)
-        rows = [row for row in rows if int(row["Spell ID"]) not in missing_spell_ids]
+        rows = [row for row in rows if keep_spell(row)]
         write_csv(path, fields, rows)
 
     racial_fields, racials = read_csv(ROOT / "racials.csv")
@@ -144,18 +173,23 @@ def main() -> None:
         if row["Type"] in {"Talent", "Talent Ability"}:
             details["talent_rows"] += 1
 
+    non_tbc_count = sum(1 for row in missing_rows if row.get("Entity Type") != "Excluded teaching spell")
+    teaching_count = sum(1 for row in missing_rows if row.get("Entity Type") == "Excluded teaching spell")
+
     manifest["counts"].update({
         "all_spell_rows": len(filtered_all),
         "unique_spell_ids": len({int(row["Spell ID"]) for row in filtered_all}),
         "racial_shared_rows": len(racials),
         "racial_rows": sum(1 for row in racials if row.get("Type") == "Racial"),
         "trinket_proc_mappings": len(filtered_trinkets),
-        "excluded_non_tbc_candidates": len(missing_rows),
+        "excluded_non_tbc_candidates": non_tbc_count,
+        "excluded_teaching_records": teaching_count,
+        "excluded_total_candidates": len(missing_rows),
         "unresolved_included_rows": 0,
         "by_class": {class_name: class_counts[class_name] for class_name in CLASSES},
     })
     manifest["coverage_note"] = (
-        "Rows unavailable from the Wowhead TBC tooltip endpoint are excluded from the canonical catalog and retained in missing_data.csv as an audit trail."
+        "Rows unavailable from the Wowhead TBC tooltip endpoint and spell-teaching records are excluded from the canonical player catalog and retained in missing_data.csv as an audit trail."
     )
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8", newline="\n")
     write_runtime_lua(racials, filtered_trinkets, manifest)
