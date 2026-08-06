@@ -10,5 +10,5 @@
 Core.lua
 Profiles.lua
 WeakAuras.lua
-Druid.lua
+DruidRuntime.lua
 Installer.lua
