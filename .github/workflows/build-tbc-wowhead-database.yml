@@ -117,6 +117,7 @@ jobs:
             exit 0
           fi
           git commit -m "Generate filtered TBC Wowhead spell database"
+          git pull --rebase origin feature/tbc-anniversary-feral-foundation
           git push origin HEAD:feature/tbc-anniversary-feral-foundation
 
       - name: Upload database artifact
