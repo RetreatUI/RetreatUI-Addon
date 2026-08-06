@@ -3,7 +3,7 @@ local RUI = RetreatUI
 if not RUI then return end
 
 RUI.generatedTBCData = RUI.generatedTBCData or {}
-RUI.generatedTBCData.generatedAt = [=[2026-08-06T08:31:57Z]=]
+RUI.generatedTBCData.generatedAt = [=[2026-08-06T09:12:06Z]=]
 RUI.generatedTBCData.libSpellDBRevision = [=[edc189b928df86376339d00c0760c2d894ae0bad]=]
 RUI.generatedTBCData.wowSimsRevision = [=[509f669a6a5e1a766b3dd71ff0bc5baa74985d56]=]
 
