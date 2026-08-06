@@ -136,10 +136,11 @@ function RUI:ReflowClassStateTrackers()
     if type(tracker) == "table" and FrameVisible(tracker.parent) then
       local size = StateSize(tracker.ruiGlobalStateSize or (tracker.options and tracker.options.size))
       local gap = StateGap(tracker.ruiGlobalStateGap or (tracker.options and tracker.options.gap))
+      local yOffset = Number(tracker.ruiGlobalStateYOffset, 0)
       for _, frame in ipairs(tracker.frames or {}) do
         if FrameVisible(frame) then
           frame:ClearAllPoints()
-          frame:SetPoint("LEFT", anchor, "RIGHT", cursor, 0)
+          frame:SetPoint("LEFT", anchor, "RIGHT", cursor, yOffset)
           ForceLabelAbove(frame, frame.stateText)
           MatchTrinketLayer(frame)
           cursor = cursor + size + gap
@@ -215,6 +216,10 @@ local function RegisterClassTracker(tracker, size, gap)
   tracker.ruiGlobalStateSize = StateSize(size)
   tracker.ruiGlobalStateGap = StateGap(gap)
 
+  local normalizedClass = RUI.NormalizeClassName and RUI:NormalizeClassName(tracker.className) or tracker.className
+  local defaultYOffset = normalizedClass == "Guardian" and 10 or 0
+  tracker.ruiGlobalStateYOffset = Number(tracker.options and tracker.options.globalYOffset, defaultYOffset)
+
   for _, methodName in ipairs({"Update", "UpdateTimers", "Hide", "Position"}) do
     local original = tracker[methodName]
     if type(original) == "function" then
@@ -283,4 +288,4 @@ end)
 
 RUI:PositionClassStateAnchor()
 RUI._globalClassStateAnchorLoaded = true
-RUI._globalClassStateAnchorRevision = 2
+RUI._globalClassStateAnchorRevision = 3
