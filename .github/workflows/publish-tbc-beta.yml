@@ -1,0 +1,107 @@
+name: Publish RetreatUI TBC Beta
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "RetreatUI_TBC/**"
+      - ".github/tbc-release-manifest.json"
+      - ".github/workflows/publish-tbc-beta.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: retreatui-tbc-beta
+  cancel-in-progress: false
+
+jobs:
+  package:
+    name: Validate and publish TBC beta
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read manifest
+        id: manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(jq -r '.version' .github/tbc-release-manifest.json)"
+          TITLE="$(jq -r '.title' .github/tbc-release-manifest.json)"
+          PUBLISH="$(jq -r '.publish' .github/tbc-release-manifest.json)"
+          [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+-beta\.[0-9]+$ ]]
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "title=$TITLE" >> "$GITHUB_OUTPUT"
+          echo "publish=$PUBLISH" >> "$GITHUB_OUTPUT"
+          echo "tag=tbc-v$VERSION" >> "$GITHUB_OUTPUT"
+          echo "asset=RetreatUI_TBC_v$VERSION.zip" >> "$GITHUB_OUTPUT"
+
+      - name: Validate addon
+        shell: bash
+        env:
+          VERSION: ${{ steps.manifest.outputs.version }}
+        run: |
+          set -euo pipefail
+          test -f RetreatUI_TBC/RetreatUI_TBC.toc
+          grep -q "^## Author: Retreat$" RetreatUI_TBC/RetreatUI_TBC.toc
+          grep -q "^## Version: $VERSION$" RetreatUI_TBC/RetreatUI_TBC.toc
+          for file in Core.lua Profiles.lua WeakAuras.lua DruidRuntime.lua Installer.lua; do
+            test -s "RetreatUI_TBC/$file"
+          done
+          ! grep -R "OpenAI\|ChatGPT" RetreatUI_TBC
+
+      - name: Package
+        shell: bash
+        env:
+          ASSET: ${{ steps.manifest.outputs.asset }}
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist/package
+          cp -a RetreatUI_TBC dist/package/RetreatUI_TBC
+          (cd dist/package && zip -r "../$ASSET" RetreatUI_TBC)
+          test -s "dist/$ASSET"
+          zipinfo -1 "dist/$ASSET" | grep -q '^RetreatUI_TBC/RetreatUI_TBC\.toc$'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.manifest.outputs.asset }}
+          path: dist/${{ steps.manifest.outputs.asset }}
+          if-no-files-found: error
+
+      - name: Create or update prerelease
+        if: steps.manifest.outputs.publish == 'true'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.manifest.outputs.tag }}
+          TITLE: ${{ steps.manifest.outputs.title }}
+          ASSET: ${{ steps.manifest.outputs.asset }}
+        run: |
+          set -euo pipefail
+          NOTES=$(cat <<'EOF'
+          First testable RetreatUI TBC beta.
+
+          Includes:
+          - Separate TBC addon package and installer.
+          - RetreatUI-style ElvUI defaults.
+          - Details profile integration.
+          - Plater and WeakAuras import framework.
+          - Form-aware Druid resource and main HUD.
+          - Cat, Bear and Caster ability switching.
+          - Combo points and target DoT timers for Rake, Rip, Lacerate, Moonfire and Insect Swarm.
+          - Druid utility row including Rebirth, Innervate and Barkskin.
+
+          This is a testing prerelease. Plater and WeakAuras serialized profile payloads are still being finalized.
+          EOF
+          )
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "dist/$ASSET" --clobber
+            gh release edit "$TAG" --title "$TITLE" --notes "$NOTES" --prerelease
+          else
+            gh release create "$TAG" "dist/$ASSET" --target "$GITHUB_SHA" --title "$TITLE" --notes "$NOTES" --prerelease
+          fi
