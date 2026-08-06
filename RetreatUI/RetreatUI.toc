@@ -36,6 +36,7 @@ Core\RetiredPartyTrackers.lua
 Core\RecoverySafety.lua
 Core\BuffManager.lua
 Core\TotemBarMover.lua
+Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
