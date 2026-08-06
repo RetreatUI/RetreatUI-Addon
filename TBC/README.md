@@ -23,6 +23,19 @@ Initial scope:
 - Clearcasting and Tiger's Fury tracking
 - Cat Form state detection
 - RetreatUI dark styling, borders, spacing and font rules
+- automatic character macro for Feral powershifting
+
+## Powershift macro
+
+On a Druid, RetreatUI creates or repairs a character-specific macro named `RUI Powershift` outside combat:
+
+```text
+#showtooltip
+/cancelaura Cat Form
+/cast !Cat Form
+```
+
+The player still chooses the keybind by dragging the macro from the macro window to an action bar. If every character macro slot is occupied, RetreatUI prints a warning and the command `/ruitbc macro` can be used after a slot is freed.
 
 ## Package staging
 
