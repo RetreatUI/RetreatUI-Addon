@@ -1,0 +1,124 @@
+name: Build TBC Wowhead database
+
+on:
+  push:
+    branches:
+      - feature/tbc-anniversary-feral-foundation
+    paths:
+      - "TBC/Tools/build_wowhead_database.py"
+      - ".github/workflows/build-tbc-wowhead-database.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tbc-wowhead-database-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Check out feature branch
+        uses: actions/checkout@v4
+        with:
+          ref: feature/tbc-anniversary-feral-foundation
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install generator dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+          python -m pip install --disable-pip-version-check requests beautifulsoup4
+
+      - name: Generate canonical database
+        run: |
+          python TBC/Tools/build_wowhead_database.py --workers 12
+
+      - name: Validate generated outputs
+        run: |
+          python - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          root = Path("TBC/Data/generated")
+          manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
+          counts = manifest["counts"]
+
+          required = [
+              root / "all_spells.csv",
+              root / "racials.csv",
+              root / "trinkets.csv",
+              root / "missing_data.csv",
+              Path("TBC/Package/RetreatUI/Core/GeneratedTBCData.lua"),
+          ]
+          required.extend(root / f"{name}.csv" for name in (
+              "druid", "hunter", "mage", "paladin", "priest",
+              "rogue", "shaman", "warlock", "warrior",
+          ))
+          missing_files = [str(path) for path in required if not path.is_file()]
+          if missing_files:
+              raise SystemExit(f"Missing generated files: {missing_files}")
+
+          if counts["all_spell_rows"] < 1000:
+              raise SystemExit(f"Unexpectedly small spell catalog: {counts['all_spell_rows']}")
+          if counts["racial_rows"] < 10:
+              raise SystemExit(f"Unexpectedly small racial catalog: {counts['racial_rows']}")
+          if counts["trinket_proc_mappings"] < 20:
+              raise SystemExit(f"Unexpectedly small trinket catalog: {counts['trinket_proc_mappings']}")
+
+          for class_name, details in counts["by_class"].items():
+              if details["ability_rows"] < 20:
+                  raise SystemExit(f"{class_name}: too few ability rows: {details}")
+              if details["talent_rows"] < 50:
+                  raise SystemExit(f"{class_name}: too few talent rows: {details}")
+
+          with (root / "all_spells.csv").open(encoding="utf-8-sig", newline="") as handle:
+              rows = list(csv.DictReader(handle))
+          ids = {int(row["Spell ID"]) for row in rows}
+          required_ids = {
+              768,    # Cat Form
+              16979,  # Feral Charge
+              33876,  # Mangle (Cat)
+              20589,  # Escape Artist is in racials, checked below
+          }
+          if not {768, 16979, 33876}.issubset(ids):
+              raise SystemExit("Druid smoke-test spell IDs are missing")
+
+          with (root / "racials.csv").open(encoding="utf-8-sig", newline="") as handle:
+              racial_ids = {int(row["Spell ID"]) for row in csv.DictReader(handle)}
+          if not {20589, 7744, 20594, 20549, 26297}.issubset(racial_ids):
+              raise SystemExit("Core TBC racials are missing")
+
+          print(json.dumps(counts, indent=2))
+          PY
+
+      - name: Commit generated database
+        shell: bash
+        run: |
+          git config user.name "RetreatUI Database Bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add TBC/Data/generated TBC/Package/RetreatUI/Core/GeneratedTBCData.lua
+          if git diff --cached --quiet; then
+            echo "Generated database is unchanged."
+            exit 0
+          fi
+          git commit -m "Generate TBC Wowhead spell database"
+          git push origin HEAD:feature/tbc-anniversary-feral-foundation
+
+      - name: Upload database artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-TBC-Wowhead-Database
+          path: |
+            TBC/Data/generated
+            TBC/Package/RetreatUI/Core/GeneratedTBCData.lua
+          if-no-files-found: error
