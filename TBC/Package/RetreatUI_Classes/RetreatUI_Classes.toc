@@ -1,4 +1,4 @@
-## Interface: 20505
+## Interface: 20506
 ## Title: RetreatUI Classes
 ## Notes: Class HUD modules for RetreatUI on TBC Classic Anniversary.
 ## Author: Retreat
