@@ -8,6 +8,20 @@ This directory is the unreleased development staging area for the TBC Classic An
 - TBC Classic Anniversary is a separate addon implementation with the same RetreatUI layout and visual contract.
 - The launcher will expose both products, but TBC installation remains disabled until the first test build is ready.
 
+## Canonical spell database
+
+The generated database under `TBC/Data/generated` contains:
+
+- 3,261 Wowhead TBC-validated player ability and talent-rank rows
+- every rank from all nine TBC talent trees
+- 73 race-specific racial spell rows
+- 34 passive trinket-to-proc mappings
+- class-specific CSV files plus a combined all-spells catalog
+- an audit list of 134 non-TBC source candidates excluded after Wowhead validation
+- zero unresolved records inside the canonical catalog
+
+Wowhead TBC tooltip data is canonical for names, descriptions, ranks and source links. LibSpellDB supplies curated ability/rank enumeration and tracking metadata. WoWSims TBC talent-tree data supplies every talent node and rank spell ID.
+
 ## First supported HUD
 
 Feral Druid DPS is the first target.
@@ -18,9 +32,12 @@ Initial scope:
 - five Combo Point indicators
 - Main row for rotational and offensive abilities
 - Utility row for defensive and utility abilities
+- race-filtered learned racial abilities on the appropriate row
 - maximum nine icons on the first Main line
 - target aura tracking for Rake, Rip, Mangle and Faerie Fire
 - Clearcasting and Tiger's Fury tracking
+- equipped trinket icons and on-use cooldown tracking
+- passive trinket proc, stack, duration and internal-cooldown tracking when a verified mapping exists
 - Cat Form state detection
 - RetreatUI dark styling, borders, spacing and font rules
 - automatic character macro for Feral powershifting
@@ -48,4 +65,4 @@ No release or launcher manifest points at this staging package yet.
 
 ## Client
 
-Target client: TBC Classic Anniversary 2.5.5 (`## Interface: 20505`).
+Target client: TBC Classic Anniversary 2.5.6 (`## Interface: 20506`).
