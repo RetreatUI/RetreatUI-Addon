@@ -38,6 +38,8 @@ jobs:
       - name: Validate package structure
         run: |
           python3 - <<'PY'
+          import csv
+          import json
           from pathlib import Path
 
           package = Path('TBC/Package')
@@ -51,8 +53,8 @@ jobs:
               package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc',
           ):
               text = toc_path.read_text(encoding='utf-8-sig')
-              if '## Interface: 20505' not in text:
-                  raise SystemExit(f'{toc_path}: expected TBC Anniversary interface 20505')
+              if '## Interface: 20506' not in text:
+                  raise SystemExit(f'{toc_path}: expected TBC Anniversary interface 20506')
               if '## Author: Retreat' not in text:
                   raise SystemExit(f'{toc_path}: author must be Retreat')
 
@@ -67,6 +69,17 @@ jobs:
                       missing.append(str(candidate))
               if missing:
                   raise SystemExit(f'{toc_path}: missing files: {missing}')
+
+          core_toc = (package / 'RetreatUI' / 'RetreatUI.toc').read_text(encoding='utf-8-sig')
+          required_core_files = [
+              'Core\\GeneratedTBCData.lua',
+              'Core\\RacialAndTrinketTracking.lua',
+          ]
+          for token in required_core_files:
+              if token not in core_toc:
+                  raise SystemExit(f'RetreatUI.toc is missing {token}')
+          if core_toc.index('Core\\GeneratedTBCData.lua') > core_toc.index('Core\\RacialAndTrinketTracking.lua'):
+              raise SystemExit('Generated TBC data must load before the racial/trinket tracker')
 
           class_toc = (package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc').read_text(encoding='utf-8-sig')
           if 'Druid\\PowershiftMacro.lua' not in class_toc:
@@ -88,8 +101,38 @@ jobs:
                   raise SystemExit(f'Powershift macro module is missing {token}')
 
           events = (package / 'RetreatUI' / 'Core' / 'Events.lua').read_text(encoding='utf-8')
-          if 'command == "macro"' not in events or '/ruitbc macro' not in events:
-              raise SystemExit('The /ruitbc macro command is missing')
+          for token in (
+              'command == "macro"',
+              '/ruitbc macro',
+              'PLAYER_EQUIPMENT_CHANGED',
+              'UNIT_INVENTORY_CHANGED',
+              'BAG_UPDATE_COOLDOWN',
+          ):
+              if token not in events:
+                  raise SystemExit(f'TBC event coordinator is missing {token}')
+
+          tracking = (package / 'RetreatUI' / 'Core' / 'RacialAndTrinketTracking.lua').read_text(encoding='utf-8')
+          for token in (
+              'function RUI:GetPlayerRacialSpellNames()',
+              'function RUI:CreateTrinketTracker(parent)',
+              'function RUI:UpdateTrinketTracker(row)',
+              'GetInventoryItemID("player", frame.slot)',
+              'GetItemSpell(itemID)',
+              'mapping.procBuffID',
+              'mapping.icd',
+          ):
+              if token not in tracking:
+                  raise SystemExit(f'Racial/trinket tracker is missing {token}')
+
+          generated = (package / 'RetreatUI' / 'Core' / 'GeneratedTBCData.lua').read_text(encoding='utf-8')
+          for token in (
+              'RUI.generatedTBCData.racials = {',
+              'RUI.generatedTBCData.trinkets = {',
+              '[28830] = {',
+              'procBuffID = 34775',
+          ):
+              if token not in generated:
+                  raise SystemExit(f'Generated runtime data is missing {token}')
 
           feral = (package / 'RetreatUI_Classes' / 'Druid' / 'Feral.lua').read_text(encoding='utf-8')
           required = [
@@ -99,11 +142,45 @@ jobs:
               '"Rip"',
               '"Ferocious Bite"',
               '"Tiger\'s Fury"',
+              'RUI:GetPlayerRacialSpellNames()',
+              'RUI:CreateTrinketTracker(self.root)',
+              'RUI:UpdateTrinketTracker(self.trinketRow)',
               'mainLines > 1 and -303 or -263',
           ]
           for token in required:
               if token not in feral:
                   raise SystemExit(f'Feral foundation is missing {token}')
 
-          print('TBC Anniversary Feral staging package and powershift macro validated')
+          database = Path('TBC/Data/generated')
+          manifest = json.loads((database / 'manifest.json').read_text(encoding='utf-8'))
+          counts = manifest['counts']
+          expected_counts = {
+              'all_spell_rows': 3261,
+              'unique_spell_ids': 3261,
+              'racial_rows': 73,
+              'trinket_proc_mappings': 34,
+              'excluded_non_tbc_candidates': 134,
+              'unresolved_included_rows': 0,
+          }
+          for key, expected in expected_counts.items():
+              if counts.get(key) != expected:
+                  raise SystemExit(f'Unexpected generated database count for {key}: {counts.get(key)}')
+
+          with (database / 'all_spells.csv').open(encoding='utf-8-sig', newline='') as handle:
+              spell_rows = list(csv.DictReader(handle))
+          if len(spell_rows) != 3261:
+              raise SystemExit(f'Expected 3261 canonical spell/talent rows, got {len(spell_rows)}')
+          if not {'Ability', 'Talent', 'Talent Ability'}.issuperset({row['Type'] for row in spell_rows}):
+              raise SystemExit('Unknown row type in the generated TBC catalog')
+
+          with (database / 'racials.csv').open(encoding='utf-8-sig', newline='') as handle:
+              racial_rows = list(csv.DictReader(handle))
+          with (database / 'trinkets.csv').open(encoding='utf-8-sig', newline='') as handle:
+              trinket_rows = list(csv.DictReader(handle))
+          if sum(1 for row in racial_rows if row['Type'] == 'Racial') != 73:
+              raise SystemExit('The generated TBC racial catalog is incomplete')
+          if len(trinket_rows) != 34:
+              raise SystemExit('The generated TBC passive trinket mapping catalog is incomplete')
+
+          print('TBC Anniversary database, Feral HUD, racials, trinkets and powershift macro validated')
           PY
