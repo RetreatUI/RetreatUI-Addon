@@ -7,4 +7,5 @@
 ## DefaultState: Enabled
 
 Loader.lua
+Druid\PowershiftMacro.lua
 Druid\Feral.lua
