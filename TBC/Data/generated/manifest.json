@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-08-06T08:12:32Z",
+  "canonical_source": "Wowhead TBC tooltip JSON",
+  "wowhead_tooltip_endpoint": "https://nether.wowhead.com/tbc/tooltip/<spell|item>/<id>",
+  "sources": {
+    "wowhead": {
+      "url": "https://www.wowhead.com/tbc/"
+    },
+    "libspelldb": {
+      "repository": "https://github.com/veev-code/LibSpellDB",
+      "sha": "edc189b928df86376339d00c0760c2d894ae0bad",
+      "purpose": "Ability enumeration, ranks, cooldowns, auras, tags, racials, passive trinket proc mappings"
+    },
+    "wowsims_tbc_new": {
+      "repository": "https://github.com/wowsims/tbc-new",
+      "sha": "509f669a6a5e1a766b3dd71ff0bc5baa74985d56",
+      "purpose": "Complete TBC talent trees and every talent-rank spell ID"
+    }
+  },
+  "counts": {
+    "all_spell_rows": 3394,
+    "unique_spell_ids": 3394,
+    "racial_shared_rows": 76,
+    "racial_rows": 73,
+    "trinket_proc_mappings": 34,
+    "missing_tooltips": 134,
+    "by_class": {
+      "Druid": {
+        "rows": 414,
+        "ability_rows": 242,
+        "talent_rows": 193
+      },
+      "Hunter": {
+        "rows": 327,
+        "ability_rows": 146,
+        "talent_rows": 206
+      },
+      "Mage": {
+        "rows": 375,
+        "ability_rows": 192,
+        "talent_rows": 208
+      },
+      "Paladin": {
+        "rows": 385,
+        "ability_rows": 199,
+        "talent_rows": 222
+      },
+      "Priest": {
+        "rows": 396,
+        "ability_rows": 214,
+        "talent_rows": 219
+      },
+      "Rogue": {
+        "rows": 326,
+        "ability_rows": 138,
+        "talent_rows": 201
+      },
+      "Shaman": {
+        "rows": 409,
+        "ability_rows": 222,
+        "talent_rows": 196
+      },
+      "Warlock": {
+        "rows": 400,
+        "ability_rows": 228,
+        "talent_rows": 205
+      },
+      "Warrior": {
+        "rows": 362,
+        "ability_rows": 173,
+        "talent_rows": 222
+      }
+    }
+  },
+  "tracking_policy": {
+    "on_use_trinkets": "Detected dynamically in-game through GetItemSpell(); no static row required.",
+    "passive_proc_trinkets": "Static item-to-visible-buff mapping generated from LibSpellDB and verified through Wowhead tooltips.",
+    "racials": "Filtered at runtime by UnitRace and categorized into Main/Utility/Data only."
+  }
+}

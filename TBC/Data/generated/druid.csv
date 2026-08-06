@@ -1,0 +1,610 @@
+﻿Specialization,Type,Name,Spell ID,Canonical ID,Rank,Learned Level,Description,Category,HUD Row,Cooldown,Duration,Resource Cost,Aura ID,Track Mode,Tags,Wowhead Source,Notes
+Balance,Ability,Hurricane,16914,16914,Rank 1,40,"Creates a violent storm in the target area causing 
+72 Nature damage to enemies every 1 sec, and increasing the time between attacks of enemies by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,880 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=16914,
+Balance,Ability,Hurricane,17401,16914,Rank 2,50,"Creates a violent storm in the target area causing 
+102 Nature damage to enemies every 1 sec, and increasing the time between attacks by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,1180 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=17401,
+Balance,Ability,Hurricane,17402,16914,Rank 3,60,"Creates a violent storm in the target area causing 
+136 Nature damage to enemies every 1 sec, and increasing the time between attacks by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,1495 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=17402,
+Balance,Ability,Hurricane,27012,16914,Rank 4,70,"Creates a violent storm in the target area causing 
+206 Nature damage to enemies every 1 sec, and increasing the time between attacks by 25%. Lasts 10 sec. Druid must channel to maintain the spell.",Crowd Control,Utility,60,10,1905 Mana,,Cooldown,"AOE, CC_SOFT, DPS, PVE",https://www.wowhead.com/tbc/spell=27012,
+Balance,Ability,Moonfire,563,8921,Rank 6,,Teaches Moonfire (Rank 6).,Offensive,Main,0,12,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=563,
+Balance,Ability,Moonfire,8921,8921,Rank 2,4,"Burns the enemy for 
+9 to 
+12 Arcane damage and then an additional 12 Arcane damage over 9 sec.",Offensive,Main,0,12,25 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8921,
+Balance,Ability,Moonfire,8924,8921,Rank 3,10,"Burns the enemy for 
+17 to 
+21 Arcane damage and then an additional 32 Arcane damage over 12 sec.",Offensive,Main,0,12,50 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8924,
+Balance,Ability,Moonfire,8925,8921,Rank 4,16,"Burns the enemy for 
+30 to 
+37 Arcane damage and then an additional 52 Arcane damage over 12 sec.",Offensive,Main,0,12,75 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8925,
+Balance,Ability,Moonfire,8926,8921,Rank 5,22,"Burns the enemy for 
+47 to 
+55 Arcane damage and then an additional 80 Arcane damage over 12 sec.",Offensive,Main,0,12,105 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8926,
+Balance,Ability,Moonfire,8927,8921,Rank 6,28,"Burns the enemy for 
+70 to 
+82 Arcane damage and then an additional 124 Arcane damage over 12 sec.",Offensive,Main,0,12,150 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8927,
+Balance,Ability,Moonfire,8928,8921,Rank 7,34,"Burns the enemy for 
+91 to 
+108 Arcane damage and then an additional 164 Arcane damage over 12 sec.",Offensive,Main,0,12,190 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8928,
+Balance,Ability,Moonfire,8929,8921,Rank 8,40,"Burns the enemy for 
+117 to 
+137 Arcane damage and then an additional 212 Arcane damage over 12 sec.",Offensive,Main,0,12,235 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8929,
+Balance,Ability,Moonfire,9833,8921,Rank 9,46,"Burns the enemy for 
+143 to 
+168 Arcane damage and then an additional 264 Arcane damage over 12 sec.",Offensive,Main,0,12,280 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9833,
+Balance,Ability,Moonfire,9834,8921,Rank 10,52,"Burns the enemy for 
+172 to 
+200 Arcane damage and then an additional 320 Arcane damage over 12 sec.",Offensive,Main,0,12,325 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9834,
+Balance,Ability,Moonfire,9835,8921,Rank 11,58,"Burns the enemy for 
+205 to 
+238 Arcane damage and then an additional 384 Arcane damage over 12 sec.",Offensive,Main,0,12,375 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9835,
+Balance,Ability,Moonfire,26987,8921,Rank 12,63,"Burns the enemy for 
+238 to 
+276 Arcane damage and then an additional 444 Arcane damage over 12 sec.",Offensive,Main,0,12,430 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26987,
+Balance,Ability,Moonfire,26988,8921,Rank 13,70,"Burns the enemy for 
+305 to 
+357 Arcane damage and then an additional 600 Arcane damage over 12 sec.",Offensive,Main,0,12,495 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26988,
+Balance,Ability,Starfall,439748,439748,,,"Summon a flurry of stars from the sky over 10 sec, striking enemies within 30 yards of the targeted area for Arcane damage.",Offensive,Main,90,10,,,Cooldown,"AOE, DPS, MAJOR, PVE_PVP",https://www.wowhead.com/tbc/spell=439748,
+Balance,Ability,Starfire,2912,2912,Rank 1,20,"Causes 
+95 to 
+115 Arcane damage to the target.",Offensive,Main,0,,95 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=2912,
+Balance,Ability,Starfire,8949,2912,Rank 2,26,"Causes 
+146 to 
+177 Arcane damage to the target.",Offensive,Main,0,,135 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8949,
+Balance,Ability,Starfire,8950,2912,Rank 3,34,"Causes 
+212 to 
+253 Arcane damage to the target.",Offensive,Main,0,,180 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8950,
+Balance,Ability,Starfire,8951,2912,Rank 4,42,"Causes 
+293 to 
+348 Arcane damage to the target.",Offensive,Main,0,,230 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8951,
+Balance,Ability,Starfire,9875,2912,Rank 5,50,"Causes 
+378 to 
+445 Arcane damage to the target.",Offensive,Main,0,,275 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=9875,
+Balance,Ability,Starfire,9876,2912,Rank 6,58,"Causes 
+463 to 
+543 Arcane damage to the target.",Offensive,Main,0,,315 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=9876,
+Balance,Ability,Starfire,25298,2912,Rank 7,60,"Causes 
+514 to 
+603 Arcane damage to the target.",Offensive,Main,0,,340 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=25298,
+Balance,Ability,Starfire,26986,2912,Rank 8,67,"Causes 
+550 to 
+647 Arcane damage to the target.",Offensive,Main,0,,370 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=26986,
+Balance,Ability,Starsurge,417157,417157,,,"Launch surging stellar energies at the target, dealing Arcane damage and increasing the damage of your next Wrath or Starfire.",Offensive,Main,6,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=417157,
+Balance,Ability,Wrath,5176,5176,Rank 1,1,"Causes 
+13 to 
+16 Nature damage to the target.",Offensive,Main,0,,20 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5176,
+Balance,Ability,Wrath,5177,5176,Rank 2,6,"Causes 
+28 to 
+33 Nature damage to the target.",Offensive,Main,0,,35 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5177,
+Balance,Ability,Wrath,5178,5176,Rank 3,14,"Causes 
+48 to 
+57 Nature damage to the target.",Offensive,Main,0,,55 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5178,
+Balance,Ability,Wrath,5179,5176,Rank 4,22,"Causes 
+69 to 
+79 Nature damage to the target.",Offensive,Main,0,,70 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5179,
+Balance,Ability,Wrath,5180,5176,Rank 5,30,"Causes 
+108 to 
+123 Nature damage to the target.",Offensive,Main,0,,100 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5180,
+Balance,Ability,Wrath,6780,5176,Rank 6,38,"Causes 
+148 to 
+167 Nature damage to the target.",Offensive,Main,0,,125 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=6780,
+Balance,Ability,Wrath,8905,5176,Rank 7,46,"Causes 
+198 to 
+221 Nature damage to the target.",Offensive,Main,0,,155 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=8905,
+Balance,Ability,Wrath,9912,5176,Rank 8,54,"Causes 
+248 to 
+277 Nature damage to the target.",Offensive,Main,0,,180 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=9912,
+Balance,Ability,Wrath,26984,5176,Rank 9,61,"Causes 
+292 to 
+327 Nature damage to the target.",Offensive,Main,0,,210 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=26984,
+Balance,Ability,Wrath,26985,5176,Rank 10,69,"Causes 
+383 to 
+432 Nature damage to the target.",Offensive,Main,0,,255 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=26985,
+Balance,Talent,Balance of Power,33592,33592,Rank 1/2,,Increases your chance to hit with all spells and reduces the chance you'll be hit by spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33592,Talent: Balance of Power; tree row 6
+Balance,Talent,Balance of Power,33596,33592,Rank 2/2,,Increases your chance to hit with all spells and reduces the chance you'll be hit by spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33596,Talent: Balance of Power; tree row 6
+Balance,Talent,Brambles,16836,16836,Rank 1/3,,Increases damage caused by your Thorns and Entangling Roots spells by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16836,Talent: Brambles; tree row 3
+Balance,Talent,Brambles,16839,16836,Rank 2/3,,Increases damage caused by your Thorns and Entangling Roots spells by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16839,Talent: Brambles; tree row 3
+Balance,Talent,Brambles,16840,16836,Rank 3/3,,Increases damage caused by your Thorns and Entangling Roots spells by 75%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16840,Talent: Brambles; tree row 3
+Balance,Talent,Celestial Focus,16850,16850,Rank 1/3,,Gives your Starfire spell a 5% chance to stun the target for 3 sec and increases the chance you'll resist spell interruption when casting your Wrath spell by 25%.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16850,Talent: Celestial Focus; tree row 4
+Balance,Talent,Celestial Focus,16923,16850,Rank 2/3,,Gives your Starfire spell a 10% chance to stun the target for 3 sec and increases the chance you'll resist spell interruption when casting your Wrath spell by 50%.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16923,Talent: Celestial Focus; tree row 4
+Balance,Talent,Celestial Focus,16924,16850,Rank 3/3,,Gives your Starfire spell a 15% chance to stun the target for 3 sec and increases the chance you'll resist spell interruption when casting your Wrath spell by 70%.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16924,Talent: Celestial Focus; tree row 4
+Balance,Talent,Control of Nature,16918,16918,Rank 1/3,,Gives you a 40% chance to avoid interruption caused by damage while casting Entangling Roots and Cyclone.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16918,Talent: Control of Nature; tree row 2
+Balance,Talent,Control of Nature,16919,16918,Rank 2/3,,Gives you a 70% chance to avoid interruption caused by damage while casting Entangling Roots and Cyclone.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16919,Talent: Control of Nature; tree row 2
+Balance,Talent,Control of Nature,16920,16918,Rank 3/3,,Gives you a 100% chance to avoid interruption caused by damage while casting Entangling Roots and Cyclone.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16920,Talent: Control of Nature; tree row 2
+Balance,Talent,Dreamstate,33597,33597,Rank 1/3,,"Regenerate mana equal to 4% of your Intellect every 5 sec, even while casting.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33597,Talent: Dreamstate; tree row 7
+Balance,Talent,Dreamstate,33599,33597,Rank 2/3,,"Regenerate mana equal to 7% of your Intellect every 5 sec, even while casting.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33599,Talent: Dreamstate; tree row 7
+Balance,Talent,Dreamstate,33956,33597,Rank 3/3,,"Regenerate mana equal to 10% of your Intellect every 5 sec, even while casting.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33956,Talent: Dreamstate; tree row 7
+Balance,Talent,Focused Starlight,35363,35363,Rank 1/2,,Increases the critical strike chance of your Wrath and Starfire spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35363,Talent: Focused Starlight; tree row 2
+Balance,Talent,Focused Starlight,35364,35363,Rank 2/2,,Increases the critical strike chance of your Wrath and Starfire spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35364,Talent: Focused Starlight; tree row 2
+Balance,Talent Ability,Force of Nature,33831,33831,Rank 1/1,,Summons 3 treants to attack enemy targets for 30 sec.,Pet,Main,180,30,12% of base mana,,Cooldown,"DPS, MAJOR, PET_SUMMON, PET_SUMMON_TEMP, PVE",https://www.wowhead.com/tbc/spell=33831,Talent-required | Talent: Force of Nature
+Balance,Talent,Improved Faerie Fire,33600,33600,Rank 1/3,,Your Faerie Fire spell also increases the chance the target will be hit by melee and ranged attacks by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33600,Talent: Improved Faerie Fire; tree row 7
+Balance,Talent,Improved Faerie Fire,33601,33600,Rank 2/3,,Your Faerie Fire spell also increases the chance the target will be hit by melee and ranged attacks by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33601,Talent: Improved Faerie Fire; tree row 7
+Balance,Talent,Improved Faerie Fire,33602,33600,Rank 3/3,,Your Faerie Fire spell also increases the chance the target will be hit by melee and ranged attacks by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33602,Talent: Improved Faerie Fire; tree row 7
+Balance,Talent,Improved Moonfire,16821,16821,Rank 1/2,,Increases the damage and critical strike chance of your Moonfire spell by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16821,Talent: Improved Moonfire; tree row 2
+Balance,Talent,Improved Moonfire,16822,16821,Rank 2/2,,Increases the damage and critical strike chance of your Moonfire spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16822,Talent: Improved Moonfire; tree row 2
+Balance,Talent,Improved Nature's Grasp,17245,17245,Rank 1/4,,Increases the chance for your Nature's Grasp to entangle an enemy by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17245,Talent: Improved Nature's Grasp; tree row 1
+Balance,Talent,Improved Nature's Grasp,17247,17245,Rank 2/4,,Increases the chance for your Nature's Grasp to entangle an enemy by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17247,Talent: Improved Nature's Grasp; tree row 1
+Balance,Talent,Improved Nature's Grasp,17248,17245,Rank 3/4,,Increases the chance for your Nature's Grasp to entangle an enemy by 45%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17248,Talent: Improved Nature's Grasp; tree row 1
+Balance,Talent,Improved Nature's Grasp,17249,17245,Rank 4/4,,Increases the chance for your Nature's Grasp to entangle an enemy by 65%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17249,Talent: Improved Nature's Grasp; tree row 1
+Balance,Talent Ability,Insect Swarm,5570,5570,Rank 1/1,,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 108 Nature damage over 12 sec.",Offensive,Main,0,12,50 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5570,Talent-required | Talent: Insect Swarm
+Balance,Talent Ability,Insect Swarm,24974,5570,Rank 2,30,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 192 Nature damage over 12 sec.",Offensive,Main,0,12,85 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=24974,Talent-required
+Balance,Talent Ability,Insect Swarm,24975,5570,Rank 3,40,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 300 Nature damage over 12 sec.",Offensive,Main,0,12,110 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=24975,Talent-required
+Balance,Talent Ability,Insect Swarm,24976,5570,Rank 4,50,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 432 Nature damage over 12 sec.",Offensive,Main,0,12,135 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=24976,Talent-required
+Balance,Talent Ability,Insect Swarm,24977,5570,Rank 5,60,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 594 Nature damage over 12 sec.",Offensive,Main,0,12,155 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=24977,Talent-required
+Balance,Talent Ability,Insect Swarm,27013,5570,Rank 6,70,"The enemy target is swarmed by insects, decreasing their chance to hit by 2% and causing 792 Nature damage over 12 sec.",Offensive,Main,0,12,175 Mana,,Cooldown,"DEBUFF, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27013,Talent-required
+Balance,Talent,Lunar Guidance,33589,33589,Rank 1/3,,Increases your spell damage and healing by 8% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33589,Talent: Lunar Guidance; tree row 5
+Balance,Talent,Lunar Guidance,33590,33589,Rank 2/3,,Increases your spell damage and healing by 16% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33590,Talent: Lunar Guidance; tree row 5
+Balance,Talent,Lunar Guidance,33591,33589,Rank 3/3,,Increases your spell damage and healing by 25% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33591,Talent: Lunar Guidance; tree row 5
+Balance,Talent,Moonfury,16896,16896,Rank 1/5,,"Increases the damage done by your Starfire, Moonfire and Wrath spells by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16896,Talent: Moonfury; tree row 6
+Balance,Talent,Moonfury,16897,16896,Rank 2/5,,"Increases the damage done by your Starfire, Moonfire and Wrath spells by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16897,Talent: Moonfury; tree row 6
+Balance,Talent,Moonfury,16899,16896,Rank 3/5,,"Increases the damage done by your Starfire, Moonfire and Wrath spells by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16899,Talent: Moonfury; tree row 6
+Balance,Talent,Moonfury,16900,16896,Rank 4/5,,"Increases the damage done by your Starfire, Moonfire and Wrath spells by 8%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16900,Talent: Moonfury; tree row 6
+Balance,Talent,Moonfury,16901,16896,Rank 5/5,,"Increases the damage done by your Starfire, Moonfire and Wrath spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16901,Talent: Moonfury; tree row 6
+Balance,Talent,Moonglow,16845,16845,Rank 1/3,,"Reduces the Mana cost of your Moonfire, Starfire, Wrath, Healing Touch, Regrowth and Rejuvenation spells by 3%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16845,Talent: Moonglow; tree row 5
+Balance,Talent,Moonglow,16846,16845,Rank 2/3,,"Reduces the Mana cost of your Moonfire, Starfire, Wrath, Healing Touch, Regrowth and Rejuvenation spells by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16846,Talent: Moonglow; tree row 5
+Balance,Talent,Moonglow,16847,16845,Rank 3/3,,"Reduces the Mana cost of your Moonfire, Starfire, Wrath, Healing Touch, Regrowth and Rejuvenation spells by 9%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16847,Talent: Moonglow; tree row 5
+Balance,Talent Ability,Moonkin Form,24858,24858,Rank 1/1,,"Shapeshift into Moonkin Form. While in this form the armor contribution from items is increased by 400%, attack power is increased by 150% of your level and all party members within 30 yards have their spell critical chance increased by 5%. Melee attacks in this form have a chance on hit to regenerate mana based on attack power. The Moonkin can only cast Balance and Remove Curse spells while shapeshifted.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,22% of base mana,24907,Cooldown + aura,SHAPESHIFT,https://www.wowhead.com/tbc/spell=24858,Talent-required | Talent: Moonkin Form
+Balance,Talent,Nature's Grace,16880,16880,Rank 1/1,,"All spell criticals grace you with a blessing of nature, reducing the casting time of your next spell by 0.5 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16880,Talent: Nature's Grace; tree row 5
+Balance,Talent Ability,Nature's Grasp,16689,16689,Rank 1,,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 1). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=16689,Talent: Nature's Grasp
+Balance,Talent,Nature's Reach,16819,16819,Rank 1/2,,Increases the range of your Balance spells and Faerie Fire (Feral) ability by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16819,Talent: Nature's Reach; tree row 3
+Balance,Talent,Nature's Reach,16820,16819,Rank 2/2,,Increases the range of your Balance spells and Faerie Fire (Feral) ability by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16820,Talent: Nature's Reach; tree row 3
+Balance,Talent,Starlight Wrath,16814,16814,Rank 1/5,,Reduces the cast time of your Wrath and Starfire spells by 0.1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16814,Talent: Starlight Wrath; tree row 1
+Balance,Talent,Starlight Wrath,16815,16814,Rank 2/5,,Reduces the cast time of your Wrath and Starfire spells by 0.2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16815,Talent: Starlight Wrath; tree row 1
+Balance,Talent,Starlight Wrath,16816,16814,Rank 3/5,,Reduces the cast time of your Wrath and Starfire spells by 0.3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16816,Talent: Starlight Wrath; tree row 1
+Balance,Talent,Starlight Wrath,16817,16814,Rank 4/5,,Reduces the cast time of your Wrath and Starfire spells by 0.4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16817,Talent: Starlight Wrath; tree row 1
+Balance,Talent,Starlight Wrath,16818,16814,Rank 5/5,,Reduces the cast time of your Wrath and Starfire spells by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16818,Talent: Starlight Wrath; tree row 1
+Balance,Talent,Vengeance,16909,16909,Rank 1/5,,"Increases the critical strike damage bonus of your Starfire, Moonfire, and Wrath spells by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16909,Talent: Vengeance; tree row 4
+Balance,Talent,Vengeance,16910,16909,Rank 2/5,,"Increases the critical strike damage bonus of your Starfire, Moonfire, and Wrath spells by 40%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16910,Talent: Vengeance; tree row 4
+Balance,Talent,Vengeance,16911,16909,Rank 3/5,,"Increases the critical strike damage bonus of your Starfire, Moonfire, and Wrath spells by 60%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16911,Talent: Vengeance; tree row 4
+Balance,Talent,Vengeance,16912,16909,Rank 4/5,,"Increases the critical strike damage bonus of your Starfire, Moonfire, and Wrath spells by 80%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16912,Talent: Vengeance; tree row 4
+Balance,Talent,Vengeance,16913,16909,Rank 5/5,,"Increases the critical strike damage bonus of your Starfire, Moonfire, and Wrath spells by 100%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16913,Talent: Vengeance; tree row 4
+Balance,Talent,Wrath of Cenarius,33603,33603,Rank 1/5,,Your Starfire spell gains an additional 4% and your Wrath gains an additional 2% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33603,Talent: Wrath of Cenarius; tree row 8
+Balance,Talent,Wrath of Cenarius,33604,33603,Rank 2/5,,Your Starfire spell gains an additional 8% and your Wrath gains an additional 4% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33604,Talent: Wrath of Cenarius; tree row 8
+Balance,Talent,Wrath of Cenarius,33605,33603,Rank 3/5,,Your Starfire spell gains an additional 12% and your Wrath gains an additional 6% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33605,Talent: Wrath of Cenarius; tree row 8
+Balance,Talent,Wrath of Cenarius,33606,33603,Rank 4/5,,Your Starfire spell gains an additional 16% and your Wrath gains an additional 8% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33606,Talent: Wrath of Cenarius; tree row 8
+Balance,Talent,Wrath of Cenarius,33607,33603,Rank 5/5,,Your Starfire spell gains an additional 20% and your Wrath gains an additional 10% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33607,Talent: Wrath of Cenarius; tree row 8
+"Balance, Feral",Ability,Sunfire,414689,414689,,,Burns the enemy with Nature damage and then additional Nature damage over 12 sec. Usable in Moonkin Form and Cat Form.,Offensive,Main,0,12,,,Cooldown + aura,"DEBUFF, DPS, HAS_DOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=414689,
+"Balance, Restoration",Ability,Faerie Fire,770,770,Rank 1,18,"Decrease the armor of the target by 175 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,55 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=770,
+"Balance, Restoration",Ability,Faerie Fire,778,770,Rank 2,30,"Decrease the armor of the target by 285 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,75 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=778,
+"Balance, Restoration",Ability,Faerie Fire,9749,770,Rank 3,42,"Decrease the armor of the target by 395 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,95 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=9749,
+"Balance, Restoration",Ability,Faerie Fire,9907,770,Rank 4,54,"Decrease the armor of the target by 505 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,115 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=9907,
+"Balance, Restoration",Ability,Faerie Fire,26993,770,Rank 5,66,"Decrease the armor of the target by 610 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,145 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=26993,
+Class-wide / Shared,Ability,Aquatic Form,1066,1066,,16,"Shapeshift into aquatic form, increasing swim speed by 50% and allowing the druid to breathe underwater. Also protects the caster from Polymorph effects.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Mobility,Utility,0,,13% of base mana,,Cooldown,"MOVEMENT, OUT_OF_COMBAT, SHAPESHIFT",https://www.wowhead.com/tbc/spell=1066,
+Class-wide / Shared,Ability,Barkskin,22812,22812,,44,"The druid's skin becomes as tough as bark. All damage taken is reduced by 20%. While protected, damaging attacks will not cause spellcasting delays. This spell is usable while stunned, frozen, incapacitated, feared or asleep. Lasts 12 sec.",Defensive,Utility,60,12,12% of base mana,,Cooldown + aura,"DAMAGE_REDUCTION, DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=22812,
+Class-wide / Shared,Ability,Entangling Roots,339,339,Rank 1,8,Roots the target in place and causes 20 Nature damage over 12 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,50 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=339,
+Class-wide / Shared,Ability,Entangling Roots,1062,339,Rank 2,18,Roots the target in place and causes 50 Nature damage over 15 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,65 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=1062,
+Class-wide / Shared,Ability,Entangling Roots,5195,339,Rank 3,28,Roots the target in place and causes 90 Nature damage over 18 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,80 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=5195,
+Class-wide / Shared,Ability,Entangling Roots,5196,339,Rank 4,38,Roots the target in place and causes 140 Nature damage over 21 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,95 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=5196,
+Class-wide / Shared,Ability,Entangling Roots,9852,339,Rank 5,48,Roots the target in place and causes 200 Nature damage over 24 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,110 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=9852,
+Class-wide / Shared,Ability,Entangling Roots,9853,339,Rank 6,58,Roots the target in place and causes 270 Nature damage over 27 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,125 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=9853,
+Class-wide / Shared,Ability,Entangling Roots,26989,339,Rank 7,68,Roots the target in place and causes 351 Nature damage over 27 sec. Damage caused may interrupt the effect. Only useable outdoors.,Crowd Control,Utility,0,27,160 Mana,,Cooldown,"CC_SOFT, FILLER, ROOT",https://www.wowhead.com/tbc/spell=26989,
+Class-wide / Shared,Ability,Gift of the Wild,21849,21849,Rank 1,50,"Gives the Gift of the Wild to the target's party, increasing armor by 240, all attributes by 10 and all resistances by 15 for 1 hour.",Utility,Utility,0,3600,900 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=21849,
+Class-wide / Shared,Ability,Gift of the Wild,21850,21849,Rank 2,60,"Gives the Gift of the Wild to the target's party, increasing armor by 285, all attributes by 12 and all resistances by 20 for 1 hour.",Utility,Utility,0,3600,1200 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=21850,
+Class-wide / Shared,Ability,Gift of the Wild,26991,21849,Rank 3,70,"Gives the Gift of the Wild to the target's party, increasing armor by 340, all attributes by 14 and all resistances by 25 for 1 hour.",Utility,Utility,0,3600,1515 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=26991,
+Class-wide / Shared,Ability,Hibernate,2637,2637,Rank 1,18,Forces the enemy target to sleep for up to 20 sec. Any damage will awaken the target. Only one target can be forced to hibernate at a time. Only works on Beasts and Dragonkin.,Crowd Control,Utility,0,40,90 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=2637,
+Class-wide / Shared,Ability,Hibernate,18657,2637,Rank 2,38,Forces the enemy target to sleep for up to 30 sec. Any damage will awaken the target. Only one target can be forced to hibernate at a time. Only works on Beasts and Dragonkin.,Crowd Control,Utility,0,40,120 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=18657,
+Class-wide / Shared,Ability,Hibernate,18658,2637,Rank 3,58,Forces the enemy target to sleep for up to 40 sec. Any damage will awaken the target. Only one target can be forced to hibernate at a time. Only works on Beasts and Dragonkin.,Crowd Control,Utility,0,40,150 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=18658,
+Class-wide / Shared,Ability,Innervate,29166,29166,,40,Increases the target's Spirit based mana regeneration by 400% and allows full mana regeneration while casting. Lasts 20 sec.,Healing,Utility,360,20,4% of base mana,,Cooldown + aura,"HAS_BUFF, HEAL, IMPORTANT_EXTERNAL, MAJOR, RESOURCE",https://www.wowhead.com/tbc/spell=29166,
+Class-wide / Shared,Ability,Mark of the Wild,1126,1126,Rank 1,1,Increases the friendly target's armor by 25 for 30 min.,Utility,Utility,0,1800,20 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1126,
+Class-wide / Shared,Ability,Mark of the Wild,5232,1126,Rank 2,10,Increases the friendly target's armor by 65 and all attributes by 2 for 30 min.,Utility,Utility,0,1800,50 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=5232,
+Class-wide / Shared,Ability,Mark of the Wild,5234,1126,Rank 3,30,"Increases the friendly target's armor by 150, all attributes by 6 and all resistances by 5 for 30 min.",Utility,Utility,0,1800,160 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=5234,
+Class-wide / Shared,Ability,Mark of the Wild,6756,1126,Rank 4,20,Increases the friendly target's armor by 105 and all attributes by 4 for 30 min.,Utility,Utility,0,1800,100 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=6756,
+Class-wide / Shared,Ability,Mark of the Wild,8907,1126,Rank 5,40,"Increases the friendly target's armor by 195, all attributes by 8 and all resistances by 10 for 30 min.",Utility,Utility,0,1800,240 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=8907,
+Class-wide / Shared,Ability,Mark of the Wild,9884,1126,Rank 6,50,"Increases the friendly target's armor by 240, all attributes by 10 and all resistances by 15 for 30 min.",Utility,Utility,0,1800,340 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=9884,
+Class-wide / Shared,Ability,Mark of the Wild,9885,1126,Rank 7,60,"Increases the friendly target's armor by 285, all attributes by 12 and all resistances by 20 for 30 min.",Utility,Utility,0,1800,445 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=9885,
+Class-wide / Shared,Ability,Mark of the Wild,26990,1126,Rank 8,70,"Increases the friendly target's armor by 340, all attributes by 14 and all resistances by 25 for 30 min.",Utility,Utility,0,1800,565 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=26990,
+Class-wide / Shared,Ability,Nature's Grasp,16810,16689,Rank 2,18,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 2). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=16810,
+Class-wide / Shared,Ability,Nature's Grasp,16811,16689,Rank 3,28,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 3). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=16811,
+Class-wide / Shared,Ability,Nature's Grasp,16812,16689,Rank 4,38,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 4). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=16812,
+Class-wide / Shared,Ability,Nature's Grasp,16813,16689,Rank 5,48,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 5). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=16813,
+Class-wide / Shared,Ability,Nature's Grasp,17329,16689,Rank 6,58,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 6). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=17329,
+Class-wide / Shared,Ability,Nature's Grasp,27009,16689,Rank 7,68,"While active, any time an enemy strikes the caster they have a 35% chance to become afflicted by Entangling Roots (Rank 7). Only useable outdoors. 1 charge. Lasts 45 sec.",Defensive,Utility,60,45,,"19975, 19974, 19973, 19972, 19971, 19970, 27010",Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR, ROOT",https://www.wowhead.com/tbc/spell=27009,
+Class-wide / Shared,Ability,Rebirth,20484,20484,Rank 1,20,"Returns the spirit to the body, restoring a dead target to life with 400 health and 700 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20484,
+Class-wide / Shared,Ability,Rebirth,20739,20484,Rank 2,30,"Returns the spirit to the body, restoring a dead target to life with 750 health and 1200 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20739,
+Class-wide / Shared,Ability,Rebirth,20742,20484,Rank 3,40,"Returns the spirit to the body, restoring a dead target to life with 1100 health and 1700 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20742,
+Class-wide / Shared,Ability,Rebirth,20747,20484,Rank 4,50,"Returns the spirit to the body, restoring a dead target to life with 1600 health and 2200 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20747,
+Class-wide / Shared,Ability,Rebirth,20748,20484,Rank 5,60,"Returns the spirit to the body, restoring a dead target to life with 2200 health and 2800 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20748,
+Class-wide / Shared,Ability,Rebirth,26994,20484,Rank 6,69,"Returns the spirit to the body, restoring a dead target to life with 3200 health and 3200 mana.",Utility,Utility,1200,,68% of base mana,,Cooldown,"BATTLE_REZ, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=26994,
+Class-wide / Shared,Ability,Thorns,467,467,Rank 1,6,Thorns sprout from the friendly target causing 3 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,35 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=467,
+Class-wide / Shared,Ability,Thorns,782,467,Rank 2,14,Thorns sprout from the friendly target causing 6 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,60 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=782,
+Class-wide / Shared,Ability,Thorns,1075,467,Rank 3,24,Thorns sprout from the friendly target causing 9 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,105 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1075,
+Class-wide / Shared,Ability,Thorns,8914,467,Rank 4,34,Thorns sprout from the friendly target causing 12 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,170 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=8914,
+Class-wide / Shared,Ability,Thorns,9756,467,Rank 5,44,Thorns sprout from the friendly target causing 15 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,240 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=9756,
+Class-wide / Shared,Ability,Thorns,9910,467,Rank 6,54,Thorns sprout from the friendly target causing 18 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,320 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=9910,
+Class-wide / Shared,Ability,Thorns,26992,467,Rank 7,64,Thorns sprout from the friendly target causing 25 Nature damage to attackers when hit. Lasts 10 min.,Utility,Utility,0,600,400 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=26992,
+Class-wide / Shared,Ability,Tranquility,740,740,Rank 1,30,"Heals all nearby group members for 
+365 every 2 seconds for 8 sec. Druid must channel to maintain the spell.",Healing,Utility,600,8,525 Mana,,Cooldown,"HEAL, HEAL_AOE, MAJOR",https://www.wowhead.com/tbc/spell=740,
+Class-wide / Shared,Ability,Tranquility,8918,740,Rank 2,40,"Heals all nearby group members for 
+531 every 2 seconds for 8 sec. Druid must channel to maintain the spell.",Healing,Utility,600,8,705 Mana,,Cooldown,"HEAL, HEAL_AOE, MAJOR",https://www.wowhead.com/tbc/spell=8918,
+Class-wide / Shared,Ability,Tranquility,9862,740,Rank 3,50,"Heals all nearby group members for 
+786 every 2 seconds for 8 sec. Druid must channel to maintain the spell.",Healing,Utility,600,8,975 Mana,,Cooldown,"HEAL, HEAL_AOE, MAJOR",https://www.wowhead.com/tbc/spell=9862,
+Class-wide / Shared,Ability,Tranquility,9863,740,Rank 4,60,"Heals all nearby group members for 
+1120 every 2 seconds for 8 sec. Druid must channel to maintain the spell.",Healing,Utility,600,8,1295 Mana,,Cooldown,"HEAL, HEAL_AOE, MAJOR",https://www.wowhead.com/tbc/spell=9863,
+Class-wide / Shared,Ability,Tranquility,26983,740,Rank 5,70,"Heals all nearby group members for 
+1518 every 2 seconds for 8 sec. Druid must channel to maintain the spell.",Healing,Utility,600,8,1650 Mana,,Cooldown,"HEAL, HEAL_AOE, MAJOR",https://www.wowhead.com/tbc/spell=26983,
+Class-wide / Shared,Ability,Travel Form,783,783,,30,"Shapeshift into travel form, increasing movement speed by 40%. Also protects the caster from Polymorph effects. Only useable outdoors.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Mobility,Utility,0,,13% of base mana,,Cooldown,"MOVEMENT, OUT_OF_COMBAT, SHAPESHIFT",https://www.wowhead.com/tbc/spell=783,
+Feral,Ability,Bash,5211,5211,Rank 1,14,Stuns the target for 2 sec.,Crowd Control,Utility,60,4,10 Rage,,Cooldown,"BEAR_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=5211,
+Feral,Ability,Bash,6798,5211,Rank 2,30,Stuns the target for 3 sec.,Crowd Control,Utility,60,4,10 Rage,,Cooldown,"BEAR_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=6798,
+Feral,Ability,Bash,8983,5211,Rank 3,46,Stuns the target for 4 sec.,Crowd Control,Utility,60,4,10 Rage,,Cooldown,"BEAR_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=8983,
+Feral,Ability,Bear Form,5487,5487,,10,"Shapeshift into bear form, increasing melee attack power by 
+120, armor contribution from items by 180%, and Stamina by 25%. Also protects the caster from Polymorph effects and allows the use of various bear abilities.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,35% of base mana,,Cooldown,SHAPESHIFT,https://www.wowhead.com/tbc/spell=5487,
+Feral,Ability,Berserk,417141,417141,,,"When activated, your Mangle (Bear) and Lacerate abilities hit up to 3 targets, and clears the Fear effect and makes you immune to Fear for the duration. Lasts 15 sec.",Defensive,Utility,180,15,,,Cooldown + aura,"CC_BREAK, DPS, HAS_BUFF, MAJOR, PVE_PVP, TANK",https://www.wowhead.com/tbc/spell=417141,
+Feral,Ability,Cat Form,768,768,,20,"Shapeshift into cat form, increasing melee attack power by 40 plus Agility. Also protects the caster from Polymorph effects and allows the use of various cat abilities.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,35% of base mana,,Cooldown,SHAPESHIFT,https://www.wowhead.com/tbc/spell=768,
+Feral,Ability,Challenging Roar,5209,5209,,28,Forces all nearby enemies to focus attacks on you for 6 sec.,Utility,Utility,600,6,15 Rage,,Cooldown,"BEAR_FORM, TAUNT",https://www.wowhead.com/tbc/spell=5209,
+Feral,Ability,Claw,1082,27000,Rank 1,20,"Claw the enemy, causing 27 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=1082,
+Feral,Ability,Claw,3029,27000,Rank 2,28,"Claw the enemy, causing 39 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=3029,
+Feral,Ability,Claw,5201,27000,Rank 3,38,"Claw the enemy, causing 57 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5201,
+Feral,Ability,Claw,9849,27000,Rank 4,48,"Claw the enemy, causing 88 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=9849,
+Feral,Ability,Claw,9850,27000,Rank 5,58,"Claw the enemy, causing 115 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=9850,
+Feral,Ability,Claw,27000,27000,Rank 6,67,"Claw the enemy, causing 190 additional damage. Awards 1 combo point.",Form,Utility,0,,45 Energy,,Cooldown,"CAT_FORM, DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=27000,
+Feral,Ability,Dash,1850,1850,Rank 1,26,Increases movement speed by 50% for 15 sec. Does not break prowling.,Mobility,Utility,300,15,,,Cooldown + aura,"CAT_FORM, HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=1850,
+Feral,Ability,Dash,9821,1850,Rank 2,46,Increases movement speed by 60% for 15 sec. Does not break prowling.,Mobility,Utility,300,15,,,Cooldown + aura,"CAT_FORM, HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=9821,
+Feral,Ability,Dash,33357,1850,Rank 3,65,Increases movement speed by 70% for 15 sec. Does not break prowling.,Mobility,Utility,300,15,,,Cooldown + aura,"CAT_FORM, HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=33357,
+Feral,Ability,Demoralizing Roar,99,99,Rank 1,10,"The druid roars, decreasing nearby enemies' melee attack power by 
+40. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=99,
+Feral,Ability,Demoralizing Roar,1735,99,Rank 2,20,"The druid roars, decreasing nearby enemies' melee attack power by 
+60. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=1735,
+Feral,Ability,Demoralizing Roar,9490,99,Rank 3,32,"The druid roars, decreasing nearby enemies' melee attack power by 
+75. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=9490,
+Feral,Ability,Demoralizing Roar,9747,99,Rank 4,42,"The druid roars, decreasing nearby enemies' melee attack power by 
+110. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=9747,
+Feral,Ability,Demoralizing Roar,9898,99,Rank 5,52,"The druid roars, decreasing nearby enemies' melee attack power by 
+140. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=9898,
+Feral,Ability,Demoralizing Roar,26998,99,Rank 6,62,"The druid roars, decreasing nearby enemies' melee attack power by 
+248. Lasts 30 sec.",Utility,Utility,0,30,10 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, UTILITY",https://www.wowhead.com/tbc/spell=26998,
+Feral,Ability,Dire Bear Form,9634,9634,,40,"Shapeshift into dire bear form, increasing melee attack power by 
+210, armor contribution from items by 400%, and Stamina by 25%. Also protects the caster from Polymorph effects and allows the use of various bear abilities.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,35% of base mana,,Cooldown,SHAPESHIFT,https://www.wowhead.com/tbc/spell=9634,
+Feral,Ability,Faerie Fire (Feral),17390,27011,Rank 2,30,"Decrease the armor of the target by 285 for 40 sec. While affected, the target cannot stealth or turn invisible.",Offensive,Main,6,40,,,Cooldown + aura,"DEBUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=17390,
+Feral,Ability,Faerie Fire (Feral),17391,27011,Rank 3,42,"Decrease the armor of the target by 395 for 40 sec. While affected, the target cannot stealth or turn invisible.",Offensive,Main,6,40,,,Cooldown + aura,"DEBUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=17391,
+Feral,Ability,Faerie Fire (Feral),17392,27011,Rank 4,54,"Decrease the armor of the target by 505 for 40 sec. While affected, the target cannot stealth or turn invisible.",Offensive,Main,6,40,,,Cooldown + aura,"DEBUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=17392,
+Feral,Ability,Faerie Fire (Feral),27011,27011,Rank 5,66,"Decrease the armor of the target by 610 for 40 sec. While affected, the target cannot stealth or turn invisible.",Offensive,Main,6,40,,,Cooldown + aura,"DEBUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=27011,
+Feral,Ability,Ferocious Bite,22568,22568,Rank 1,32,"Finishing move that causes damage per combo point and converts each extra point of energy into 1 additional damage. Damage is increased by your attack power.
+1 point : 50-66 damage
+2 points: 86-102 damage
+3 points: 122-138 damage
+4 points: 158-174 damage
+5 points: 194-210 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=22568,
+Feral,Ability,Ferocious Bite,22827,22568,Rank 2,40,"Finishing move that causes damage per combo point and converts each extra point of energy into 1.5 additional damage. Damage is increased by your attack power.
+1 point : 79-103 damage
+2 points: 138-162 damage
+3 points: 197-221 damage
+4 points: 256-280 damage
+5 points: 315-339 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=22827,
+Feral,Ability,Ferocious Bite,22828,22568,Rank 3,48,"Finishing move that causes damage per combo point and converts each extra point of energy into 2 additional damage. Damage is increased by your attack power.
+1 point : 122-162 damage
+2 points: 214-254 damage
+3 points: 306-346 damage
+4 points: 398-438 damage
+5 points: 490-530 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=22828,
+Feral,Ability,Ferocious Bite,22829,22568,Rank 4,56,"Finishing move that causes damage per combo point and converts each extra point of energy into 2.5 additional damage. Damage is increased by your attack power.
+1 point : 173-223 damage
+2 points: 301-351 damage
+3 points: 429-479 damage
+4 points: 557-607 damage
+5 points: 685-735 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=22829,
+Feral,Ability,Ferocious Bite,24248,22568,Rank 5,63,"Finishing move that causes damage per combo point and converts each extra point of energy into 4.0999999 additional damage. Damage is increased by your attack power.
+1 point : 259-292 damage
+2 points: 428-461 damage
+3 points: 597-630 damage
+4 points: 766-799 damage
+5 points: 935-968 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=24248,
+Feral,Ability,Ferocious Bite,31018,22568,Rank 6,60,"Finishing move that causes damage per combo point and converts each extra point of energy into 2.70000005 additional damage. Damage is increased by your attack power.
+1 point : 199-259 damage
+2 points: 346-406 damage
+3 points: 493-553 damage
+4 points: 640-700 damage
+5 points: 787-847 damage",Form,Utility,0,,35 Energy,,Cooldown,"CAT_FORM, DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=31018,
+Feral,Ability,Frenzied Regeneration,22842,22842,Rank 1,36,Converts up to 10 rage per second into health for 10 sec. Each point of rage is converted into 10 health.,Defensive,Utility,180,10,,,Cooldown + aura,"BEAR_FORM, DEFENSIVE, HAS_BUFF, HEAL_SINGLE, MAJOR",https://www.wowhead.com/tbc/spell=22842,
+Feral,Ability,Frenzied Regeneration,22895,22842,Rank 2,46,Converts up to 10 rage per second into health for 10 sec. Each point of rage is converted into 15 health.,Defensive,Utility,180,10,,,Cooldown + aura,"BEAR_FORM, DEFENSIVE, HAS_BUFF, HEAL_SINGLE, MAJOR",https://www.wowhead.com/tbc/spell=22895,
+Feral,Ability,Frenzied Regeneration,22896,22842,Rank 3,56,Converts up to 10 rage per second into health for 10 sec. Each point of rage is converted into 20 health.,Defensive,Utility,180,10,,,Cooldown + aura,"BEAR_FORM, DEFENSIVE, HAS_BUFF, HEAL_SINGLE, MAJOR",https://www.wowhead.com/tbc/spell=22896,
+Feral,Ability,Frenzied Regeneration,26999,22842,Rank 4,65,Converts up to 10 rage per second into health for 10 sec. Each point of rage is converted into 25 health.,Defensive,Utility,180,10,,,Cooldown + aura,"BEAR_FORM, DEFENSIVE, HAS_BUFF, HEAL_SINGLE, MAJOR",https://www.wowhead.com/tbc/spell=26999,
+Feral,Ability,Growl,6795,6795,,10,"Taunts the target to attack you, but has no effect if the target is already attacking you.",Utility,Utility,10,3,,,Cooldown,"BEAR_FORM, TAUNT",https://www.wowhead.com/tbc/spell=6795,
+Feral,Ability,Lacerate,33745,33745,,66,"Lacerates the enemy target, dealing 31 bleed damage and making them bleed for 155 damage over 15 sec and causing a high amount of threat. Damage increased by attack power. This effect stacks up to 5 times on the same target.",Form,Utility,0,15,15 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=33745,
+Feral,Ability,Lacerate,414644,414644,,,"Lacerates the enemy target, making them bleed and causing additional Physical damage over 15 sec. Damage increased each time you Lacerate the target, stacking up to 5 times.",Offensive,Main,0,15,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=414644,
+Feral,Ability,Mangle,407995,407995,,,Mangle the target for 160% normal damage and cause the target to take 30% additional damage from Bleed effects for 12 sec.,Offensive,Main,6,12,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=407995,
+Feral,Ability,Maul,6807,6807,Rank 1,10,Increases the druid's next attack by 18 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6807,
+Feral,Ability,Maul,6808,6807,Rank 2,18,Increases the druid's next attack by 27 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6808,
+Feral,Ability,Maul,6809,6807,Rank 3,26,Increases the druid's next attack by 37 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6809,
+Feral,Ability,Maul,7092,6807,Rank 4,12,Increases the next attack by 20 damage.,Form,Utility,0,,,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=7092,
+Feral,Ability,Maul,8972,6807,Rank 5,34,Increases the druid's next attack by 49 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=8972,
+Feral,Ability,Maul,9745,6807,Rank 6,42,Increases the druid's next attack by 71 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=9745,
+Feral,Ability,Maul,9880,6807,Rank 7,50,Increases the druid's next attack by 101 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=9880,
+Feral,Ability,Maul,9881,6807,Rank 8,58,Increases the druid's next attack by 128 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=9881,
+Feral,Ability,Maul,26996,6807,Rank 9,67,Increases the druid's next attack by 176 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=26996,
+Feral,Ability,Pounce,9005,9005,Rank 1,36,"Pounce, stunning the target for 3 sec and causing 270 damage over 18 sec. Must be prowling. Awards 1 combo point.",Crowd Control,Utility,0,3,50 Energy,"9007, 9824, 9826, 27007",Cooldown + aura,"CAT_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=9005,
+Feral,Ability,Pounce,9823,9005,Rank 2,46,"Pounce, stunning the target for 3 sec and causing 330 damage over 18 sec. Must be prowling. Awards 1 combo point.",Crowd Control,Utility,0,3,50 Energy,"9007, 9824, 9826, 27007",Cooldown + aura,"CAT_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=9823,
+Feral,Ability,Pounce,9827,9005,Rank 3,56,"Pounce, stunning the target for 3 sec and causing 450 damage over 18 sec. Must be prowling. Awards 1 combo point.",Crowd Control,Utility,0,3,50 Energy,"9007, 9824, 9826, 27007",Cooldown + aura,"CAT_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=9827,
+Feral,Ability,Pounce,27006,9005,Rank 4,66,"Pounce, stunning the target for 3 sec and causing 600 damage over 18 sec. Must be prowling. Awards 1 combo point.",Crowd Control,Utility,0,3,50 Energy,"9007, 9824, 9826, 27007",Cooldown + aura,"CAT_FORM, CC_HARD",https://www.wowhead.com/tbc/spell=27006,
+Feral,Ability,Prowl,5215,5215,Rank 1,20,"Allows the Druid to prowl around, but reduces your movement speed by 40%. Lasts until cancelled.",Form,Utility,10,,,,Cooldown,"CAT_FORM, STEALTH",https://www.wowhead.com/tbc/spell=5215,
+Feral,Ability,Prowl,6783,5215,Rank 2,40,"Allows the Druid to prowl around, but reduces your movement speed by 35%. Lasts until cancelled.",Form,Utility,10,,,,Cooldown,"CAT_FORM, STEALTH",https://www.wowhead.com/tbc/spell=6783,
+Feral,Ability,Prowl,9913,5215,Rank 3,60,"Allows the Druid to prowl around, but reduces your movement speed by 30%. Lasts until cancelled.",Form,Utility,10,,,,Cooldown,"CAT_FORM, STEALTH",https://www.wowhead.com/tbc/spell=9913,
+Feral,Ability,Rake,1822,27003,Rank 1,24,Rake the target for (Attack Power / 100 + 17) bleed damage and an additional (10 * 3 + Attack Power * 0.06) damage over 9 sec. Awards 1 combo point.,Form,Utility,0,9,40 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=1822,
+Feral,Ability,Rake,1823,27003,Rank 2,34,Rake the target for (Attack Power / 100 + 26) bleed damage and an additional (15 * 3 + Attack Power * 0.06) damage over 9 sec. Awards 1 combo point.,Form,Utility,0,9,40 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=1823,
+Feral,Ability,Rake,1824,27003,Rank 3,44,Rake the target for (Attack Power / 100 + 40) bleed damage and an additional (20 * 3 + Attack Power * 0.06) damage over 9 sec. Awards 1 combo point.,Form,Utility,0,9,40 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=1824,
+Feral,Ability,Rake,9904,27003,Rank 4,54,Rake the target for (Attack Power / 100 + 55) bleed damage and an additional (25 * 3 + Attack Power * 0.06) damage over 9 sec. Awards 1 combo point.,Form,Utility,0,9,40 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9904,
+Feral,Ability,Rake,27003,27003,Rank 5,64,Rake the target for (Attack Power / 100 + 78) bleed damage and an additional (36 * 3 + Attack Power * 0.06) damage over 9 sec. Awards 1 combo point.,Form,Utility,0,9,40 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=27003,
+Feral,Ability,Rip,1079,1079,Rank 1,20,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 42 damage over 12 sec.
+2 points: 66 damage over 12 sec.
+3 points: 90 damage over 12 sec.
+4 points: 114 damage over 12 sec.
+5 points: 138 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1079,
+Feral,Ability,Rip,9492,1079,Rank 2,28,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 66 damage over 12 sec.
+2 points: 108 damage over 12 sec.
+3 points: 150 damage over 12 sec.
+4 points: 192 damage over 12 sec.
+5 points: 234 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9492,
+Feral,Ability,Rip,9493,1079,Rank 3,36,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 90 damage over 12 sec.
+2 points: 144 damage over 12 sec.
+3 points: 198 damage over 12 sec.
+4 points: 252 damage over 12 sec.
+5 points: 306 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9493,
+Feral,Ability,Rip,9752,1079,Rank 4,44,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 138 damage over 12 sec.
+2 points: 222 damage over 12 sec.
+3 points: 306 damage over 12 sec.
+4 points: 390 damage over 12 sec.
+5 points: 474 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9752,
+Feral,Ability,Rip,9894,1079,Rank 5,52,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 192 damage over 12 sec.
+2 points: 312 damage over 12 sec.
+3 points: 432 damage over 12 sec.
+4 points: 552 damage over 12 sec.
+5 points: 672 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9894,
+Feral,Ability,Rip,9896,1079,Rank 6,60,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 270 damage over 12 sec.
+2 points: 438 damage over 12 sec.
+3 points: 606 damage over 12 sec.
+4 points: 774 damage over 12 sec.
+5 points: 942 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9896,
+Feral,Ability,Rip,27008,1079,Rank 7,67,"Finishing move that causes damage over time. Damage increases per combo point and by your attack power:
+1 point : 300 damage over 12 sec.
+2 points: 498 damage over 12 sec.
+3 points: 696 damage over 12 sec.
+4 points: 894 damage over 12 sec.
+5 points: 1092 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27008,
+Feral,Ability,Savage Roar,407988,407988,,,Finishing move that increases physical damage done by 30% while in Cat Form. Lasts longer per combo point.,Offensive,Main,0,14,,,Cooldown + aura,"DPS, FINISHER, HAS_BUFF, PVE_PVP",https://www.wowhead.com/tbc/spell=407988,
+Feral,Ability,Shred,5221,27002,Rank 1,22,"Shred the target, causing 225% damage plus 54 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5221,
+Feral,Ability,Shred,6800,27002,Rank 2,30,"Shred the target, causing 225% damage plus 72 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=6800,
+Feral,Ability,Shred,8992,27002,Rank 3,38,"Shred the target, causing 225% damage plus 99 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8992,
+Feral,Ability,Shred,9829,27002,Rank 4,46,"Shred the target, causing 225% damage plus 144 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9829,
+Feral,Ability,Shred,9830,27002,Rank 5,54,"Shred the target, causing 225% damage plus 180 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=9830,
+Feral,Ability,Shred,27001,27002,Rank 6,61,"Shred the target, causing 225% damage plus 236 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27001,
+Feral,Ability,Shred,27002,27002,Rank 7,70,"Shred the target, causing 225% damage plus 405 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27002,
+Feral,Ability,Shred,27555,27002,Rank 8,20,"Shred the target, causing 225% damage plus 405 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27555,
+Feral,Ability,Skull Bash,410176,410176,,,"Charge to a target within 13 yards and bash the target's skull, interrupting spellcasting and preventing any spell in that school from being cast for 5 sec. Usable in Cat Form and Bear Form.",Interrupt,Utility,10,,,,Cooldown,"INTERRUPT, MOVEMENT_GAP_CLOSE, PVE_PVP",https://www.wowhead.com/tbc/spell=410176,
+Feral,Ability,Survival Instincts,408024,408024,,,"When activated, grants you 30% of your maximum health and increases all non-Physical healing you receive by 20% for 20 sec.",Defensive,Utility,180,20,,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MAJOR, PERSONAL_DEFENSIVE, PVE_PVP, TANK",https://www.wowhead.com/tbc/spell=408024,
+Feral,Ability,Swipe,769,779,Rank 1,34,"Swipe 3 nearby enemies, inflicting 21 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=769,
+Feral,Ability,Swipe,779,779,Rank 2,16,"Swipe 3 nearby enemies, inflicting 10 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=779,
+Feral,Ability,Swipe,780,779,Rank 3,24,"Swipe 3 nearby enemies, inflicting 14 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=780,
+Feral,Ability,Swipe,9754,779,Rank 4,44,"Swipe 3 nearby enemies, inflicting 41 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=9754,
+Feral,Ability,Swipe,9908,779,Rank 5,54,"Swipe 3 nearby enemies, inflicting 60 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=9908,
+Feral,Ability,Swipe,26997,779,Rank 6,64,"Swipe 3 nearby enemies, inflicting 84 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=26997,
+Feral,Talent Ability,Mangle (Bear),33878,33987,Rank 1,50,Mangle the target for 115% normal damage plus 86 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec.,Form,Utility,6,12,20 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=33878,Talent-required
+Feral,Talent Ability,Mangle (Bear),33986,33987,Rank 2,58,Mangle the target for 115% normal damage plus 121 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec.,Form,Utility,6,12,20 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=33986,Talent-required
+Feral,Talent Ability,Mangle (Bear),33987,33987,Rank 3,68,Mangle the target for 115% normal damage plus 155 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec.,Form,Utility,6,12,20 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=33987,Talent-required
+Feral,Talent Ability,Mangle (Cat),33876,33983,Rank 1,50,Mangle the target for 160% normal damage plus 158 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec. Awards 1 combo point.,Form,Utility,0,12,45 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=33876,Talent-required
+Feral,Talent Ability,Mangle (Cat),33982,33983,Rank 2,58,Mangle the target for 160% normal damage plus 205 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec. Awards 1 combo point.,Form,Utility,0,12,45 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=33982,Talent-required
+Feral,Talent Ability,Mangle (Cat),33983,33983,Rank 3,68,Mangle the target for 160% normal damage plus 264 and causes the target to take 30% additional damage from Shred and bleed effects for 12 sec. Awards 1 combo point.,Form,Utility,0,12,45 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=33983,Talent-required
+Feral Combat,Talent,Brutal Impact,16940,16940,Rank 1/2,,Increases the stun duration of your Bash and Pounce abilities by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16940,Talent: Brutal Impact; tree row 2
+Feral Combat,Talent,Brutal Impact,16941,16940,Rank 2/2,,Increases the stun duration of your Bash and Pounce abilities by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16941,Talent: Brutal Impact; tree row 2
+Feral Combat,Talent Ability,Faerie Fire (Feral),16857,16857,Rank 1/1,,"Decrease the armor of the target by 175 for 40 sec. While affected, the target cannot stealth or turn invisible.",Offensive,Main,6,40,,,Cooldown + aura,"DEBUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=16857,Talent: Faerie Fire (Feral)
+Feral Combat,Talent,Feral Aggression,16858,16858,Rank 1/5,,Increases the attack power reduction of your Demoralizing Roar by 8% and the damage caused by your Ferocious Bite by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16858,Talent: Feral Aggression; tree row 1
+Feral Combat,Talent,Feral Aggression,16859,16858,Rank 2/5,,Increases the attack power reduction of your Demoralizing Roar by 16% and the damage caused by your Ferocious Bite by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16859,Talent: Feral Aggression; tree row 1
+Feral Combat,Talent,Feral Aggression,16860,16858,Rank 3/5,,Increases the attack power reduction of your Demoralizing Roar by 24% and the damage caused by your Ferocious Bite by 9%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16860,Talent: Feral Aggression; tree row 1
+Feral Combat,Talent,Feral Aggression,16861,16858,Rank 4/5,,Increases the attack power reduction of your Demoralizing Roar by 32% and the damage caused by your Ferocious Bite by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16861,Talent: Feral Aggression; tree row 1
+Feral Combat,Talent,Feral Aggression,16862,16858,Rank 5/5,,Increases the attack power reduction of your Demoralizing Roar by 40% and the damage caused by your Ferocious Bite by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16862,Talent: Feral Aggression; tree row 1
+Feral Combat,Talent Ability,Feral Charge,16979,16979,Rank 1/1,,"Causes you to charge an enemy, immobilizing and interrupting any spell being cast for 4 sec.",Interrupt,Utility,15,4,5 Rage,45334,Cooldown + aura,"BEAR_FORM, INTERRUPT, MOVEMENT, MOVEMENT_GAP_CLOSE",https://www.wowhead.com/tbc/spell=16979,Talent-required | Talent: Feral Charge
+Feral Combat,Talent,Feral Instinct,16947,16947,Rank 1/3,,Increases threat caused in Bear and Dire Bear Form by 5% and reduces the chance enemies have to detect you while Prowling.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16947,Talent: Feral Instinct; tree row 2
+Feral Combat,Talent,Feral Instinct,16948,16947,Rank 2/3,,Increases threat caused in Bear and Dire Bear Form by 10% and reduces the chance enemies have to detect you while Prowling.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16948,Talent: Feral Instinct; tree row 2
+Feral Combat,Talent,Feral Instinct,16949,16947,Rank 3/3,,Increases threat caused in Bear and Dire Bear Form by 15% and reduces the chance enemies have to detect you while Prowling.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16949,Talent: Feral Instinct; tree row 2
+Feral Combat,Talent,Feral Swiftness,17002,17002,Rank 1/2,,"Increases your movement speed by 15% while outdoors in Cat Form and increases your chance to dodge while in Cat Form, Bear Form and Dire Bear Form by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17002,Talent: Feral Swiftness; tree row 3
+Feral Combat,Talent,Feral Swiftness,24866,17002,Rank 2/2,,"Increases your movement speed by 30% while outdoors in Cat Form and increases your chance to dodge while in Cat Form, Bear Form and Dire Bear Form by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24866,Talent: Feral Swiftness; tree row 3
+Feral Combat,Talent,Ferocity,16934,16934,Rank 1/5,,"Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by 1 Rage or Energy.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16934,Talent: Ferocity; tree row 1
+Feral Combat,Talent,Ferocity,16935,16934,Rank 2/5,,"Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by 2 Rage or Energy.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16935,Talent: Ferocity; tree row 1
+Feral Combat,Talent,Ferocity,16936,16934,Rank 3/5,,"Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by 3 Rage or Energy.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16936,Talent: Ferocity; tree row 1
+Feral Combat,Talent,Ferocity,16937,16934,Rank 4/5,,"Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by 4 Rage or Energy.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16937,Talent: Ferocity; tree row 1
+Feral Combat,Talent,Ferocity,16938,16934,Rank 5/5,,"Reduces the cost of your Maul, Swipe, Claw, Rake and Mangle abilities by 5 Rage or Energy.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16938,Talent: Ferocity; tree row 1
+Feral Combat,Talent,Heart of the Wild,17003,17003,Rank 1/5,,"Increases your Intellect by 4%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 4% and while in Cat Form your attack power is increased by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17003,Talent: Heart of the Wild; tree row 6
+Feral Combat,Talent,Heart of the Wild,17004,17003,Rank 2/5,,"Increases your Intellect by 8%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 8% and while in Cat Form your attack power is increased by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17004,Talent: Heart of the Wild; tree row 6
+Feral Combat,Talent,Heart of the Wild,17005,17003,Rank 3/5,,"Increases your Intellect by 12%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 12% and while in Cat Form your attack power is increased by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17005,Talent: Heart of the Wild; tree row 6
+Feral Combat,Talent,Heart of the Wild,17006,17003,Rank 4/5,,"Increases your Intellect by 16%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 16% and while in Cat Form your attack power is increased by 8%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17006,Talent: Heart of the Wild; tree row 6
+Feral Combat,Talent,Heart of the Wild,24894,17003,Rank 5/5,,"Increases your Intellect by 20%. In addition, while in Bear or Dire Bear Form your Stamina is increased by 20% and while in Cat Form your attack power is increased by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24894,Talent: Heart of the Wild; tree row 6
+Feral Combat,Talent,Improved Leader of the Pack,34297,34297,Rank 1/2,,Your Leader of the Pack ability also causes affected targets to have a 100% chance to heal themselves for 2% of their total health when they critically hit with a melee or ranged attack. The healing effect cannot occur more than once every 6 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34297,Talent: Improved Leader of the Pack; tree row 7
+Feral Combat,Talent,Improved Leader of the Pack,34300,34297,Rank 2/2,,Your Leader of the Pack ability also causes affected targets to have a 100% chance to heal themselves for 4% of their total health when they critically hit with a melee or ranged attack. The healing effect cannot occur more than once every 6 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34300,Talent: Improved Leader of the Pack; tree row 7
+Feral Combat,Talent,Leader of the Pack,17007,17007,Rank 1/1,,"While in Cat, Bear or Dire Bear Form, the Leader of the Pack increases ranged and melee critical chance of all party members within 45 yards by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17007,Talent: Leader of the Pack; tree row 7
+Feral Combat,Talent,Mangle,33917,33917,Rank 1/1,,"Mangle the target, inflicting damage and causing the target to take additional damage from bleed effects for 12 sec. This ability can be used in Cat Form or Dire Bear Form.",Talent Passive,Data only,,12,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33917,Talent: Mangle; tree row 9
+Feral Combat,Talent,Nurturing Instinct,33872,33872,Rank 1/2,,"Increases your healing spells by up to 50% of your Agility, and increases healing done to you by 10% while in Cat form.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33872,Talent: Nurturing Instinct; tree row 5
+Feral Combat,Talent,Nurturing Instinct,33873,33872,Rank 2/2,,"Increases your healing spells by up to 100% of your Agility, and increases healing done to you by 20% while in Cat form.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33873,Talent: Nurturing Instinct; tree row 5
+Feral Combat,Talent,Predatory Instincts,33859,33859,Rank 1/5,,"While in Cat Form, Bear Form, or Dire Bear Form, increases your damage from melee critical strikes by 2% and your chance to avoid area effect attacks by 3%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33859,Talent: Predatory Instincts; tree row 8
+Feral Combat,Talent,Predatory Instincts,33866,33859,Rank 2/5,,"While in Cat Form, Bear Form, or Dire Bear Form, increases your damage from melee critical strikes by 4% and your chance to avoid area effect attacks by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33866,Talent: Predatory Instincts; tree row 8
+Feral Combat,Talent,Predatory Instincts,33867,33859,Rank 3/5,,"While in Cat Form, Bear Form, or Dire Bear Form, increases your damage from melee critical strikes by 6% and your chance to avoid area effect attacks by 9%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33867,Talent: Predatory Instincts; tree row 8
+Feral Combat,Talent,Predatory Instincts,33868,33859,Rank 4/5,,"While in Cat Form, Bear Form, or Dire Bear Form, increases your damage from melee critical strikes by 8% and your chance to avoid area effect attacks by 12%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33868,Talent: Predatory Instincts; tree row 8
+Feral Combat,Talent,Predatory Instincts,33869,33859,Rank 5/5,,"While in Cat Form, Bear Form, or Dire Bear Form, increases your damage from melee critical strikes by 10% and your chance to avoid area effect attacks by 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33869,Talent: Predatory Instincts; tree row 8
+Feral Combat,Talent,Predatory Strikes,16972,16972,Rank 1/3,,"Increases your melee attack power in Cat, Bear, Dire Bear and Moonkin Forms by 50% of your level.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16972,Talent: Predatory Strikes; tree row 4
+Feral Combat,Talent,Predatory Strikes,16974,16972,Rank 2/3,,"Increases your melee attack power in Cat, Bear, Dire Bear and Moonkin Forms by 100% of your level.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16974,Talent: Predatory Strikes; tree row 4
+Feral Combat,Talent,Predatory Strikes,16975,16972,Rank 3/3,,"Increases your melee attack power in Cat, Bear, Dire Bear and Moonkin Forms by 150% of your level.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16975,Talent: Predatory Strikes; tree row 4
+Feral Combat,Talent,Primal Fury,37116,37116,Rank 1/2,,Gives you a 50% chance to gain an additional 5 Rage anytime you get a critical strike while in Bear and Dire Bear Form and your critical strikes from Cat Form abilities that add combo points have a 50% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=37116,Talent: Primal Fury; tree row 4
+Feral Combat,Talent,Primal Fury,37117,37116,Rank 2/2,,Gives you a 100% chance to gain an additional 5 Rage anytime you get a critical strike while in Bear and Dire Bear Form and your critical strikes from Cat Form abilities that add combo points have a 100% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=37117,Talent: Primal Fury; tree row 4
+Feral Combat,Talent,Primal Tenacity,33851,33851,Rank 1/3,,Increases your chance to resist Stun and Fear mechanics by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33851,Talent: Primal Tenacity; tree row 7
+Feral Combat,Talent,Primal Tenacity,33852,33851,Rank 2/3,,Increases your chance to resist Stun and Fear mechanics by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33852,Talent: Primal Tenacity; tree row 7
+Feral Combat,Talent,Primal Tenacity,33957,33851,Rank 3/3,,Increases your chance to resist Stun and Fear mechanics by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33957,Talent: Primal Tenacity; tree row 7
+Feral Combat,Talent,Savage Fury,16998,16998,Rank 1/2,,"Increases the damage caused by your Claw, Rake, and Mangle (Cat) abilities by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16998,Talent: Savage Fury; tree row 5
+Feral Combat,Talent,Savage Fury,16999,16998,Rank 2/2,,"Increases the damage caused by your Claw, Rake, and Mangle (Cat) abilities by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16999,Talent: Savage Fury; tree row 5
+Feral Combat,Talent,Sharpened Claws,16942,16942,Rank 1/3,,"Increases your critical strike chance while in Bear, Dire Bear or Cat Form by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16942,Talent: Sharpened Claws; tree row 3
+Feral Combat,Talent,Sharpened Claws,16943,16942,Rank 2/3,,"Increases your critical strike chance while in Bear, Dire Bear or Cat Form by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16943,Talent: Sharpened Claws; tree row 3
+Feral Combat,Talent,Sharpened Claws,16944,16942,Rank 3/3,,"Increases your critical strike chance while in Bear, Dire Bear or Cat Form by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16944,Talent: Sharpened Claws; tree row 3
+Feral Combat,Talent,Shredding Attacks,16966,16966,Rank 1/2,,Reduces the energy cost of your Shred ability by 9 and the rage cost of your Lacerate ability by 1.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16966,Talent: Shredding Attacks; tree row 4
+Feral Combat,Talent,Shredding Attacks,16968,16966,Rank 2/2,,Reduces the energy cost of your Shred ability by 18 and the rage cost of your Lacerate ability by 2.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16968,Talent: Shredding Attacks; tree row 4
+Feral Combat,Talent,Survival of the Fittest,33853,33853,Rank 1/3,,Increases all attributes by 1% and reduces the chance you'll be critically hit by melee attacks by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33853,Talent: Survival of the Fittest; tree row 6
+Feral Combat,Talent,Survival of the Fittest,33855,33853,Rank 2/3,,Increases all attributes by 2% and reduces the chance you'll be critically hit by melee attacks by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33855,Talent: Survival of the Fittest; tree row 6
+Feral Combat,Talent,Survival of the Fittest,33856,33853,Rank 3/3,,Increases all attributes by 3% and reduces the chance you'll be critically hit by melee attacks by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33856,Talent: Survival of the Fittest; tree row 6
+Feral Combat,Talent,Thick Hide,16929,16929,Rank 1/3,,Increases your Armor contribution from items by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16929,Talent: Thick Hide; tree row 2
+Feral Combat,Talent,Thick Hide,16930,16929,Rank 2/3,,Increases your Armor contribution from items by 7%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16930,Talent: Thick Hide; tree row 2
+Feral Combat,Talent,Thick Hide,16931,16929,Rank 3/3,,Increases your Armor contribution from items by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16931,Talent: Thick Hide; tree row 2
+Restoration,Ability,Efflorescence,417149,417149,,,"Your Swiftmend now also causes Efflorescence, healing all party members within 15 yards of the Swiftmend target over 7 sec.",Healing,Utility,0,7,,,Cooldown,"AOE, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=417149,
+Restoration,Ability,Healing Touch,5185,5185,Rank 1,1,"Heals a friendly target for 
+40 to 
+55.",Healing,Utility,0,,25 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5185,
+Restoration,Ability,Healing Touch,5186,5185,Rank 2,8,"Heals a friendly target for 
+94 to 
+119.",Healing,Utility,0,,55 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5186,
+Restoration,Ability,Healing Touch,5187,5185,Rank 3,14,"Heals a friendly target for 
+204 to 
+253.",Healing,Utility,0,,110 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5187,
+Restoration,Ability,Healing Touch,5188,5185,Rank 4,20,"Heals a friendly target for 
+376 to 
+459.",Healing,Utility,0,,185 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5188,
+Restoration,Ability,Healing Touch,5189,5185,Rank 5,26,"Heals a friendly target for 
+589 to 
+712.",Healing,Utility,0,,270 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5189,
+Restoration,Ability,Healing Touch,6778,5185,Rank 6,32,"Heals a friendly target for 
+762 to 
+914.",Healing,Utility,0,,335 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=6778,
+Restoration,Ability,Healing Touch,8903,5185,Rank 7,38,"Heals a friendly target for 
+958 to 
+1143.",Healing,Utility,0,,405 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=8903,
+Restoration,Ability,Healing Touch,9758,5185,Rank 8,44,"Heals a friendly target for 
+1225 to 
+1453.",Healing,Utility,0,,495 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9758,
+Restoration,Ability,Healing Touch,9888,5185,Rank 9,50,"Heals a friendly target for 
+1545 to 
+1826.",Healing,Utility,0,,600 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9888,
+Restoration,Ability,Healing Touch,9889,5185,Rank 10,56,"Heals a friendly target for 
+1923 to 
+2263.",Healing,Utility,0,,720 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9889,
+Restoration,Ability,Healing Touch,25297,5185,Rank 11,60,"Heals a friendly target for 
+2303 to 
+2714.",Healing,Utility,0,,800 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=25297,
+Restoration,Ability,Healing Touch,26978,5185,Rank 12,62,"Heals a friendly target for 
+2401 to 
+2827.",Healing,Utility,0,,820 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=26978,
+Restoration,Ability,Healing Touch,26979,5185,Rank 13,69,"Heals a friendly target for 
+2715 to 
+3206.",Healing,Utility,0,,935 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=26979,
+Restoration,Ability,Lifebloom,33763,33763,Rank 1,64,"Heals the target for 273 over 7 sec. When Lifebloom completes its duration or is dispelled, the target instantly heals themself for 600. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,220 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=33763,
+Restoration,Ability,Lifebloom,33778,33763,Rank 2,64,"Heals the target for 273 over 7 sec. When Lifebloom completes its duration or is dispelled, the target instantly heals themself for 600. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=33778,
+Restoration,Ability,Lifebloom,409824,409824,,,"Heals the target over 7 sec. When the effect ends or is dispelled, the target is instantly healed. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,,,Cooldown + aura,"HAS_HOT, HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=409824,
+Restoration,Ability,Nourish,408247,408247,,,Heals a friendly target. Heals for an additional 20% for each of your heal over time effects present on the target.,Healing,Utility,0,,,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=408247,
+Restoration,Ability,Regrowth,8936,8936,Rank 1,12,"Heals a friendly target for 
+93 to 
+107 and another 98 over 21 sec.",Healing,Utility,0,21,80 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8936,
+Restoration,Ability,Regrowth,8938,8936,Rank 2,18,"Heals a friendly target for 
+176 to 
+201 and another 175 over 21 sec.",Healing,Utility,0,21,135 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8938,
+Restoration,Ability,Regrowth,8939,8936,Rank 3,24,"Heals a friendly target for 
+255 to 
+290 and another 259 over 21 sec.",Healing,Utility,0,21,185 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8939,
+Restoration,Ability,Regrowth,8940,8936,Rank 4,30,"Heals a friendly target for 
+336 to 
+378 and another 343 over 21 sec.",Healing,Utility,0,21,230 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8940,
+Restoration,Ability,Regrowth,8941,8936,Rank 5,36,"Heals a friendly target for 
+425 to 
+478 and another 427 over 21 sec.",Healing,Utility,0,21,275 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8941,
+Restoration,Ability,Regrowth,9750,8936,Rank 6,42,"Heals a friendly target for 
+534 to 
+599 and another 546 over 21 sec.",Healing,Utility,0,21,335 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9750,
+Restoration,Ability,Regrowth,9856,8936,Rank 7,48,"Heals a friendly target for 
+672 to 
+751 and another 686 over 21 sec.",Healing,Utility,0,21,405 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9856,
+Restoration,Ability,Regrowth,9857,8936,Rank 8,54,"Heals a friendly target for 
+839 to 
+935 and another 861 over 21 sec.",Healing,Utility,0,21,485 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9857,
+Restoration,Ability,Regrowth,9858,8936,Rank 9,60,"Heals a friendly target for 
+1037 to 
+1153 and another 1064 over 21 sec.",Healing,Utility,0,21,575 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9858,
+Restoration,Ability,Regrowth,26980,8936,Rank 10,65,"Heals a friendly target for 
+1253 to 
+1394 and another 1274 over 21 sec.",Healing,Utility,0,21,675 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26980,
+Restoration,Ability,Rejuvenation,774,774,Rank 1,4,Heals the target for 32 over 12 sec.,Healing,Utility,0,12,25 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=774,
+Restoration,Ability,Rejuvenation,1058,774,Rank 2,10,Heals the target for 56 over 12 sec.,Healing,Utility,0,12,40 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=1058,
+Restoration,Ability,Rejuvenation,1430,774,Rank 3,16,Heals the target for 116 over 12 sec.,Healing,Utility,0,12,75 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=1430,
+Restoration,Ability,Rejuvenation,2090,774,Rank 4,22,Heals the target for 180 over 12 sec.,Healing,Utility,0,12,105 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2090,
+Restoration,Ability,Rejuvenation,2091,774,Rank 5,28,Heals the target for 244 over 12 sec.,Healing,Utility,0,12,135 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2091,
+Restoration,Ability,Rejuvenation,3627,774,Rank 6,34,Heals the target for 304 over 12 sec.,Healing,Utility,0,12,160 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=3627,
+Restoration,Ability,Rejuvenation,8910,774,Rank 7,40,Heals the target for 388 over 12 sec.,Healing,Utility,0,12,195 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8910,
+Restoration,Ability,Rejuvenation,9839,774,Rank 8,46,Heals the target for 488 over 12 sec.,Healing,Utility,0,12,235 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9839,
+Restoration,Ability,Rejuvenation,9840,774,Rank 9,52,Heals the target for 608 over 12 sec.,Healing,Utility,0,12,280 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9840,
+Restoration,Ability,Rejuvenation,9841,774,Rank 10,58,Heals the target for 756 over 12 sec.,Healing,Utility,0,12,335 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=9841,
+Restoration,Ability,Rejuvenation,25299,774,Rank 11,60,Heals the target for 888 over 12 sec.,Healing,Utility,0,12,360 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25299,
+Restoration,Ability,Rejuvenation,26981,774,Rank 12,63,Heals the target for 932 over 12 sec.,Healing,Utility,0,12,370 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26981,
+Restoration,Ability,Rejuvenation,26982,774,Rank 13,69,Heals the target for 1060 over 12 sec.,Healing,Utility,0,12,415 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26982,
+Restoration,Ability,Tree of Life,439733,439733,,,"Shapeshift into the Tree of Life, increasing healing received by 10% for all party and raid members and increasing your healing done. While in this form you can only cast Restoration spells.",Healing,Utility,0,,,,Cooldown + aura,"HAS_BUFF, HEAL, MAJOR, PVE, SHAPESHIFT",https://www.wowhead.com/tbc/spell=439733,
+Restoration,Ability,Wild Growth,408120,408120,,,"Heals all of target player's party members within 43.5 yards of target player over 7 sec. The amount healed is applied quickly at first, and slows down as the effect fades.",Healing,Utility,6,7,,,Cooldown + aura,"AOE, HAS_HOT, HEAL, HEAL_AOE, HOT, PVE",https://www.wowhead.com/tbc/spell=408120,
+Restoration,Talent,Empowered Rejuvenation,33886,33886,Rank 1/5,,The bonus healing effects of your healing over time spells is increased by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33886,Talent: Empowered Rejuvenation; tree row 8
+Restoration,Talent,Empowered Rejuvenation,33887,33886,Rank 2/5,,The bonus healing effects of your healing over time spells is increased by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33887,Talent: Empowered Rejuvenation; tree row 8
+Restoration,Talent,Empowered Rejuvenation,33888,33886,Rank 3/5,,The bonus healing effects of your healing over time spells is increased by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33888,Talent: Empowered Rejuvenation; tree row 8
+Restoration,Talent,Empowered Rejuvenation,33889,33886,Rank 4/5,,The bonus healing effects of your healing over time spells is increased by 16%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33889,Talent: Empowered Rejuvenation; tree row 8
+Restoration,Talent,Empowered Rejuvenation,33890,33886,Rank 5/5,,The bonus healing effects of your healing over time spells is increased by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33890,Talent: Empowered Rejuvenation; tree row 8
+Restoration,Talent,Empowered Touch,33879,33879,Rank 1/2,,Your Healing Touch spell gains an additional 10% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33879,Talent: Empowered Touch; tree row 6
+Restoration,Talent,Empowered Touch,33880,33879,Rank 2/2,,Your Healing Touch spell gains an additional 20% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33880,Talent: Empowered Touch; tree row 6
+Restoration,Talent,Furor,17056,17056,Rank 1/5,,Gives you 20% chance to gain 10 Rage when you shapeshift into Bear and Dire Bear Form or 40 Energy when you shapeshift into Cat Form.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17056,Talent: Furor; tree row 1
+Restoration,Talent,Furor,17058,17056,Rank 2/5,,Gives you 40% chance to gain 10 Rage when you shapeshift into Bear and Dire Bear Form or 40 Energy when you shapeshift into Cat Form.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17058,Talent: Furor; tree row 1
+Restoration,Talent,Furor,17059,17056,Rank 3/5,,Gives you 60% chance to gain 10 Rage when you shapeshift into Bear and Dire Bear Form or 40 Energy when you shapeshift into Cat Form.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17059,Talent: Furor; tree row 1
+Restoration,Talent,Furor,17060,17056,Rank 4/5,,Gives you 80% chance to gain 10 Rage when you shapeshift into Bear and Dire Bear Form or 40 Energy when you shapeshift into Cat Form.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17060,Talent: Furor; tree row 1
+Restoration,Talent,Furor,17061,17056,Rank 5/5,,Gives you 100% chance to gain 10 Rage when you shapeshift into Bear and Dire Bear Form or 40 Energy when you shapeshift into Cat Form.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17061,Talent: Furor; tree row 1
+Restoration,Talent,Gift of Nature,17104,17104,Rank 1/5,,Increases the effect of all healing spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17104,Talent: Gift of Nature; tree row 5
+Restoration,Talent,Gift of Nature,24943,17104,Rank 2/5,,Increases the effect of all healing spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24943,Talent: Gift of Nature; tree row 5
+Restoration,Talent,Gift of Nature,24944,17104,Rank 3/5,,Increases the effect of all healing spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24944,Talent: Gift of Nature; tree row 5
+Restoration,Talent,Gift of Nature,24945,17104,Rank 4/5,,Increases the effect of all healing spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24945,Talent: Gift of Nature; tree row 5
+Restoration,Talent,Gift of Nature,24946,17104,Rank 5/5,,Increases the effect of all healing spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24946,Talent: Gift of Nature; tree row 5
+Restoration,Talent,Improved Mark of the Wild,17050,17050,Rank 1/5,,Increases the effects of your Mark of the Wild and Gift of the Wild spells by 7%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17050,Talent: Improved Mark of the Wild; tree row 1
+Restoration,Talent,Improved Mark of the Wild,17051,17050,Rank 2/5,,Increases the effects of your Mark of the Wild and Gift of the Wild spells by 14%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17051,Talent: Improved Mark of the Wild; tree row 1
+Restoration,Talent,Improved Mark of the Wild,17053,17050,Rank 3/5,,Increases the effects of your Mark of the Wild and Gift of the Wild spells by 21%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17053,Talent: Improved Mark of the Wild; tree row 1
+Restoration,Talent,Improved Mark of the Wild,17054,17050,Rank 4/5,,Increases the effects of your Mark of the Wild and Gift of the Wild spells by 28%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17054,Talent: Improved Mark of the Wild; tree row 1
+Restoration,Talent,Improved Mark of the Wild,17055,17050,Rank 5/5,,Increases the effects of your Mark of the Wild and Gift of the Wild spells by 35%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17055,Talent: Improved Mark of the Wild; tree row 1
+Restoration,Talent,Improved Regrowth,17074,17074,Rank 1/5,,Increases the critical effect chance of your Regrowth spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17074,Talent: Improved Regrowth; tree row 6
+Restoration,Talent,Improved Regrowth,17075,17074,Rank 2/5,,Increases the critical effect chance of your Regrowth spell by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17075,Talent: Improved Regrowth; tree row 6
+Restoration,Talent,Improved Regrowth,17076,17074,Rank 3/5,,Increases the critical effect chance of your Regrowth spell by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17076,Talent: Improved Regrowth; tree row 6
+Restoration,Talent,Improved Regrowth,17077,17074,Rank 4/5,,Increases the critical effect chance of your Regrowth spell by 40%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17077,Talent: Improved Regrowth; tree row 6
+Restoration,Talent,Improved Regrowth,17078,17074,Rank 5/5,,Increases the critical effect chance of your Regrowth spell by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17078,Talent: Improved Regrowth; tree row 6
+Restoration,Talent,Improved Rejuvenation,17111,17111,Rank 1/3,,Increases the effect of your Rejuvenation spell by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17111,Talent: Improved Rejuvenation; tree row 4
+Restoration,Talent,Improved Rejuvenation,17112,17111,Rank 2/3,,Increases the effect of your Rejuvenation spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17112,Talent: Improved Rejuvenation; tree row 4
+Restoration,Talent,Improved Rejuvenation,17113,17111,Rank 3/3,,Increases the effect of your Rejuvenation spell by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17113,Talent: Improved Rejuvenation; tree row 4
+Restoration,Talent,Improved Tranquility,17123,17123,Rank 1/2,,Reduces threat caused by Tranquility by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17123,Talent: Improved Tranquility; tree row 5
+Restoration,Talent,Improved Tranquility,17124,17123,Rank 2/2,,Reduces threat caused by Tranquility by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17124,Talent: Improved Tranquility; tree row 5
+Restoration,Talent,Intensity,17106,17106,Rank 1/3,,Allows 10% of your Mana regeneration to continue while casting and causes your Enrage ability to instantly generate 4 rage.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17106,Talent: Intensity; tree row 3
+Restoration,Talent,Intensity,17107,17106,Rank 2/3,,Allows 20% of your Mana regeneration to continue while casting and causes your Enrage ability to instantly generate 7 rage.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17107,Talent: Intensity; tree row 3
+Restoration,Talent,Intensity,17108,17106,Rank 3/3,,Allows 30% of your Mana regeneration to continue while casting and causes your Enrage ability to instantly generate 10 rage.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17108,Talent: Intensity; tree row 3
+Restoration,Talent,Living Spirit,34151,34151,Rank 1/3,,Increases your total Spirit by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34151,Talent: Living Spirit; tree row 7
+Restoration,Talent,Living Spirit,34152,34151,Rank 2/3,,Increases your total Spirit by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34152,Talent: Living Spirit; tree row 7
+Restoration,Talent,Living Spirit,34153,34151,Rank 3/3,,Increases your total Spirit by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34153,Talent: Living Spirit; tree row 7
+Restoration,Talent,Natural Perfection,33881,33881,Rank 1/3,,Your critical strike chance with all spells is increased by 1% and critical strikes against you give you the Natural Perfection effect reducing all damage taken by 2%. Stacks up to 3 times. Lasts 8 sec.,Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33881,Talent: Natural Perfection; tree row 7
+Restoration,Talent,Natural Perfection,33882,33881,Rank 2/3,,Your critical strike chance with all spells is increased by 2% and critical strikes against you give you the Natural Perfection effect reducing all damage taken by 3%. Stacks up to 3 times. Lasts 8 sec.,Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33882,Talent: Natural Perfection; tree row 7
+Restoration,Talent,Natural Perfection,33883,33881,Rank 3/3,,Your critical strike chance with all spells is increased by 3% and critical strikes against you give you the Natural Perfection effect reducing all damage taken by 4%. Stacks up to 3 times. Lasts 8 sec.,Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33883,Talent: Natural Perfection; tree row 7
+Restoration,Talent,Natural Shapeshifter,16833,16833,Rank 1/3,,Reduces the mana cost of all shapeshifting by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16833,Talent: Natural Shapeshifter; tree row 2
+Restoration,Talent,Natural Shapeshifter,16834,16833,Rank 2/3,,Reduces the mana cost of all shapeshifting by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16834,Talent: Natural Shapeshifter; tree row 2
+Restoration,Talent,Natural Shapeshifter,16835,16833,Rank 3/3,,Reduces the mana cost of all shapeshifting by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16835,Talent: Natural Shapeshifter; tree row 2
+Restoration,Talent,Naturalist,17069,17069,Rank 1/5,,Reduces the cast time of your Healing Touch spell by 0.1 sec and increases the damage you deal with physical attacks in all forms by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17069,Talent: Naturalist; tree row 2
+Restoration,Talent,Naturalist,17070,17069,Rank 2/5,,Reduces the cast time of your Healing Touch spell by 0.2 sec and increases the damage you deal with physical attacks in all forms by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17070,Talent: Naturalist; tree row 2
+Restoration,Talent,Naturalist,17071,17069,Rank 3/5,,Reduces the cast time of your Healing Touch spell by 0.3 sec and increases the damage you deal with physical attacks in all forms by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17071,Talent: Naturalist; tree row 2
+Restoration,Talent,Naturalist,17072,17069,Rank 4/5,,Reduces the cast time of your Healing Touch spell by 0.4 sec and increases the damage you deal with physical attacks in all forms by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17072,Talent: Naturalist; tree row 2
+Restoration,Talent,Naturalist,17073,17069,Rank 5/5,,Reduces the cast time of your Healing Touch spell by 0.5 sec and increases the damage you deal with physical attacks in all forms by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17073,Talent: Naturalist; tree row 2
+Restoration,Talent,Nature's Focus,17063,17063,Rank 1/5,,"Gives you a 14% chance to avoid interruption caused by damage while casting the Healing Touch, Regrowth and Tranquility spells.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17063,Talent: Nature's Focus; tree row 2
+Restoration,Talent,Nature's Focus,17065,17063,Rank 2/5,,"Gives you a 28% chance to avoid interruption caused by damage while casting the Healing Touch, Regrowth and Tranquility spells.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17065,Talent: Nature's Focus; tree row 2
+Restoration,Talent,Nature's Focus,17066,17063,Rank 3/5,,"Gives you a 42% chance to avoid interruption caused by damage while casting the Healing Touch, Regrowth and Tranquility spells.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17066,Talent: Nature's Focus; tree row 2
+Restoration,Talent,Nature's Focus,17067,17063,Rank 4/5,,"Gives you a 56% chance to avoid interruption caused by damage while casting the Healing Touch, Regrowth and Tranquility spells.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17067,Talent: Nature's Focus; tree row 2
+Restoration,Talent,Nature's Focus,17068,17063,Rank 5/5,,"Gives you a 70% chance to avoid interruption caused by damage while casting the Healing Touch, Regrowth and Tranquility spells.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17068,Talent: Nature's Focus; tree row 2
+Restoration,Talent Ability,Nature's Swiftness,17116,17116,Rank 1/1,,"When activated, your next Nature spell becomes an instant cast spell.",Healing,Utility,180,,,,Cooldown + aura,"HAS_BUFF, HEAL, MAJOR, PVE_PVP",https://www.wowhead.com/tbc/spell=17116,Talent-required | Talent: Nature's Swiftness
+Restoration,Talent Ability,Omen of Clarity,16864,16864,Rank 1/1,,"Imbues the Druid with natural energy. Each of the Druid's melee attacks has a chance of causing the caster to enter a Clearcasting state. The Clearcasting state reduces the Mana, Rage or Energy cost of your next damage or healing spell or offensive ability by 100%. Lasts 30 min.",Utility,Utility,0,1800,120 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=16864,Talent-required | Talent: Omen of Clarity
+Restoration,Talent,Subtlety,17118,17118,Rank 1/5,,Reduces the threat generated by your spells by 4% and reduces the chance your spells will be dispelled by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17118,Talent: Subtlety; tree row 3
+Restoration,Talent,Subtlety,17119,17118,Rank 2/5,,Reduces the threat generated by your spells by 8% and reduces the chance your spells will be dispelled by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17119,Talent: Subtlety; tree row 3
+Restoration,Talent,Subtlety,17120,17118,Rank 3/5,,Reduces the threat generated by your spells by 12% and reduces the chance your spells will be dispelled by 18%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17120,Talent: Subtlety; tree row 3
+Restoration,Talent,Subtlety,17121,17118,Rank 4/5,,Reduces the threat generated by your spells by 16% and reduces the chance your spells will be dispelled by 24%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17121,Talent: Subtlety; tree row 3
+Restoration,Talent,Subtlety,17122,17118,Rank 5/5,,Reduces the threat generated by your spells by 20% and reduces the chance your spells will be dispelled by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17122,Talent: Subtlety; tree row 3
+Restoration,Talent Ability,Swiftmend,18562,18562,Rank 1/1,,Consumes a Rejuvenation or Regrowth effect on a friendly target to instantly heal them an amount equal to 12 sec. of Rejuvenation or 18 sec. of Regrowth.,Healing,Utility,15,,16% of base mana,,Cooldown,"HEAL, HEAL_SINGLE, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=18562,Talent-required | Talent: Swiftmend
+Restoration,Talent,Tranquil Spirit,24968,24968,Rank 1/5,,Reduces the mana cost of your Healing Touch and Tranquility spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24968,Talent: Tranquil Spirit; tree row 4
+Restoration,Talent,Tranquil Spirit,24969,24968,Rank 2/5,,Reduces the mana cost of your Healing Touch and Tranquility spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24969,Talent: Tranquil Spirit; tree row 4
+Restoration,Talent,Tranquil Spirit,24970,24968,Rank 3/5,,Reduces the mana cost of your Healing Touch and Tranquility spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24970,Talent: Tranquil Spirit; tree row 4
+Restoration,Talent,Tranquil Spirit,24971,24968,Rank 4/5,,Reduces the mana cost of your Healing Touch and Tranquility spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24971,Talent: Tranquil Spirit; tree row 4
+Restoration,Talent,Tranquil Spirit,24972,24968,Rank 5/5,,Reduces the mana cost of your Healing Touch and Tranquility spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=24972,Talent: Tranquil Spirit; tree row 4
+Restoration,Talent Ability,Tree of Life,33891,33891,Rank 1/1,,"Shapeshift into the Tree of Life. While in this form you increase healing received by 25% of your total Spirit for all party members within 45 yards, your movement speed is reduced by 20%, and you can only cast Swiftmend, Innervate, Nature's Swiftness, Rebirth, Barkskin, poison removing and healing over time spells, but the mana cost of these spells is reduced by 20%.
+The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,28% of base mana,,Cooldown,"BUFF, PVE, SHAPESHIFT",https://www.wowhead.com/tbc/spell=33891,Talent-required | Talent: Tree of Life

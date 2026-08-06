@@ -1,0 +1,559 @@
+﻿Specialization,Type,Name,Spell ID,Canonical ID,Rank,Learned Level,Description,Category,HUD Row,Cooldown,Duration,Resource Cost,Aura ID,Track Mode,Tags,Wowhead Source,Notes
+Arcane,Ability,Arcane Barrage,400610,400610,,,"Launches several missiles at the enemy target, causing Arcane damage.",Offensive,Main,3,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=400610,
+Arcane,Ability,Arcane Blast,30451,30451,,64,"Blasts the target with energy, dealing 
+668 to 
+772 Arcane damage. Each time you cast Arcane Blast, the casting time is reduced while mana cost is increased. Effect stacks up to 3 times and lasts 8 sec.",Offensive,Main,0,8,195 Mana,36032,Cooldown + aura,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=30451,
+Arcane,Ability,Arcane Blast,400574,400574,,,"Blasts the target with energy, dealing Arcane damage. Each cast increases Arcane damage dealt by 15% and mana cost by 175% for 6 sec, stacking up to 4 times.",Offensive,Main,0,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=400574,
+Arcane,Ability,Arcane Missiles,5143,5143,Rank 1,8,"Launches Arcane Missiles at the enemy, causing 
+26 Arcane damage every 1 sec for 3 sec.",Offensive,Main,0,3,85 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5143,
+Arcane,Ability,Arcane Missiles,5144,5143,Rank 2,16,"Launches Arcane Missiles at the enemy, causing 
+38 Arcane damage every 1 sec for 4 sec.",Offensive,Main,0,4,140 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5144,
+Arcane,Ability,Arcane Missiles,5145,5143,Rank 3,24,"Launches Arcane Missiles at the enemy, causing 
+58 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,235 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5145,
+Arcane,Ability,Arcane Missiles,8416,5143,Rank 4,32,"Launches Arcane Missiles at the enemy, causing 
+86 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,320 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8416,
+Arcane,Ability,Arcane Missiles,8417,5143,Rank 5,40,"Launches Arcane Missiles at the enemy, causing 
+118 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,410 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8417,
+Arcane,Ability,Arcane Missiles,10211,5143,Rank 6,48,"Launches Arcane Missiles at the enemy, causing 
+155 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,500 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10211,
+Arcane,Ability,Arcane Missiles,10212,5143,Rank 7,56,"Launches Arcane Missiles at the enemy, causing 
+196 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,595 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10212,
+Arcane,Ability,Arcane Missiles,25345,5143,Rank 8,60,"Launches Arcane Missiles at the enemy, causing 
+234 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,655 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=25345,
+Arcane,Ability,Arcane Missiles,27075,5143,Rank 9,63,"Launches Arcane Missiles at the enemy, causing 
+245 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,685 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27075,
+Arcane,Ability,Arcane Missiles,38699,5143,Rank 10,69,"Launches Arcane Missiles at the enemy, causing 
+265 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,740 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=38699,
+Arcane,Ability,Arcane Missiles,38704,5143,Rank 11,70,"Launches Arcane Missiles at the enemy, causing 
+286 Arcane damage every 1 sec for 5 sec.",Offensive,Main,0,5,785 Mana,,Cooldown,"DPS, FILLER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=38704,
+Arcane,Ability,Arcane Surge,425124,425124,,,"Unleash all of your remaining mana in a surge of energy focused at the target, dealing damage based on the amount of mana consumed. For the next 8 sec your mana regeneration is increased and damage done is increased.",Offensive,Main,120,8,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, OFFENSIVE_CD, PVE_PVP",https://www.wowhead.com/tbc/spell=425124,
+Arcane,Ability,Temporal Anomaly,428885,428885,,,Launches an orb of temporal energy which slowly moves forward and every 2 sec grants all nearby party or raid members a shield absorbing damage.,Utility,Utility,30,10,,,Cooldown,"AOE, MINOR, PVE, UTILITY",https://www.wowhead.com/tbc/spell=428885,
+Arcane,Talent,Arcane Concentration,11213,11213,Rank 1/5,,Gives you a 2% chance of entering a Clearcasting state after any damage spell hits a target. The Clearcasting state reduces the mana cost of your next damage spell by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11213,Talent: Arcane Concentration; tree row 2
+Arcane,Talent,Arcane Concentration,12574,11213,Rank 2/5,,Gives you a 4% chance of entering a Clearcasting state after any damage spell hits a target. The Clearcasting state reduces the mana cost of your next damage spell by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12574,Talent: Arcane Concentration; tree row 2
+Arcane,Talent,Arcane Concentration,12575,11213,Rank 3/5,,Gives you a 6% chance of entering a Clearcasting state after any damage spell hits a target. The Clearcasting state reduces the mana cost of your next damage spell by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12575,Talent: Arcane Concentration; tree row 2
+Arcane,Talent,Arcane Concentration,12576,11213,Rank 4/5,,Gives you a 8% chance of entering a Clearcasting state after any damage spell hits a target. The Clearcasting state reduces the mana cost of your next damage spell by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12576,Talent: Arcane Concentration; tree row 2
+Arcane,Talent,Arcane Concentration,12577,11213,Rank 5/5,,Gives you a 10% chance of entering a Clearcasting state after any damage spell hits a target. The Clearcasting state reduces the mana cost of your next damage spell by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12577,Talent: Arcane Concentration; tree row 2
+Arcane,Talent,Arcane Focus,11222,11222,Rank 1/5,,Reduces the chance that the opponent can resist your Arcane spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11222,Talent: Arcane Focus; tree row 1
+Arcane,Talent,Arcane Focus,12839,11222,Rank 2/5,,Reduces the chance that the opponent can resist your Arcane spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12839,Talent: Arcane Focus; tree row 1
+Arcane,Talent,Arcane Focus,12840,11222,Rank 3/5,,Reduces the chance that the opponent can resist your Arcane spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12840,Talent: Arcane Focus; tree row 1
+Arcane,Talent,Arcane Focus,12841,11222,Rank 4/5,,Reduces the chance that the opponent can resist your Arcane spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12841,Talent: Arcane Focus; tree row 1
+Arcane,Talent,Arcane Focus,12842,11222,Rank 5/5,,Reduces the chance that the opponent can resist your Arcane spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12842,Talent: Arcane Focus; tree row 1
+Arcane,Talent,Arcane Fortitude,28574,28574,Rank 1/1,,Increases your armor by an amount equal to 100% of your Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28574,Talent: Arcane Fortitude; tree row 3
+Arcane,Talent,Arcane Impact,11242,11242,Rank 1/3,,Increases the critical strike chance of your Arcane Explosion and Arcane Blast spells by an additional 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11242,Talent: Arcane Impact; tree row 3
+Arcane,Talent,Arcane Impact,12467,11242,Rank 2/3,,Increases the critical strike chance of your Arcane Explosion and Arcane Blast spells by an additional 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12467,Talent: Arcane Impact; tree row 3
+Arcane,Talent,Arcane Impact,12469,11242,Rank 3/3,,Increases the critical strike chance of your Arcane Explosion and Arcane Blast spells by an additional 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12469,Talent: Arcane Impact; tree row 3
+Arcane,Talent,Arcane Instability,15058,15058,Rank 1/3,,Increases your spell damage and critical strike chance by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15058,Talent: Arcane Instability; tree row 6
+Arcane,Talent,Arcane Instability,15059,15058,Rank 2/3,,Increases your spell damage and critical strike chance by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15059,Talent: Arcane Instability; tree row 6
+Arcane,Talent,Arcane Instability,15060,15058,Rank 3/3,,Increases your spell damage and critical strike chance by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15060,Talent: Arcane Instability; tree row 6
+Arcane,Talent,Arcane Meditation,18462,18462,Rank 1/3,,Allows 10% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18462,Talent: Arcane Meditation; tree row 4
+Arcane,Talent,Arcane Meditation,18463,18462,Rank 2/3,,Allows 20% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18463,Talent: Arcane Meditation; tree row 4
+Arcane,Talent,Arcane Meditation,18464,18462,Rank 3/3,,Allows 30% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18464,Talent: Arcane Meditation; tree row 4
+Arcane,Talent,Arcane Mind,11232,11232,Rank 1/5,,Increases your total Intellect by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11232,Talent: Arcane Mind; tree row 5
+Arcane,Talent,Arcane Mind,12500,11232,Rank 2/5,,Increases your total Intellect by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12500,Talent: Arcane Mind; tree row 5
+Arcane,Talent,Arcane Mind,12501,11232,Rank 3/5,,Increases your total Intellect by 9%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12501,Talent: Arcane Mind; tree row 5
+Arcane,Talent,Arcane Mind,12502,11232,Rank 4/5,,Increases your total Intellect by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12502,Talent: Arcane Mind; tree row 5
+Arcane,Talent,Arcane Mind,12503,11232,Rank 5/5,,Increases your total Intellect by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12503,Talent: Arcane Mind; tree row 5
+Arcane,Talent,Arcane Potency,31571,31571,Rank 1/3,,Increases the critical strike chance of any spell cast while Clearcasting by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31571,Talent: Arcane Potency; tree row 6
+Arcane,Talent,Arcane Potency,31572,31571,Rank 2/3,,Increases the critical strike chance of any spell cast while Clearcasting by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31572,Talent: Arcane Potency; tree row 6
+Arcane,Talent,Arcane Potency,31573,31571,Rank 3/3,,Increases the critical strike chance of any spell cast while Clearcasting by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31573,Talent: Arcane Potency; tree row 6
+Arcane,Talent Ability,Arcane Power,12042,12042,Rank 1/1,,"When activated, your spells deal 30% more damage while costing 30% more mana to cast. This effect lasts 15 sec.",Offensive,Main,180,15,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, PVE",https://www.wowhead.com/tbc/spell=12042,Talent-required | Talent: Arcane Power
+Arcane,Talent,Arcane Subtlety,11210,11210,Rank 1/2,,Reduces your target's resistance to all your spells by 5 and reduces the threat caused by your Arcane spells by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11210,Talent: Arcane Subtlety; tree row 1
+Arcane,Talent,Arcane Subtlety,12592,11210,Rank 2/2,,Reduces your target's resistance to all your spells by 10 and reduces the threat caused by your Arcane spells by 40%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12592,Talent: Arcane Subtlety; tree row 1
+Arcane,Talent,Empowered Arcane Missiles,31579,31579,Rank 1/3,,"Your Arcane Missiles spell gains an additional 15% of your bonus spell damage effects, but mana cost is increased by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31579,Talent: Empowered Arcane Missiles; tree row 7
+Arcane,Talent,Empowered Arcane Missiles,31582,31579,Rank 2/3,,"Your Arcane Missiles spell gains an additional 30% of your bonus spell damage effects, but mana cost is increased by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31582,Talent: Empowered Arcane Missiles; tree row 7
+Arcane,Talent,Empowered Arcane Missiles,31583,31579,Rank 3/3,,"Your Arcane Missiles spell gains an additional 45% of your bonus spell damage effects, but mana cost is increased by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31583,Talent: Empowered Arcane Missiles; tree row 7
+Arcane,Talent,Improved Arcane Missiles,11237,11237,Rank 1/5,,Gives you a 20% chance to avoid interruption caused by damage while channeling Arcane Missiles.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11237,Talent: Improved Arcane Missiles; tree row 1
+Arcane,Talent,Improved Arcane Missiles,12463,11237,Rank 2/5,,Gives you a 40% chance to avoid interruption caused by damage while channeling Arcane Missiles.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12463,Talent: Improved Arcane Missiles; tree row 1
+Arcane,Talent,Improved Arcane Missiles,12464,11237,Rank 3/5,,Gives you a 60% chance to avoid interruption caused by damage while channeling Arcane Missiles.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12464,Talent: Improved Arcane Missiles; tree row 1
+Arcane,Talent,Improved Arcane Missiles,16769,11237,Rank 4/5,,Gives you a 80% chance to avoid interruption caused by damage while channeling Arcane Missiles.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16769,Talent: Improved Arcane Missiles; tree row 1
+Arcane,Talent,Improved Arcane Missiles,16770,11237,Rank 5/5,,Gives you a 100% chance to avoid interruption caused by damage while channeling Arcane Missiles.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16770,Talent: Improved Arcane Missiles; tree row 1
+Arcane,Talent,Improved Blink,31569,31569,Rank 1/2,,"For 4 sec after casting Blink, your chance to be hit by all attacks and spells is reduced by 13%.",Talent Passive,Data only,,4,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31569,Talent: Improved Blink; tree row 5
+Arcane,Talent,Improved Blink,31570,31569,Rank 2/2,,"For 4 sec after casting Blink, your chance to be hit by all attacks and spells is reduced by 25%.",Talent Passive,Data only,,4,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31570,Talent: Improved Blink; tree row 5
+Arcane,Talent,Improved Counterspell,11255,11255,Rank 1/2,,Gives your Counterspell a 50% chance to silence the target for 4 sec.,Talent Passive,Data only,,4,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11255,Talent: Improved Counterspell; tree row 4
+Arcane,Talent,Improved Counterspell,12598,11255,Rank 2/2,,Gives your Counterspell a 100% chance to silence the target for 4 sec.,Talent Passive,Data only,,4,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12598,Talent: Improved Counterspell; tree row 4
+Arcane,Talent,Improved Mana Shield,11252,11252,Rank 1/2,,Decreases the mana lost per point of damage taken when Mana Shield is active by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11252,Talent: Improved Mana Shield; tree row 4
+Arcane,Talent,Improved Mana Shield,12605,11252,Rank 2/2,,Decreases the mana lost per point of damage taken when Mana Shield is active by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12605,Talent: Improved Mana Shield; tree row 4
+Arcane,Talent,Magic Absorption,29441,29441,Rank 1/5,,Increases all resistances by 2 and causes all spells you fully resist to restore 1% of your total mana. 1 sec. cooldown.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29441,Talent: Magic Absorption; tree row 2
+Arcane,Talent,Magic Absorption,29444,29441,Rank 2/5,,Increases all resistances by 4 and causes all spells you fully resist to restore 2% of your total mana. 1 sec. cooldown.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29444,Talent: Magic Absorption; tree row 2
+Arcane,Talent,Magic Absorption,29445,29441,Rank 3/5,,Increases all resistances by 6 and causes all spells you fully resist to restore 3% of your total mana. 1 sec. cooldown.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29445,Talent: Magic Absorption; tree row 2
+Arcane,Talent,Magic Absorption,29446,29441,Rank 4/5,,Increases all resistances by 8 and causes all spells you fully resist to restore 4% of your total mana. 1 sec. cooldown.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29446,Talent: Magic Absorption; tree row 2
+Arcane,Talent,Magic Absorption,29447,29441,Rank 5/5,,Increases all resistances by 10 and causes all spells you fully resist to restore 5% of your total mana. 1 sec. cooldown.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29447,Talent: Magic Absorption; tree row 2
+Arcane,Talent,Magic Attunement,11247,11247,Rank 1/2,,Increases the effect of your Amplify Magic and Dampen Magic spells by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11247,Talent: Magic Attunement; tree row 3
+Arcane,Talent,Magic Attunement,12606,11247,Rank 2/2,,Increases the effect of your Amplify Magic and Dampen Magic spells by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12606,Talent: Magic Attunement; tree row 3
+Arcane,Talent,Mind Mastery,31584,31584,Rank 1/5,,Increases spell damage by up to 5% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31584,Talent: Mind Mastery; tree row 8
+Arcane,Talent,Mind Mastery,31585,31584,Rank 2/5,,Increases spell damage by up to 10% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31585,Talent: Mind Mastery; tree row 8
+Arcane,Talent,Mind Mastery,31586,31584,Rank 3/5,,Increases spell damage by up to 15% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31586,Talent: Mind Mastery; tree row 8
+Arcane,Talent,Mind Mastery,31587,31584,Rank 4/5,,Increases spell damage by up to 20% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31587,Talent: Mind Mastery; tree row 8
+Arcane,Talent,Mind Mastery,31588,31584,Rank 5/5,,Increases spell damage by up to 25% of your total Intellect.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31588,Talent: Mind Mastery; tree row 8
+Arcane,Talent Ability,Presence of Mind,12043,12043,Rank 1/1,,"When activated, your next Mage spell with a casting time less than 10 sec becomes an instant cast spell.",Offensive,Main,180,,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, PVE_PVP",https://www.wowhead.com/tbc/spell=12043,Talent-required | Talent: Presence of Mind
+Arcane,Talent,Prismatic Cloak,31574,31574,Rank 1/2,,Reduces all damage taken by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31574,Talent: Prismatic Cloak; tree row 6
+Arcane,Talent,Prismatic Cloak,31575,31574,Rank 2/2,,Reduces all damage taken by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31575,Talent: Prismatic Cloak; tree row 6
+Arcane,Talent Ability,Slow,31589,31589,Rank 1/1,,"Reduces target's movement speed by 50%, increases the time between ranged attacks by 50% and increases casting time by 50%. Lasts 15 sec. Slow can only affect one target at a time.",Crowd Control,Utility,0,15,20% of base mana,,Cooldown,"CC_SOFT, UTILITY",https://www.wowhead.com/tbc/spell=31589,Talent-required | Talent: Slow
+Arcane,Talent,Spell Power,35578,35578,Rank 1/2,,Increases critical strike damage bonus of all spells by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35578,Talent: Spell Power; tree row 7
+Arcane,Talent,Spell Power,35581,35578,Rank 2/2,,Increases critical strike damage bonus of all spells by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35581,Talent: Spell Power; tree row 7
+Arcane,Talent,Wand Specialization,6057,6057,Rank 1/2,,Increases your damage with Wands by 13%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=6057,Talent: Wand Specialization; tree row 2
+Arcane,Talent,Wand Specialization,6085,6057,Rank 2/2,,Increases your damage with Wands by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=6085,Talent: Wand Specialization; tree row 2
+"Arcane, Fire",Ability,Balefire Bolt,428878,428878,,,"Unleash a reality-distorting burst of raw magic at your enemy, dealing damage. Each cast increases the damage of subsequent Balefire Bolts by 10% but also deals increasing damage to you, stacking up to 10 times.",Offensive,Main,0,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=428878,
+"Arcane, Frost",Ability,Spellfrost Bolt,412532,412532,,,"Launches a bolt of spellfrost at the enemy, causing Spellfrost damage and slowing the target's movement speed.",Offensive,Main,0,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=412532,
+Class-wide / Shared,Ability,Amplify Magic,1008,1008,Rank 1,18,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 15 and healing spells by up to 30. Lasts 10 min.",Utility,Utility,0,600,150 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=1008,
+Class-wide / Shared,Ability,Amplify Magic,8455,1008,Rank 2,30,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 30 and healing spells by up to 60. Lasts 10 min.",Utility,Utility,0,600,250 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=8455,
+Class-wide / Shared,Ability,Amplify Magic,10169,1008,Rank 3,42,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 50 and healing spells by up to 100. Lasts 10 min.",Utility,Utility,0,600,350 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=10169,
+Class-wide / Shared,Ability,Amplify Magic,10170,1008,Rank 4,54,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 75 and healing spells by up to 150. Lasts 10 min.",Utility,Utility,0,600,450 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=10170,
+Class-wide / Shared,Ability,Amplify Magic,27130,1008,Rank 5,63,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 90 and healing spells by up to 180. Lasts 10 min.",Utility,Utility,0,600,500 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=27130,
+Class-wide / Shared,Ability,Amplify Magic,33946,1008,Rank 6,69,"Amplifies magic used against the targeted party member, increasing damage taken from spells by up to 120 and healing spells by up to 240. Lasts 10 min.",Utility,Utility,0,600,600 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=33946,
+Class-wide / Shared,Ability,Arcane Brilliance,23028,23028,Rank 1,56,"Infuses the target's party with brilliance, increasing their Intellect by 31 for 1 hour.",Utility,Utility,0,3600,1500 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=23028,
+Class-wide / Shared,Ability,Arcane Brilliance,27127,23028,Rank 2,70,"Infuses the target's party with brilliance, increasing their Intellect by 40 for 1 hour.",Utility,Utility,0,3600,1800 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=27127,
+Class-wide / Shared,Ability,Arcane Intellect,1459,1459,Rank 1,1,Increases the target's Intellect by 2 for 30 min.,Utility,Utility,0,1800,25 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1459,
+Class-wide / Shared,Ability,Arcane Intellect,1460,1459,Rank 2,14,Increases the target's Intellect by 7 for 30 min.,Utility,Utility,0,1800,100 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1460,
+Class-wide / Shared,Ability,Arcane Intellect,1461,1459,Rank 3,28,Increases the target's Intellect by 15 for 30 min.,Utility,Utility,0,1800,250 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1461,
+Class-wide / Shared,Ability,Arcane Intellect,10156,1459,Rank 4,42,Increases the target's Intellect by 22 for 30 min.,Utility,Utility,0,1800,415 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10156,
+Class-wide / Shared,Ability,Arcane Intellect,10157,1459,Rank 5,56,Increases the target's Intellect by 31 for 30 min.,Utility,Utility,0,1800,575 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10157,
+Class-wide / Shared,Ability,Arcane Intellect,27126,1459,Rank 6,70,Increases the target's Intellect by 40 for 30 min.,Utility,Utility,0,1800,700 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=27126,
+Class-wide / Shared,Ability,Blink,1953,1953,,20,"Teleports the caster 20 yards forward, unless something is in the way. Also frees the caster from stuns and bonds.",Mobility,Utility,15,,21% of base mana,,Cooldown,"MOVEMENT, MOVEMENT_ESCAPE",https://www.wowhead.com/tbc/spell=1953,
+Class-wide / Shared,Ability,Chronostatic Preservation,436516,436516,,,"Heals a friendly target and applies a Temporal Beacon to them, healing them when you cast healing spells on other targets.",Healing,Utility,6,,,,Cooldown,"HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=436516,
+Class-wide / Shared,Ability,Cone of Cold,120,120,Rank 1,26,"Targets in a cone in front of the caster take 
+102 to 
+112 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,210 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=120,
+Class-wide / Shared,Ability,Cone of Cold,8492,120,Rank 2,34,"Targets in a cone in front of the caster take 
+151 to 
+165 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,290 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=8492,
+Class-wide / Shared,Ability,Cone of Cold,10159,120,Rank 3,42,"Targets in a cone in front of the caster take 
+209 to 
+229 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,380 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=10159,
+Class-wide / Shared,Ability,Cone of Cold,10160,120,Rank 4,50,"Targets in a cone in front of the caster take 
+270 to 
+297 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,465 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=10160,
+Class-wide / Shared,Ability,Cone of Cold,10161,120,Rank 5,58,"Targets in a cone in front of the caster take 
+342 to 
+373 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,555 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=10161,
+Class-wide / Shared,Ability,Cone of Cold,27087,120,Rank 6,65,"Targets in a cone in front of the caster take 
+418 to 
+457 Frost damage and are slowed by 50% for 8 sec.",Crowd Control,Utility,10,8,645 Mana,,Cooldown,"AOE, CC_SOFT, DPS",https://www.wowhead.com/tbc/spell=27087,
+Class-wide / Shared,Ability,Conjure Mana Agate,759,759,,28,"Conjures a mana agate that can be used to instantly restore 390 to 410 mana.
+Conjured items disappear if logged out for more than 15 minutes.",Utility,Utility,0,,530 Mana,,Cooldown,"CREATES_CONSUMABLE, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=759,
+Class-wide / Shared,Ability,Conjure Mana Citrine,10053,10053,,48,"Conjures a mana citrine that can be used to instantly restore 829 to 871 mana.
+Conjured items disappear if logged out for more than 15 minutes.",Utility,Utility,0,,1130 Mana,,Cooldown,"CREATES_CONSUMABLE, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=10053,
+Class-wide / Shared,Ability,Conjure Mana Emerald,27101,27101,,68,"Conjures a mana emerald that can be used to instantly restore 2340 to 2460 mana. 3 charges.
+Conjured items disappear if logged out for more than 15 minutes.",Utility,Utility,0,,1670 Mana,,Cooldown,"CREATES_CONSUMABLE, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=27101,
+Class-wide / Shared,Ability,Conjure Mana Jade,3552,3552,,38,"Conjures a mana jade that can be used to instantly restore 585 to 615 mana.
+Conjured items disappear if logged out for more than 15 minutes.",Utility,Utility,0,,800 Mana,,Cooldown,"CREATES_CONSUMABLE, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=3552,
+Class-wide / Shared,Ability,Conjure Mana Ruby,10054,10054,,58,"Conjures a mana ruby that can be used to instantly restore 1073 to 1127 mana.
+Conjured items disappear if logged out for more than 15 minutes.",Utility,Utility,0,,1470 Mana,,Cooldown,"CREATES_CONSUMABLE, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=10054,
+Class-wide / Shared,Ability,Counterspell,2139,2139,,24,"Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for 8 sec. Generates a high amount of threat.",Interrupt,Utility,24,10,100 Mana,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=2139,
+Class-wide / Shared,Ability,Dampen Magic,604,604,Rank 1,12,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 10 and healing spells by up to 20. Lasts 10 min.",Utility,Utility,0,600,100 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=604,
+Class-wide / Shared,Ability,Dampen Magic,8450,604,Rank 2,24,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 20 and healing spells by up to 40. Lasts 10 min.",Utility,Utility,0,600,200 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=8450,
+Class-wide / Shared,Ability,Dampen Magic,8451,604,Rank 3,36,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 40 and healing spells by up to 80. Lasts 10 min.",Utility,Utility,0,600,300 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=8451,
+Class-wide / Shared,Ability,Dampen Magic,10173,604,Rank 4,48,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 60 and healing spells by up to 120. Lasts 10 min.",Utility,Utility,0,600,400 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=10173,
+Class-wide / Shared,Ability,Dampen Magic,10174,604,Rank 5,60,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 90 and healing spells by up to 180. Lasts 10 min.",Utility,Utility,0,600,500 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=10174,
+Class-wide / Shared,Ability,Dampen Magic,33944,604,Rank 6,67,"Dampens magic used against the targeted party member, decreasing damage taken from spells by up to 120 and healing spells by up to 240. Lasts 10 min.",Utility,Utility,0,600,600 Mana,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=33944,
+Class-wide / Shared,Ability,Displacement,428861,428861,,,Teleports back to where you last cast Blink from and resets the cooldown on Blink. Only usable within 8 sec of casting Blink.,Mobility,Utility,30,,,,Cooldown,"MINOR, MOVEMENT, MOVEMENT_ESCAPE, PVE_PVP",https://www.wowhead.com/tbc/spell=428861,
+Class-wide / Shared,Ability,Evocation,12051,12051,,20,"While channeling this spell, you gain 60% of your total mana over 8 sec.",Utility,Utility,480,8,,,Cooldown,"RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=12051,
+Class-wide / Shared,Ability,Fire Ward,543,543,Rank 1,20,Absorbs 165 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,85 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=543,
+Class-wide / Shared,Ability,Fire Ward,8457,543,Rank 2,30,Absorbs 290 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,135 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8457,
+Class-wide / Shared,Ability,Fire Ward,8458,543,Rank 3,40,Absorbs 470 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,195 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8458,
+Class-wide / Shared,Ability,Fire Ward,10223,543,Rank 4,50,Absorbs 675 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,255 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10223,
+Class-wide / Shared,Ability,Fire Ward,10225,543,Rank 5,60,Absorbs 875 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,320 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10225,
+Class-wide / Shared,Ability,Fire Ward,27128,543,Rank 6,69,Absorbs 1125 Fire damage. Lasts 30 sec.,Defensive,Utility,30,30,360 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=27128,
+Class-wide / Shared,Ability,Frost Armor,168,168,Rank 1,1,"Increases Armor by 30. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,60 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=168,
+Class-wide / Shared,Ability,Frost Armor,7300,168,Rank 2,10,"Increases Armor by 110. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,110 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=7300,
+Class-wide / Shared,Ability,Frost Armor,7301,168,Rank 3,20,"Increases Armor by 200. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,170 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=7301,
+Class-wide / Shared,Ability,Frost Nova,122,122,Rank 1,10,"Blasts enemies near the caster for 
+21 to 
+24 Frost damage and freezes them in place for up to 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,25,8,55 Mana,,Cooldown,"CC_SOFT, ROOT",https://www.wowhead.com/tbc/spell=122,
+Class-wide / Shared,Ability,Frost Nova,865,122,Rank 2,26,"Blasts enemies near the caster for 
+35 to 
+40 Frost damage and freezes them in place for up to 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,25,8,85 Mana,,Cooldown,"CC_SOFT, ROOT",https://www.wowhead.com/tbc/spell=865,
+Class-wide / Shared,Ability,Frost Nova,6131,122,Rank 3,40,"Blasts enemies near the caster for 
+54 to 
+61 Frost damage and freezes them in place for up to 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,25,8,115 Mana,,Cooldown,"CC_SOFT, ROOT",https://www.wowhead.com/tbc/spell=6131,
+Class-wide / Shared,Ability,Frost Nova,10230,122,Rank 4,54,"Blasts enemies near the caster for 
+73 to 
+82 Frost damage and freezes them in place for up to 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,25,8,145 Mana,,Cooldown,"CC_SOFT, ROOT",https://www.wowhead.com/tbc/spell=10230,
+Class-wide / Shared,Ability,Frost Nova,27088,122,Rank 5,67,"Blasts enemies near the caster for 
+100 to 
+113 Frost damage and freezes them in place for up to 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,25,8,185 Mana,,Cooldown,"CC_SOFT, ROOT",https://www.wowhead.com/tbc/spell=27088,
+Class-wide / Shared,Ability,Frost Ward,6143,6143,Rank 1,22,Absorbs 165 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,85 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=6143,
+Class-wide / Shared,Ability,Frost Ward,8461,6143,Rank 2,32,Absorbs 290 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,135 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8461,
+Class-wide / Shared,Ability,Frost Ward,8462,6143,Rank 3,42,Absorbs 470 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,195 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8462,
+Class-wide / Shared,Ability,Frost Ward,10177,6143,Rank 4,52,Absorbs 675 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,255 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10177,
+Class-wide / Shared,Ability,Frost Ward,28609,6143,Rank 5,60,Absorbs 875 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,320 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=28609,
+Class-wide / Shared,Ability,Frost Ward,32796,6143,Rank 6,70,Absorbs 1125 Frost damage. Lasts 30 sec.,Defensive,Utility,30,30,360 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=32796,
+Class-wide / Shared,Ability,Ice Armor,7302,7302,Rank 1,30,"Increases Armor by 290 and frost resistance by 6. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,240 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=7302,
+Class-wide / Shared,Ability,Ice Armor,7320,7302,Rank 2,40,"Increases Armor by 380 and frost resistance by 9. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,320 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=7320,
+Class-wide / Shared,Ability,Ice Armor,10219,7302,Rank 3,50,"Increases Armor by 470 and frost resistance by 12. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,410 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=10219,
+Class-wide / Shared,Ability,Ice Armor,10220,7302,Rank 4,60,"Increases Armor by 560 and frost resistance by 15. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,500 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=10220,
+Class-wide / Shared,Ability,Ice Armor,27124,7302,Rank 5,69,"Increases Armor by 645 and frost resistance by 18. If an enemy strikes the caster, they may have their movement slowed by 30% and the time between their attacks increased by 25% for 5 sec. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Defensive,Utility,0,1800,630 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=27124,
+Class-wide / Shared,Ability,Living Flame,401556,401556,,,"Summons a spellfire flame that moves toward the target, leaving a trail of spellfire that deals Fire damage to enemies who stand in it and healing allies who pass through it.",Offensive,Main,30,,,,Cooldown,"DPS, MINOR, PVE_PVP",https://www.wowhead.com/tbc/spell=401556,
+Class-wide / Shared,Ability,Mage Armor,6117,6117,Rank 1,34,Increases your resistance to all magic by 5 and allows 30% of your mana regeneration to continue while casting. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.,Defensive,Utility,0,1800,270 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=6117,
+Class-wide / Shared,Ability,Mage Armor,22782,6117,Rank 2,46,Increases your resistance to all magic by 10 and allows 30% of your mana regeneration to continue while casting. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.,Defensive,Utility,0,1800,380 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=22782,
+Class-wide / Shared,Ability,Mage Armor,22783,6117,Rank 3,58,Increases your resistance to all magic by 15 and allows 30% of your mana regeneration to continue while casting. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.,Defensive,Utility,0,1800,490 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=22783,
+Class-wide / Shared,Ability,Mage Armor,27125,6117,Rank 4,69,Increases your resistance to all magic by 18 and allows 30% of your mana regeneration to continue while casting. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.,Defensive,Utility,0,1800,575 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=27125,
+Class-wide / Shared,Ability,Mana Shield,1463,1463,Rank 1,20,"Absorbs 120 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,40 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=1463,
+Class-wide / Shared,Ability,Mana Shield,8494,1463,Rank 2,28,"Absorbs 210 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,60 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8494,
+Class-wide / Shared,Ability,Mana Shield,8495,1463,Rank 3,36,"Absorbs 300 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,80 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=8495,
+Class-wide / Shared,Ability,Mana Shield,10191,1463,Rank 4,44,"Absorbs 390 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,100 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10191,
+Class-wide / Shared,Ability,Mana Shield,10192,1463,Rank 5,52,"Absorbs 480 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,120 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10192,
+Class-wide / Shared,Ability,Mana Shield,10193,1463,Rank 6,60,"Absorbs 570 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,140 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=10193,
+Class-wide / Shared,Ability,Mana Shield,27131,1463,Rank 7,68,"Absorbs 715 damage, draining mana instead. Drains 2 mana per damage absorbed. Lasts 1 min.",Defensive,Utility,0,60,155 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=27131,
+Class-wide / Shared,Ability,Mass Regeneration,412510,412510,,,Heals all of target player's party members within 43.5 yards of target player over 3 sec.,Healing,Utility,12,3,,,Cooldown + aura,"AOE, HAS_HOT, HEAL, HEAL_AOE, HOT, PVE",https://www.wowhead.com/tbc/spell=412510,
+Class-wide / Shared,Ability,Molten Armor,30482,30482,,62,"Causes 75 Fire damage when hit, increases your chance to critically hit with spells by 3%, and reduces the chance you are critically hit by 5%. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Offensive,Main,0,1800,630 Mana,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=30482,
+Class-wide / Shared,Ability,Molten Armor,428741,428741,,,"Causes Fire damage when hit, increases spell critical strike chance, and reduces the chance you are critically hit. Only one type of Armor spell can be active on the Mage at any time. Lasts 30 min.",Offensive,Main,0,1800,,,Cooldown + aura,"BUFF, HAS_BUFF, LONG_BUFF, MAINTENANCE, PVE_PVP",https://www.wowhead.com/tbc/spell=428741,
+Class-wide / Shared,Ability,Polymorph,118,118,Rank 1,8,"Transforms the enemy into a sheep, forcing it to wander around for up to 20 sec. While wandering, the sheep cannot attack or cast spells but will regenerate very quickly. Any damage will transform the target back into its normal form. Only one target can be polymorphed at a time. Only works on Beasts, Humanoids and Critters.",Crowd Control,Utility,0,50,60 Mana,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=118,
+Class-wide / Shared,Ability,Polymorph,12824,118,Rank 2,20,"Transforms the enemy into a sheep, forcing it to wander around for up to 30 sec. While wandering, the sheep cannot attack or cast spells but will regenerate very quickly. Any damage will transform the target back into its normal form. Only one target can be polymorphed at a time. Only works on Beasts, Humanoids and Critters.",Crowd Control,Utility,0,50,90 Mana,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=12824,
+Class-wide / Shared,Ability,Polymorph,12825,118,Rank 3,40,"Transforms the enemy into a sheep, forcing it to wander around for up to 40 sec. While wandering, the sheep cannot attack or cast spells but will regenerate very quickly. Any damage will transform the target back into its normal form. Only one target can be polymorphed at a time. Only works on Beasts, Humanoids and Critters.",Crowd Control,Utility,0,50,120 Mana,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=12825,
+Class-wide / Shared,Ability,Polymorph,12826,118,Rank 4,60,"Transforms the enemy into a sheep, forcing it to wander around for up to 50 sec. While wandering, the sheep cannot attack or cast spells but will regenerate very quickly. Any damage will transform the target back into its normal form. Only one target can be polymorphed at a time. Only works on Beasts, Humanoids and Critters.",Crowd Control,Utility,0,50,150 Mana,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=12826,
+Class-wide / Shared,Ability,Regeneration,401417,401417,,,Heals the target for a large amount of health over 3 sec.,Healing,Utility,0,3,,,Cooldown + aura,"HAS_HOT, HEAL, HEAL_SINGLE, HOT, PVE",https://www.wowhead.com/tbc/spell=401417,
+Class-wide / Shared,Ability,Rewind Time,401462,401462,,,Your current target with your Temporal Beacon instantly heals all damage taken over the last 5 seconds.,Healing,Utility,30,,,,Cooldown,"HEAL, HEAL_SINGLE, MINOR, PVE",https://www.wowhead.com/tbc/spell=401462,
+Class-wide / Shared,Ability,Slow Fall,130,130,,12,Slows falling speed for 30 sec.,Mobility,Utility,0,30,40 Mana,,Cooldown,"MOVEMENT, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=130,
+Fire,Ability,Fire Blast,2136,2136,Rank 1,6,"Blasts the enemy for 
+27 to 
+35 Fire damage.",Offensive,Main,8,,40 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2136,
+Fire,Ability,Fire Blast,2137,2136,Rank 2,14,"Blasts the enemy for 
+62 to 
+76 Fire damage.",Offensive,Main,8,,75 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2137,
+Fire,Ability,Fire Blast,2138,2136,Rank 3,22,"Blasts the enemy for 
+110 to 
+134 Fire damage.",Offensive,Main,8,,115 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2138,
+Fire,Ability,Fire Blast,8412,2136,Rank 4,30,"Blasts the enemy for 
+177 to 
+211 Fire damage.",Offensive,Main,8,,165 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8412,
+Fire,Ability,Fire Blast,8413,2136,Rank 5,38,"Blasts the enemy for 
+253 to 
+301 Fire damage.",Offensive,Main,8,,220 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8413,
+Fire,Ability,Fire Blast,10197,2136,Rank 6,46,"Blasts the enemy for 
+345 to 
+407 Fire damage.",Offensive,Main,8,,280 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10197,
+Fire,Ability,Fire Blast,10199,2136,Rank 7,54,"Blasts the enemy for 
+446 to 
+524 Fire damage.",Offensive,Main,8,,340 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10199,
+Fire,Ability,Fire Blast,27078,2136,Rank 8,61,"Blasts the enemy for 
+555 to 
+654 Fire damage.",Offensive,Main,8,,400 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=27078,
+Fire,Ability,Fire Blast,27079,2136,Rank 9,70,"Blasts the enemy for 
+664 to 
+786 Fire damage.",Offensive,Main,8,,465 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=27079,
+Fire,Ability,Fireball,133,133,Rank 1,1,"Hurls a fiery ball that causes 
+16 to 
+25 Fire damage and an additional 2 Fire damage over 4 sec.",Offensive,Main,0,,30 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=133,
+Fire,Ability,Fireball,143,133,Rank 2,6,"Hurls a fiery ball that causes 
+34 to 
+49 Fire damage and an additional 3 Fire damage over 6 sec.",Offensive,Main,0,,45 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=143,
+Fire,Ability,Fireball,145,133,Rank 3,12,"Hurls a fiery ball that causes 
+57 to 
+77 Fire damage and an additional 6 Fire damage over 6 sec.",Offensive,Main,0,,65 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=145,
+Fire,Ability,Fireball,3140,133,Rank 4,18,"Hurls a fiery ball that causes 
+89 to 
+122 Fire damage and an additional 12 Fire damage over 8 sec.",Offensive,Main,0,,95 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=3140,
+Fire,Ability,Fireball,8400,133,Rank 5,24,"Hurls a fiery ball that causes 
+146 to 
+195 Fire damage and an additional 20 Fire damage over 8 sec.",Offensive,Main,0,,140 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8400,
+Fire,Ability,Fireball,8401,133,Rank 6,30,"Hurls a fiery ball that causes 
+207 to 
+274 Fire damage and an additional 28 Fire damage over 8 sec.",Offensive,Main,0,,185 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8401,
+Fire,Ability,Fireball,8402,133,Rank 7,36,"Hurls a fiery ball that causes 
+264 to 
+345 Fire damage and an additional 32 Fire damage over 8 sec.",Offensive,Main,0,,220 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=8402,
+Fire,Ability,Fireball,10148,133,Rank 8,42,"Hurls a fiery ball that causes 
+328 to 
+425 Fire damage and an additional 40 Fire damage over 8 sec.",Offensive,Main,0,,260 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10148,
+Fire,Ability,Fireball,10149,133,Rank 9,48,"Hurls a fiery ball that causes 
+404 to 
+518 Fire damage and an additional 52 Fire damage over 8 sec.",Offensive,Main,0,,305 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10149,
+Fire,Ability,Fireball,10150,133,Rank 10,54,"Hurls a fiery ball that causes 
+488 to 
+623 Fire damage and an additional 60 Fire damage over 8 sec.",Offensive,Main,0,,350 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10150,
+Fire,Ability,Fireball,10151,133,Rank 11,60,"Hurls a fiery ball that causes 
+575 to 
+730 Fire damage and an additional 72 Fire damage over 8 sec.",Offensive,Main,0,,395 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10151,
+Fire,Ability,Fireball,25306,133,Rank 12,60,"Hurls a fiery ball that causes 
+611 to 
+776 Fire damage and an additional 76 Fire damage over 8 sec.",Offensive,Main,0,,410 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=25306,
+Fire,Ability,Fireball,27070,133,Rank 13,66,"Hurls a fiery ball that causes 
+649 to 
+821 Fire damage and an additional 84 Fire damage over 8 sec.",Offensive,Main,0,,425 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=27070,
+Fire,Ability,Fireball,38692,133,Rank 14,70,"Hurls a fiery ball that causes 
+717 to 
+913 Fire damage and an additional 84 Fire damage over 8 sec.",Offensive,Main,0,,465 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=38692,
+Fire,Ability,Flamestrike,2120,2120,Rank 1,16,"Calls down a pillar of fire, burning all enemies within the area for 
+55 to 
+71 Fire damage and an additional 48 Fire damage over 8 sec.",Offensive,Main,0,8,195 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=2120,
+Fire,Ability,Flamestrike,2121,2120,Rank 2,24,"Calls down a pillar of fire, burning all enemies within the area for 
+100 to 
+126 Fire damage and an additional 88 Fire damage over 8 sec.",Offensive,Main,0,8,330 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=2121,
+Fire,Ability,Flamestrike,8422,2120,Rank 3,32,"Calls down a pillar of fire, burning all enemies within the area for 
+159 to 
+197 Fire damage and an additional 140 Fire damage over 8 sec.",Offensive,Main,0,8,490 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=8422,
+Fire,Ability,Flamestrike,8423,2120,Rank 4,40,"Calls down a pillar of fire, burning all enemies within the area for 
+226 to 
+279 Fire damage and an additional 196 Fire damage over 8 sec.",Offensive,Main,0,8,650 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=8423,
+Fire,Ability,Flamestrike,10215,2120,Rank 5,48,"Calls down a pillar of fire, burning all enemies within the area for 
+298 to 
+367 Fire damage and an additional 264 Fire damage over 8 sec.",Offensive,Main,0,8,815 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=10215,
+Fire,Ability,Flamestrike,10216,2120,Rank 6,56,"Calls down a pillar of fire, burning all enemies within the area for 
+383 to 
+468 Fire damage and an additional 340 Fire damage over 8 sec.",Offensive,Main,0,8,990 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=10216,
+Fire,Ability,Flamestrike,27086,2120,Rank 7,64,"Calls down a pillar of fire, burning all enemies within the area for 
+480 to 
+585 Fire damage and an additional 424 Fire damage over 8 sec.",Offensive,Main,0,8,1175 Mana,,Cooldown,"AOE, DPS, PVE, TIMED_EFFECT",https://www.wowhead.com/tbc/spell=27086,
+Fire,Ability,Living Bomb,400613,400613,,,"The target becomes a Living Bomb, taking Fire damage over 12 sec. After 12 sec or when dispelled, the target explodes dealing Fire damage to all enemies within 10 yards.",Offensive,Main,0,12,,,Cooldown + aura,"AOE, DPS, HAS_DOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=400613,
+Fire,Ability,Scorch,2948,2948,Rank 1,22,"Scorch the enemy for 
+56 to 
+69 Fire damage.",Offensive,Main,0,,50 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=2948,
+Fire,Ability,Scorch,8444,2948,Rank 2,28,"Scorch the enemy for 
+81 to 
+98 Fire damage.",Offensive,Main,0,,65 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8444,
+Fire,Ability,Scorch,8445,2948,Rank 3,34,"Scorch the enemy for 
+105 to 
+126 Fire damage.",Offensive,Main,0,,80 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8445,
+Fire,Ability,Scorch,8446,2948,Rank 4,40,"Scorch the enemy for 
+139 to 
+165 Fire damage.",Offensive,Main,0,,100 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8446,
+Fire,Ability,Scorch,10205,2948,Rank 5,46,"Scorch the enemy for 
+168 to 
+199 Fire damage.",Offensive,Main,0,,115 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=10205,
+Fire,Ability,Scorch,10206,2948,Rank 6,52,"Scorch the enemy for 
+207 to 
+247 Fire damage.",Offensive,Main,0,,135 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=10206,
+Fire,Ability,Scorch,10207,2948,Rank 7,58,"Scorch the enemy for 
+241 to 
+284 Fire damage.",Offensive,Main,0,,150 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=10207,
+Fire,Ability,Scorch,27073,2948,Rank 8,65,"Scorch the enemy for 
+278 to 
+327 Fire damage.",Offensive,Main,0,,165 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=27073,
+Fire,Ability,Scorch,27074,2948,Rank 9,70,"Scorch the enemy for 
+305 to 
+361 Fire damage.",Offensive,Main,0,,180 Mana,22959,Cooldown + aura,"DEBUFF, DPS, HAS_DEBUFF, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=27074,
+Fire,Talent Ability,Blast Wave,11113,11113,Rank 1/1,,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+160 to 
+192 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,215 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=11113,Talent-required | Talent: Blast Wave
+Fire,Talent Ability,Blast Wave,13018,11113,Rank 2,36,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+208 to 
+249 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,270 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=13018,Talent-required
+Fire,Talent Ability,Blast Wave,13019,11113,Rank 3,44,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+285 to 
+338 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,355 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=13019,Talent-required
+Fire,Talent Ability,Blast Wave,13020,11113,Rank 4,52,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+374 to 
+443 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,450 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=13020,Talent-required
+Fire,Talent Ability,Blast Wave,13021,11113,Rank 5,60,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+473 to 
+556 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,545 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=13021,Talent-required
+Fire,Talent Ability,Blast Wave,27133,11113,Rank 6,65,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+543 to 
+638 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,555 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=27133,Talent-required
+Fire,Talent Ability,Blast Wave,33933,11113,Rank 7,70,"A wave of flame radiates outward from the caster, damaging all enemies caught within the blast for 
+616 to 
+724 Fire damage, and Dazing them for 6 sec.",Crowd Control,Utility,30,6,620 Mana,,Cooldown,"AOE, CC_SOFT, DPS, KNOCKBACK",https://www.wowhead.com/tbc/spell=33933,Talent-required
+Fire,Talent,Blazing Speed,31641,31641,Rank 1/2,,Gives you a 5% chance when hit by a melee or ranged attack to increase your movement speed by 50% and dispel all movement impairing effects. This effect lasts 8 sec.,Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31641,Talent: Blazing Speed; tree row 6
+Fire,Talent,Blazing Speed,31642,31641,Rank 2/2,,Gives you a 10% chance when hit by a melee or ranged attack to increase your movement speed by 50% and dispel all movement impairing effects. This effect lasts 8 sec.,Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31642,Talent: Blazing Speed; tree row 6
+Fire,Talent,Burning Soul,11083,11083,Rank 1/2,,Gives your Fire spells a 35% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11083,Talent: Burning Soul; tree row 3
+Fire,Talent,Burning Soul,12351,11083,Rank 2/2,,Gives your Fire spells a 70% chance to not lose casting time when you take damage and reduces the threat caused by your Fire spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12351,Talent: Burning Soul; tree row 3
+Fire,Talent Ability,Combustion,11129,11129,Rank 1/1,,"When activated, this spell causes each of your Fire damage spell hits to increase your critical strike chance with Fire damage spells by 10%. This effect lasts until you have caused 3 critical strikes with Fire spells.",Offensive,Main,180,,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, PVE",https://www.wowhead.com/tbc/spell=11129,Talent-required | Talent: Combustion
+Fire,Talent,Critical Mass,11115,11115,Rank 1/3,,Increases the critical strike chance of your Fire spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11115,Talent: Critical Mass; tree row 5
+Fire,Talent,Critical Mass,11367,11115,Rank 2/3,,Increases the critical strike chance of your Fire spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11367,Talent: Critical Mass; tree row 5
+Fire,Talent,Critical Mass,11368,11115,Rank 3/3,,Increases the critical strike chance of your Fire spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11368,Talent: Critical Mass; tree row 5
+Fire,Talent Ability,Dragon's Breath,31661,31661,Rank 1/1,,"Targets in a cone in front of the caster take 
+382 to 
+442 Fire damage and are Disoriented for 3 sec. Any direct damaging attack will revive targets. Turns off your attack when used.",Crowd Control,Utility,20,3,475 Mana,,Cooldown,"AOE, CC_HARD, DISORIENT, DPS",https://www.wowhead.com/tbc/spell=31661,Talent-required | Talent: Dragon's Breath
+Fire,Talent Ability,Dragon's Breath,33041,31661,Rank 2,56,"Targets in a cone in front of the caster take 
+463 to 
+536 Fire damage and are Disoriented for 3 sec. Any direct damaging attack will revive targets. Turns off your attack when used.",Crowd Control,Utility,20,3,575 Mana,,Cooldown,"AOE, CC_HARD, DISORIENT, DPS",https://www.wowhead.com/tbc/spell=33041,Talent-required
+Fire,Talent Ability,Dragon's Breath,33042,31661,Rank 3,64,"Targets in a cone in front of the caster take 
+584 to 
+677 Fire damage and are Disoriented for 3 sec. Any direct damaging attack will revive targets. Turns off your attack when used.",Crowd Control,Utility,20,3,660 Mana,,Cooldown,"AOE, CC_HARD, DISORIENT, DPS",https://www.wowhead.com/tbc/spell=33042,Talent-required
+Fire,Talent Ability,Dragon's Breath,33043,31661,Rank 4,70,"Targets in a cone in front of the caster take 
+680 to 
+790 Fire damage and are Disoriented for 3 sec. Any direct damaging attack will revive targets. Turns off your attack when used.",Crowd Control,Utility,20,3,700 Mana,,Cooldown,"AOE, CC_HARD, DISORIENT, DPS",https://www.wowhead.com/tbc/spell=33043,Talent-required
+Fire,Talent,Empowered Fireball,31656,31656,Rank 1/5,,Your Fireball spell gains an additional 3% of your bonus spell damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31656,Talent: Empowered Fireball; tree row 8
+Fire,Talent,Empowered Fireball,31657,31656,Rank 2/5,,Your Fireball spell gains an additional 6% of your bonus spell damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31657,Talent: Empowered Fireball; tree row 8
+Fire,Talent,Empowered Fireball,31658,31656,Rank 3/5,,Your Fireball spell gains an additional 9% of your bonus spell damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31658,Talent: Empowered Fireball; tree row 8
+Fire,Talent,Empowered Fireball,31659,31656,Rank 4/5,,Your Fireball spell gains an additional 12% of your bonus spell damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31659,Talent: Empowered Fireball; tree row 8
+Fire,Talent,Empowered Fireball,31660,31656,Rank 5/5,,Your Fireball spell gains an additional 15% of your bonus spell damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31660,Talent: Empowered Fireball; tree row 8
+Fire,Talent,Fire Power,11124,11124,Rank 1/5,,Increases the damage done by your Fire spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11124,Talent: Fire Power; tree row 6
+Fire,Talent,Fire Power,12378,11124,Rank 2/5,,Increases the damage done by your Fire spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12378,Talent: Fire Power; tree row 6
+Fire,Talent,Fire Power,12398,11124,Rank 3/5,,Increases the damage done by your Fire spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12398,Talent: Fire Power; tree row 6
+Fire,Talent,Fire Power,12399,11124,Rank 4/5,,Increases the damage done by your Fire spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12399,Talent: Fire Power; tree row 6
+Fire,Talent,Fire Power,12400,11124,Rank 5/5,,Increases the damage done by your Fire spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12400,Talent: Fire Power; tree row 6
+Fire,Talent,Flame Throwing,11100,11100,Rank 1/2,,Increases the range of your Fire spells by 3 yards.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11100,Talent: Flame Throwing; tree row 2
+Fire,Talent,Flame Throwing,12353,11100,Rank 2/2,,Increases the range of your Fire spells by 6 yards.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12353,Talent: Flame Throwing; tree row 2
+Fire,Talent,Ignite,11119,11119,Rank 1/5,,Your critical strikes from Fire damage spells cause the target to burn for an additional 8% of your spell's damage over 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11119,Talent: Ignite; tree row 2
+Fire,Talent,Ignite,11120,11119,Rank 2/5,,Your critical strikes from Fire damage spells cause the target to burn for an additional 16% of your spell's damage over 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11120,Talent: Ignite; tree row 2
+Fire,Talent,Ignite,12846,11119,Rank 3/5,,Your critical strikes from Fire damage spells cause the target to burn for an additional 24% of your spell's damage over 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12846,Talent: Ignite; tree row 2
+Fire,Talent,Ignite,12847,11119,Rank 4/5,,Your critical strikes from Fire damage spells cause the target to burn for an additional 32% of your spell's damage over 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12847,Talent: Ignite; tree row 2
+Fire,Talent,Ignite,12848,11119,Rank 5/5,,Your critical strikes from Fire damage spells cause the target to burn for an additional 40% of your spell's damage over 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12848,Talent: Ignite; tree row 2
+Fire,Talent,Impact,11103,11103,Rank 1/5,,Gives your Fire spells a 2% chance to stun the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11103,Talent: Impact; tree row 1
+Fire,Talent,Impact,12357,11103,Rank 2/5,,Gives your Fire spells a 4% chance to stun the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12357,Talent: Impact; tree row 1
+Fire,Talent,Impact,12358,11103,Rank 3/5,,Gives your Fire spells a 6% chance to stun the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12358,Talent: Impact; tree row 1
+Fire,Talent,Impact,12359,11103,Rank 4/5,,Gives your Fire spells a 8% chance to stun the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12359,Talent: Impact; tree row 1
+Fire,Talent,Impact,12360,11103,Rank 5/5,,Gives your Fire spells a 10% chance to stun the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12360,Talent: Impact; tree row 1
+Fire,Talent,Improved Fire Blast,11078,11078,Rank 1/3,,Reduces the cooldown of your Fire Blast spell by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11078,Talent: Improved Fire Blast; tree row 2
+Fire,Talent,Improved Fire Blast,11080,11078,Rank 2/3,,Reduces the cooldown of your Fire Blast spell by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11080,Talent: Improved Fire Blast; tree row 2
+Fire,Talent,Improved Fire Blast,12342,11078,Rank 3/3,,Reduces the cooldown of your Fire Blast spell by 1.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12342,Talent: Improved Fire Blast; tree row 2
+Fire,Talent,Improved Fireball,11069,11069,Rank 1/5,,Reduces the casting time of your Fireball spell by 0.1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11069,Talent: Improved Fireball; tree row 1
+Fire,Talent,Improved Fireball,12338,11069,Rank 2/5,,Reduces the casting time of your Fireball spell by 0.2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12338,Talent: Improved Fireball; tree row 1
+Fire,Talent,Improved Fireball,12339,11069,Rank 3/5,,Reduces the casting time of your Fireball spell by 0.3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12339,Talent: Improved Fireball; tree row 1
+Fire,Talent,Improved Fireball,12340,11069,Rank 4/5,,Reduces the casting time of your Fireball spell by 0.4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12340,Talent: Improved Fireball; tree row 1
+Fire,Talent,Improved Fireball,12341,11069,Rank 5/5,,Reduces the casting time of your Fireball spell by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12341,Talent: Improved Fireball; tree row 1
+Fire,Talent,Improved Flamestrike,11108,11108,Rank 1/3,,Increases the critical strike chance of your Flamestrike spell by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11108,Talent: Improved Flamestrike; tree row 3
+Fire,Talent,Improved Flamestrike,12349,11108,Rank 2/3,,Increases the critical strike chance of your Flamestrike spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12349,Talent: Improved Flamestrike; tree row 3
+Fire,Talent,Improved Flamestrike,12350,11108,Rank 3/3,,Increases the critical strike chance of your Flamestrike spell by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12350,Talent: Improved Flamestrike; tree row 3
+Fire,Talent,Improved Scorch,11095,11095,Rank 1/3,,Your Scorch spells have a 33% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases the Fire damage dealt to your target by 3% and lasts 30 sec. Stacks up to 5 times.,Talent Passive,Data only,,30,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11095,Talent: Improved Scorch; tree row 4
+Fire,Talent,Improved Scorch,12872,11095,Rank 2/3,,Your Scorch spells have a 66% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases the Fire damage dealt to your target by 3% and lasts 30 sec. Stacks up to 5 times.,Talent Passive,Data only,,30,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12872,Talent: Improved Scorch; tree row 4
+Fire,Talent,Improved Scorch,12873,11095,Rank 3/3,,Your Scorch spells have a 100% chance to cause your target to be vulnerable to Fire damage. This vulnerability increases the Fire damage dealt to your target by 3% and lasts 30 sec. Stacks up to 5 times.,Talent Passive,Data only,,30,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12873,Talent: Improved Scorch; tree row 4
+Fire,Talent,Incineration,18459,18459,Rank 1/2,,Increases the critical strike chance of your Fire Blast and Scorch spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18459,Talent: Incineration; tree row 3
+Fire,Talent,Incineration,18460,18459,Rank 2/2,,Increases the critical strike chance of your Fire Blast and Scorch spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18460,Talent: Incineration; tree row 3
+Fire,Talent,Master of Elements,29074,29074,Rank 1/3,,Your Fire and Frost spell criticals will refund 10% of their base mana cost.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29074,Talent: Master of Elements; tree row 4
+Fire,Talent,Master of Elements,29075,29074,Rank 2/3,,Your Fire and Frost spell criticals will refund 20% of their base mana cost.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29075,Talent: Master of Elements; tree row 4
+Fire,Talent,Master of Elements,29076,29074,Rank 3/3,,Your Fire and Frost spell criticals will refund 30% of their base mana cost.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29076,Talent: Master of Elements; tree row 4
+Fire,Talent,Molten Fury,31679,31679,Rank 1/2,,Increases damage of all spells against targets with less than 20% health by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31679,Talent: Molten Fury; tree row 7
+Fire,Talent,Molten Fury,31680,31679,Rank 2/2,,Increases damage of all spells against targets with less than 20% health by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31680,Talent: Molten Fury; tree row 7
+Fire,Talent,Molten Shields,11094,11094,Rank 1/2,,"Causes your Fire Ward to have a 10% chance to reflect Fire spells while active. In addition, your Molten Armor has a 50% chance to affect ranged and spell attacks.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11094,Talent: Molten Shields; tree row 4
+Fire,Talent,Molten Shields,13043,11094,Rank 2/2,,"Causes your Fire Ward to have a 20% chance to reflect Fire spells while active. In addition, your Molten Armor has a 100% chance to affect ranged and spell attacks.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13043,Talent: Molten Shields; tree row 4
+Fire,Talent,Playing with Fire,31638,31638,Rank 1/3,,Increases all spell damage caused by 1% and all spell damage taken by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31638,Talent: Playing with Fire; tree row 5
+Fire,Talent,Playing with Fire,31639,31638,Rank 2/3,,Increases all spell damage caused by 2% and all spell damage taken by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31639,Talent: Playing with Fire; tree row 5
+Fire,Talent,Playing with Fire,31640,31638,Rank 3/3,,Increases all spell damage caused by 3% and all spell damage taken by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31640,Talent: Playing with Fire; tree row 5
+Fire,Talent,Pyroblast,11366,11366,Rank 1/1,,"Hurls an immense fiery boulder that causes 
+148 to 
+195 Fire damage and an additional 56 Fire damage over 12 sec.",Talent Passive,Data only,,,125 Mana,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11366,Talent: Pyroblast; tree row 3
+Fire,Talent,Pyromaniac,34293,34293,Rank 1/3,,Increases chance to critically hit and reduces the mana cost of all Fire spells by an additional 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34293,Talent: Pyromaniac; tree row 7
+Fire,Talent,Pyromaniac,34295,34293,Rank 2/3,,Increases chance to critically hit and reduces the mana cost of all Fire spells by an additional 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34295,Talent: Pyromaniac; tree row 7
+Fire,Talent,Pyromaniac,34296,34293,Rank 3/3,,Increases chance to critically hit and reduces the mana cost of all Fire spells by an additional 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34296,Talent: Pyromaniac; tree row 7
+"Fire, Frost",Ability,Frostfire Bolt,401502,401502,,,"Launches a bolt of frostfire at the enemy, causing Frostfire damage, slowing the target's movement, and causing additional damage over time.",Offensive,Main,0,,,,Cooldown + aura,"DPS, HAS_DOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=401502,
+Frost,Ability,Blizzard,10,10,Rank 1,20,"Ice shards pelt the target area doing (
+26 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,320 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=10,
+Frost,Ability,Blizzard,6141,10,Rank 2,28,"Ice shards pelt the target area doing (
+45 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,520 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=6141,
+Frost,Ability,Blizzard,8427,10,Rank 3,36,"Ice shards pelt the target area doing (
+66 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,720 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=8427,
+Frost,Ability,Blizzard,10185,10,Rank 4,44,"Ice shards pelt the target area doing (
+92 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,935 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=10185,
+Frost,Ability,Blizzard,10186,10,Rank 5,52,"Ice shards pelt the target area doing (
+119 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,1160 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=10186,
+Frost,Ability,Blizzard,10187,10,Rank 6,60,"Ice shards pelt the target area doing (
+151 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,1400 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=10187,
+Frost,Ability,Blizzard,27085,10,Rank 7,68,"Ice shards pelt the target area doing (
+185 * 8) Frost damage over 8 sec.",Offensive,Main,0,8,1645 Mana,,Cooldown,"AOE, DPS, PVE",https://www.wowhead.com/tbc/spell=27085,
+Frost,Ability,Deep Freeze,428739,428739,,,Stuns the target for 5 sec. Only usable on Frozen targets. Deals a high amount of damage to targets permanently immune to stuns.,Crowd Control,Utility,30,5,,,Cooldown,"CC_HARD, MINOR, PVE_PVP",https://www.wowhead.com/tbc/spell=428739,
+Frost,Ability,Frozen Orb,440802,440802,,,"Launches an orb of swirling ice which rapidly moves forward, dealing Frost damage and chilling enemies it passes through over 15 sec.",Offensive,Main,60,15,,,Cooldown,"AOE, DPS, MAJOR, OFFENSIVE_CD, PVE_PVP",https://www.wowhead.com/tbc/spell=440802,
+Frost,Ability,Ice Lance,400640,400640,,,Quickly deals Frost damage. Causes triple damage against Frozen targets.,Offensive,Main,0,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=400640,
+Frost,Ability,Icy Veins,425121,425121,,,"Hastens your spellcasting, increasing spell casting speed by 20% and reducing the pushback suffered from damaging attacks while casting. Lasts 20 sec.",Offensive,Main,180,20,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, OFFENSIVE_CD, PVE_PVP",https://www.wowhead.com/tbc/spell=425121,
+Frost,Talent,Arctic Reach,16757,16757,Rank 1/2,,"Increases the range of your Frostbolt, Ice Lance and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16757,Talent: Arctic Reach; tree row 4
+Frost,Talent,Arctic Reach,16758,16757,Rank 2/2,,"Increases the range of your Frostbolt, Ice Lance and Blizzard spells and the radius of your Frost Nova and Cone of Cold spells by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16758,Talent: Arctic Reach; tree row 4
+Frost,Talent,Arctic Winds,31674,31674,Rank 1/5,,Increases all Frost damage you cause by 1% and reduces the chance melee and ranged attacks will hit you by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31674,Talent: Arctic Winds; tree row 7
+Frost,Talent,Arctic Winds,31675,31674,Rank 2/5,,Increases all Frost damage you cause by 2% and reduces the chance melee and ranged attacks will hit you by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31675,Talent: Arctic Winds; tree row 7
+Frost,Talent,Arctic Winds,31676,31674,Rank 3/5,,Increases all Frost damage you cause by 3% and reduces the chance melee and ranged attacks will hit you by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31676,Talent: Arctic Winds; tree row 7
+Frost,Talent,Arctic Winds,31677,31674,Rank 4/5,,Increases all Frost damage you cause by 4% and reduces the chance melee and ranged attacks will hit you by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31677,Talent: Arctic Winds; tree row 7
+Frost,Talent,Arctic Winds,31678,31674,Rank 5/5,,Increases all Frost damage you cause by 5% and reduces the chance melee and ranged attacks will hit you by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31678,Talent: Arctic Winds; tree row 7
+Frost,Talent Ability,Cold Snap,11958,11958,Rank 1/1,,"When activated, this spell finishes the cooldown on all Frost spells you recently cast.",Utility,Utility,480,,,,Cooldown,"DPS, MAJOR, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=11958,Talent-required | Talent: Cold Snap
+Frost,Talent,Elemental Precision,29438,29438,Rank 1/3,,Reduces the mana cost and chance targets resist your Frost and Fire spells by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29438,Talent: Elemental Precision; tree row 1
+Frost,Talent,Elemental Precision,29439,29438,Rank 2/3,,Reduces the mana cost and chance targets resist your Frost and Fire spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29439,Talent: Elemental Precision; tree row 1
+Frost,Talent,Elemental Precision,29440,29438,Rank 3/3,,Reduces the mana cost and chance targets resist your Frost and Fire spells by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=29440,Talent: Elemental Precision; tree row 1
+Frost,Talent,Empowered Frostbolt,31682,31682,Rank 1/5,,Your Frostbolt spell gains an additional 2% of your bonus spell damage effects and an additional 1% chance to critically strike.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31682,Talent: Empowered Frostbolt; tree row 8
+Frost,Talent,Empowered Frostbolt,31683,31682,Rank 2/5,,Your Frostbolt spell gains an additional 4% of your bonus spell damage effects and an additional 2% chance to critically strike.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31683,Talent: Empowered Frostbolt; tree row 8
+Frost,Talent,Empowered Frostbolt,31684,31682,Rank 3/5,,Your Frostbolt spell gains an additional 6% of your bonus spell damage effects and an additional 3% chance to critically strike.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31684,Talent: Empowered Frostbolt; tree row 8
+Frost,Talent,Empowered Frostbolt,31685,31682,Rank 4/5,,Your Frostbolt spell gains an additional 8% of your bonus spell damage effects and an additional 4% chance to critically strike.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31685,Talent: Empowered Frostbolt; tree row 8
+Frost,Talent,Empowered Frostbolt,31686,31682,Rank 5/5,,Your Frostbolt spell gains an additional 10% of your bonus spell damage effects and an additional 5% chance to critically strike.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31686,Talent: Empowered Frostbolt; tree row 8
+Frost,Talent,Frost Channeling,11160,11160,Rank 1/3,,Reduces the mana cost of your Frost spells by 5% and reduces the threat caused by your Frost spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11160,Talent: Frost Channeling; tree row 4
+Frost,Talent,Frost Channeling,12518,11160,Rank 2/3,,Reduces the mana cost of your Frost spells by 10% and reduces the threat caused by your Frost spells by 7%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12518,Talent: Frost Channeling; tree row 4
+Frost,Talent,Frost Channeling,12519,11160,Rank 3/3,,Reduces the mana cost of your Frost spells by 15% and reduces the threat caused by your Frost spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12519,Talent: Frost Channeling; tree row 4
+Frost,Talent,Frost Warding,11189,11189,Rank 1/2,,"Increases the armor and resistances given by your Frost Armor and Ice Armor spells by 15%. In addition, gives your Frost Ward a 10% chance to reflect Frost spells and effects while active.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11189,Talent: Frost Warding; tree row 1
+Frost,Talent,Frost Warding,28332,11189,Rank 2/2,,"Increases the armor and resistances given by your Frost Armor and Ice Armor spells by 30%. In addition, gives your Frost Ward a 20% chance to reflect Frost spells and effects while active.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28332,Talent: Frost Warding; tree row 1
+Frost,Talent,Frostbite,11071,11071,Rank 1/3,,Gives your Chill effects a 5% chance to freeze the target for 5 sec.,Talent Passive,Data only,,5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11071,Talent: Frostbite; tree row 2
+Frost,Talent,Frostbite,12496,11071,Rank 2/3,,Gives your Chill effects a 10% chance to freeze the target for 5 sec.,Talent Passive,Data only,,5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12496,Talent: Frostbite; tree row 2
+Frost,Talent,Frostbite,12497,11071,Rank 3/3,,Gives your Chill effects a 15% chance to freeze the target for 5 sec.,Talent Passive,Data only,,5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12497,Talent: Frostbite; tree row 2
+Frost,Talent,Frozen Core,31667,31667,Rank 1/3,,Reduces the damage taken by Frost and Fire effects by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31667,Talent: Frozen Core; tree row 5
+Frost,Talent,Frozen Core,31668,31667,Rank 2/3,,Reduces the damage taken by Frost and Fire effects by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31668,Talent: Frozen Core; tree row 5
+Frost,Talent,Frozen Core,31669,31667,Rank 3/3,,Reduces the damage taken by Frost and Fire effects by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31669,Talent: Frozen Core; tree row 5
+Frost,Talent Ability,Ice Barrier,11426,11426,Rank 1/1,,"Instantly shields you, absorbing 
+455 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,305 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=11426,Talent-required | Talent: Ice Barrier
+Frost,Talent Ability,Ice Barrier,13031,11426,Rank 2,46,"Instantly shields you, absorbing 
+569 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,360 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=13031,Talent-required
+Frost,Talent Ability,Ice Barrier,13032,11426,Rank 3,52,"Instantly shields you, absorbing 
+700 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,420 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=13032,Talent-required
+Frost,Talent Ability,Ice Barrier,13033,11426,Rank 4,58,"Instantly shields you, absorbing 
+842 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,480 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=13033,Talent-required
+Frost,Talent Ability,Ice Barrier,27134,11426,Rank 5,64,"Instantly shields you, absorbing 
+952 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,495 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=27134,Talent-required
+Frost,Talent Ability,Ice Barrier,33405,11426,Rank 6,70,"Instantly shields you, absorbing 
+1075 damage. Lasts 1 min. While the shield holds, spells will not be interrupted.",Defensive,Utility,30,60,565 Mana,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MINOR",https://www.wowhead.com/tbc/spell=33405,Talent-required
+Frost,Talent Ability,Ice Block,45438,45438,,30,"You become encased in a block of ice, protecting you from all physical attacks and spells for 10 sec, but during that time you cannot attack, move or cast spells. Also causes Hypothermia, preventing you from recasting Ice Block for 30 sec.",Defensive,Utility,300,10,15 Mana,41425,Cooldown + aura,"DEFENSIVE, HAS_BUFF, IMMUNITY, MAJOR",https://www.wowhead.com/tbc/spell=45438,Talent-required
+Frost,Talent,Ice Floes,31670,31670,Rank 1/2,,"Reduces the cooldown of your Cone of Cold, Cold Snap, Ice Barrier and Ice Block spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31670,Talent: Ice Floes; tree row 6
+Frost,Talent,Ice Floes,31672,31670,Rank 2/2,,"Reduces the cooldown of your Cone of Cold, Cold Snap, Ice Barrier and Ice Block spells by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31672,Talent: Ice Floes; tree row 6
+Frost,Talent,Ice Shards,11207,11207,Rank 1/5,,Increases the critical strike damage bonus of your Frost spells by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11207,Talent: Ice Shards; tree row 2
+Frost,Talent,Ice Shards,12672,11207,Rank 2/5,,Increases the critical strike damage bonus of your Frost spells by 40%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12672,Talent: Ice Shards; tree row 2
+Frost,Talent,Ice Shards,15047,11207,Rank 3/5,,Increases the critical strike damage bonus of your Frost spells by 60%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15047,Talent: Ice Shards; tree row 2
+Frost,Talent,Ice Shards,15052,11207,Rank 4/5,,Increases the critical strike damage bonus of your Frost spells by 80%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15052,Talent: Ice Shards; tree row 2
+Frost,Talent,Ice Shards,15053,11207,Rank 5/5,,Increases the critical strike damage bonus of your Frost spells by 100%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15053,Talent: Ice Shards; tree row 2
+Frost,Talent Ability,Icy Veins,12472,12472,Rank 1/1,,"Hastens your spellcasting, increasing spell casting speed by 20% and gives you 100% chance to avoid interruption caused by damage while casting. Lasts 20 sec.",Offensive,Main,180,20,3% of base mana,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR, PVE",https://www.wowhead.com/tbc/spell=12472,Talent-required | Talent: Icy Veins
+Frost,Talent,Improved Blizzard,11185,11185,Rank 1/3,,Adds a chill effect to your Blizzard spell. This effect lowers the target's movement speed by 30%. Lasts 1.50 sec.,Talent Passive,Data only,,1.5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11185,Talent: Improved Blizzard; tree row 3
+Frost,Talent,Improved Blizzard,12487,11185,Rank 2/3,,Adds a chill effect to your Blizzard spell. This effect lowers the target's movement speed by 50%. Lasts 1.50 sec.,Talent Passive,Data only,,1.5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12487,Talent: Improved Blizzard; tree row 3
+Frost,Talent,Improved Blizzard,12488,11185,Rank 3/3,,Adds a chill effect to your Blizzard spell. This effect lowers the target's movement speed by 65%. Lasts 1.50 sec.,Talent Passive,Data only,,1.5,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12488,Talent: Improved Blizzard; tree row 3
+Frost,Talent,Improved Cone of Cold,11190,11190,Rank 1/3,,Increases the damage dealt by your Cone of Cold spell by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11190,Talent: Improved Cone of Cold; tree row 5
+Frost,Talent,Improved Cone of Cold,12489,11190,Rank 2/3,,Increases the damage dealt by your Cone of Cold spell by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12489,Talent: Improved Cone of Cold; tree row 5
+Frost,Talent,Improved Cone of Cold,12490,11190,Rank 3/3,,Increases the damage dealt by your Cone of Cold spell by 35%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12490,Talent: Improved Cone of Cold; tree row 5
+Frost,Talent,Improved Frost Nova,11165,11165,Rank 1/2,,Reduces the cooldown of your Frost Nova spell by 2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11165,Talent: Improved Frost Nova; tree row 2
+Frost,Talent,Improved Frost Nova,12475,11165,Rank 2/2,,Reduces the cooldown of your Frost Nova spell by 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12475,Talent: Improved Frost Nova; tree row 2
+Frost,Talent,Improved Frostbolt,11070,11070,Rank 1/5,,Reduces the casting time of your Frostbolt spell by 0.1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11070,Talent: Improved Frostbolt; tree row 1
+Frost,Talent,Improved Frostbolt,12473,11070,Rank 2/5,,Reduces the casting time of your Frostbolt spell by 0.2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12473,Talent: Improved Frostbolt; tree row 1
+Frost,Talent,Improved Frostbolt,16763,11070,Rank 3/5,,Reduces the casting time of your Frostbolt spell by 0.3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16763,Talent: Improved Frostbolt; tree row 1
+Frost,Talent,Improved Frostbolt,16765,11070,Rank 4/5,,Reduces the casting time of your Frostbolt spell by 0.4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16765,Talent: Improved Frostbolt; tree row 1
+Frost,Talent,Improved Frostbolt,16766,11070,Rank 5/5,,Reduces the casting time of your Frostbolt spell by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16766,Talent: Improved Frostbolt; tree row 1
+Frost,Talent,Permafrost,11175,11175,Rank 1/3,,Increases the duration of your Chill effects by 1 sec and reduces the target's speed by an additional 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11175,Talent: Permafrost; tree row 2
+Frost,Talent,Permafrost,12569,11175,Rank 2/3,,Increases the duration of your Chill effects by 2 secs and reduces the target's speed by an additional 7%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12569,Talent: Permafrost; tree row 2
+Frost,Talent,Permafrost,12571,11175,Rank 3/3,,Increases the duration of your Chill effects by 3 secs and reduces the target's speed by an additional 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12571,Talent: Permafrost; tree row 2
+Frost,Talent,Piercing Ice,11151,11151,Rank 1/3,,Increases the damage done by your Frost spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11151,Talent: Piercing Ice; tree row 3
+Frost,Talent,Piercing Ice,12952,11151,Rank 2/3,,Increases the damage done by your Frost spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12952,Talent: Piercing Ice; tree row 3
+Frost,Talent,Piercing Ice,12953,11151,Rank 3/3,,Increases the damage done by your Frost spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12953,Talent: Piercing Ice; tree row 3
+Frost,Talent,Shatter,11170,11170,Rank 1/5,,Increases the critical strike chance of all your spells against frozen targets by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11170,Talent: Shatter; tree row 4
+Frost,Talent,Shatter,12982,11170,Rank 2/5,,Increases the critical strike chance of all your spells against frozen targets by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12982,Talent: Shatter; tree row 4
+Frost,Talent,Shatter,12983,11170,Rank 3/5,,Increases the critical strike chance of all your spells against frozen targets by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12983,Talent: Shatter; tree row 4
+Frost,Talent,Shatter,12984,11170,Rank 4/5,,Increases the critical strike chance of all your spells against frozen targets by 40%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12984,Talent: Shatter; tree row 4
+Frost,Talent,Shatter,12985,11170,Rank 5/5,,Increases the critical strike chance of all your spells against frozen targets by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=12985,Talent: Shatter; tree row 4
+Frost,Talent Ability,Summon Water Elemental,31687,31687,Rank 1/1,,Summon a Water Elemental to fight for the caster for 45 sec.,Pet,Main,180,45,16% of base mana,,Cooldown,"DPS, MAJOR, PET_SUMMON, PET_SUMMON_TEMP, PVE",https://www.wowhead.com/tbc/spell=31687,Talent-required | Talent: Summon Water Elemental
+Frost,Talent,Winter's Chill,11180,11180,Rank 1/5,,"Gives your Frost damage spells a 20% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec. Stacks up to 5 times.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=11180,Talent: Winter's Chill; tree row 6
+Frost,Talent,Winter's Chill,28592,11180,Rank 2/5,,"Gives your Frost damage spells a 40% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec. Stacks up to 5 times.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28592,Talent: Winter's Chill; tree row 6
+Frost,Talent,Winter's Chill,28593,11180,Rank 3/5,,"Gives your Frost damage spells a 60% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec. Stacks up to 5 times.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28593,Talent: Winter's Chill; tree row 6
+Frost,Talent,Winter's Chill,28594,11180,Rank 4/5,,"Gives your Frost damage spells a 80% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec. Stacks up to 5 times.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28594,Talent: Winter's Chill; tree row 6
+Frost,Talent,Winter's Chill,28595,11180,Rank 5/5,,"Gives your Frost damage spells a 100% chance to apply the Winter's Chill effect, which increases the chance a Frost spell will critically hit the target by 2% for 15 sec. Stacks up to 5 times.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=28595,Talent: Winter's Chill; tree row 6
+"Frost, Arcane",Ability,Frostbolt,116,116,Rank 1,4,"Launches a bolt of frost at the enemy, causing 
+20 to 
+22 Frost damage and slowing movement speed by 40% for 5 sec.",Offensive,Main,0,5,25 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=116,
+"Frost, Arcane",Ability,Frostbolt,205,116,Rank 2,8,"Launches a bolt of frost at the enemy, causing 
+33 to 
+38 Frost damage and slowing movement speed by 40% for 6 sec.",Offensive,Main,0,6,35 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=205,
+"Frost, Arcane",Ability,Frostbolt,837,116,Rank 3,14,"Launches a bolt of frost at the enemy, causing 
+54 to 
+61 Frost damage and slowing movement speed by 40% for 6 sec.",Offensive,Main,0,6,50 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=837,
+"Frost, Arcane",Ability,Frostbolt,7322,116,Rank 4,20,"Launches a bolt of frost at the enemy, causing 
+78 to 
+87 Frost damage and slowing movement speed by 40% for 7 sec.",Offensive,Main,0,7,65 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=7322,
+"Frost, Arcane",Ability,Frostbolt,8406,116,Rank 5,26,"Launches a bolt of frost at the enemy, causing 
+132 to 
+144 Frost damage and slowing movement speed by 40% for 7 sec.",Offensive,Main,0,7,100 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=8406,
+"Frost, Arcane",Ability,Frostbolt,8407,116,Rank 6,32,"Launches a bolt of frost at the enemy, causing 
+180 to 
+197 Frost damage and slowing movement speed by 40% for 8 sec.",Offensive,Main,0,8,130 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=8407,
+"Frost, Arcane",Ability,Frostbolt,8408,116,Rank 7,38,"Launches a bolt of frost at the enemy, causing 
+235 to 
+255 Frost damage and slowing movement speed by 40% for 8 sec.",Offensive,Main,0,8,160 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=8408,
+"Frost, Arcane",Ability,Frostbolt,10179,116,Rank 8,44,"Launches a bolt of frost at the enemy, causing 
+301 to 
+326 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,195 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=10179,
+"Frost, Arcane",Ability,Frostbolt,10180,116,Rank 9,50,"Launches a bolt of frost at the enemy, causing 
+363 to 
+394 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,225 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=10180,
+"Frost, Arcane",Ability,Frostbolt,10181,116,Rank 10,56,"Launches a bolt of frost at the enemy, causing 
+440 to 
+475 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,260 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=10181,
+"Frost, Arcane",Ability,Frostbolt,25304,116,Rank 11,60,"Launches a bolt of frost at the enemy, causing 
+527 to 
+568 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,290 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=25304,
+"Frost, Arcane",Ability,Frostbolt,27071,116,Rank 12,63,"Launches a bolt of frost at the enemy, causing 
+548 to 
+591 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,300 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=27071,
+"Frost, Arcane",Ability,Frostbolt,27072,116,Rank 13,69,"Launches a bolt of frost at the enemy, causing 
+600 to 
+647 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,330 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=27072,
+"Frost, Arcane",Ability,Frostbolt,38697,116,Rank 14,70,"Launches a bolt of frost at the enemy, causing 
+630 to 
+680 Frost damage and slowing movement speed by 40% for 9 sec.",Offensive,Main,0,9,345 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=38697,
