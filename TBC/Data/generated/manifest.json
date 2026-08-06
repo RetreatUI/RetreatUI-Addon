@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T08:17:12Z",
+  "generated_at": "2026-08-06T08:31:57Z",
   "canonical_source": "Wowhead TBC tooltip JSON",
   "wowhead_tooltip_endpoint": "https://nether.wowhead.com/tbc/tooltip/<spell|item>/<id>",
   "sources": {
