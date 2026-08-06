@@ -12,12 +12,13 @@ This directory is the unreleased development staging area for the TBC Classic An
 
 The generated database under `TBC/Data/generated` contains:
 
-- 3,261 Wowhead TBC-validated player ability and talent-rank rows
+- 3,260 Wowhead TBC-validated castable player ability and talent-rank rows
 - every rank from all nine TBC talent trees
 - 73 race-specific racial spell rows
 - 34 passive trinket-to-proc mappings
 - class-specific CSV files plus a combined all-spells catalog
-- an audit list of 134 non-TBC source candidates excluded after Wowhead validation
+- 134 non-TBC source candidates and one spell-teaching record excluded from the player catalog
+- all 135 excluded records retained in the audit catalog
 - zero unresolved records inside the canonical catalog
 
 Wowhead TBC tooltip data is canonical for names, descriptions, ranks and source links. LibSpellDB supplies curated ability/rank enumeration and tracking metadata. WoWSims TBC talent-tree data supplies every talent node and rank spell ID.
