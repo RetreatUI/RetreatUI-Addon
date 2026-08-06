@@ -1,6 +1,9 @@
 name: Validate and publish RetreatUI
 
 on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
   pull_request:
     branches:
       - main
@@ -84,8 +87,8 @@ jobs:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
 
-      - name: Publish GitHub prerelease
-        if: github.event_name == 'push'
+      - name: Publish GitHub release
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
@@ -101,5 +104,7 @@ jobs:
           FLAGS=(--repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "RetreatUI ${VERSION}" --generate-notes)
           if [[ "$VERSION" == *beta* || "$VERSION" == *alpha* || "$VERSION" == *rc* ]]; then
             FLAGS+=(--prerelease)
+          else
+            FLAGS+=(--latest)
           fi
           gh release create "$TAG" "$ZIP" "${FLAGS[@]}"
