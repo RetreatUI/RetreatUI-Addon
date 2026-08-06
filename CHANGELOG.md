@@ -6,6 +6,23 @@ The format is based on **Keep a Changelog** and follows semantic versioning wher
 
 ---
 
+## [1.1.4] - 2026-08-06
+
+### Changed
+
+- Added a distinct orange-red tank no-aggro state for caster and mana-user TurboPlates without replacing their normal blue color.
+- Moved the Guardian stance tracker six pixels upward to clear the resource bar.
+- Tightened RetreatUI party-frame name and health text sizing and alignment.
+
+### Fixed
+
+- Added a global HUD duplicate guard across every supported class and HUD row.
+- Removed duplicate spell entries such as Unleash Pestilence in the Knight of Xoroth Hellfire HUD.
+- Improved TurboPlates threat-state refresh reliability when its normal mana overlay repaints a nameplate.
+- Prevented party-frame name and health text from overlapping in the packaged RetreatUI ElvUI profile.
+
+---
+
 ## [1.0.9] - 2026-07-23
 
 ### Changed
