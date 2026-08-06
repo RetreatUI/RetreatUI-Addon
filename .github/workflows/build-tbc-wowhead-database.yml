@@ -106,19 +106,12 @@ jobs:
           print(json.dumps(counts, indent=2))
           PY
 
-      - name: Create transfer archive
-        run: |
-          rm -f TBC/Data/RetreatUI-TBC-Wowhead-Database.zip
-          cd TBC/Data
-          zip -qr RetreatUI-TBC-Wowhead-Database.zip generated
-
       - name: Commit generated database
         shell: bash
         run: |
           git config user.name "RetreatUI Database Bot"
           git config user.email "actions@users.noreply.github.com"
           git add TBC/Data/generated TBC/Package/RetreatUI/Core/GeneratedTBCData.lua
-          git add -f TBC/Data/RetreatUI-TBC-Wowhead-Database.zip
           if git diff --cached --quiet; then
             echo "Generated database is unchanged."
             exit 0
@@ -132,6 +125,5 @@ jobs:
           name: RetreatUI-TBC-Wowhead-Database
           path: |
             TBC/Data/generated
-            TBC/Data/RetreatUI-TBC-Wowhead-Database.zip
             TBC/Package/RetreatUI/Core/GeneratedTBCData.lua
           if-no-files-found: error
