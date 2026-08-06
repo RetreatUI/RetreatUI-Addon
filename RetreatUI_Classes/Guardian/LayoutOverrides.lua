@@ -170,14 +170,6 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     }
     options.strictUtilityOrder = false
     options.maxUtility = 24
-
-    -- Lift the stance tracker clear of the native Guardian resource bar while
-    -- retaining the shared horizontal alignment and every other HUD position.
-    options.stanceTracker = options.stanceTracker or {}
-    if options.stanceTracker.y == nil then
-      local defaultY = (self.layout and self.layout.demonfire and self.layout.demonfire.y) or -118
-      options.stanceTracker.y = defaultY + 6
-    end
   end
 
   return originalRegister(self, className, options)
