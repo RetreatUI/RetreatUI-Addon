@@ -44,7 +44,6 @@ Balance,Ability,Moonfire,26987,8921,Rank 12,63,"Burns the enemy for
 Balance,Ability,Moonfire,26988,8921,Rank 13,70,"Burns the enemy for 
 305 to 
 357 Arcane damage and then an additional 600 Arcane damage over 12 sec.",Offensive,Main,0,12,495 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26988,
-Balance,Ability,Starfall,439748,439748,,,"Summon a flurry of stars from the sky over 10 sec, striking enemies within 30 yards of the targeted area for Arcane damage.",Offensive,Main,90,10,,,Cooldown,"AOE, DPS, MAJOR, PVE_PVP",https://www.wowhead.com/tbc/spell=439748,
 Balance,Ability,Starfire,2912,2912,Rank 1,20,"Causes 
 95 to 
 115 Arcane damage to the target.",Offensive,Main,0,,95 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=2912,
@@ -69,7 +68,6 @@ Balance,Ability,Starfire,25298,2912,Rank 7,60,"Causes
 Balance,Ability,Starfire,26986,2912,Rank 8,67,"Causes 
 550 to 
 647 Arcane damage to the target.",Offensive,Main,0,,370 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=26986,
-Balance,Ability,Starsurge,417157,417157,,,"Launch surging stellar energies at the target, dealing Arcane damage and increasing the damage of your next Wrath or Starfire.",Offensive,Main,6,,,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=417157,
 Balance,Ability,Wrath,5176,5176,Rank 1,1,"Causes 
 13 to 
 16 Nature damage to the target.",Offensive,Main,0,,20 Mana,,Cooldown,"DPS, FILLER, PVE_PVP",https://www.wowhead.com/tbc/spell=5176,
@@ -164,7 +162,6 @@ Balance,Talent,Wrath of Cenarius,33604,33603,Rank 2/5,,Your Starfire spell gains
 Balance,Talent,Wrath of Cenarius,33605,33603,Rank 3/5,,Your Starfire spell gains an additional 12% and your Wrath gains an additional 6% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33605,Talent: Wrath of Cenarius; tree row 8
 Balance,Talent,Wrath of Cenarius,33606,33603,Rank 4/5,,Your Starfire spell gains an additional 16% and your Wrath gains an additional 8% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33606,Talent: Wrath of Cenarius; tree row 8
 Balance,Talent,Wrath of Cenarius,33607,33603,Rank 5/5,,Your Starfire spell gains an additional 20% and your Wrath gains an additional 10% of your bonus damage effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33607,Talent: Wrath of Cenarius; tree row 8
-"Balance, Feral",Ability,Sunfire,414689,414689,,,Burns the enemy with Nature damage and then additional Nature damage over 12 sec. Usable in Moonkin Form and Cat Form.,Offensive,Main,0,12,,,Cooldown + aura,"DEBUFF, DPS, HAS_DOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=414689,
 "Balance, Restoration",Ability,Faerie Fire,770,770,Rank 1,18,"Decrease the armor of the target by 175 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,55 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=770,
 "Balance, Restoration",Ability,Faerie Fire,778,770,Rank 2,30,"Decrease the armor of the target by 285 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,75 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=778,
 "Balance, Restoration",Ability,Faerie Fire,9749,770,Rank 3,42,"Decrease the armor of the target by 395 for 40 sec. While affected, the target cannot stealth or turn invisible.",Utility,Utility,0,40,95 Mana,,Cooldown,"DEBUFF, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=9749,
@@ -232,7 +229,6 @@ Feral,Ability,Bash,8983,5211,Rank 3,46,Stuns the target for 4 sec.,Crowd Control
 Feral,Ability,Bear Form,5487,5487,,10,"Shapeshift into bear form, increasing melee attack power by 
 120, armor contribution from items by 180%, and Stamina by 25%. Also protects the caster from Polymorph effects and allows the use of various bear abilities.
 The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,35% of base mana,,Cooldown,SHAPESHIFT,https://www.wowhead.com/tbc/spell=5487,
-Feral,Ability,Berserk,417141,417141,,,"When activated, your Mangle (Bear) and Lacerate abilities hit up to 3 targets, and clears the Fear effect and makes you immune to Fear for the duration. Lasts 15 sec.",Defensive,Utility,180,15,,,Cooldown + aura,"CC_BREAK, DPS, HAS_BUFF, MAJOR, PVE_PVP, TANK",https://www.wowhead.com/tbc/spell=417141,
 Feral,Ability,Cat Form,768,768,,20,"Shapeshift into cat form, increasing melee attack power by 40 plus Agility. Also protects the caster from Polymorph effects and allows the use of various cat abilities.
 The act of shapeshifting frees the caster of Polymorph and Movement Impairing effects.",Form,Utility,0,,35% of base mana,,Cooldown,SHAPESHIFT,https://www.wowhead.com/tbc/spell=768,
 Feral,Ability,Challenging Roar,5209,5209,,28,Forces all nearby enemies to focus attacks on you for 6 sec.,Utility,Utility,600,6,15 Rage,,Cooldown,"BEAR_FORM, TAUNT",https://www.wowhead.com/tbc/spell=5209,
@@ -306,8 +302,6 @@ Feral,Ability,Frenzied Regeneration,22896,22842,Rank 3,56,Converts up to 10 rage
 Feral,Ability,Frenzied Regeneration,26999,22842,Rank 4,65,Converts up to 10 rage per second into health for 10 sec. Each point of rage is converted into 25 health.,Defensive,Utility,180,10,,,Cooldown + aura,"BEAR_FORM, DEFENSIVE, HAS_BUFF, HEAL_SINGLE, MAJOR",https://www.wowhead.com/tbc/spell=26999,
 Feral,Ability,Growl,6795,6795,,10,"Taunts the target to attack you, but has no effect if the target is already attacking you.",Utility,Utility,10,3,,,Cooldown,"BEAR_FORM, TAUNT",https://www.wowhead.com/tbc/spell=6795,
 Feral,Ability,Lacerate,33745,33745,,66,"Lacerates the enemy target, dealing 31 bleed damage and making them bleed for 155 damage over 15 sec and causing a high amount of threat. Damage increased by attack power. This effect stacks up to 5 times on the same target.",Form,Utility,0,15,15 Rage,,Cooldown,"BEAR_FORM, DEBUFF, PVE, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=33745,
-Feral,Ability,Lacerate,414644,414644,,,"Lacerates the enemy target, making them bleed and causing additional Physical damage over 15 sec. Damage increased each time you Lacerate the target, stacking up to 5 times.",Offensive,Main,0,15,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=414644,
-Feral,Ability,Mangle,407995,407995,,,Mangle the target for 160% normal damage and cause the target to take 30% additional damage from Bleed effects for 12 sec.,Offensive,Main,6,12,,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=407995,
 Feral,Ability,Maul,6807,6807,Rank 1,10,Increases the druid's next attack by 18 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6807,
 Feral,Ability,Maul,6808,6807,Rank 2,18,Increases the druid's next attack by 27 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6808,
 Feral,Ability,Maul,6809,6807,Rank 3,26,Increases the druid's next attack by 37 damage.,Form,Utility,0,,15 Rage,,Cooldown,"BEAR_FORM, MINOR, PVE, ROTATIONAL, SWING_RESET, TANK",https://www.wowhead.com/tbc/spell=6809,
@@ -371,7 +365,6 @@ Feral,Ability,Rip,27008,1079,Rank 7,67,"Finishing move that causes damage over t
 3 points: 696 damage over 12 sec.
 4 points: 894 damage over 12 sec.
 5 points: 1092 damage over 12 sec.",Form,Utility,0,12,30 Energy,,Cooldown,"CAT_FORM, DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27008,
-Feral,Ability,Savage Roar,407988,407988,,,Finishing move that increases physical damage done by 30% while in Cat Form. Lasts longer per combo point.,Offensive,Main,0,14,,,Cooldown + aura,"DPS, FINISHER, HAS_BUFF, PVE_PVP",https://www.wowhead.com/tbc/spell=407988,
 Feral,Ability,Shred,5221,27002,Rank 1,22,"Shred the target, causing 225% damage plus 54 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5221,
 Feral,Ability,Shred,6800,27002,Rank 2,30,"Shred the target, causing 225% damage plus 72 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=6800,
 Feral,Ability,Shred,8992,27002,Rank 3,38,"Shred the target, causing 225% damage plus 99 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8992,
@@ -380,8 +373,6 @@ Feral,Ability,Shred,9830,27002,Rank 5,54,"Shred the target, causing 225% damage 
 Feral,Ability,Shred,27001,27002,Rank 6,61,"Shred the target, causing 225% damage plus 236 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27001,
 Feral,Ability,Shred,27002,27002,Rank 7,70,"Shred the target, causing 225% damage plus 405 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,60 Energy,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27002,
 Feral,Ability,Shred,27555,27002,Rank 8,20,"Shred the target, causing 225% damage plus 405 to the target. Must be behind the target. Awards 1 combo point.",Form,Utility,0,,,,Cooldown,"CAT_FORM, DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=27555,
-Feral,Ability,Skull Bash,410176,410176,,,"Charge to a target within 13 yards and bash the target's skull, interrupting spellcasting and preventing any spell in that school from being cast for 5 sec. Usable in Cat Form and Bear Form.",Interrupt,Utility,10,,,,Cooldown,"INTERRUPT, MOVEMENT_GAP_CLOSE, PVE_PVP",https://www.wowhead.com/tbc/spell=410176,
-Feral,Ability,Survival Instincts,408024,408024,,,"When activated, grants you 30% of your maximum health and increases all non-Physical healing you receive by 20% for 20 sec.",Defensive,Utility,180,20,,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MAJOR, PERSONAL_DEFENSIVE, PVE_PVP, TANK",https://www.wowhead.com/tbc/spell=408024,
 Feral,Ability,Swipe,769,779,Rank 1,34,"Swipe 3 nearby enemies, inflicting 21 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=769,
 Feral,Ability,Swipe,779,779,Rank 2,16,"Swipe 3 nearby enemies, inflicting 10 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=779,
 Feral,Ability,Swipe,780,779,Rank 3,24,"Swipe 3 nearby enemies, inflicting 14 damage. Damage increased by attack power.",Form,Utility,0,,20 Rage,,Cooldown,"AOE, BEAR_FORM, PVE_PVP, ROTATIONAL, TANK",https://www.wowhead.com/tbc/spell=780,
@@ -450,7 +441,6 @@ Feral Combat,Talent,Survival of the Fittest,33856,33853,Rank 3/3,,Increases all 
 Feral Combat,Talent,Thick Hide,16929,16929,Rank 1/3,,Increases your Armor contribution from items by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16929,Talent: Thick Hide; tree row 2
 Feral Combat,Talent,Thick Hide,16930,16929,Rank 2/3,,Increases your Armor contribution from items by 7%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16930,Talent: Thick Hide; tree row 2
 Feral Combat,Talent,Thick Hide,16931,16929,Rank 3/3,,Increases your Armor contribution from items by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16931,Talent: Thick Hide; tree row 2
-Restoration,Ability,Efflorescence,417149,417149,,,"Your Swiftmend now also causes Efflorescence, healing all party members within 15 yards of the Swiftmend target over 7 sec.",Healing,Utility,0,7,,,Cooldown,"AOE, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=417149,
 Restoration,Ability,Healing Touch,5185,5185,Rank 1,1,"Heals a friendly target for 
 40 to 
 55.",Healing,Utility,0,,25 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=5185,
@@ -492,8 +482,6 @@ Restoration,Ability,Healing Touch,26979,5185,Rank 13,69,"Heals a friendly target
 3206.",Healing,Utility,0,,935 Mana,,Cooldown,"FILLER, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=26979,
 Restoration,Ability,Lifebloom,33763,33763,Rank 1,64,"Heals the target for 273 over 7 sec. When Lifebloom completes its duration or is dispelled, the target instantly heals themself for 600. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,220 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=33763,
 Restoration,Ability,Lifebloom,33778,33763,Rank 2,64,"Heals the target for 273 over 7 sec. When Lifebloom completes its duration or is dispelled, the target instantly heals themself for 600. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=33778,
-Restoration,Ability,Lifebloom,409824,409824,,,"Heals the target over 7 sec. When the effect ends or is dispelled, the target is instantly healed. This effect can stack up to 3 times on the same target.",Healing,Utility,0,7,,,Cooldown + aura,"HAS_HOT, HEAL, HEAL_SINGLE, HOT, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=409824,
-Restoration,Ability,Nourish,408247,408247,,,Heals a friendly target. Heals for an additional 20% for each of your heal over time effects present on the target.,Healing,Utility,0,,,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=408247,
 Restoration,Ability,Regrowth,8936,8936,Rank 1,12,"Heals a friendly target for 
 93 to 
 107 and another 98 over 21 sec.",Healing,Utility,0,21,80 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8936,
@@ -537,8 +525,6 @@ Restoration,Ability,Rejuvenation,9841,774,Rank 10,58,Heals the target for 756 ov
 Restoration,Ability,Rejuvenation,25299,774,Rank 11,60,Heals the target for 888 over 12 sec.,Healing,Utility,0,12,360 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25299,
 Restoration,Ability,Rejuvenation,26981,774,Rank 12,63,Heals the target for 932 over 12 sec.,Healing,Utility,0,12,370 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26981,
 Restoration,Ability,Rejuvenation,26982,774,Rank 13,69,Heals the target for 1060 over 12 sec.,Healing,Utility,0,12,415 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26982,
-Restoration,Ability,Tree of Life,439733,439733,,,"Shapeshift into the Tree of Life, increasing healing received by 10% for all party and raid members and increasing your healing done. While in this form you can only cast Restoration spells.",Healing,Utility,0,,,,Cooldown + aura,"HAS_BUFF, HEAL, MAJOR, PVE, SHAPESHIFT",https://www.wowhead.com/tbc/spell=439733,
-Restoration,Ability,Wild Growth,408120,408120,,,"Heals all of target player's party members within 43.5 yards of target player over 7 sec. The amount healed is applied quickly at first, and slows down as the effect fades.",Healing,Utility,6,7,,,Cooldown + aura,"AOE, HAS_HOT, HEAL, HEAL_AOE, HOT, PVE",https://www.wowhead.com/tbc/spell=408120,
 Restoration,Talent,Empowered Rejuvenation,33886,33886,Rank 1/5,,The bonus healing effects of your healing over time spells is increased by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33886,Talent: Empowered Rejuvenation; tree row 8
 Restoration,Talent,Empowered Rejuvenation,33887,33886,Rank 2/5,,The bonus healing effects of your healing over time spells is increased by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33887,Talent: Empowered Rejuvenation; tree row 8
 Restoration,Talent,Empowered Rejuvenation,33888,33886,Rank 3/5,,The bonus healing effects of your healing over time spells is increased by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33888,Talent: Empowered Rejuvenation; tree row 8

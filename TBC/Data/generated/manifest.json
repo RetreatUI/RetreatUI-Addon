@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T08:12:32Z",
+  "generated_at": "2026-08-06T08:17:12Z",
   "canonical_source": "Wowhead TBC tooltip JSON",
   "wowhead_tooltip_endpoint": "https://nether.wowhead.com/tbc/tooltip/<spell|item>/<id>",
   "sources": {
@@ -18,63 +18,66 @@
     }
   },
   "counts": {
-    "all_spell_rows": 3394,
-    "unique_spell_ids": 3394,
-    "racial_shared_rows": 76,
+    "all_spell_rows": 3261,
+    "unique_spell_ids": 3261,
+    "racial_shared_rows": 75,
     "racial_rows": 73,
     "trinket_proc_mappings": 34,
     "missing_tooltips": 134,
     "by_class": {
       "Druid": {
-        "rows": 414,
-        "ability_rows": 242,
+        "rows": 400,
+        "ability_rows": 228,
         "talent_rows": 193
       },
       "Hunter": {
-        "rows": 327,
-        "ability_rows": 146,
+        "rows": 317,
+        "ability_rows": 136,
         "talent_rows": 206
       },
       "Mage": {
-        "rows": 375,
-        "ability_rows": 192,
+        "rows": 356,
+        "ability_rows": 173,
         "talent_rows": 208
       },
       "Paladin": {
-        "rows": 385,
-        "ability_rows": 199,
+        "rows": 369,
+        "ability_rows": 183,
         "talent_rows": 222
       },
       "Priest": {
-        "rows": 396,
-        "ability_rows": 214,
+        "rows": 377,
+        "ability_rows": 195,
         "talent_rows": 219
       },
       "Rogue": {
-        "rows": 326,
-        "ability_rows": 138,
+        "rows": 311,
+        "ability_rows": 123,
         "talent_rows": 201
       },
       "Shaman": {
-        "rows": 409,
-        "ability_rows": 222,
+        "rows": 398,
+        "ability_rows": 211,
         "talent_rows": 196
       },
       "Warlock": {
-        "rows": 400,
-        "ability_rows": 228,
+        "rows": 384,
+        "ability_rows": 212,
         "talent_rows": 205
       },
       "Warrior": {
-        "rows": 362,
-        "ability_rows": 173,
+        "rows": 349,
+        "ability_rows": 160,
         "talent_rows": 222
       }
-    }
+    },
+    "excluded_non_tbc_candidates": 134,
+    "unresolved_included_rows": 0
   },
   "tracking_policy": {
     "on_use_trinkets": "Detected dynamically in-game through GetItemSpell(); no static row required.",
     "passive_proc_trinkets": "Static item-to-visible-buff mapping generated from LibSpellDB and verified through Wowhead tooltips.",
     "racials": "Filtered at runtime by UnitRace and categorized into Main/Utility/Data only."
-  }
+  },
+  "coverage_note": "Rows unavailable from the Wowhead TBC tooltip endpoint are excluded from the canonical catalog and retained in missing_data.csv as an audit trail."
 }
