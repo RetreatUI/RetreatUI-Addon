@@ -2,15 +2,6 @@ name: Validate and publish RetreatUI
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "*/5 * * * *"
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "RetreatUI/**"
-      - "RetreatUI_Classes/**"
-      - ".github/workflows/validate-and-publish.yml"
   push:
     branches:
       - main
@@ -21,6 +12,10 @@ on:
 
 permissions:
   contents: write
+
+concurrency:
+  group: retreatui-addon-release
+  cancel-in-progress: true
 
 jobs:
   validate-and-publish:
@@ -78,17 +73,16 @@ jobs:
           archive = f'RetreatUI_v{version}.zip'
           with zipfile.ZipFile(archive) as zf:
               names = zf.namelist()
-          if not any(name.startswith('RetreatUI/') for name in names):
-              raise SystemExit('RetreatUI folder is missing from archive root')
-          if not any(name.startswith('RetreatUI_Classes/') for name in names):
-              raise SystemExit('RetreatUI_Classes folder is missing from archive root')
+          required = {'RetreatUI/RetreatUI.toc', 'RetreatUI_Classes/RetreatUI_Classes.toc'}
+          missing = required.difference(names)
+          if missing:
+              raise SystemExit(f'Missing required files: {sorted(missing)}')
           unexpected = sorted({name.split('/', 1)[0] for name in names if '/' in name} - {'RetreatUI', 'RetreatUI_Classes'})
           if unexpected:
               raise SystemExit(f'Unexpected archive root entries: {unexpected}')
           PY
 
       - name: Publish GitHub release
-        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         shell: bash
