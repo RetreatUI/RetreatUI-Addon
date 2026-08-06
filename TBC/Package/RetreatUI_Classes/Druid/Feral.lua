@@ -90,15 +90,18 @@ local function FindAura(definition)
     end
 
     for index = 1, 40 do
-        local name, icon, count, _, duration, expirationTime, source
+        local name, rank, icon, count, debuffType, duration, expirationTime, source
         if scanner == UnitAura then
-            name, icon, count, _, duration, expirationTime, source = scanner(
+            name, rank, icon, count, debuffType, duration, expirationTime, source = scanner(
                 definition.unit,
                 index,
                 definition.filter
             )
         else
-            name, icon, count, _, duration, expirationTime, source = scanner(definition.unit, index)
+            name, rank, icon, count, debuffType, duration, expirationTime, source = scanner(
+                definition.unit,
+                index
+            )
         end
 
         if not name then break end
