@@ -35,7 +35,7 @@ On a Druid, RetreatUI creates or repairs a character-specific macro named `RUI P
 /cast !Cat Form
 ```
 
-The macro is created automatically after login and is kept on the exact body above. The player chooses the keybind by dragging it from the macro window to an action bar. If every character macro slot is occupied, RetreatUI prints a warning and `/ruitbc macro` can be used after a slot is freed.
+The macro is created automatically after login and is kept on the exact body above. The player chooses the keybind by dragging it from the macro window to an action bar. If every character macro slot is occupied, RetreatUI prints a warning. After freeing a slot, `/ruitbc macro` creates it manually.
 
 ## Package staging
 
