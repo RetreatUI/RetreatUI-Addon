@@ -9,7 +9,7 @@ local Feral = {
     forceShown = false,
     lastEnergy = 0,
     lastEnergyTick = nil,
-    mainSpells = {
+    baseMainSpells = {
         "Mangle (Cat)",
         "Shred",
         "Rake",
@@ -17,7 +17,7 @@ local Feral = {
         "Ferocious Bite",
         "Tiger's Fury",
     },
-    utilitySpells = {
+    baseUtilitySpells = {
         "Barkskin",
         "Dash",
         "Feral Charge",
@@ -36,6 +36,27 @@ local Feral = {
         { name = "Tiger's Fury", unit = "player", filter = "HELPFUL", ownOnly = false },
     },
 }
+
+local function CopyList(source)
+    local target = {}
+    for _, value in ipairs(source or {}) do
+        target[#target + 1] = value
+    end
+    return target
+end
+
+local function AppendUnique(target, values)
+    local seen = {}
+    for _, value in ipairs(target or {}) do
+        seen[value] = true
+    end
+    for _, value in ipairs(values or {}) do
+        if value and value ~= "" and not seen[value] then
+            seen[value] = true
+            target[#target + 1] = value
+        end
+    end
+end
 
 local function AuraMatches(definition, auraName, source)
     if not auraName then return false end
@@ -140,6 +161,36 @@ local function LayoutVisibleIcons(row, icons, size, spacing)
     end
 end
 
+function Feral:BuildSpellLists()
+    local main = CopyList(self.baseMainSpells)
+    local utility = CopyList(self.baseUtilitySpells)
+
+    if type(RUI.GetPlayerRacialSpellNames) == "function" then
+        local racialMain, racialUtility = RUI:GetPlayerRacialSpellNames()
+        AppendUnique(main, racialMain)
+        AppendUnique(utility, racialUtility)
+    end
+
+    return main, utility
+end
+
+function Feral:CreateAbilityRows()
+    local mainSpells, utilitySpells = self:BuildSpellLists()
+
+    if self.mainRow then
+        self.mainRow:Hide()
+    end
+    if self.utilityRow then
+        self.utilityRow:Hide()
+    end
+
+    self.mainRow = RUI:CreateSpellRow(self.root, mainSpells)
+    self.mainRow:SetPoint("CENTER", self.root, "CENTER", 0, -221)
+
+    self.utilityRow = RUI:CreateSpellRow(self.root, utilitySpells)
+    self.utilityRow:SetPoint("CENTER", self.root, "CENTER", 0, -263)
+end
+
 function Feral:CreateComboPoints()
     self.comboPoints = {}
     local holder = CreateFrame("Frame", nil, self.energyHolder)
@@ -194,6 +245,11 @@ function Feral:Initialize()
     self.root:SetSize(1, 1)
     self.root:SetPoint("CENTER", UIParent, "CENTER", 0, 27)
 
+    if type(RUI.CreateTrinketTracker) == "function" then
+        self.trinketRow = RUI:CreateTrinketTracker(self.root)
+        self.trinketRow:SetPoint("CENTER", self.root, "CENTER", 0, -99)
+    end
+
     self.auraRow = CreateFrame("Frame", nil, self.root)
     self.auraRow:SetSize(1, 30)
     self.auraRow:SetPoint("CENTER", self.root, "CENTER", 0, -139)
@@ -206,12 +262,7 @@ function Feral:Initialize()
     self.energyHolder:SetPoint("CENTER", self.root, "CENTER", 0, -180)
     self:CreateComboPoints()
     self:CreateEnergyTick()
-
-    self.mainRow = RUI:CreateSpellRow(self.root, self.mainSpells)
-    self.mainRow:SetPoint("CENTER", self.root, "CENTER", 0, -221)
-
-    self.utilityRow = RUI:CreateSpellRow(self.root, self.utilitySpells)
-    self.utilityRow:SetPoint("CENTER", self.root, "CENTER", 0, -263)
+    self:CreateAbilityRows()
 
     self:UpdateAll()
     self:UpdateVisibility()
@@ -316,6 +367,9 @@ function Feral:UpdateAll()
     self:UpdateResources()
     self:UpdateAuras()
     self:UpdateRows()
+    if self.trinketRow and type(RUI.UpdateTrinketTracker) == "function" then
+        RUI:UpdateTrinketTracker(self.trinketRow)
+    end
 end
 
 function Feral:OnEvent(event, unit)
@@ -326,6 +380,7 @@ function Feral:OnEvent(event, unit)
     end
 
     if event == "SPELLS_CHANGED" or event == "LEARNED_SPELL_IN_TAB" then
+        self:CreateAbilityRows()
         self:UpdateRows()
         return
     end
@@ -338,6 +393,10 @@ function Feral:OnEvent(event, unit)
         return
     end
 
+    if event == "UNIT_INVENTORY_CHANGED" and unit ~= "player" then
+        return
+    end
+
     self:UpdateAll()
 end
 
@@ -346,6 +405,9 @@ function Feral:OnUpdate()
     self:UpdateResources()
     self:UpdateAuras()
     self:UpdateRows()
+    if self.trinketRow and type(RUI.UpdateTrinketTracker) == "function" then
+        RUI:UpdateTrinketTracker(self.trinketRow)
+    end
 end
 
 RUI:RegisterModule("FeralDruid", Feral)
