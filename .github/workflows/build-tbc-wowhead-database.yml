@@ -6,6 +6,7 @@ on:
       - feature/tbc-anniversary-feral-foundation
     paths:
       - "TBC/Tools/build_wowhead_database.py"
+      - "TBC/Tools/filter_tbc_database.py"
       - ".github/workflows/build-tbc-wowhead-database.yml"
   workflow_dispatch:
 
@@ -41,6 +42,7 @@ jobs:
       - name: Generate canonical database
         run: |
           python TBC/Tools/build_wowhead_database.py --workers 12
+          python TBC/Tools/filter_tbc_database.py
 
       - name: Validate generated outputs
         run: |
@@ -74,6 +76,8 @@ jobs:
               raise SystemExit(f"Unexpectedly small racial catalog: {counts['racial_rows']}")
           if counts["trinket_proc_mappings"] < 20:
               raise SystemExit(f"Unexpectedly small trinket catalog: {counts['trinket_proc_mappings']}")
+          if counts.get("unresolved_included_rows") != 0:
+              raise SystemExit("The canonical catalog contains unresolved Wowhead rows")
 
           for class_name, details in counts["by_class"].items():
               if details["ability_rows"] < 20:
@@ -84,19 +88,20 @@ jobs:
           with (root / "all_spells.csv").open(encoding="utf-8-sig", newline="") as handle:
               rows = list(csv.DictReader(handle))
           ids = {int(row["Spell ID"]) for row in rows}
-          required_ids = {
-              768,    # Cat Form
-              16979,  # Feral Charge
-              33876,  # Mangle (Cat)
-              20589,  # Escape Artist is in racials, checked below
-          }
           if not {768, 16979, 33876}.issubset(ids):
               raise SystemExit("Druid smoke-test spell IDs are missing")
+          if any(int(row["Spell ID"]) >= 400000 for row in rows):
+              raise SystemExit("Era/SoD spell IDs leaked into the TBC catalog")
 
           with (root / "racials.csv").open(encoding="utf-8-sig", newline="") as handle:
               racial_ids = {int(row["Spell ID"]) for row in csv.DictReader(handle)}
           if not {20589, 7744, 20594, 20549, 26297}.issubset(racial_ids):
               raise SystemExit("Core TBC racials are missing")
+
+          with (root / "missing_data.csv").open(encoding="utf-8-sig", newline="") as handle:
+              missing = list(csv.DictReader(handle))
+          if any(row["Entity Type"] == "Talent" for row in missing):
+              raise SystemExit("One or more TBC talent rank IDs failed Wowhead validation")
 
           print(json.dumps(counts, indent=2))
           PY
@@ -111,7 +116,7 @@ jobs:
             echo "Generated database is unchanged."
             exit 0
           fi
-          git commit -m "Generate TBC Wowhead spell database"
+          git commit -m "Generate filtered TBC Wowhead spell database"
           git push origin HEAD:feature/tbc-anniversary-feral-foundation
 
       - name: Upload database artifact
