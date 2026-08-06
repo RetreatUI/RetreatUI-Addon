@@ -1,0 +1,469 @@
+name: Apply Discord feedback fixes
+
+on:
+  push:
+    branches:
+      - feature/class-hud-cooldown-rows
+    paths:
+      - '.github/workflows/apply-discord-feedback.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feature/class-hud-cooldown-rows
+          fetch-depth: 0
+
+      - name: Apply threat, unit-frame and HUD duplicate fixes
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text(encoding='utf-8')
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one anchor, found {count}: {old[:80]!r}')
+              p.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          # 1) TurboPlates profile/runtime integration: threat always has priority
+          # over the mana/caster identity tint. No external TurboPlates source is changed.
+          tp = Path('RetreatUI/Integrations/TurboPlates.lua')
+          text = tp.read_text(encoding='utf-8')
+          old = '''local MANA_BLUE = {0.10, 0.46, 1.00, 1}
+          local MANA_BLUE_DARK = {0.02, 0.10, 0.24, 0.96}
+          local MANA_BLUE_BORDER = {0.16, 0.62, 1.00, 1}
+          '''
+          new = '''local MANA_BLUE = {0.10, 0.46, 1.00, 1}
+          local MANA_BLUE_DARK = {0.02, 0.10, 0.24, 0.96}
+          local MANA_BLUE_BORDER = {0.16, 0.62, 1.00, 1}
+          local NO_AGGRO_RED = {0.95, 0.10, 0.07, 1}
+          local NO_AGGRO_DARK = {0.25, 0.018, 0.012, 0.96}
+          local NO_AGGRO_BORDER = {1.00, 0.30, 0.14, 1}
+          local LOSING_AGGRO_AMBER = {1.00, 0.48, 0.04, 1}
+          local LOSING_AGGRO_DARK = {0.28, 0.10, 0.01, 0.96}
+          local LOSING_AGGRO_BORDER = {1.00, 0.68, 0.12, 1}
+
+          local MANA_PALETTE = {fill=MANA_BLUE, background=MANA_BLUE_DARK, border=MANA_BLUE_BORDER, state="caster"}
+          local NO_AGGRO_PALETTE = {fill=NO_AGGRO_RED, background=NO_AGGRO_DARK, border=NO_AGGRO_BORDER, state="no_aggro"}
+          local LOSING_AGGRO_PALETTE = {fill=LOSING_AGGRO_AMBER, background=LOSING_AGGRO_DARK, border=LOSING_AGGRO_BORDER, state="losing_aggro"}
+          '''
+          if old not in text:
+              raise SystemExit('TurboPlates color constants anchor missing')
+          text = text.replace(old, new, 1)
+
+          old = '''local function ColorForRole(role)
+            if role == "background" then return MANA_BLUE_DARK end
+            if role == "border" then return MANA_BLUE_BORDER end
+            return MANA_BLUE
+          end
+          '''
+          new = '''local function ThreatPalette(unit)
+            if not unit or type(UnitExists) ~= "function" or not UnitExists(unit) then return MANA_PALETTE end
+            if type(UnitIsFriend) == "function" then
+              local ok, friendly = pcall(UnitIsFriend, "player", unit)
+              if ok and friendly == true then return MANA_PALETTE end
+            end
+            if type(UnitCanAttack) == "function" then
+              local ok, attackable = pcall(UnitCanAttack, "player", unit)
+              if ok and attackable ~= true then return MANA_PALETTE end
+            end
+
+            local status
+            if type(UnitThreatSituation) == "function" then
+              local ok, value = pcall(UnitThreatSituation, "player", unit)
+              if ok then status = tonumber(value) end
+            end
+            if status == 1 or status == 2 then return LOSING_AGGRO_PALETTE end
+            if status == 3 then return MANA_PALETTE end
+            return NO_AGGRO_PALETTE
+          end
+
+          local function ColorForRole(role, palette)
+            palette = palette or MANA_PALETTE
+            if role == "background" then return palette.background end
+            if role == "border" then return palette.border end
+            return palette.fill
+          end
+          '''
+          if old not in text:
+              raise SystemExit('TurboPlates ColorForRole anchor missing')
+          text = text.replace(old, new, 1)
+
+          text = text.replace('local function EnsureManaFillOverlay(statusBar)', 'local function EnsureManaFillOverlay(statusBar, palette)', 1)
+          text = text.replace('''  local fill = statusBar:GetStatusBarTexture()
+            if not fill then return nil end
+          ''', '''  local fill = statusBar:GetStatusBarTexture()
+            if not fill then return nil end
+            palette = palette or MANA_PALETTE
+            statusBar._ruiManaPalette = palette
+          ''', 1)
+          text = text.replace('''  overlay:SetVertexColor(MANA_BLUE[1], MANA_BLUE[2], MANA_BLUE[3], MANA_BLUE[4])
+            overlay:SetAlpha(1)
+          ''', '''  local overlayColor = palette.fill or MANA_BLUE
+            overlay:SetVertexColor(overlayColor[1], overlayColor[2], overlayColor[3], overlayColor[4])
+            overlay:SetAlpha(1)
+          ''', 1)
+          text = text.replace('''        current:SetVertexColor(MANA_BLUE[1], MANA_BLUE[2], MANA_BLUE[3], MANA_BLUE[4])
+                  current:SetAlpha(1)
+          ''', '''        local activePalette = self._ruiManaPalette or MANA_PALETTE
+                  local activeColor = activePalette.fill or MANA_BLUE
+                  current:SetVertexColor(activeColor[1], activeColor[2], activeColor[3], activeColor[4])
+                  current:SetAlpha(1)
+          ''', 1)
+
+          text = text.replace('local function PaintManaBlue(value, role)', 'local function PaintManaBlue(value, role, palette)', 1)
+          text = text.replace('''  local color = ColorForRole(role)
+          ''', '''  palette = palette or MANA_PALETTE
+            local color = ColorForRole(role, palette)
+          ''', 1)
+          text = text.replace('EnsureManaFillOverlay(value)', 'EnsureManaFillOverlay(value, palette)', 1)
+          text = text.replace('''      pcall(value.SetBackdropColor, value, MANA_BLUE_DARK[1], MANA_BLUE_DARK[2], MANA_BLUE_DARK[3], MANA_BLUE_DARK[4])
+          ''', '''      local background = palette.background or MANA_BLUE_DARK
+                pcall(value.SetBackdropColor, value, background[1], background[2], background[3], background[4])
+          ''', 1)
+          text = text.replace('''      pcall(value.SetBackdropBorderColor, value, MANA_BLUE_BORDER[1], MANA_BLUE_BORDER[2], MANA_BLUE_BORDER[3], MANA_BLUE_BORDER[4])
+          ''', '''      local border = palette.border or MANA_BLUE_BORDER
+                pcall(value.SetBackdropBorderColor, value, border[1], border[2], border[3], border[4])
+          ''', 1)
+
+          text = text.replace('local function PaintTurboPlate(myPlate, seenObjects)', 'local function PaintTurboPlate(myPlate, seenObjects, unit)', 1)
+          text = text.replace('''  local hp = myPlate.hp
+            PaintManaBlue(hp, "fill")
+          ''', '''  local hp = myPlate.hp
+            local palette = ThreatPalette(unit)
+            PaintManaBlue(hp, "fill", palette)
+          ''', 1)
+          text = text.replace('PaintManaBlue(hp.bg, "background")', 'PaintManaBlue(hp.bg, "background", palette)', 1)
+          text = text.replace('PaintManaBlue(hp.border, "border")', 'PaintManaBlue(hp.border, "border", palette)', 1)
+          text = text.replace('PaintTurboPlate(myPlate, seenObjects) == true', 'PaintTurboPlate(myPlate, seenObjects, unit) == true', 1)
+          text = text.replace('if myPlate then PaintTurboPlate(myPlate, seenObjects) end', 'if myPlate then PaintTurboPlate(myPlate, seenObjects, unit) end', 1)
+          text = text.replace('''    "PLAYER_TARGET_CHANGED", "UPDATE_MOUSEOVER_UNIT", "PLAYER_FOCUS_CHANGED",
+              "PLAYER_ENTERING_WORLD",
+          ''', '''    "PLAYER_TARGET_CHANGED", "UPDATE_MOUSEOVER_UNIT", "PLAYER_FOCUS_CHANGED",
+              "UNIT_THREAT_SITUATION_UPDATE", "UNIT_THREAT_LIST_UPDATE",
+              "PLAYER_REGEN_DISABLED", "PLAYER_REGEN_ENABLED", "PLAYER_ENTERING_WORLD",
+          ''', 1)
+          text = text.replace('''    manaNPCStaleOverlayCleanup = true,
+              dangerousAbilityPriority = false,
+          ''', '''    manaNPCStaleOverlayCleanup = true,
+              threatPriorityColoring = true,
+              noAggroColor = "red",
+              losingAggroColor = "amber",
+              secureCasterColor = "blue",
+              dangerousAbilityPriority = false,
+          ''', 1)
+          tp.write_text(text, encoding='utf-8')
+
+          # 2) ElvUI baseline: move the totem/standard bar away from action bars,
+          # and give party name/health separate readable anchors.
+          elv = Path('RetreatUI/Profiles/ElvUI.lua')
+          text = elv.read_text(encoding='utf-8')
+          text = text.replace('ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,55"', 'ElvBar_Totem = "BOTTOM,ElvUIParent,BOTTOM,0,132"', 1)
+          old_party = '''      party = {
+                buffs = {
+                  countFont = "Fira Sans Heavy",
+                  sizeOverride = 0,
+                },
+                debuffs = {
+                  countFont = "Fira Sans Heavy",
+                  sizeOverride = 20,
+                },
+                growthDirection = "DOWN_RIGHT",
+                height = 38,
+                horizontalSpacing = 3,
+                power = {
+                  attachTextTo = "Power",
+                  detachFromFrame = false,
+                  height = 4,
+                },
+                rdebuffs = {
+                  font = "Fira Sans Heavy",
+                },
+                smartAuraPosition = "DISABLED",
+                width = 190,
+              },
+          '''
+          new_party = '''      party = {
+                buffs = {
+                  countFont = "Fira Sans Heavy",
+                  sizeOverride = 0,
+                },
+                debuffs = {
+                  countFont = "Fira Sans Heavy",
+                  sizeOverride = 20,
+                },
+                growthDirection = "DOWN_RIGHT",
+                health = {
+                  frequentUpdates = true,
+                  position = "BOTTOMRIGHT",
+                  text_format = "[health:percent]",
+                  xOffset = -5,
+                  yOffset = 4,
+                },
+                height = 42,
+                horizontalSpacing = 3,
+                name = {
+                  font = "Fira Sans Heavy",
+                  fontOutline = "OUTLINE",
+                  fontSize = 10,
+                  position = "TOPLEFT",
+                  text_format = "[name:medium]",
+                  xOffset = 5,
+                  yOffset = -4,
+                },
+                power = {
+                  attachTextTo = "Power",
+                  detachFromFrame = false,
+                  height = 4,
+                  text_format = "",
+                },
+                rdebuffs = {
+                  font = "Fira Sans Heavy",
+                },
+                smartAuraPosition = "DISABLED",
+                width = 200,
+              },
+          '''
+          if old_party not in text:
+              raise SystemExit('ElvUI party block anchor missing')
+          elv.write_text(text.replace(old_party, new_party, 1), encoding='utf-8')
+
+          hotfix = r'''local RUI = RetreatUI
+          if not RUI then return end
+
+          local REVISION = 2026080601
+          local OLD_TOTEM_MOVER = "BOTTOM,ElvUIParent,BOTTOM,0,55"
+          local NEW_TOTEM_MOVER = "BOTTOM,ElvUIParent,BOTTOM,0,132"
+
+          local function RepairProfile(profile)
+            if type(profile) ~= "table" then return false end
+            local changed = false
+            profile.movers = profile.movers or {}
+            if profile.movers.ElvBar_Totem == OLD_TOTEM_MOVER then
+              profile.movers.ElvBar_Totem = NEW_TOTEM_MOVER
+              changed = true
+            end
+
+            profile.unitframe = profile.unitframe or {}
+            profile.unitframe.units = profile.unitframe.units or {}
+            local party = profile.unitframe.units.party
+            if type(party) == "table" and (tonumber(party.width) or 190) <= 190 and (tonumber(party.height) or 38) <= 38 then
+              party.width = 200
+              party.height = 42
+              party.health = party.health or {}
+              party.health.frequentUpdates = true
+              party.health.position = "BOTTOMRIGHT"
+              party.health.text_format = "[health:percent]"
+              party.health.xOffset = -5
+              party.health.yOffset = 4
+              party.name = party.name or {}
+              party.name.font = RUI.fontName or "Fira Sans Heavy"
+              party.name.fontOutline = "OUTLINE"
+              party.name.fontSize = 10
+              party.name.position = "TOPLEFT"
+              party.name.text_format = "[name:medium]"
+              party.name.xOffset = 5
+              party.name.yOffset = -4
+              party.power = party.power or {}
+              party.power.text_format = ""
+              changed = true
+            end
+            return changed
+          end
+
+          function RUI:ApplyUnitFrameLayoutHotfix()
+            local changed = RepairProfile(self.ElvUIProfile)
+            if type(ElvDB) == "table" and type(ElvDB.profiles) == "table" then
+              changed = RepairProfile(ElvDB.profiles.RetreatUI) or changed
+            end
+
+            if ElvUI then
+              local E = unpack(ElvUI)
+              local currentProfile
+              if E and E.data and type(E.data.GetCurrentProfile) == "function" then
+                local ok, value = pcall(E.data.GetCurrentProfile, E.data)
+                if ok then currentProfile = value end
+              end
+              if E and type(E.db) == "table" and (currentProfile == "RetreatUI"
+                or (E.db.movers and E.db.movers.ElvBar_Totem == OLD_TOTEM_MOVER)) then
+                changed = RepairProfile(E.db) or changed
+                if changed and type(E.UpdateAll) == "function" then pcall(E.UpdateAll, E, true) end
+              end
+            end
+
+            local db = self:EnsureDB()
+            db.integrations = db.integrations or {}
+            db.integrations.unitFrameLayoutHotfix = {revision=REVISION, applied=true, changed=changed == true}
+            return true, changed and "Party frames and Guardian totem position repaired" or "Unit-frame layout already current"
+          end
+
+          for _, delay in ipairs({0.30, 1.00, 3.00}) do
+            RUI:After(delay, function()
+              if RUI and RUI.ApplyUnitFrameLayoutHotfix then RUI:ApplyUnitFrameLayoutHotfix() end
+            end)
+          end
+          '''
+          Path('RetreatUI/Integrations/UnitFrameLayoutHotfix.lua').write_text(hotfix, encoding='utf-8')
+
+          toc = Path('RetreatUI/RetreatUI.toc')
+          text = toc.read_text(encoding='utf-8')
+          anchor = 'Integrations\\RaidFrameHotfix.lua\n'
+          if 'Integrations\\UnitFrameLayoutHotfix.lua' not in text:
+              if anchor not in text: raise SystemExit('Core TOC hotfix anchor missing')
+              text = text.replace(anchor, anchor + 'Integrations\\UnitFrameLayoutHotfix.lua\n', 1)
+          toc.write_text(text, encoding='utf-8')
+
+          # 3) Central, normalized HUD-definition dedupe for every class.
+          tank = Path('RetreatUI/Core/TankFramework.lua')
+          text = tank.read_text(encoding='utf-8')
+          anchor = '''function RUI:GetTankHUDDefinitions(className, row)
+          '''
+          helper = '''local function HUDDefinitionKey(definition)
+            if type(definition) ~= "table" then return tostring(definition) end
+            local name = tostring(definition.name or ""):gsub("’", "'")
+            name = name:gsub("%s+", " "):gsub("^%s+", ""):gsub("%s+$", "")
+            name = string.lower(name)
+            if name ~= "" then return "name:" .. name end
+            local id = tonumber(definition.id) or tonumber(definition.spellID)
+            return id and ("id:" .. tostring(id)) or tostring(definition)
+          end
+
+          function RUI:DeduplicateHUDDefinitions(definitions)
+            local result, seen = {}, {}
+            for _, definition in ipairs(definitions or {}) do
+              local key = HUDDefinitionKey(definition)
+              if definition.allowDuplicateHUD == true or not seen[key] then
+                result[#result + 1] = definition
+                if definition.allowDuplicateHUD ~= true then seen[key] = true end
+              end
+            end
+            return result
+          end
+
+          function RUI:GetTankHUDDefinitions(className, row)
+          '''
+          if anchor not in text: raise SystemExit('TankFramework function anchor missing')
+          text = text.replace(anchor, helper, 1)
+          text = text.replace('''  return definitions
+          end
+
+          local function UnitHasDispelType''', '''  return self:DeduplicateHUDDefinitions(definitions)
+          end
+
+          local function UnitHasDispelType''', 1)
+          tank.write_text(text, encoding='utf-8')
+
+          advanced = Path('RetreatUI_Classes/AdvancedHUD.lua')
+          text = advanced.read_text(encoding='utf-8')
+          text = text.replace('''  local function CoreDefinitions()
+              return RUI:GetHUDSpellDefinitions(className, "core") or {}
+            end
+          ''', '''  local function CoreDefinitions()
+              local definitions = RUI:GetHUDSpellDefinitions(className, "core") or {}
+              return RUI.DeduplicateHUDDefinitions and RUI:DeduplicateHUDDefinitions(definitions) or definitions
+            end
+          ''', 1)
+          text = text.replace('''    return definitions
+            end
+
+            local function Learned(definition)
+          ''', '''    return RUI.DeduplicateHUDDefinitions and RUI:DeduplicateHUDDefinitions(definitions) or definitions
+            end
+
+            local function Learned(definition)
+          ''', 1)
+          advanced.write_text(text, encoding='utf-8')
+
+          knight = Path('RetreatUI_Classes/KnightOfXoroth/HUD.lua')
+          text = knight.read_text(encoding='utf-8')
+          old = '''local function BuildRow(row, definitions, size, spacing)
+            local visible = {}
+            for _, definition in ipairs(definitions) do
+          '''
+          new = '''local function BuildRow(row, definitions, size, spacing)
+            local visible = {}
+            definitions = RUI.DeduplicateHUDDefinitions and RUI:DeduplicateHUDDefinitions(definitions) or definitions
+            for _, definition in ipairs(definitions) do
+          '''
+          if old not in text: raise SystemExit('Knight BuildRow anchor missing')
+          knight.write_text(text.replace(old, new, 1), encoding='utf-8')
+
+          test = r'''local function Fail(message)
+            io.stderr:write("HUD duplicate test failed: " .. tostring(message) .. "\n")
+            os.exit(1)
+          end
+
+          RetreatUI = {
+            tankProfiles = {},
+            NormalizeClassName = function(_, value) return value end,
+            GetDetectedClass = function() return "Test" end,
+            GetHUDSpellDefinitions = function()
+              return {
+                {name="Unleash Pestilence", id=1, order=20},
+                {name="  unleash   pestilence  ", id=2, order=10},
+                {name="Snarl", id=3, order=30},
+              }
+            end,
+          }
+          dofile("RetreatUI/Core/TankFramework.lua")
+
+          local definitions = RetreatUI:GetTankHUDDefinitions("Knight of Xoroth", "core")
+          if #definitions ~= 2 then Fail("expected 2 unique definitions, got " .. tostring(#definitions)) end
+          local pestilence = 0
+          for _, definition in ipairs(definitions) do
+            if string.lower(definition.name):find("unleash", 1, true) then pestilence = pestilence + 1 end
+          end
+          if pestilence ~= 1 then Fail("Unleash Pestilence appears " .. tostring(pestilence) .. " times") end
+
+          local explicit = RetreatUI:DeduplicateHUDDefinitions({
+            {name="Test Spell", allowDuplicateHUD=true},
+            {name="Test Spell", allowDuplicateHUD=true},
+          })
+          if #explicit ~= 2 then Fail("allowDuplicateHUD opt-in was not preserved") end
+          print("Validated normalized HUD deduplication across shared and Knight render paths")
+          '''
+          Path('tests/test_hud_duplicates.lua').write_text(test, encoding='utf-8')
+
+          workflow = Path('.github/workflows/validate-and-publish.yml')
+          text = workflow.read_text(encoding='utf-8')
+          anchor = '          lua5.1 tests/test_main_bar_wrap.lua\n'
+          if 'tests/test_hud_duplicates.lua' not in text:
+              if anchor not in text: raise SystemExit('Validation workflow test anchor missing')
+              text = text.replace(anchor, anchor + '          lua5.1 tests/test_hud_duplicates.lua\n', 1)
+          workflow.write_text(text, encoding='utf-8')
+
+          # Remove this one-shot writer from the branch before committing.
+          Path('.github/workflows/apply-discord-feedback.yml').unlink()
+          PY
+
+      - name: Validate patched files before commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          luac5.1 -p RetreatUI/Integrations/TurboPlates.lua
+          luac5.1 -p RetreatUI/Integrations/UnitFrameLayoutHotfix.lua
+          luac5.1 -p RetreatUI/Core/TankFramework.lua
+          luac5.1 -p RetreatUI_Classes/AdvancedHUD.lua
+          luac5.1 -p RetreatUI_Classes/KnightOfXoroth/HUD.lua
+          lua5.1 tests/test_hud_duplicates.lua
+
+      - name: Commit fixes to active HUD branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "Retreat"
+          git config user.email "gaarn94@gmail.com"
+          git add -A
+          git commit -m "Fix threat clarity, Guardian overlap and HUD duplicates"
+          git push origin HEAD:feature/class-hud-cooldown-rows
