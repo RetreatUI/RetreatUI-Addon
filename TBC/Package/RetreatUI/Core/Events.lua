@@ -71,7 +71,14 @@ SlashCmdList.RETREATUITBC = function(message)
             module:UpdateVisibility()
         end
         RUI:Print("Feral HUD returned to automatic Cat Form visibility.")
+    elseif command == "macro" then
+        local powershift = RUI:GetModule("FeralPowershiftMacro")
+        if powershift and type(powershift.Ensure) == "function" then
+            powershift:Ensure(true)
+        else
+            RUI:Print("The powershift macro module is not available.")
+        end
     else
-        RUI:Print("Commands: /ruitbc show, /ruitbc auto")
+        RUI:Print("Commands: /ruitbc show, /ruitbc auto, /ruitbc macro")
     end
 end
