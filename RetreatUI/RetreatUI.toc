@@ -40,6 +40,7 @@ Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
+Integrations\ChatDockingSafety.lua
 Integrations\ElvUIPartyText.lua
 Integrations\RaidFrameHotfix.lua
 Integrations\CVars.lua
