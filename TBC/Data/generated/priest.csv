@@ -1,0 +1,561 @@
+﻿Specialization,Type,Name,Spell ID,Canonical ID,Rank,Learned Level,Description,Category,HUD Row,Cooldown,Duration,Resource Cost,Aura ID,Track Mode,Tags,Wowhead Source,Notes
+Class-wide / Shared,Ability,Abolish Disease,552,552,,32,"Attempts to cure 1 disease effect on the target, and 1 more disease effect every 5 seconds for 20 sec.",Utility,Utility,0,20,12% of base mana,,Cooldown,"DISPEL_DISEASE, FILLER",https://www.wowhead.com/tbc/spell=552,
+Class-wide / Shared,Ability,Cure Disease,528,528,,14,Removes 1 disease from the friendly target.,Utility,Utility,0,,12% of base mana,,Cooldown,"DISPEL_DISEASE, FILLER",https://www.wowhead.com/tbc/spell=528,
+Class-wide / Shared,Ability,Dispel Magic,527,527,Rank 1,18,"Dispels magic on the target, removing 1 harmful spell from a friend or 1 beneficial spell from an enemy.",Utility,Utility,0,,14% of base mana,,Cooldown,"DISPEL_MAGIC, FILLER, PURGE",https://www.wowhead.com/tbc/spell=527,
+Class-wide / Shared,Ability,Dispel Magic,988,527,Rank 2,36,"Dispels magic on the target, removing 2 harmful spells from a friend or 2 beneficial spells from an enemy.",Utility,Utility,0,,14% of base mana,,Cooldown,"DISPEL_MAGIC, FILLER, PURGE",https://www.wowhead.com/tbc/spell=988,
+Class-wide / Shared,Ability,Fade,586,586,Rank 1,8,"Fade out, discouraging enemies from attacking you for 10 sec.",Defensive,Utility,30,10,40 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=586,
+Class-wide / Shared,Ability,Fade,9578,586,Rank 1,20,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 1).",Defensive,Utility,30,10,75 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=9578,
+Class-wide / Shared,Ability,Fade,9579,586,Rank 2,30,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 2).",Defensive,Utility,30,10,125 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=9579,
+Class-wide / Shared,Ability,Fade,9592,586,Rank 3,40,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 3).",Defensive,Utility,30,10,175 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=9592,
+Class-wide / Shared,Ability,Fade,10941,586,Rank 4,50,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 4).",Defensive,Utility,30,10,225 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=10941,
+Class-wide / Shared,Ability,Fade,10942,586,Rank 5,60,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 5).",Defensive,Utility,30,10,275 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=10942,
+Class-wide / Shared,Ability,Fade,25429,586,Rank 6,66,"Fade out, discouraging enemies from attacking you for 10 sec. More effective than Fade (Rank 6).",Defensive,Utility,30,10,330 Mana,,Cooldown,"DEFENSIVE, MINOR, UTILITY",https://www.wowhead.com/tbc/spell=25429,
+Class-wide / Shared,Ability,Fear Ward,6346,6346,,20,"Wards the friendly target against Fear. The next Fear effect used against the target will fail, using up the ward. Lasts 3 min.",Defensive,Utility,180,180,3% of base mana,,Cooldown + aura,"CC_BREAK, CC_IMMUNITY, HAS_BUFF, IMPORTANT_EXTERNAL, LONG_BUFF",https://www.wowhead.com/tbc/spell=6346,
+Class-wide / Shared,Ability,Holy Fire,14914,14914,Rank 1,20,"Consumes the enemy in Holy flames that cause 
+84 to 
+104 Holy damage and an additional 30 Holy damage over 10 sec.",Offensive,Main,10,,85 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=14914,
+Class-wide / Shared,Ability,Holy Fire,15261,14914,Rank 2,60,"Consumes the enemy in Holy flames that cause 
+375 to 
+470 Holy damage and an additional 145 Holy damage over 10 sec.",Offensive,Main,10,,255 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15261,
+Class-wide / Shared,Ability,Holy Fire,15262,14914,Rank 3,24,"Consumes the enemy in Holy flames that cause 
+106 to 
+131 Holy damage and an additional 40 Holy damage over 10 sec.",Offensive,Main,10,,95 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15262,
+Class-wide / Shared,Ability,Holy Fire,15263,14914,Rank 4,30,"Consumes the enemy in Holy flames that cause 
+144 to 
+178 Holy damage and an additional 55 Holy damage over 10 sec.",Offensive,Main,10,,125 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15263,
+Class-wide / Shared,Ability,Holy Fire,15264,14914,Rank 5,36,"Consumes the enemy in Holy flames that cause 
+178 to 
+223 Holy damage and an additional 65 Holy damage over 10 sec.",Offensive,Main,10,,145 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15264,
+Class-wide / Shared,Ability,Holy Fire,15265,14914,Rank 6,42,"Consumes the enemy in Holy flames that cause 
+219 to 
+273 Holy damage and an additional 85 Holy damage over 10 sec.",Offensive,Main,10,,170 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15265,
+Class-wide / Shared,Ability,Holy Fire,15266,14914,Rank 7,48,"Consumes the enemy in Holy flames that cause 
+271 to 
+340 Holy damage and an additional 100 Holy damage over 10 sec.",Offensive,Main,10,,200 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15266,
+Class-wide / Shared,Ability,Holy Fire,15267,14914,Rank 8,54,"Consumes the enemy in Holy flames that cause 
+323 to 
+406 Holy damage and an additional 125 Holy damage over 10 sec.",Offensive,Main,10,,230 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=15267,
+Class-wide / Shared,Ability,Holy Fire,25384,14914,Rank 9,66,"Consumes the enemy in Holy flames that cause 
+426 to 
+537 Holy damage and an additional 165 Holy damage over 10 sec.",Offensive,Main,10,,290 Mana,,Cooldown,"DPS, MINOR, PVE",https://www.wowhead.com/tbc/spell=25384,
+Class-wide / Shared,Ability,Inner Fire,588,588,Rank 1,12,"A burst of Holy energy fills the caster, increasing armor by 315. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,30 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=588,
+Class-wide / Shared,Ability,Inner Fire,602,588,Rank 2,30,"A burst of Holy energy fills the caster, increasing armor by 720. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,105 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=602,
+Class-wide / Shared,Ability,Inner Fire,1006,588,Rank 3,40,"A burst of Holy energy fills the caster, increasing armor by 945. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,165 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=1006,
+Class-wide / Shared,Ability,Inner Fire,7128,588,Rank 4,20,"A burst of Holy energy fills the caster, increasing armor by 495. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,65 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=7128,
+Class-wide / Shared,Ability,Inner Fire,10951,588,Rank 5,50,"A burst of Holy energy fills the caster, increasing armor by 1170. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,235 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=10951,
+Class-wide / Shared,Ability,Inner Fire,10952,588,Rank 6,60,"A burst of Holy energy fills the caster, increasing armor by 1395. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,315 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=10952,
+Class-wide / Shared,Ability,Inner Fire,25431,588,Rank 7,69,"A burst of Holy energy fills the caster, increasing armor by 1580. Each melee or ranged damage hit against the priest will remove one charge. Lasts 10 min or until 20 charges are used.",Defensive,Utility,0,600,375 Mana,,Cooldown,"BUFF, DEFENSIVE, LONG_BUFF",https://www.wowhead.com/tbc/spell=25431,
+Class-wide / Shared,Ability,Levitate,1706,1706,,34,"Allows the caster to levitate, floating a few feet above the ground. While levitating, you will fall at a reduced speed and travel over water. Any damage will cancel the effect. Lasts 2 min.",Mobility,Utility,0,120,100 Mana,,Cooldown,"MOVEMENT, OUT_OF_COMBAT, UTILITY",https://www.wowhead.com/tbc/spell=1706,
+Class-wide / Shared,Ability,Mana Burn,8129,8129,Rank 1,24,"Destroy 
+198 to 
+211 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,95 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=8129,
+Class-wide / Shared,Ability,Mana Burn,8131,8129,Rank 2,32,"Destroy 
+315 to 
+336 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,140 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=8131,
+Class-wide / Shared,Ability,Mana Burn,10874,8129,Rank 3,40,"Destroy 
+450 to 
+476 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,185 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=10874,
+Class-wide / Shared,Ability,Mana Burn,10875,8129,Rank 4,48,"Destroy 
+585 to 
+620 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,225 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=10875,
+Class-wide / Shared,Ability,Mana Burn,10876,8129,Rank 5,56,"Destroy 
+748 to 
+791 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,270 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=10876,
+Class-wide / Shared,Ability,Mana Burn,25379,8129,Rank 6,63,"Destroy 
+887 to 
+936 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,300 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=25379,
+Class-wide / Shared,Ability,Mana Burn,25380,8129,Rank 7,70,"Destroy 
+1021 to 
+1079 mana from a target. For each mana destroyed in this way, the target takes 0.5 Shadow damage.",Utility,Utility,0,,355 Mana,,Cooldown,"FILLER, RESOURCE, UTILITY",https://www.wowhead.com/tbc/spell=25380,
+Class-wide / Shared,Ability,Mind Control,605,605,Rank 1,30,"Controls a humanoid mind up to level 
+44, but increases the time between its attacks by 25%. Lasts up to 1 min.",Crowd Control,Utility,0,60,350 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=605,
+Class-wide / Shared,Ability,Mind Control,10911,605,Rank 2,44,"Controls a humanoid mind up to level 
+59, but increases the time between attacks by 25%. Lasts up to 1 min.",Crowd Control,Utility,0,60,550 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=10911,
+Class-wide / Shared,Ability,Mind Control,10912,605,Rank 3,58,"Controls a humanoid mind up to level 
+74, but increases the time between attacks by 25%. Lasts up to 1 min.",Crowd Control,Utility,0,60,750 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=10912,
+Class-wide / Shared,Ability,Power Word: Fortitude,1243,1243,Rank 1,1,"Power infuses the target, increasing their Stamina by 3 for 30 min.",Utility,Utility,0,1800,20 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1243,
+Class-wide / Shared,Ability,Power Word: Fortitude,1244,1243,Rank 2,12,"Power infuses the target, increasing their Stamina by 8 for 30 min.",Utility,Utility,0,1800,70 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1244,
+Class-wide / Shared,Ability,Power Word: Fortitude,1245,1243,Rank 3,24,"Power infuses the target, increasing their Stamina by 20 for 30 min.",Utility,Utility,0,1800,200 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=1245,
+Class-wide / Shared,Ability,Power Word: Fortitude,2791,1243,Rank 4,36,"Power infuses the target, increasing their Stamina by 32 for 30 min.",Utility,Utility,0,1800,300 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=2791,
+Class-wide / Shared,Ability,Power Word: Fortitude,10937,1243,Rank 5,48,"Power infuses the target, increasing their Stamina by 43 for 30 min.",Utility,Utility,0,1800,450 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10937,
+Class-wide / Shared,Ability,Power Word: Fortitude,10938,1243,Rank 6,60,"Power infuses the target, increasing their Stamina by 54 for 30 min.",Utility,Utility,0,1800,600 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10938,
+Class-wide / Shared,Ability,Power Word: Fortitude,25389,1243,Rank 7,70,Power infuses the target increasing their Stamina by 79 for 30 min.,Utility,Utility,0,1800,700 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=25389,
+Class-wide / Shared,Ability,Prayer of Fortitude,21562,21562,Rank 1,48,"Power infuses the target's party, increasing their Stamina by 43 for 1 hour.",Utility,Utility,0,3600,1200 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=21562,
+Class-wide / Shared,Ability,Prayer of Fortitude,21564,21562,Rank 2,60,"Power infuses the target's party, increasing their Stamina by 54 for 1 hour.",Utility,Utility,0,3600,1500 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=21564,
+Class-wide / Shared,Ability,Prayer of Fortitude,25392,21562,Rank 3,70,"Power infuses the target's party, increasing their Stamina by 79 for 1 hour.",Utility,Utility,0,3600,1800 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=25392,
+Class-wide / Shared,Ability,Prayer of Shadow Protection,27683,27683,Rank 1,56,"Power infuses the target's party, increasing their Shadow resistance by 60 for 20 min.",Utility,Utility,0,1200,1300 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=27683,
+Class-wide / Shared,Ability,Prayer of Shadow Protection,39374,27683,Rank 2,70,"Power infuses the target's party, increasing their Shadow resistance by 70 for 20 min.",Utility,Utility,0,1200,1620 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=39374,
+Class-wide / Shared,Ability,Psychic Scream,8122,8122,Rank 1,14,"The caster lets out a psychic scream, causing 2 enemies within 8 yards to flee for 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,30,8,100 Mana,,Cooldown,"CC_HARD, FEAR",https://www.wowhead.com/tbc/spell=8122,
+Class-wide / Shared,Ability,Psychic Scream,8124,8122,Rank 2,28,"The caster lets out a psychic scream, causing 3 enemies within 8 yards to flee for 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,30,8,140 Mana,,Cooldown,"CC_HARD, FEAR",https://www.wowhead.com/tbc/spell=8124,
+Class-wide / Shared,Ability,Psychic Scream,10888,8122,Rank 3,42,"The caster lets out a psychic scream, causing 4 enemies within 8 yards to flee for 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,30,8,180 Mana,,Cooldown,"CC_HARD, FEAR",https://www.wowhead.com/tbc/spell=10888,
+Class-wide / Shared,Ability,Psychic Scream,10890,8122,Rank 4,56,"The caster lets out a psychic scream, causing 5 enemies within 8 yards to flee for 8 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,30,8,210 Mana,,Cooldown,"CC_HARD, FEAR",https://www.wowhead.com/tbc/spell=10890,
+Class-wide / Shared,Ability,Psychic Scream,27610,8122,Rank 5,56,"The caster lets out a psychic scream, causing 5 enemies within 8 yards to flee for 5 sec. Damage caused may interrupt the effect.",Crowd Control,Utility,30,8,210 Mana,,Cooldown,"CC_HARD, FEAR",https://www.wowhead.com/tbc/spell=27610,
+Class-wide / Shared,Ability,Resurrection,2006,2006,Rank 1,10,Brings a dead player back to life with 70 health and 135 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=2006,
+Class-wide / Shared,Ability,Resurrection,2010,2006,Rank 2,22,Brings a dead player back to life with 160 health and 300 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=2010,
+Class-wide / Shared,Ability,Resurrection,10880,2006,Rank 3,34,Brings a dead player back to life with 300 health and 520 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=10880,
+Class-wide / Shared,Ability,Resurrection,10881,2006,Rank 4,46,Brings a dead player back to life with 500 health and 750 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=10881,
+Class-wide / Shared,Ability,Resurrection,20770,2006,Rank 5,58,Brings a dead player back to life with 750 health and 1000 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=20770,
+Class-wide / Shared,Ability,Resurrection,25435,2006,Rank 6,68,Brings a dead player back to life with 1100 health and 1150 mana. Cannot be cast when in combat.,Utility,Utility,0,,60% of base mana,,Cooldown,"OUT_OF_COMBAT, RESURRECT, UTILITY",https://www.wowhead.com/tbc/spell=25435,
+Class-wide / Shared,Ability,Shackle Undead,9484,9484,Rank 1,20,"Shackles the target undead enemy for up to 30 sec. The shackled unit is unable to move, attack or cast spells. Any damage caused will release the target. Only one target can be shackled at a time.",Crowd Control,Utility,0,50,90 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=9484,
+Class-wide / Shared,Ability,Shackle Undead,9485,9484,Rank 2,40,"Shackles the target undead enemy for up to 40 sec. The shackled unit is unable to move, attack or cast spells. Any damage caused will release the target. Only one target can be shackled at a time.",Crowd Control,Utility,0,50,120 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=9485,
+Class-wide / Shared,Ability,Shackle Undead,10955,9484,Rank 3,60,"Shackles the target undead enemy for up to 50 sec. The shackled unit is unable to move, attack or cast spells. Any damage caused will release the target. Only one target can be shackled at a time.",Crowd Control,Utility,0,50,150 Mana,,Cooldown,"CC_HARD, FILLER",https://www.wowhead.com/tbc/spell=10955,
+Class-wide / Shared,Ability,Shadow Protection,976,976,Rank 1,30,Increases the target's resistance to Shadow spells by 30 for 10 min.,Utility,Utility,0,600,250 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=976,
+Class-wide / Shared,Ability,Shadow Protection,10957,976,Rank 2,42,Increases the target's resistance to Shadow spells by 45 for 10 min.,Utility,Utility,0,600,450 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10957,
+Class-wide / Shared,Ability,Shadow Protection,10958,976,Rank 3,56,Increases the target's resistance to Shadow spells by 60 for 10 min.,Utility,Utility,0,600,650 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=10958,
+Class-wide / Shared,Ability,Shadow Protection,25433,976,Rank 4,68,Increases the target's resistance to Shadow spells by 70 for 10 min.,Utility,Utility,0,600,810 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=25433,
+Class-wide / Shared,Ability,Shadowfiend,34433,34433,,66,Creates a shadowy fiend to attack the target. Caster receives mana when the Shadowfiend deals damage. Lasts 15 sec.,Resource,Main,300,15,6% of base mana,,Cooldown,"DPS, MAJOR, PET_SUMMON, PET_SUMMON_TEMP, PVE, RESOURCE",https://www.wowhead.com/tbc/spell=34433,
+Discipline,Talent,Absolution,33167,33167,Rank 1/3,,"Reduces the mana cost of your Dispel Magic, Cure Disease, Abolish Disease and Mass Dispel spells by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33167,Talent: Absolution; tree row 3
+Discipline,Talent,Absolution,33171,33167,Rank 2/3,,"Reduces the mana cost of your Dispel Magic, Cure Disease, Abolish Disease and Mass Dispel spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33171,Talent: Absolution; tree row 3
+Discipline,Talent,Absolution,33172,33167,Rank 3/3,,"Reduces the mana cost of your Dispel Magic, Cure Disease, Abolish Disease and Mass Dispel spells by 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33172,Talent: Absolution; tree row 3
+Discipline,Talent Ability,Divine Spirit,14752,14752,Rank 1/1,,"Holy power infuses the target, increasing their Spirit by 17 for 30 min.",Utility,Utility,0,1800,250 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=14752,Talent-required | Talent: Divine Spirit
+Discipline,Talent Ability,Divine Spirit,14818,14752,Rank 2,40,"Holy power infuses the target, increasing their Spirit by 23 for 30 min.",Utility,Utility,0,1800,350 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=14818,Talent-required
+Discipline,Talent Ability,Divine Spirit,14819,14752,Rank 3,50,"Holy power infuses the target, increasing their Spirit by 33 for 30 min.",Utility,Utility,0,1800,450 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=14819,Talent-required
+Discipline,Talent Ability,Divine Spirit,25312,14752,Rank 4,70,"Holy power infuses the target, increasing their Spirit by 50 for 30 min.",Utility,Utility,0,1800,680 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=25312,Talent-required
+Discipline,Talent Ability,Divine Spirit,27841,14752,Rank 5,60,"Holy power infuses the target, increasing their Spirit by 40 for 30 min.",Utility,Utility,0,1800,555 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=27841,Talent-required
+Discipline,Talent,Enlightenment,34908,34908,Rank 1/5,,"Increases your total Stamina, Intellect and Spirit by 1%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34908,Talent: Enlightenment; tree row 8
+Discipline,Talent,Enlightenment,34909,34908,Rank 2/5,,"Increases your total Stamina, Intellect and Spirit by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34909,Talent: Enlightenment; tree row 8
+Discipline,Talent,Enlightenment,34910,34908,Rank 3/5,,"Increases your total Stamina, Intellect and Spirit by 3%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34910,Talent: Enlightenment; tree row 8
+Discipline,Talent,Enlightenment,34911,34908,Rank 4/5,,"Increases your total Stamina, Intellect and Spirit by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34911,Talent: Enlightenment; tree row 8
+Discipline,Talent,Enlightenment,34912,34908,Rank 5/5,,"Increases your total Stamina, Intellect and Spirit by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34912,Talent: Enlightenment; tree row 8
+Discipline,Talent,Focused Power,33186,33186,Rank 1/2,,"Your Smite, Mind Blast and Mass Dispel spells have an additional 2% chance to hit. In addition, your Mass Dispel cast time is reduced by 0.5 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33186,Talent: Focused Power; tree row 6
+Discipline,Talent,Focused Power,33190,33186,Rank 2/2,,"Your Smite, Mind Blast and Mass Dispel spells have an additional 4% chance to hit. In addition, your Mass Dispel cast time is reduced by 1 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33190,Talent: Focused Power; tree row 6
+Discipline,Talent,Focused Will,45234,45234,Rank 1/3,,"After taking a critical hit you gain the Focused Will effect, reducing all damage taken by 2% and increasing healing effects on you by 4%. Stacks up to 3 times. Lasts 8 sec.",Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=45234,Talent: Focused Will; tree row 7
+Discipline,Talent,Focused Will,45243,45234,Rank 2/3,,"After taking a critical hit you gain the Focused Will effect, reducing all damage taken by 3% and increasing healing effects on you by 7%. Stacks up to 3 times. Lasts 8 sec.",Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=45243,Talent: Focused Will; tree row 7
+Discipline,Talent,Focused Will,45244,45234,Rank 3/3,,"After taking a critical hit you gain the Focused Will effect, reducing all damage taken by 4% and increasing healing effects on you by 10%. Stacks up to 3 times. Lasts 8 sec.",Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=45244,Talent: Focused Will; tree row 7
+Discipline,Talent,Force of Will,18544,18544,Rank 1/5,,Increases your spell damage by 1% and the critical strike chance of your offensive spells by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18544,Talent: Force of Will; tree row 6
+Discipline,Talent,Force of Will,18547,18544,Rank 2/5,,Increases your spell damage by 2% and the critical strike chance of your offensive spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18547,Talent: Force of Will; tree row 6
+Discipline,Talent,Force of Will,18548,18544,Rank 3/5,,Increases your spell damage by 3% and the critical strike chance of your offensive spells by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18548,Talent: Force of Will; tree row 6
+Discipline,Talent,Force of Will,18549,18544,Rank 4/5,,Increases your spell damage by 4% and the critical strike chance of your offensive spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18549,Talent: Force of Will; tree row 6
+Discipline,Talent,Force of Will,18550,18544,Rank 5/5,,Increases your spell damage by 5% and the critical strike chance of your offensive spells by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18550,Talent: Force of Will; tree row 6
+Discipline,Talent,Improved Divine Spirit,33174,33174,Rank 1/2,,Your Divine Spirit and Prayer of Spirit spells also increase the target's spell damage and healing by an amount equal to 5% of their total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33174,Talent: Improved Divine Spirit; tree row 5
+Discipline,Talent,Improved Divine Spirit,33182,33174,Rank 2/2,,Your Divine Spirit and Prayer of Spirit spells also increase the target's spell damage and healing by an amount equal to 10% of their total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33182,Talent: Improved Divine Spirit; tree row 5
+Discipline,Talent,Improved Inner Fire,14747,14747,Rank 1/3,,Increases the armor bonus of your Inner Fire spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14747,Talent: Improved Inner Fire; tree row 4
+Discipline,Talent,Improved Inner Fire,14770,14747,Rank 2/3,,Increases the armor bonus of your Inner Fire spell by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14770,Talent: Improved Inner Fire; tree row 4
+Discipline,Talent,Improved Inner Fire,14771,14747,Rank 3/3,,Increases the armor bonus of your Inner Fire spell by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14771,Talent: Improved Inner Fire; tree row 4
+Discipline,Talent,Improved Mana Burn,14750,14750,Rank 1/2,,Reduces the casting time of your Mana Burn spell by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14750,Talent: Improved Mana Burn; tree row 4
+Discipline,Talent,Improved Mana Burn,14772,14750,Rank 2/2,,Reduces the casting time of your Mana Burn spell by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14772,Talent: Improved Mana Burn; tree row 4
+Discipline,Talent,Improved Power Word: Fortitude,14749,14749,Rank 1/2,,Increases the effect of your Power Word: Fortitude and Prayer of Fortitude spells by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14749,Talent: Improved Power Word: Fortitude; tree row 2
+Discipline,Talent,Improved Power Word: Fortitude,14767,14749,Rank 2/2,,Increases the effect of your Power Word: Fortitude and Prayer of Fortitude spells by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14767,Talent: Improved Power Word: Fortitude; tree row 2
+Discipline,Talent,Improved Power Word: Shield,14748,14748,Rank 1/3,,Increases the damage absorbed by your Power Word: Shield by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14748,Talent: Improved Power Word: Shield; tree row 2
+Discipline,Talent,Improved Power Word: Shield,14768,14748,Rank 2/3,,Increases the damage absorbed by your Power Word: Shield by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14768,Talent: Improved Power Word: Shield; tree row 2
+Discipline,Talent,Improved Power Word: Shield,14769,14748,Rank 3/3,,Increases the damage absorbed by your Power Word: Shield by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14769,Talent: Improved Power Word: Shield; tree row 2
+Discipline,Talent Ability,Inner Focus,14751,14751,Rank 1/1,,"When activated, reduces the mana cost of your next spell by 100% and increases its critical effect chance by 25% if it is capable of a critical effect.",Healing,Utility,180,0,,,Cooldown + aura,"HAS_BUFF, HEAL, MAJOR, RESOURCE",https://www.wowhead.com/tbc/spell=14751,Talent-required | Talent: Inner Focus
+Discipline,Talent,Martyrdom,14531,14531,Rank 1/2,,Gives you a 50% chance to gain the Focused Casting effect that lasts for 6 sec after being the victim of a melee or ranged critical strike. The Focused Casting effect prevents you from losing casting time when taking damage while casting Priest spells and increases resistance to Interrupt effects by 10%.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14531,Talent: Martyrdom; tree row 2
+Discipline,Talent,Martyrdom,14774,14531,Rank 2/2,,Gives you a 100% chance to gain the Focused Casting effect that lasts for 6 sec after being the victim of a melee or ranged critical strike. The Focused Casting effect prevents you from losing casting time when taking damage while casting Priest spells and increases resistance to Interrupt effects by 20%.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14774,Talent: Martyrdom; tree row 2
+Discipline,Talent,Meditation,14521,14521,Rank 1/3,,Allows 10% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14521,Talent: Meditation; tree row 3
+Discipline,Talent,Meditation,14776,14521,Rank 2/3,,Allows 20% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14776,Talent: Meditation; tree row 3
+Discipline,Talent,Meditation,14777,14521,Rank 3/3,,Allows 30% of your mana regeneration to continue while casting.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14777,Talent: Meditation; tree row 3
+Discipline,Talent,Mental Agility,14520,14520,Rank 1/5,,Reduces the mana cost of your instant cast spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14520,Talent: Mental Agility; tree row 4
+Discipline,Talent,Mental Agility,14780,14520,Rank 2/5,,Reduces the mana cost of your instant cast spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14780,Talent: Mental Agility; tree row 4
+Discipline,Talent,Mental Agility,14781,14520,Rank 3/5,,Reduces the mana cost of your instant cast spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14781,Talent: Mental Agility; tree row 4
+Discipline,Talent,Mental Agility,14782,14520,Rank 4/5,,Reduces the mana cost of your instant cast spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14782,Talent: Mental Agility; tree row 4
+Discipline,Talent,Mental Agility,14783,14520,Rank 5/5,,Reduces the mana cost of your instant cast spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14783,Talent: Mental Agility; tree row 4
+Discipline,Talent,Mental Strength,18551,18551,Rank 1/5,,Increases your maximum mana by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18551,Talent: Mental Strength; tree row 5
+Discipline,Talent,Mental Strength,18552,18551,Rank 2/5,,Increases your maximum mana by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18552,Talent: Mental Strength; tree row 5
+Discipline,Talent,Mental Strength,18553,18551,Rank 3/5,,Increases your maximum mana by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18553,Talent: Mental Strength; tree row 5
+Discipline,Talent,Mental Strength,18554,18551,Rank 4/5,,Increases your maximum mana by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18554,Talent: Mental Strength; tree row 5
+Discipline,Talent,Mental Strength,18555,18551,Rank 5/5,,Increases your maximum mana by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18555,Talent: Mental Strength; tree row 5
+Discipline,Talent Ability,Pain Suppression,33206,33206,Rank 1/1,,"Instantly reduces a friendly target's threat by 5%, reduces all damage taken by 40% and increases resistance to Dispel mechanics by 65% for 8 sec.",Defensive,Utility,120,8,8% of base mana,,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, IMPORTANT_EXTERNAL, MAJOR, PVE_PVP",https://www.wowhead.com/tbc/spell=33206,Talent-required | Talent: Pain Suppression
+Discipline,Talent Ability,Power Infusion,10060,10060,Rank 1/1,,"Infuses the target with power, increasing spell casting speed by 20% and reducing the mana cost of all spells by 20%. Lasts 15 sec.",Healing,Utility,180,15,16% of base mana,,Cooldown + aura,"DPS, HAS_BUFF, HEAL, IMPORTANT_EXTERNAL, MAJOR",https://www.wowhead.com/tbc/spell=10060,Talent-required | Talent: Power Infusion
+Discipline,Talent Ability,Prayer of Spirit,27681,27681,,60,"Power infuses the target's party, increasing their Spirit by 40 for 1 hour.",Utility,Utility,0,3600,1500 Mana,,Cooldown,"BUFF, LONG_BUFF, UTILITY",https://www.wowhead.com/tbc/spell=27681,Talent-required
+Discipline,Talent,Reflective Shield,33201,33201,Rank 1/5,,Causes 10% of the damage absorbed by your Power Word: Shield to reflect back at the attacker. This damage causes no threat.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33201,Talent: Reflective Shield; tree row 7
+Discipline,Talent,Reflective Shield,33202,33201,Rank 2/5,,Causes 20% of the damage absorbed by your Power Word: Shield to reflect back at the attacker. This damage causes no threat.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33202,Talent: Reflective Shield; tree row 7
+Discipline,Talent,Reflective Shield,33203,33201,Rank 3/5,,Causes 30% of the damage absorbed by your Power Word: Shield to reflect back at the attacker. This damage causes no threat.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33203,Talent: Reflective Shield; tree row 7
+Discipline,Talent,Reflective Shield,33204,33201,Rank 4/5,,Causes 40% of the damage absorbed by your Power Word: Shield to reflect back at the attacker. This damage causes no threat.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33204,Talent: Reflective Shield; tree row 7
+Discipline,Talent,Reflective Shield,33205,33201,Rank 5/5,,Causes 50% of the damage absorbed by your Power Word: Shield to reflect back at the attacker. This damage causes no threat.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33205,Talent: Reflective Shield; tree row 7
+Discipline,Talent,Silent Resolve,14523,14523,Rank 1/5,,Reduces the threat generated by your Holy and Discipline spells by 4% and reduces the chance your spells will be dispelled by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14523,Talent: Silent Resolve; tree row 2
+Discipline,Talent,Silent Resolve,14784,14523,Rank 2/5,,Reduces the threat generated by your Holy and Discipline spells by 8% and reduces the chance your spells will be dispelled by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14784,Talent: Silent Resolve; tree row 2
+Discipline,Talent,Silent Resolve,14785,14523,Rank 3/5,,Reduces the threat generated by your Holy and Discipline spells by 12% and reduces the chance your spells will be dispelled by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14785,Talent: Silent Resolve; tree row 2
+Discipline,Talent,Silent Resolve,14786,14523,Rank 4/5,,Reduces the threat generated by your Holy and Discipline spells by 16% and reduces the chance your spells will be dispelled by 16%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14786,Talent: Silent Resolve; tree row 2
+Discipline,Talent,Silent Resolve,14787,14523,Rank 5/5,,Reduces the threat generated by your Holy and Discipline spells by 20% and reduces the chance your spells will be dispelled by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14787,Talent: Silent Resolve; tree row 2
+Discipline,Talent,Unbreakable Will,14522,14522,Rank 1/5,,"Increases your chance to resist Stun, Fear, and Silence effects by an additional 3%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14522,Talent: Unbreakable Will; tree row 1
+Discipline,Talent,Unbreakable Will,14788,14522,Rank 2/5,,"Increases your chance to resist Stun, Fear, and Silence effects by an additional 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14788,Talent: Unbreakable Will; tree row 1
+Discipline,Talent,Unbreakable Will,14789,14522,Rank 3/5,,"Increases your chance to resist Stun, Fear, and Silence effects by an additional 9%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14789,Talent: Unbreakable Will; tree row 1
+Discipline,Talent,Unbreakable Will,14790,14522,Rank 4/5,,"Increases your chance to resist Stun, Fear, and Silence effects by an additional 12%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14790,Talent: Unbreakable Will; tree row 1
+Discipline,Talent,Unbreakable Will,14791,14522,Rank 5/5,,"Increases your chance to resist Stun, Fear, and Silence effects by an additional 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14791,Talent: Unbreakable Will; tree row 1
+Discipline,Talent,Wand Specialization,14524,14524,Rank 1/5,,Increases your damage with Wands by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14524,Talent: Wand Specialization; tree row 1
+Discipline,Talent,Wand Specialization,14525,14524,Rank 2/5,,Increases your damage with Wands by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14525,Talent: Wand Specialization; tree row 1
+Discipline,Talent,Wand Specialization,14526,14524,Rank 3/5,,Increases your damage with Wands by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14526,Talent: Wand Specialization; tree row 1
+Discipline,Talent,Wand Specialization,14527,14524,Rank 4/5,,Increases your damage with Wands by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14527,Talent: Wand Specialization; tree row 1
+Discipline,Talent,Wand Specialization,14528,14524,Rank 5/5,,Increases your damage with Wands by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14528,Talent: Wand Specialization; tree row 1
+"Discipline, Holy",Ability,Flash Heal,2061,2061,Rank 1,20,"Heals a friendly target for 
+202 to 
+247.",Healing,Utility,0,,125 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=2061,
+"Discipline, Holy",Ability,Flash Heal,9472,2061,Rank 2,26,"Heals a friendly target for 
+269 to 
+325.",Healing,Utility,0,,155 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9472,
+"Discipline, Holy",Ability,Flash Heal,9473,2061,Rank 3,32,"Heals a friendly target for 
+339 to 
+406.",Healing,Utility,0,,185 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9473,
+"Discipline, Holy",Ability,Flash Heal,9474,2061,Rank 4,38,"Heals a friendly target for 
+414 to 
+492.",Healing,Utility,0,,215 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=9474,
+"Discipline, Holy",Ability,Flash Heal,10915,2061,Rank 5,44,"Heals a friendly target for 
+534 to 
+633.",Healing,Utility,0,,265 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=10915,
+"Discipline, Holy",Ability,Flash Heal,10916,2061,Rank 6,50,"Heals a friendly target for 
+662 to 
+783.",Healing,Utility,0,,315 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=10916,
+"Discipline, Holy",Ability,Flash Heal,10917,2061,Rank 7,56,"Heals a friendly target for 
+833 to 
+979.",Healing,Utility,0,,380 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=10917,
+"Discipline, Holy",Ability,Flash Heal,25233,2061,Rank 8,61,"Heals a friendly target for 
+931 to 
+1078.",Healing,Utility,0,,400 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=25233,
+"Discipline, Holy",Ability,Flash Heal,25235,2061,Rank 9,67,"Heals a friendly target for 
+1116 to 
+1295.",Healing,Utility,0,,470 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=25235,
+"Discipline, Holy",Ability,Greater Heal,2060,2060,Rank 1,40,"A slow casting spell that heals a single target for 
+924 to 
+1039.",Healing,Utility,0,,370 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=2060,
+"Discipline, Holy",Ability,Greater Heal,10963,2060,Rank 2,46,"A slow casting spell that heals a single target for 
+1178 to 
+1318.",Healing,Utility,0,,455 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=10963,
+"Discipline, Holy",Ability,Greater Heal,10964,2060,Rank 3,52,"A slow casting spell that heals a single target for 
+1470 to 
+1642.",Healing,Utility,0,,545 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=10964,
+"Discipline, Holy",Ability,Greater Heal,10965,2060,Rank 4,58,"A slow casting spell that heals a single target for 
+1835 to 
+2044.",Healing,Utility,0,,655 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=10965,
+"Discipline, Holy",Ability,Greater Heal,25210,2060,Rank 5,63,"A slow casting spell that heals a single target for 
+2107 to 
+2444.",Healing,Utility,0,,750 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=25210,
+"Discipline, Holy",Ability,Greater Heal,25213,2060,Rank 6,68,"A slow casting spell that heals a single target for 
+2414 to 
+2803.",Healing,Utility,0,,825 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=25213,
+"Discipline, Holy",Ability,Greater Heal,25314,2060,Rank 7,60,"A slow casting spell that heals a single target for 
+2006 to 
+2235.",Healing,Utility,0,,710 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE",https://www.wowhead.com/tbc/spell=25314,
+"Discipline, Holy",Ability,Heal,2054,2054,Rank 1,16,"Heal your target for 
+307 to 
+353.",Healing,Utility,0,,155 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=2054,
+"Discipline, Holy",Ability,Heal,2055,2054,Rank 2,22,"Heal your target for 
+445 to 
+507.",Healing,Utility,0,,205 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=2055,
+"Discipline, Holy",Ability,Heal,6063,2054,Rank 3,28,"Heal your target for 
+586 to 
+662.",Healing,Utility,0,,255 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=6063,
+"Discipline, Holy",Ability,Heal,6064,2054,Rank 4,34,"Heal your target for 
+734 to 
+827.",Healing,Utility,0,,305 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=6064,
+"Discipline, Holy",Ability,Lesser Heal,2050,2050,Rank 1,1,"Heal your target for 
+47 to 
+58.",Healing,Utility,0,,30 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=2050,
+"Discipline, Holy",Ability,Lesser Heal,2052,2050,Rank 2,4,"Heal your target for 
+76 to 
+91.",Healing,Utility,0,,45 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=2052,
+"Discipline, Holy",Ability,Lesser Heal,2053,2050,Rank 3,10,"Heal your target for 
+143 to 
+165.",Healing,Utility,0,,75 Mana,,Cooldown,"FILLER, HEAL_SINGLE",https://www.wowhead.com/tbc/spell=2053,
+"Discipline, Holy",Ability,Power Word: Shield,17,17,Rank 1,6,"Draws on the soul of the party member to shield them, absorbing 
+48 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,45 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=17,
+"Discipline, Holy",Ability,Power Word: Shield,592,17,Rank 2,12,"Draws on the soul of the party member to shield them, absorbing 
+94 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,80 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=592,
+"Discipline, Holy",Ability,Power Word: Shield,600,17,Rank 3,18,"Draws on the soul of the party member to shield them, absorbing 
+166 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,130 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=600,
+"Discipline, Holy",Ability,Power Word: Shield,3747,17,Rank 4,24,"Draws on the soul of the party member to shield them, absorbing 
+244 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,175 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=3747,
+"Discipline, Holy",Ability,Power Word: Shield,6065,17,Rank 5,30,"Draws on the soul of the party member to shield them, absorbing 
+313 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,210 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=6065,
+"Discipline, Holy",Ability,Power Word: Shield,6066,17,Rank 6,36,"Draws on the soul of the party member to shield them, absorbing 
+394 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,250 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=6066,
+"Discipline, Holy",Ability,Power Word: Shield,10898,17,Rank 7,42,"Draws on the soul of the party member to shield them, absorbing 
+499 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,300 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10898,
+"Discipline, Holy",Ability,Power Word: Shield,10899,17,Rank 8,48,"Draws on the soul of the party member to shield them, absorbing 
+622 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,355 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10899,
+"Discipline, Holy",Ability,Power Word: Shield,10900,17,Rank 9,54,"Draws on the soul of the party member to shield them, absorbing 
+783 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,425 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10900,
+"Discipline, Holy",Ability,Power Word: Shield,10901,17,Rank 10,60,"Draws on the soul of the party member to shield them, absorbing 
+964 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,500 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=10901,
+"Discipline, Holy",Ability,Power Word: Shield,25217,17,Rank 11,65,"Draws on the soul of the party member to shield them, absorbing 
+1144 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,540 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=25217,
+"Discipline, Holy",Ability,Power Word: Shield,25218,17,Rank 12,70,"Draws on the soul of the party member to shield them, absorbing 
+1265 damage. Lasts 30 sec. While the shield holds, spellcasting will not be interrupted by damage. Once shielded, the target cannot be shielded again for 15 sec.",Defensive,Utility,4,30,600 Mana,6788,Cooldown + aura,"EXTERNAL_DEFENSIVE, HAS_BUFF, HEAL, HEAL_SINGLE, ROTATIONAL",https://www.wowhead.com/tbc/spell=25218,
+"Discipline, Holy",Ability,Prayer of Healing,596,596,Rank 1,30,"A powerful prayer heals party members within 30 yards for 
+312 to 
+333.",Healing,Utility,0,,410 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=596,
+"Discipline, Holy",Ability,Prayer of Healing,996,596,Rank 2,40,"A powerful prayer heals party members within 30 yards for 
+458 to 
+487.",Healing,Utility,0,,560 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=996,
+"Discipline, Holy",Ability,Prayer of Healing,10960,596,Rank 3,50,"A powerful prayer heals party members within 30 yards for 
+675 to 
+713.",Healing,Utility,0,,770 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=10960,
+"Discipline, Holy",Ability,Prayer of Healing,10961,596,Rank 4,60,"A powerful prayer heals party members within 30 yards for 
+960 to 
+1013.",Healing,Utility,0,,1030 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=10961,
+"Discipline, Holy",Ability,Prayer of Healing,25308,596,Rank 5,68,"A powerful prayer heals party members within 30 yards for 
+1251 to 
+1322.",Healing,Utility,0,,1255 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=25308,
+"Discipline, Holy",Ability,Prayer of Healing,25316,596,Rank 6,60,"A powerful prayer heals party members within 30 yards for 
+1019 to 
+1076.",Healing,Utility,0,,1070 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=25316,
+"Discipline, Holy",Ability,Smite,585,585,Rank 1,1,"Smite an enemy for 
+15 to 
+20 Holy damage.",Offensive,Main,0,,20 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=585,
+"Discipline, Holy",Ability,Smite,591,585,Rank 2,6,"Smite an enemy for 
+28 to 
+34 Holy damage.",Offensive,Main,0,,30 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=591,
+"Discipline, Holy",Ability,Smite,598,585,Rank 3,14,"Smite an enemy for 
+58 to 
+67 Holy damage.",Offensive,Main,0,,60 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=598,
+"Discipline, Holy",Ability,Smite,984,585,Rank 4,22,"Smite an enemy for 
+97 to 
+112 Holy damage.",Offensive,Main,0,,95 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=984,
+"Discipline, Holy",Ability,Smite,1004,585,Rank 5,30,"Smite an enemy for 
+158 to 
+178 Holy damage.",Offensive,Main,0,,140 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=1004,
+"Discipline, Holy",Ability,Smite,6060,585,Rank 6,38,"Smite an enemy for 
+222 to 
+250 Holy damage.",Offensive,Main,0,,185 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=6060,
+"Discipline, Holy",Ability,Smite,10933,585,Rank 7,46,"Smite an enemy for 
+298 to 
+335 Holy damage.",Offensive,Main,0,,230 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10933,
+"Discipline, Holy",Ability,Smite,10934,585,Rank 8,54,"Smite an enemy for 
+384 to 
+429 Holy damage.",Offensive,Main,0,,280 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=10934,
+"Discipline, Holy",Ability,Smite,25363,585,Rank 9,61,"Smite an enemy for 
+422 to 
+470 Holy damage.",Offensive,Main,0,,300 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=25363,
+"Discipline, Holy",Ability,Smite,25364,585,Rank 10,69,"Smite an enemy for 
+549 to 
+616 Holy damage.",Offensive,Main,0,,385 Mana,,Cooldown,"DPS, FILLER, PVE",https://www.wowhead.com/tbc/spell=25364,
+"Discipline, Holy",Talent Ability,Holy Nova,15430,15237,Rank 2,28,"Causes an explosion of holy light around the caster, causing 
+52 to 
+61 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+89 to 
+101. These effects cause no threat.",Healing,Utility,0,,290 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=15430,Talent-required
+"Discipline, Holy",Talent Ability,Holy Nova,15431,15237,Rank 3,36,"Causes an explosion of holy light around the caster, causing 
+79 to 
+92 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+124 to 
+143. These effects cause no threat.",Healing,Utility,0,,400 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=15431,Talent-required
+"Discipline, Holy",Talent Ability,Holy Nova,27799,15237,Rank 4,44,"Causes an explosion of holy light around the caster, causing 
+110 to 
+127 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+165 to 
+192. These effects cause no threat.",Healing,Utility,0,,520 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=27799,Talent-required
+"Discipline, Holy",Talent Ability,Holy Nova,27800,15237,Rank 5,52,"Causes an explosion of holy light around the caster, causing 
+146 to 
+168 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+239 to 
+276. These effects cause no threat.",Healing,Utility,0,,635 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=27800,Talent-required
+"Discipline, Holy",Talent Ability,Holy Nova,27801,15237,Rank 6,60,"Causes an explosion of holy light around the caster, causing 
+188 to 
+217 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+307 to 
+356. These effects cause no threat.",Healing,Utility,0,,750 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=27801,Talent-required
+Holy,Talent,Blessed Recovery,27811,27811,Rank 1/3,,"After being struck by a melee or ranged critical hit, heal 8% of the damage taken over 6 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27811,Talent: Blessed Recovery; tree row 3
+Holy,Talent,Blessed Recovery,27815,27811,Rank 2/3,,"After being struck by a melee or ranged critical hit, heal 16% of the damage taken over 6 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27815,Talent: Blessed Recovery; tree row 3
+Holy,Talent,Blessed Recovery,27816,27811,Rank 3/3,,"After being struck by a melee or ranged critical hit, heal 25% of the damage taken over 6 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27816,Talent: Blessed Recovery; tree row 3
+Holy,Talent,Blessed Resilience,33142,33142,Rank 1/3,,Critical hits made against you have a 20% chance to prevent you from being critically hit again for 6 sec.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33142,Talent: Blessed Resilience; tree row 7
+Holy,Talent,Blessed Resilience,33145,33142,Rank 2/3,,Critical hits made against you have a 40% chance to prevent you from being critically hit again for 6 sec.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33145,Talent: Blessed Resilience; tree row 7
+Holy,Talent,Blessed Resilience,33146,33142,Rank 3/3,,Critical hits made against you have a 60% chance to prevent you from being critically hit again for 6 sec.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33146,Talent: Blessed Resilience; tree row 7
+Holy,Talent Ability,Circle of Healing,34861,34861,Rank 1/1,,"Heals friendly target and that target's party members within 15 yards of the target for 
+250 to 
+274.",Healing,Utility,0,,300 Mana,,Cooldown,"FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=34861,Talent-required | Talent: Circle of Healing
+Holy,Talent Ability,Circle of Healing,34863,34861,Rank 2,56,"Heals friendly target and that target's party members within 15 yards of the target for 
+292 to 
+323.",Healing,Utility,0,,337 Mana,,Cooldown,"FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=34863,Talent-required
+Holy,Talent Ability,Circle of Healing,34864,34861,Rank 3,60,"Heals friendly target and that target's party members within 15 yards of the target for 
+332 to 
+367.",Healing,Utility,0,,375 Mana,,Cooldown,"FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=34864,Talent-required
+Holy,Talent Ability,Circle of Healing,34865,34861,Rank 4,65,"Heals friendly target and that target's party members within 15 yards of the target for 
+376 to 
+415.",Healing,Utility,0,,412 Mana,,Cooldown,"FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=34865,Talent-required
+Holy,Talent Ability,Circle of Healing,34866,34861,Rank 5,70,"Heals friendly target and that target's party members within 15 yards of the target for 
+409 to 
+451.",Healing,Utility,0,,450 Mana,,Cooldown,"FILLER, HEAL, HEAL_AOE, PVE",https://www.wowhead.com/tbc/spell=34866,Talent-required
+Holy,Talent,Divine Fury,18530,18530,Rank 1/5,,"Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by 0.1 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18530,Talent: Divine Fury; tree row 2
+Holy,Talent,Divine Fury,18531,18530,Rank 2/5,,"Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by 0.2 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18531,Talent: Divine Fury; tree row 2
+Holy,Talent,Divine Fury,18533,18530,Rank 3/5,,"Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by 0.3 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18533,Talent: Divine Fury; tree row 2
+Holy,Talent,Divine Fury,18534,18530,Rank 4/5,,"Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by 0.4 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18534,Talent: Divine Fury; tree row 2
+Holy,Talent,Divine Fury,18535,18530,Rank 5/5,,"Reduces the casting time of your Smite, Holy Fire, Heal and Greater Heal spells by 0.5 sec.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18535,Talent: Divine Fury; tree row 2
+Holy,Talent,Empowered Healing,33158,33158,Rank 1/5,,Your Greater Heal spell gains an additional 4% and your Flash Heal and Binding Heal gain an additional 2% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33158,Talent: Empowered Healing; tree row 8
+Holy,Talent,Empowered Healing,33159,33158,Rank 2/5,,Your Greater Heal spell gains an additional 8% and your Flash Heal and Binding Heal gain an additional 4% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33159,Talent: Empowered Healing; tree row 8
+Holy,Talent,Empowered Healing,33160,33158,Rank 3/5,,Your Greater Heal spell gains an additional 12% and your Flash Heal and Binding Heal gain an additional 6% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33160,Talent: Empowered Healing; tree row 8
+Holy,Talent,Empowered Healing,33161,33158,Rank 4/5,,Your Greater Heal spell gains an additional 16% and your Flash Heal and Binding Heal gain an additional 8% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33161,Talent: Empowered Healing; tree row 8
+Holy,Talent,Empowered Healing,33162,33158,Rank 5/5,,Your Greater Heal spell gains an additional 20% and your Flash Heal and Binding Heal gain an additional 10% of your bonus healing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33162,Talent: Empowered Healing; tree row 8
+Holy,Talent,Healing Focus,14913,14913,Rank 1/2,,Gives you a 35% chance to avoid interruption caused by damage while casting any healing spell.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14913,Talent: Healing Focus; tree row 1
+Holy,Talent,Healing Focus,15012,14913,Rank 2/2,,Gives you a 70% chance to avoid interruption caused by damage while casting any healing spell.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15012,Talent: Healing Focus; tree row 1
+Holy,Talent,Healing Prayers,14911,14911,Rank 1/2,,Reduces the mana cost of your Prayer of Healing and Prayer of Mending spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14911,Talent: Healing Prayers; tree row 5
+Holy,Talent,Healing Prayers,15018,14911,Rank 2/2,,Reduces the mana cost of your Prayer of Healing and Prayer of Mending spell by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15018,Talent: Healing Prayers; tree row 5
+Holy,Talent,Holy Concentration,34753,34753,Rank 1/3,,"Gives you a 2% chance to enter a Clearcasting state after casting any Flash Heal, Binding Heal, or Greater Heal spell. The Clearcasting state reduces the mana cost of your next Flash Heal, Binding Heal, or Greater Heal spell by 100%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34753,Talent: Holy Concentration; tree row 7
+Holy,Talent,Holy Concentration,34859,34753,Rank 2/3,,"Gives you a 4% chance to enter a Clearcasting state after casting any Flash Heal, Binding Heal, or Greater Heal spell. The Clearcasting state reduces the mana cost of your next Flash Heal, Binding Heal, or Greater Heal spell by 100%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34859,Talent: Holy Concentration; tree row 7
+Holy,Talent,Holy Concentration,34860,34753,Rank 3/3,,"Gives you a 6% chance to enter a Clearcasting state after casting any Flash Heal, Binding Heal, or Greater Heal spell. The Clearcasting state reduces the mana cost of your next Flash Heal, Binding Heal, or Greater Heal spell by 100%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=34860,Talent: Holy Concentration; tree row 7
+Holy,Talent Ability,Holy Nova,15237,15237,Rank 1/1,,"Causes an explosion of holy light around the caster, causing 
+29 to 
+34 Holy damage to all enemy targets within 10 yards and healing all party members within 10 yards for 
+54 to 
+63. These effects cause no threat.",Healing,Utility,0,,185 Mana,,Cooldown,"AOE, FILLER, HEAL, HEAL_AOE",https://www.wowhead.com/tbc/spell=15237,Talent-required | Talent: Holy Nova
+Holy,Talent,Holy Reach,27789,27789,Rank 1/2,,"Increases the range of your Smite and Holy Fire spells and the radius of your Prayer of Healing, Holy Nova and Circle of Healing spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27789,Talent: Holy Reach; tree row 4
+Holy,Talent,Holy Reach,27790,27789,Rank 2/2,,"Increases the range of your Smite and Holy Fire spells and the radius of your Prayer of Healing, Holy Nova and Circle of Healing spells by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27790,Talent: Holy Reach; tree row 4
+Holy,Talent,Holy Specialization,14889,14889,Rank 1/5,,Increases the critical effect chance of your Holy spells by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14889,Talent: Holy Specialization; tree row 1
+Holy,Talent,Holy Specialization,15008,14889,Rank 2/5,,Increases the critical effect chance of your Holy spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15008,Talent: Holy Specialization; tree row 1
+Holy,Talent,Holy Specialization,15009,14889,Rank 3/5,,Increases the critical effect chance of your Holy spells by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15009,Talent: Holy Specialization; tree row 1
+Holy,Talent,Holy Specialization,15010,14889,Rank 4/5,,Increases the critical effect chance of your Holy spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15010,Talent: Holy Specialization; tree row 1
+Holy,Talent,Holy Specialization,15011,14889,Rank 5/5,,Increases the critical effect chance of your Holy spells by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15011,Talent: Holy Specialization; tree row 1
+Holy,Talent,Improved Healing,14912,14912,Rank 1/3,,"Reduces the mana cost of your Lesser Heal, Heal, and Greater Heal spells by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14912,Talent: Improved Healing; tree row 4
+Holy,Talent,Improved Healing,15013,14912,Rank 2/3,,"Reduces the mana cost of your Lesser Heal, Heal, and Greater Heal spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15013,Talent: Improved Healing; tree row 4
+Holy,Talent,Improved Healing,15014,14912,Rank 3/3,,"Reduces the mana cost of your Lesser Heal, Heal, and Greater Heal spells by 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15014,Talent: Improved Healing; tree row 4
+Holy,Talent,Improved Renew,14908,14908,Rank 1/3,,Increases the amount healed by your Renew spell by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14908,Talent: Improved Renew; tree row 1
+Holy,Talent,Improved Renew,15020,14908,Rank 2/3,,Increases the amount healed by your Renew spell by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15020,Talent: Improved Renew; tree row 1
+Holy,Talent,Improved Renew,17191,14908,Rank 3/3,,Increases the amount healed by your Renew spell by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17191,Talent: Improved Renew; tree row 1
+Holy,Talent,Inspiration,14892,14892,Rank 1/3,,"Increases your target's armor by 8% for 15 sec after getting a critical effect from your Flash Heal, Heal, Greater Heal, Binding Heal, Prayer of Healing, or Circle of Healing spell.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14892,Talent: Inspiration; tree row 3
+Holy,Talent,Inspiration,15362,14892,Rank 2/3,,"Increases your target's armor by 16% for 15 sec after getting a critical effect from your Flash Heal, Heal, Greater Heal, Binding Heal, Prayer of Healing, or Circle of Healing spell.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15362,Talent: Inspiration; tree row 3
+Holy,Talent,Inspiration,15363,14892,Rank 3/3,,"Increases your target's armor by 25% for 15 sec after getting a critical effect from your Flash Heal, Heal, Greater Heal, Binding Heal, Prayer of Healing, or Circle of Healing spell.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15363,Talent: Inspiration; tree row 3
+Holy,Talent Ability,Lightwell,724,724,Rank 1/1,,Creates a Holy Lightwell. Members of your raid or party can click the Lightwell to restore 801 health over 6 sec. Any damage taken will cancel the effect. Lightwell lasts for 3 min or 5 charges.,Healing,Utility,360,180,225 Mana,,Cooldown,"HEAL, HEAL_AOE, RAID_DEFENSIVE",https://www.wowhead.com/tbc/spell=724,Talent-required | Talent: Lightwell
+Holy,Talent Ability,Lightwell,27870,724,Rank 2,50,Creates a Holy Lightwell. Members of your raid or party can click the Lightwell to restore 1164 health over 6 sec. Any damage taken will cancel the effect. Lightwell lasts for 3 min or 5 charges.,Healing,Utility,360,180,295 Mana,,Cooldown,"HEAL, HEAL_AOE, RAID_DEFENSIVE",https://www.wowhead.com/tbc/spell=27870,Talent-required
+Holy,Talent Ability,Lightwell,27871,724,Rank 3,60,Creates a Holy Lightwell. Members of your raid or party can click the Lightwell to restore 1599 health over 6 sec. Any damage taken will cancel the effect. Lightwell lasts for 3 min or 5 charges.,Healing,Utility,360,180,365 Mana,,Cooldown,"HEAL, HEAL_AOE, RAID_DEFENSIVE",https://www.wowhead.com/tbc/spell=27871,Talent-required
+Holy,Talent Ability,Lightwell,28275,724,Rank 4,70,Creates a Holy Lightwell. Members of your raid or party can click the Lightwell to restore 2361 health over 6 sec. Any damage taken will cancel the effect. Lightwell lasts for 3 min or 5 charges.,Healing,Utility,360,180,445 Mana,,Cooldown,"HEAL, HEAL_AOE, RAID_DEFENSIVE",https://www.wowhead.com/tbc/spell=28275,Talent-required
+Holy,Talent,Searing Light,14909,14909,Rank 1/2,,Increases the damage of your Smite and Holy Fire spells by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14909,Talent: Searing Light; tree row 4
+Holy,Talent,Searing Light,15017,14909,Rank 2/2,,Increases the damage of your Smite and Holy Fire spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15017,Talent: Searing Light; tree row 4
+Holy,Talent,Spell Warding,27900,27900,Rank 1/5,,Reduces all spell damage taken by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27900,Talent: Spell Warding; tree row 2
+Holy,Talent,Spell Warding,27901,27900,Rank 2/5,,Reduces all spell damage taken by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27901,Talent: Spell Warding; tree row 2
+Holy,Talent,Spell Warding,27902,27900,Rank 3/5,,Reduces all spell damage taken by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27902,Talent: Spell Warding; tree row 2
+Holy,Talent,Spell Warding,27903,27900,Rank 4/5,,Reduces all spell damage taken by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27903,Talent: Spell Warding; tree row 2
+Holy,Talent,Spell Warding,27904,27900,Rank 5/5,,Reduces all spell damage taken by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27904,Talent: Spell Warding; tree row 2
+Holy,Talent,Spirit of Redemption,20711,20711,Rank 1/1,,"Increases total Spirit by 5% and upon death, the priest becomes the Spirit of Redemption for 15 sec. The Spirit of Redemption cannot move, attack, be attacked or targeted by any spells or effects. While in this form the priest can cast any healing spell free of cost. When the effect ends, the priest dies.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=20711,Talent: Spirit of Redemption; tree row 5
+Holy,Talent,Spiritual Guidance,14901,14901,Rank 1/5,,Increases spell damage and healing by up to 5% of your total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14901,Talent: Spiritual Guidance; tree row 5
+Holy,Talent,Spiritual Guidance,15028,14901,Rank 2/5,,Increases spell damage and healing by up to 10% of your total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15028,Talent: Spiritual Guidance; tree row 5
+Holy,Talent,Spiritual Guidance,15029,14901,Rank 3/5,,Increases spell damage and healing by up to 15% of your total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15029,Talent: Spiritual Guidance; tree row 5
+Holy,Talent,Spiritual Guidance,15030,14901,Rank 4/5,,Increases spell damage and healing by up to 20% of your total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15030,Talent: Spiritual Guidance; tree row 5
+Holy,Talent,Spiritual Guidance,15031,14901,Rank 5/5,,Increases spell damage and healing by up to 25% of your total Spirit.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15031,Talent: Spiritual Guidance; tree row 5
+Holy,Talent,Spiritual Healing,14898,14898,Rank 1/5,,Increases the amount healed by your healing spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14898,Talent: Spiritual Healing; tree row 6
+Holy,Talent,Spiritual Healing,15349,14898,Rank 2/5,,Increases the amount healed by your healing spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15349,Talent: Spiritual Healing; tree row 6
+Holy,Talent,Spiritual Healing,15354,14898,Rank 3/5,,Increases the amount healed by your healing spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15354,Talent: Spiritual Healing; tree row 6
+Holy,Talent,Spiritual Healing,15355,14898,Rank 4/5,,Increases the amount healed by your healing spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15355,Talent: Spiritual Healing; tree row 6
+Holy,Talent,Spiritual Healing,15356,14898,Rank 5/5,,Increases the amount healed by your healing spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15356,Talent: Spiritual Healing; tree row 6
+Holy,Talent,Surge of Light,33150,33150,Rank 1/2,,"Your spell criticals have a 25% chance to cause your next Smite spell to be instant cast, cost no mana but be incapable of a critical hit. This effect lasts 10 sec.",Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33150,Talent: Surge of Light; tree row 6
+Holy,Talent,Surge of Light,33154,33150,Rank 2/2,,"Your spell criticals have a 50% chance to cause your next Smite spell to be instant cast, cost no mana but be incapable of a critical hit. This effect lasts 10 sec.",Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33154,Talent: Surge of Light; tree row 6
+"Holy, Discipline",Ability,Binding Heal,32546,32546,,64,"Heals a friendly target and the caster for 
+1053 to 
+1350. Low threat.",Healing,Utility,0,,705 Mana,,Cooldown,"FILLER, HEAL, HEAL_SINGLE, PVE_PVP",https://www.wowhead.com/tbc/spell=32546,
+"Holy, Discipline",Ability,Prayer of Mending,33076,33076,,68,"Places a spell on the target that heals them for 800 the next time they take damage. When the heal occurs, Prayer of Mending jumps to a raid member within 20 yards. Jumps up to 5 times and lasts 30 sec after each jump. This spell can only be placed on one target at a time.",Healing,Utility,10,30,390 Mana,41635,Cooldown + aura,"HEAL, HEAL_SINGLE, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=33076,
+"Holy, Discipline",Ability,Renew,139,139,Rank 1,8,Heals the target for 45 over 15 sec.,Healing,Utility,0,15,30 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=139,
+"Holy, Discipline",Ability,Renew,6074,139,Rank 2,14,Heals the target for 100 over 15 sec.,Healing,Utility,0,15,65 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6074,
+"Holy, Discipline",Ability,Renew,6075,139,Rank 3,20,Heals the target for 175 over 15 sec.,Healing,Utility,0,15,105 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6075,
+"Holy, Discipline",Ability,Renew,6076,139,Rank 4,26,Heals the target for 245 over 15 sec.,Healing,Utility,0,15,140 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6076,
+"Holy, Discipline",Ability,Renew,6077,139,Rank 5,32,Heals the target for 315 over 15 sec.,Healing,Utility,0,15,170 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6077,
+"Holy, Discipline",Ability,Renew,6078,139,Rank 6,38,Heals the target for 400 over 15 sec.,Healing,Utility,0,15,205 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6078,
+"Holy, Discipline",Ability,Renew,10927,139,Rank 7,44,Heals the target for 510 over 15 sec.,Healing,Utility,0,15,250 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10927,
+"Holy, Discipline",Ability,Renew,10928,139,Rank 8,50,Heals the target for 650 over 15 sec.,Healing,Utility,0,15,305 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10928,
+"Holy, Discipline",Ability,Renew,10929,139,Rank 9,56,Heals the target for 810 over 15 sec.,Healing,Utility,0,15,365 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10929,
+"Holy, Discipline",Ability,Renew,25221,139,Rank 10,65,Heals the target for 1010 over 15 sec.,Healing,Utility,0,15,430 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25221,
+"Holy, Discipline",Ability,Renew,25222,139,Rank 11,70,Heals the target for 1110 over 15 sec.,Healing,Utility,0,15,450 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25222,
+"Holy, Discipline",Ability,Renew,25315,139,Rank 12,60,Heals the target for 970 over 15 sec.,Healing,Utility,0,15,410 Mana,,Cooldown,"HEAL, HEAL_SINGLE, HOT, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25315,
+Shadow,Ability,Mind Blast,8092,8092,Rank 1,10,"Blasts the target for 
+42 to 
+46 Shadow damage.",Offensive,Main,8,,50 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8092,
+Shadow,Ability,Mind Blast,8102,8092,Rank 2,16,"Blasts the target for 
+76 to 
+83 Shadow damage.",Offensive,Main,8,,80 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8102,
+Shadow,Ability,Mind Blast,8103,8092,Rank 3,22,"Blasts the target for 
+117 to 
+126 Shadow damage.",Offensive,Main,8,,110 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8103,
+Shadow,Ability,Mind Blast,8104,8092,Rank 4,28,"Blasts the target for 
+174 to 
+184 Shadow damage.",Offensive,Main,8,,150 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8104,
+Shadow,Ability,Mind Blast,8105,8092,Rank 5,34,"Blasts the target for 
+225 to 
+239 Shadow damage.",Offensive,Main,8,,185 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8105,
+Shadow,Ability,Mind Blast,8106,8092,Rank 6,40,"Blasts the target for 
+288 to 
+307 Shadow damage.",Offensive,Main,8,,225 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8106,
+Shadow,Ability,Mind Blast,10945,8092,Rank 7,46,"Blasts the target for 
+356 to 
+377 Shadow damage.",Offensive,Main,8,,265 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10945,
+Shadow,Ability,Mind Blast,10946,8092,Rank 8,52,"Blasts the target for 
+437 to 
+461 Shadow damage.",Offensive,Main,8,,310 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10946,
+Shadow,Ability,Mind Blast,10947,8092,Rank 9,58,"Blasts the target for 
+516 to 
+544 Shadow damage.",Offensive,Main,8,,350 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10947,
+Shadow,Ability,Mind Blast,25372,8092,Rank 10,63,"Blasts the target for 
+571 to 
+602 Shadow damage.",Offensive,Main,8,,380 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25372,
+Shadow,Ability,Mind Blast,25375,8092,Rank 11,69,"Blasts the target for 
+711 to 
+752 Shadow damage.",Offensive,Main,8,,450 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25375,
+Shadow,Ability,Shadow Word: Death,32379,32996,Rank 1,62,"A word of dark binding that inflicts 450 to 522 Shadow damage to the target. If the target is not killed by Shadow Word: Death, the caster takes damage equal to the damage inflicted upon the target.",Offensive,Main,12,,243 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=32379,
+Shadow,Ability,Shadow Word: Death,32996,32996,Rank 2,70,"A word of dark binding that inflicts 572 to 664 Shadow damage to the target. If the target is not killed by Shadow Word: Death, the caster takes damage equal to the damage inflicted upon the target.",Offensive,Main,12,,309 Mana,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=32996,
+Shadow,Ability,Shadow Word: Pain,589,589,Rank 1,4,A word of darkness that causes 30 Shadow damage over 18 sec.,Offensive,Main,0,18,25 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=589,
+Shadow,Ability,Shadow Word: Pain,594,589,Rank 2,10,A word of darkness that causes 66 Shadow damage over 18 sec.,Offensive,Main,0,18,50 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=594,
+Shadow,Ability,Shadow Word: Pain,970,589,Rank 3,18,A word of darkness that causes 132 Shadow damage over 18 sec.,Offensive,Main,0,18,95 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=970,
+Shadow,Ability,Shadow Word: Pain,992,589,Rank 4,26,A word of darkness that causes 234 Shadow damage over 18 sec.,Offensive,Main,0,18,155 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=992,
+Shadow,Ability,Shadow Word: Pain,2767,589,Rank 5,34,A word of darkness that causes 366 Shadow damage over 18 sec.,Offensive,Main,0,18,230 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2767,
+Shadow,Ability,Shadow Word: Pain,10892,589,Rank 6,42,A word of darkness that causes 510 Shadow damage over 18 sec.,Offensive,Main,0,18,305 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10892,
+Shadow,Ability,Shadow Word: Pain,10893,589,Rank 7,50,A word of darkness that causes 672 Shadow damage over 18 sec.,Offensive,Main,0,18,385 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10893,
+Shadow,Ability,Shadow Word: Pain,10894,589,Rank 8,58,A word of darkness that causes 852 Shadow damage over 18 sec.,Offensive,Main,0,18,470 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=10894,
+Shadow,Ability,Shadow Word: Pain,25367,589,Rank 9,65,A word of darkness that causes 1002 Shadow damage over 18 sec.,Offensive,Main,0,18,510 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25367,
+Shadow,Ability,Shadow Word: Pain,25368,589,Rank 10,70,A word of darkness that causes 1236 Shadow damage over 18 sec.,Offensive,Main,0,18,575 Mana,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25368,
+Shadow,Talent,Blackout,15268,15268,Rank 1/5,,Gives your Shadow damage spells a 2% chance to stun the target for 3 sec.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15268,Talent: Blackout; tree row 1
+Shadow,Talent,Blackout,15323,15268,Rank 2/5,,Gives your Shadow damage spells a 4% chance to stun the target for 3 sec.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15323,Talent: Blackout; tree row 1
+Shadow,Talent,Blackout,15324,15268,Rank 3/5,,Gives your Shadow damage spells a 6% chance to stun the target for 3 sec.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15324,Talent: Blackout; tree row 1
+Shadow,Talent,Blackout,15325,15268,Rank 4/5,,Gives your Shadow damage spells a 8% chance to stun the target for 3 sec.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15325,Talent: Blackout; tree row 1
+Shadow,Talent,Blackout,15326,15268,Rank 5/5,,Gives your Shadow damage spells a 10% chance to stun the target for 3 sec.,Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15326,Talent: Blackout; tree row 1
+Shadow,Talent,Darkness,15259,15259,Rank 1/5,,Increases your Shadow spell damage by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15259,Talent: Darkness; tree row 6
+Shadow,Talent,Darkness,15307,15259,Rank 2/5,,Increases your Shadow spell damage by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15307,Talent: Darkness; tree row 6
+Shadow,Talent,Darkness,15308,15259,Rank 3/5,,Increases your Shadow spell damage by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15308,Talent: Darkness; tree row 6
+Shadow,Talent,Darkness,15309,15259,Rank 4/5,,Increases your Shadow spell damage by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15309,Talent: Darkness; tree row 6
+Shadow,Talent,Darkness,15310,15259,Rank 5/5,,Increases your Shadow spell damage by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15310,Talent: Darkness; tree row 6
+Shadow,Talent,Focused Mind,33213,33213,Rank 1/3,,"Reduces the mana cost of your Mind Blast, Mind Control and Mind Flay spells by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33213,Talent: Focused Mind; tree row 5
+Shadow,Talent,Focused Mind,33214,33213,Rank 2/3,,"Reduces the mana cost of your Mind Blast, Mind Control and Mind Flay spells by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33214,Talent: Focused Mind; tree row 5
+Shadow,Talent,Focused Mind,33215,33213,Rank 3/3,,"Reduces the mana cost of your Mind Blast, Mind Control and Mind Flay spells by 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33215,Talent: Focused Mind; tree row 5
+Shadow,Talent,Improved Fade,15274,15274,Rank 1/2,,Decreases the cooldown of your Fade ability by 3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15274,Talent: Improved Fade; tree row 4
+Shadow,Talent,Improved Fade,15311,15274,Rank 2/2,,Decreases the cooldown of your Fade ability by 6 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15311,Talent: Improved Fade; tree row 4
+Shadow,Talent,Improved Mind Blast,15273,15273,Rank 1/5,,Reduces the cooldown of your Mind Blast spell by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15273,Talent: Improved Mind Blast; tree row 3
+Shadow,Talent,Improved Mind Blast,15312,15273,Rank 2/5,,Reduces the cooldown of your Mind Blast spell by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15312,Talent: Improved Mind Blast; tree row 3
+Shadow,Talent,Improved Mind Blast,15313,15273,Rank 3/5,,Reduces the cooldown of your Mind Blast spell by 1.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15313,Talent: Improved Mind Blast; tree row 3
+Shadow,Talent,Improved Mind Blast,15314,15273,Rank 4/5,,Reduces the cooldown of your Mind Blast spell by 2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15314,Talent: Improved Mind Blast; tree row 3
+Shadow,Talent,Improved Mind Blast,15316,15273,Rank 5/5,,Reduces the cooldown of your Mind Blast spell by 2.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15316,Talent: Improved Mind Blast; tree row 3
+Shadow,Talent,Improved Psychic Scream,15392,15392,Rank 1/2,,Reduces the cooldown of your Psychic Scream spell by 2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15392,Talent: Improved Psychic Scream; tree row 3
+Shadow,Talent,Improved Psychic Scream,15448,15392,Rank 2/2,,Reduces the cooldown of your Psychic Scream spell by 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15448,Talent: Improved Psychic Scream; tree row 3
+Shadow,Talent,Improved Shadow Word: Pain,15275,15275,Rank 1/2,,Increases the duration of your Shadow Word: Pain spell by 3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15275,Talent: Improved Shadow Word: Pain; tree row 2
+Shadow,Talent,Improved Shadow Word: Pain,15317,15275,Rank 2/2,,Increases the duration of your Shadow Word: Pain spell by 6 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15317,Talent: Improved Shadow Word: Pain; tree row 2
+Shadow,Talent,Improved Vampiric Embrace,27839,27839,Rank 1/2,,Increases the percentage healed by Vampiric Embrace by an additional 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27839,Talent: Improved Vampiric Embrace; tree row 5
+Shadow,Talent,Improved Vampiric Embrace,27840,27839,Rank 2/2,,Increases the percentage healed by Vampiric Embrace by an additional 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=27840,Talent: Improved Vampiric Embrace; tree row 5
+Shadow,Talent Ability,Mind Flay,15407,15407,Rank 1/1,,"Assault the target's mind with Shadow energy, causing 75 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,45 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=15407,Talent-required | Talent: Mind Flay
+Shadow,Talent Ability,Mind Flay,17311,15407,Rank 2,28,"Assault the target's mind with Shadow energy, causing 126 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,70 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17311,Talent-required
+Shadow,Talent Ability,Mind Flay,17312,15407,Rank 3,36,"Assault the target's mind with Shadow energy, causing 186 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,100 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17312,Talent-required
+Shadow,Talent Ability,Mind Flay,17313,15407,Rank 4,44,"Assault the target's mind with Shadow energy, causing 261 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,135 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17313,Talent-required
+Shadow,Talent Ability,Mind Flay,17314,15407,Rank 5,52,"Assault the target's mind with Shadow energy, causing 330 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,165 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17314,Talent-required
+Shadow,Talent Ability,Mind Flay,18807,15407,Rank 6,60,"Assault the target's mind with Shadow energy, causing 426 Shadow damage over 3 sec and slowing their movement speed by 50%.",Crowd Control,Utility,0,3,205 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=18807,Talent-required
+Shadow,Talent Ability,Mind Flay,25387,15407,Rank 7,68,"Assault the target's mind with Shadow energy, causing 528 Shadow damage over 3 sec and slowing the target to 50% of their movement speed.",Crowd Control,Utility,0,3,230 Mana,,Cooldown,"CC_SOFT, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25387,Talent-required
+Shadow,Talent,Misery,33191,33191,Rank 1/5,,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target to take an additional 1% spell damage.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33191,Talent: Misery; tree row 8
+Shadow,Talent,Misery,33192,33191,Rank 2/5,,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target to take an additional 2% spell damage.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33192,Talent: Misery; tree row 8
+Shadow,Talent,Misery,33193,33191,Rank 3/5,,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target to take an additional 3% spell damage.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33193,Talent: Misery; tree row 8
+Shadow,Talent,Misery,33194,33191,Rank 4/5,,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target to take an additional 4% spell damage.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33194,Talent: Misery; tree row 8
+Shadow,Talent,Misery,33195,33191,Rank 5/5,,"Your Shadow Word: Pain, Mind Flay and Vampiric Touch spells also cause the target to take an additional 5% spell damage.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33195,Talent: Misery; tree row 8
+Shadow,Talent,Shadow Affinity,15272,15318,Rank 2/3,,Reduces the threat generated by your Shadow spells by 16%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15272,Talent: Shadow Affinity; tree row 2
+Shadow,Talent,Shadow Affinity,15318,15318,Rank 1/3,,Reduces the threat generated by your Shadow spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15318,Talent: Shadow Affinity; tree row 2
+Shadow,Talent,Shadow Affinity,15320,15318,Rank 3/3,,Reduces the threat generated by your Shadow spells by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15320,Talent: Shadow Affinity; tree row 2
+Shadow,Talent,Shadow Focus,15260,15260,Rank 1/5,,Reduces your target's chance to resist your Shadow spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15260,Talent: Shadow Focus; tree row 2
+Shadow,Talent,Shadow Focus,15327,15260,Rank 2/5,,Reduces your target's chance to resist your Shadow spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15327,Talent: Shadow Focus; tree row 2
+Shadow,Talent,Shadow Focus,15328,15260,Rank 3/5,,Reduces your target's chance to resist your Shadow spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15328,Talent: Shadow Focus; tree row 2
+Shadow,Talent,Shadow Focus,15329,15260,Rank 4/5,,Reduces your target's chance to resist your Shadow spells by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15329,Talent: Shadow Focus; tree row 2
+Shadow,Talent,Shadow Focus,15330,15260,Rank 5/5,,Reduces your target's chance to resist your Shadow spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15330,Talent: Shadow Focus; tree row 2
+Shadow,Talent,Shadow Power,33221,33221,Rank 1/5,,Increases the critical strike chance of your Mind Blast and Shadow Word: Death spells by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33221,Talent: Shadow Power; tree row 7
+Shadow,Talent,Shadow Power,33222,33221,Rank 2/5,,Increases the critical strike chance of your Mind Blast and Shadow Word: Death spells by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33222,Talent: Shadow Power; tree row 7
+Shadow,Talent,Shadow Power,33223,33221,Rank 3/5,,Increases the critical strike chance of your Mind Blast and Shadow Word: Death spells by 9%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33223,Talent: Shadow Power; tree row 7
+Shadow,Talent,Shadow Power,33224,33221,Rank 4/5,,Increases the critical strike chance of your Mind Blast and Shadow Word: Death spells by 12%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33224,Talent: Shadow Power; tree row 7
+Shadow,Talent,Shadow Power,33225,33221,Rank 5/5,,Increases the critical strike chance of your Mind Blast and Shadow Word: Death spells by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33225,Talent: Shadow Power; tree row 7
+Shadow,Talent,Shadow Reach,17322,17322,Rank 1/2,,Increases the range of your offensive Shadow spells by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17322,Talent: Shadow Reach; tree row 4
+Shadow,Talent,Shadow Reach,17323,17322,Rank 2/2,,Increases the range of your offensive Shadow spells by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=17323,Talent: Shadow Reach; tree row 4
+Shadow,Talent,Shadow Resilience,14910,14910,Rank 1/2,,Reduces the chance you'll be critically hit by all spells by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14910,Talent: Shadow Resilience; tree row 6
+Shadow,Talent,Shadow Resilience,33371,14910,Rank 2/2,,Reduces the chance you'll be critically hit by all spells by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=33371,Talent: Shadow Resilience; tree row 6
+Shadow,Talent,Shadow Weaving,15257,15257,Rank 1/5,,Your Shadow damage spells have a 20% chance to cause your target to be vulnerable to Shadow damage. This vulnerability increases the Shadow damage dealt to your target by 2% and lasts 15 sec. Stacks up to 5 times.,Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15257,Talent: Shadow Weaving; tree row 4
+Shadow,Talent,Shadow Weaving,15331,15257,Rank 2/5,,Your Shadow damage spells have a 40% chance to cause your target to be vulnerable to Shadow damage. This vulnerability increases the Shadow damage dealt to your target by 2% and lasts 15 sec. Stacks up to 5 times.,Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15331,Talent: Shadow Weaving; tree row 4
+Shadow,Talent,Shadow Weaving,15332,15257,Rank 3/5,,Your Shadow damage spells have a 60% chance to cause your target to be vulnerable to Shadow damage. This vulnerability increases the Shadow damage dealt to your target by 2% and lasts 15 sec. Stacks up to 5 times.,Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15332,Talent: Shadow Weaving; tree row 4
+Shadow,Talent,Shadow Weaving,15333,15257,Rank 4/5,,Your Shadow damage spells have a 80% chance to cause your target to be vulnerable to Shadow damage. This vulnerability increases the Shadow damage dealt to your target by 2% and lasts 15 sec. Stacks up to 5 times.,Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15333,Talent: Shadow Weaving; tree row 4
+Shadow,Talent,Shadow Weaving,15334,15257,Rank 5/5,,Your Shadow damage spells have a 100% chance to cause your target to be vulnerable to Shadow damage. This vulnerability increases the Shadow damage dealt to your target by 2% and lasts 15 sec. Stacks up to 5 times.,Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15334,Talent: Shadow Weaving; tree row 4
+Shadow,Talent Ability,Shadowform,15473,15473,Rank 1/1,,"Assume a Shadowform, increasing your Shadow damage by 15% and reducing Physical damage done to you by 15%. However, you may not cast Holy spells while in this form.",Form,Utility,1.5,,32% of base mana,,Cooldown,"DPS, MAJOR, SHAPESHIFT",https://www.wowhead.com/tbc/spell=15473,Talent-required | Talent: Shadowform
+Shadow,Talent Ability,Silence,15487,15487,Rank 1/1,,"Silences the target, preventing them from casting spells for 5 sec.",Interrupt,Utility,45,5,225 Mana,,Cooldown,"INTERRUPT, SILENCE",https://www.wowhead.com/tbc/spell=15487,Talent-required | Talent: Silence
+Shadow,Talent,Spirit Tap,15270,15270,Rank 1/5,,"Gives you a 20% chance to gain a 100% bonus to your Spirit after killing a target that yields experience or honor. For the duration, your mana will regenerate at a 50% rate while casting. Lasts 15 sec.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15270,Talent: Spirit Tap; tree row 1
+Shadow,Talent,Spirit Tap,15335,15270,Rank 2/5,,"Gives you a 40% chance to gain a 100% bonus to your Spirit after killing a target that yields experience or honor. For the duration, your mana will regenerate at a 50% rate while casting. Lasts 15 sec.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15335,Talent: Spirit Tap; tree row 1
+Shadow,Talent,Spirit Tap,15336,15270,Rank 3/5,,"Gives you a 60% chance to gain a 100% bonus to your Spirit after killing a target that yields experience or honor. For the duration, your mana will regenerate at a 50% rate while casting. Lasts 15 sec.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15336,Talent: Spirit Tap; tree row 1
+Shadow,Talent,Spirit Tap,15337,15270,Rank 4/5,,"Gives you a 80% chance to gain a 100% bonus to your Spirit after killing a target that yields experience or honor. For the duration, your mana will regenerate at a 50% rate while casting. Lasts 15 sec.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15337,Talent: Spirit Tap; tree row 1
+Shadow,Talent,Spirit Tap,15338,15270,Rank 5/5,,"Gives you a 100% chance to gain a 100% bonus to your Spirit after killing a target that yields experience or honor. For the duration, your mana will regenerate at a 50% rate while casting. Lasts 15 sec.",Talent Passive,Data only,,15,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=15338,Talent: Spirit Tap; tree row 1
+Shadow,Talent Ability,Vampiric Embrace,15286,15286,Rank 1/1,,Afflicts your target with Shadow energy that causes all party members to be healed for 15% of any Shadow spell damage you deal for 1 min.,Offensive,Main,10,60,2% of base mana,,Cooldown + aura,"DPS, HAS_DEBUFF, MAINTENANCE",https://www.wowhead.com/tbc/spell=15286,Talent-required | Talent: Vampiric Embrace
+Shadow,Talent Ability,Vampiric Touch,34914,34914,Rank 1/1,,Causes 450 Shadow damage over 15 sec to your target and causes all party members to gain mana equal to 5% of any Shadow spell damage you deal.,Resource,Main,0,15,325 Mana,,Cooldown,"DEBUFF, DPS, PVE, RESOURCE, ROTATIONAL",https://www.wowhead.com/tbc/spell=34914,Talent-required | Talent: Vampiric Touch
+Shadow,Talent Ability,Vampiric Touch,34916,34914,Rank 2,60,Causes 600 Shadow damage over 15 sec to your target and causes all party members to gain mana equal to 5% of any Shadow spell damage you deal.,Resource,Main,0,15,400 Mana,,Cooldown,"DEBUFF, DPS, PVE, RESOURCE, ROTATIONAL",https://www.wowhead.com/tbc/spell=34916,Talent-required
+Shadow,Talent Ability,Vampiric Touch,34917,34914,Rank 3,70,Causes 650 Shadow damage over 15 sec to your target and causes all party members to gain mana equal to 5% of any Shadow spell damage you deal.,Resource,Main,0,15,425 Mana,,Cooldown,"DEBUFF, DPS, PVE, RESOURCE, ROTATIONAL",https://www.wowhead.com/tbc/spell=34917,Talent-required

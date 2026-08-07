@@ -1,0 +1,85 @@
+{
+  "generated_at": "2026-08-06T09:21:32Z",
+  "canonical_source": "Wowhead TBC tooltip JSON",
+  "wowhead_tooltip_endpoint": "https://nether.wowhead.com/tbc/tooltip/<spell|item>/<id>",
+  "sources": {
+    "wowhead": {
+      "url": "https://www.wowhead.com/tbc/"
+    },
+    "libspelldb": {
+      "repository": "https://github.com/veev-code/LibSpellDB",
+      "sha": "edc189b928df86376339d00c0760c2d894ae0bad",
+      "purpose": "Ability enumeration, ranks, cooldowns, auras, tags, racials, passive trinket proc mappings"
+    },
+    "wowsims_tbc_new": {
+      "repository": "https://github.com/wowsims/tbc-new",
+      "sha": "509f669a6a5e1a766b3dd71ff0bc5baa74985d56",
+      "purpose": "Complete TBC talent trees and every talent-rank spell ID"
+    }
+  },
+  "counts": {
+    "all_spell_rows": 3260,
+    "unique_spell_ids": 3260,
+    "racial_shared_rows": 75,
+    "racial_rows": 73,
+    "trinket_proc_mappings": 34,
+    "missing_tooltips": 134,
+    "by_class": {
+      "Druid": {
+        "rows": 399,
+        "ability_rows": 227,
+        "talent_rows": 193
+      },
+      "Hunter": {
+        "rows": 317,
+        "ability_rows": 136,
+        "talent_rows": 206
+      },
+      "Mage": {
+        "rows": 356,
+        "ability_rows": 173,
+        "talent_rows": 208
+      },
+      "Paladin": {
+        "rows": 369,
+        "ability_rows": 183,
+        "talent_rows": 222
+      },
+      "Priest": {
+        "rows": 377,
+        "ability_rows": 195,
+        "talent_rows": 219
+      },
+      "Rogue": {
+        "rows": 311,
+        "ability_rows": 123,
+        "talent_rows": 201
+      },
+      "Shaman": {
+        "rows": 398,
+        "ability_rows": 211,
+        "talent_rows": 196
+      },
+      "Warlock": {
+        "rows": 384,
+        "ability_rows": 212,
+        "talent_rows": 205
+      },
+      "Warrior": {
+        "rows": 349,
+        "ability_rows": 160,
+        "talent_rows": 222
+      }
+    },
+    "excluded_non_tbc_candidates": 134,
+    "excluded_teaching_records": 1,
+    "excluded_total_candidates": 135,
+    "unresolved_included_rows": 0
+  },
+  "tracking_policy": {
+    "on_use_trinkets": "Detected dynamically in-game through GetItemSpell(); no static row required.",
+    "passive_proc_trinkets": "Static item-to-visible-buff mapping generated from LibSpellDB and verified through Wowhead tooltips.",
+    "racials": "Filtered at runtime by UnitRace and categorized into Main/Utility/Data only."
+  },
+  "coverage_note": "Rows unavailable from the Wowhead TBC tooltip endpoint and spell-teaching records are excluded from the canonical player catalog and retained in missing_data.csv as an audit trail."
+}

@@ -1,0 +1,199 @@
+name: Validate TBC Anniversary staging
+
+on:
+  push:
+    branches:
+      - feature/tbc-anniversary-feral-foundation
+    paths:
+      - "TBC/**"
+      - ".github/workflows/validate-tbc-staging.yml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "TBC/**"
+      - ".github/workflows/validate-tbc-staging.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lua5.1
+
+      - name: Validate Lua syntax
+        run: |
+          find TBC/Package -type f -name '*.lua' -print0 \
+            | sort -z \
+            | xargs -0 -n1 luac5.1 -p
+
+      - name: Validate package structure
+        run: |
+          python3 - <<'PY'
+          import csv
+          import json
+          from pathlib import Path
+
+          package = Path('TBC/Package')
+          expected_roots = {'RetreatUI', 'RetreatUI_Classes'}
+          roots = {path.name for path in package.iterdir() if path.is_dir()}
+          if roots != expected_roots:
+              raise SystemExit(f'Unexpected TBC package roots: {sorted(roots)}')
+
+          for toc_path in (
+              package / 'RetreatUI' / 'RetreatUI.toc',
+              package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc',
+          ):
+              text = toc_path.read_text(encoding='utf-8-sig')
+              if '## Interface: 20506' not in text:
+                  raise SystemExit(f'{toc_path}: expected TBC Anniversary interface 20506')
+              if '## Author: Retreat' not in text:
+                  raise SystemExit(f'{toc_path}: author must be Retreat')
+
+              root = toc_path.parent
+              missing = []
+              for raw in text.splitlines():
+                  line = raw.strip()
+                  if not line or line.startswith('#'):
+                      continue
+                  candidate = root / line.replace('\\', '/')
+                  if not candidate.is_file():
+                      missing.append(str(candidate))
+              if missing:
+                  raise SystemExit(f'{toc_path}: missing files: {missing}')
+
+          core_toc = (package / 'RetreatUI' / 'RetreatUI.toc').read_text(encoding='utf-8-sig')
+          required_core_files = [
+              'Core\\GeneratedTBCData.lua',
+              'Core\\RacialAndTrinketTracking.lua',
+          ]
+          for token in required_core_files:
+              if token not in core_toc:
+                  raise SystemExit(f'RetreatUI.toc is missing {token}')
+          if core_toc.index('Core\\GeneratedTBCData.lua') > core_toc.index('Core\\RacialAndTrinketTracking.lua'):
+              raise SystemExit('Generated TBC data must load before the racial/trinket tracker')
+
+          class_toc = (package / 'RetreatUI_Classes' / 'RetreatUI_Classes.toc').read_text(encoding='utf-8-sig')
+          if 'Druid\\PowershiftMacro.lua' not in class_toc:
+              raise SystemExit('The powershift macro module is not loaded by RetreatUI_Classes.toc')
+          if class_toc.index('Druid\\PowershiftMacro.lua') > class_toc.index('Druid\\Feral.lua'):
+              raise SystemExit('The powershift macro module must load before the Feral HUD')
+
+          powershift = (package / 'RetreatUI_Classes' / 'Druid' / 'PowershiftMacro.lua').read_text(encoding='utf-8')
+          macro_body = '#showtooltip\\n/cancelaura Cat Form\\n/cast !Cat Form'
+          required_macro_tokens = [
+              'local MACRO_NAME = "RUI Powershift"',
+              f'local MACRO_BODY = "{macro_body}"',
+              'CreateMacro(MACRO_NAME, MACRO_ICON, MACRO_BODY, 1)',
+              'PLAYER_REGEN_ENABLED',
+              'RUI:RegisterModule("FeralPowershiftMacro", PowershiftMacro)',
+          ]
+          for token in required_macro_tokens:
+              if token not in powershift:
+                  raise SystemExit(f'Powershift macro module is missing {token}')
+
+          events = (package / 'RetreatUI' / 'Core' / 'Events.lua').read_text(encoding='utf-8')
+          for token in (
+              'command == "macro"',
+              '/ruitbc macro',
+              'PLAYER_EQUIPMENT_CHANGED',
+              'UNIT_INVENTORY_CHANGED',
+              'BAG_UPDATE_COOLDOWN',
+          ):
+              if token not in events:
+                  raise SystemExit(f'TBC event coordinator is missing {token}')
+
+          tracking = (package / 'RetreatUI' / 'Core' / 'RacialAndTrinketTracking.lua').read_text(encoding='utf-8')
+          for token in (
+              'function RUI:GetPlayerRacialSpellNames()',
+              'function RUI:CreateTrinketTracker(parent)',
+              'function RUI:UpdateTrinketTracker(row)',
+              'GetInventoryItemID("player", frame.slot)',
+              'GetItemSpell(itemID)',
+              'mapping.procBuffID',
+              'mapping.icd',
+          ):
+              if token not in tracking:
+                  raise SystemExit(f'Racial/trinket tracker is missing {token}')
+
+          generated = (package / 'RetreatUI' / 'Core' / 'GeneratedTBCData.lua').read_text(encoding='utf-8')
+          for token in (
+              'RUI.generatedTBCData.racials = {',
+              'RUI.generatedTBCData.trinkets = {',
+              '[28830] = {',
+              'procBuffID = 34775',
+          ):
+              if token not in generated:
+                  raise SystemExit(f'Generated runtime data is missing {token}')
+
+          feral = (package / 'RetreatUI_Classes' / 'Druid' / 'Feral.lua').read_text(encoding='utf-8')
+          required = [
+              '"Mangle (Cat)"',
+              '"Shred"',
+              '"Rake"',
+              '"Rip"',
+              '"Ferocious Bite"',
+              '"Tiger\'s Fury"',
+              'RUI:GetPlayerRacialSpellNames()',
+              'RUI:CreateTrinketTracker(self.root)',
+              'RUI:UpdateTrinketTracker(self.trinketRow)',
+              'mainLines > 1 and -303 or -263',
+          ]
+          for token in required:
+              if token not in feral:
+                  raise SystemExit(f'Feral foundation is missing {token}')
+
+          database = Path('TBC/Data/generated')
+          manifest = json.loads((database / 'manifest.json').read_text(encoding='utf-8'))
+          counts = manifest['counts']
+          expected_counts = {
+              'all_spell_rows': 3260,
+              'unique_spell_ids': 3260,
+              'racial_rows': 73,
+              'trinket_proc_mappings': 34,
+              'excluded_non_tbc_candidates': 134,
+              'excluded_teaching_records': 1,
+              'excluded_total_candidates': 135,
+              'unresolved_included_rows': 0,
+          }
+          for key, expected in expected_counts.items():
+              if counts.get(key) != expected:
+                  raise SystemExit(f'Unexpected generated database count for {key}: {counts.get(key)}')
+
+          with (database / 'all_spells.csv').open(encoding='utf-8-sig', newline='') as handle:
+              spell_rows = list(csv.DictReader(handle))
+          if len(spell_rows) != 3260:
+              raise SystemExit(f'Expected 3260 canonical spell/talent rows, got {len(spell_rows)}')
+          if not {'Ability', 'Talent', 'Talent Ability'}.issuperset({row['Type'] for row in spell_rows}):
+              raise SystemExit('Unknown row type in the generated TBC catalog')
+          if any(int(row['Spell ID']) == 563 for row in spell_rows):
+              raise SystemExit('Spell-teaching record 563 leaked into the canonical player catalog')
+
+          with (database / 'missing_data.csv').open(encoding='utf-8-sig', newline='') as handle:
+              missing_rows = list(csv.DictReader(handle))
+          teaching_rows = [
+              row for row in missing_rows
+              if row['Entity Type'] == 'Excluded teaching spell' and int(row['ID']) == 563
+          ]
+          if len(teaching_rows) != 1:
+              raise SystemExit('The excluded Moonfire teaching record is missing from the audit catalog')
+
+          with (database / 'racials.csv').open(encoding='utf-8-sig', newline='') as handle:
+              racial_rows = list(csv.DictReader(handle))
+          with (database / 'trinkets.csv').open(encoding='utf-8-sig', newline='') as handle:
+              trinket_rows = list(csv.DictReader(handle))
+          if sum(1 for row in racial_rows if row['Type'] == 'Racial') != 73:
+              raise SystemExit('The generated TBC racial catalog is incomplete')
+          if len(trinket_rows) != 34:
+              raise SystemExit('The generated TBC passive trinket mapping catalog is incomplete')
+
+          print('TBC Anniversary database, Feral HUD, racials, trinkets and powershift macro validated')
+          PY

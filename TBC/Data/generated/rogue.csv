@@ -1,0 +1,533 @@
+﻿Specialization,Type,Name,Spell ID,Canonical ID,Rank,Learned Level,Description,Category,HUD Row,Cooldown,Duration,Resource Cost,Aura ID,Track Mode,Tags,Wowhead Source,Notes
+Assassination,Talent Ability,Cold Blood,14177,14177,Rank 1/1,,"When activated, increases the critical strike chance of your next offensive ability by 100%.",Offensive,Main,180,,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR",https://www.wowhead.com/tbc/spell=14177,Talent-required | Talent: Cold Blood
+Assassination,Talent,Deadened Nerves,31380,31380,Rank 1/5,,Decreases all physical damage taken by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31380,Talent: Deadened Nerves; tree row 7
+Assassination,Talent,Deadened Nerves,31382,31380,Rank 2/5,,Decreases all physical damage taken by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31382,Talent: Deadened Nerves; tree row 7
+Assassination,Talent,Deadened Nerves,31383,31380,Rank 3/5,,Decreases all physical damage taken by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31383,Talent: Deadened Nerves; tree row 7
+Assassination,Talent,Deadened Nerves,31384,31380,Rank 4/5,,Decreases all physical damage taken by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31384,Talent: Deadened Nerves; tree row 7
+Assassination,Talent,Deadened Nerves,31385,31380,Rank 5/5,,Decreases all physical damage taken by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31385,Talent: Deadened Nerves; tree row 7
+Assassination,Talent,Find Weakness,31233,31233,Rank 1/5,,Your finishing moves increase the damage of all your offensive abilities by 2% for 10 sec.,Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31233,Talent: Find Weakness; tree row 8
+Assassination,Talent,Find Weakness,31239,31233,Rank 2/5,,Your finishing moves increase the damage of all your offensive abilities by 4% for 10 sec.,Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31239,Talent: Find Weakness; tree row 8
+Assassination,Talent,Find Weakness,31240,31233,Rank 3/5,,Your finishing moves increase the damage of all your offensive abilities by 6% for 10 sec.,Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31240,Talent: Find Weakness; tree row 8
+Assassination,Talent,Find Weakness,31241,31233,Rank 4/5,,Your finishing moves increase the damage of all your offensive abilities by 8% for 10 sec.,Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31241,Talent: Find Weakness; tree row 8
+Assassination,Talent,Find Weakness,31242,31233,Rank 5/5,,Your finishing moves increase the damage of all your offensive abilities by 10% for 10 sec.,Talent Passive,Data only,,10,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31242,Talent: Find Weakness; tree row 8
+Assassination,Talent,Fleet Footed,31208,31208,Rank 1/2,,Increases your chance to resist movement impairing effects by 5% and increases your movement speed by 8%. This does not stack with other movement speed increasing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31208,Talent: Fleet Footed; tree row 5
+Assassination,Talent,Fleet Footed,31209,31208,Rank 2/2,,Increases your chance to resist movement impairing effects by 10% and increases your movement speed by 15%. This does not stack with other movement speed increasing effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31209,Talent: Fleet Footed; tree row 5
+Assassination,Talent,Improved Eviscerate,14162,14162,Rank 1/3,,Increases the damage done by your Eviscerate ability by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14162,Talent: Improved Eviscerate; tree row 1
+Assassination,Talent,Improved Eviscerate,14163,14162,Rank 2/3,,Increases the damage done by your Eviscerate ability by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14163,Talent: Improved Eviscerate; tree row 1
+Assassination,Talent,Improved Eviscerate,14164,14162,Rank 3/3,,Increases the damage done by your Eviscerate ability by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14164,Talent: Improved Eviscerate; tree row 1
+Assassination,Talent,Improved Expose Armor,14168,14168,Rank 1/2,,Increases the armor reduced by your Expose Armor ability by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14168,Talent: Improved Expose Armor; tree row 3
+Assassination,Talent,Improved Expose Armor,14169,14168,Rank 2/2,,Increases the armor reduced by your Expose Armor ability by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14169,Talent: Improved Expose Armor; tree row 3
+Assassination,Talent,Improved Kidney Shot,14174,14174,Rank 1/3,,"While affected by your Kidney Shot ability, the target receives an additional 3% damage from all sources.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14174,Talent: Improved Kidney Shot; tree row 5
+Assassination,Talent,Improved Kidney Shot,14175,14174,Rank 2/3,,"While affected by your Kidney Shot ability, the target receives an additional 6% damage from all sources.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14175,Talent: Improved Kidney Shot; tree row 5
+Assassination,Talent,Improved Kidney Shot,14176,14174,Rank 3/3,,"While affected by your Kidney Shot ability, the target receives an additional 9% damage from all sources.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14176,Talent: Improved Kidney Shot; tree row 5
+Assassination,Talent,Improved Poisons,14113,14113,Rank 1/5,,Increases the chance to apply poisons to your target by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14113,Talent: Improved Poisons; tree row 4
+Assassination,Talent,Improved Poisons,14114,14113,Rank 2/5,,Increases the chance to apply poisons to your target by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14114,Talent: Improved Poisons; tree row 4
+Assassination,Talent,Improved Poisons,14115,14113,Rank 3/5,,Increases the chance to apply poisons to your target by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14115,Talent: Improved Poisons; tree row 4
+Assassination,Talent,Improved Poisons,14116,14113,Rank 4/5,,Increases the chance to apply poisons to your target by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14116,Talent: Improved Poisons; tree row 4
+Assassination,Talent,Improved Poisons,14117,14113,Rank 5/5,,Increases the chance to apply poisons to your target by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14117,Talent: Improved Poisons; tree row 4
+Assassination,Talent,Lethality,14128,14128,Rank 1/5,,"Increases the critical strike damage bonus of your Sinister Strike, Gouge, Backstab, Ghostly Strike, Mutilate, Shiv, and Hemorrhage abilities by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14128,Talent: Lethality; tree row 3
+Assassination,Talent,Lethality,14132,14128,Rank 2/5,,"Increases the critical strike damage bonus of your Sinister Strike, Gouge, Backstab, Ghostly Strike, Mutilate, Shiv, and Hemorrhage abilities by 12%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14132,Talent: Lethality; tree row 3
+Assassination,Talent,Lethality,14135,14128,Rank 3/5,,"Increases the critical strike damage bonus of your Sinister Strike, Gouge, Backstab, Ghostly Strike, Mutilate, Shiv, and Hemorrhage abilities by 18%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14135,Talent: Lethality; tree row 3
+Assassination,Talent,Lethality,14136,14128,Rank 4/5,,"Increases the critical strike damage bonus of your Sinister Strike, Gouge, Backstab, Ghostly Strike, Mutilate, Shiv, and Hemorrhage abilities by 24%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14136,Talent: Lethality; tree row 3
+Assassination,Talent,Lethality,14137,14128,Rank 5/5,,"Increases the critical strike damage bonus of your Sinister Strike, Gouge, Backstab, Ghostly Strike, Mutilate, Shiv, and Hemorrhage abilities by 30%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14137,Talent: Lethality; tree row 3
+Assassination,Talent,Malice,14138,14138,Rank 1/5,,Increases your critical strike chance by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14138,Talent: Malice; tree row 1
+Assassination,Talent,Malice,14139,14138,Rank 2/5,,Increases your critical strike chance by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14139,Talent: Malice; tree row 1
+Assassination,Talent,Malice,14140,14138,Rank 3/5,,Increases your critical strike chance by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14140,Talent: Malice; tree row 1
+Assassination,Talent,Malice,14141,14138,Rank 4/5,,Increases your critical strike chance by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14141,Talent: Malice; tree row 1
+Assassination,Talent,Malice,14142,14138,Rank 5/5,,Increases your critical strike chance by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14142,Talent: Malice; tree row 1
+Assassination,Talent,Master Poisoner,31226,31226,Rank 1/2,,Reduces the chance your poisons will be resisted by 5% and increases your chance to resist Poison effects by an additional 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31226,Talent: Master Poisoner; tree row 6
+Assassination,Talent,Master Poisoner,31227,31226,Rank 2/2,,Reduces the chance your poisons will be resisted by 10% and increases your chance to resist Poison effects by an additional 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31227,Talent: Master Poisoner; tree row 6
+Assassination,Talent,Murder,14158,14158,Rank 1/2,,"Increases all damage caused against Humanoid, Giant, Beast and Dragonkin targets by 1%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14158,Talent: Murder; tree row 2
+Assassination,Talent,Murder,14159,14158,Rank 2/2,,"Increases all damage caused against Humanoid, Giant, Beast and Dragonkin targets by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14159,Talent: Murder; tree row 2
+Assassination,Talent Ability,Mutilate,1329,1329,Rank 1/1,,Instantly attacks with both weapons for an additional 44 with each weapon. Damage is increased by 50% against Poisoned targets. Must be behind the target. Awards 2 combo points.,Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1329,Talent-required | Talent: Mutilate
+Assassination,Talent,Puncturing Wounds,13733,13733,Rank 1/3,,"Increases the critical strike chance of your Backstab ability by 10%, and the critical strike chance of your Mutilate ability by 5%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13733,Talent: Puncturing Wounds; tree row 2
+Assassination,Talent,Puncturing Wounds,13865,13733,Rank 2/3,,"Increases the critical strike chance of your Backstab ability by 20%, and the critical strike chance of your Mutilate ability by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13865,Talent: Puncturing Wounds; tree row 2
+Assassination,Talent,Puncturing Wounds,13866,13733,Rank 3/3,,"Increases the critical strike chance of your Backstab ability by 30%, and the critical strike chance of your Mutilate ability by 15%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13866,Talent: Puncturing Wounds; tree row 2
+Assassination,Talent,Quick Recovery,31244,31244,Rank 1/2,,"All healing effects on you are increased by 10%. In addition, your finishing moves cost 40% less Energy when they fail to hit.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31244,Talent: Quick Recovery; tree row 5
+Assassination,Talent,Quick Recovery,31245,31244,Rank 2/2,,"All healing effects on you are increased by 20%. In addition, your finishing moves cost 80% less Energy when they fail to hit.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31245,Talent: Quick Recovery; tree row 5
+Assassination,Talent,Relentless Strikes,14179,14179,Rank 1/1,,Your finishing moves have a 20% chance per combo point to restore 25 energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14179,Talent: Relentless Strikes; tree row 3
+Assassination,Talent,Remorseless Attacks,14144,14144,Rank 1/2,,"After killing an opponent that yields experience or honor, gives you a 20% increased critical strike chance on your next Sinister Strike, Hemorrhage, Backstab, Mutilate, Ambush, or Ghostly Strike. Lasts 20 sec.",Talent Passive,Data only,,20,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14144,Talent: Remorseless Attacks; tree row 1
+Assassination,Talent,Remorseless Attacks,14148,14144,Rank 2/2,,"After killing an opponent that yields experience or honor, gives you a 40% increased critical strike chance on your next Sinister Strike, Hemorrhage, Backstab, Mutilate, Ambush, or Ghostly Strike. Lasts 20 sec.",Talent Passive,Data only,,20,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14148,Talent: Remorseless Attacks; tree row 1
+Assassination,Talent,Ruthlessness,14156,14156,Rank 1/3,,Gives your melee finishing moves a 20% chance to add a combo point to your target.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14156,Talent: Ruthlessness; tree row 2
+Assassination,Talent,Ruthlessness,14160,14156,Rank 2/3,,Gives your melee finishing moves a 40% chance to add a combo point to your target.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14160,Talent: Ruthlessness; tree row 2
+Assassination,Talent,Ruthlessness,14161,14156,Rank 3/3,,Gives your melee finishing moves a 60% chance to add a combo point to your target.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14161,Talent: Ruthlessness; tree row 2
+Assassination,Talent,Seal Fate,14186,14186,Rank 1/5,,Your critical strikes from abilities that add combo points have a 20% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14186,Talent: Seal Fate; tree row 6
+Assassination,Talent,Seal Fate,14190,14186,Rank 2/5,,Your critical strikes from abilities that add combo points have a 40% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14190,Talent: Seal Fate; tree row 6
+Assassination,Talent,Seal Fate,14193,14186,Rank 3/5,,Your critical strikes from abilities that add combo points have a 60% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14193,Talent: Seal Fate; tree row 6
+Assassination,Talent,Seal Fate,14194,14186,Rank 4/5,,Your critical strikes from abilities that add combo points have a 80% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14194,Talent: Seal Fate; tree row 6
+Assassination,Talent,Seal Fate,14195,14186,Rank 5/5,,Your critical strikes from abilities that add combo points have a 100% chance to add an additional combo point.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14195,Talent: Seal Fate; tree row 6
+Assassination,Talent,Vigor,14983,14983,Rank 1/1,,Increases your maximum Energy by 10.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14983,Talent: Vigor; tree row 7
+Assassination,Talent,Vile Poisons,16513,16513,Rank 1/5,,Increases the damage dealt by your poisons and Envenom ability by 4% and gives your poisons an additional 8% chance to resist dispel effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16513,Talent: Vile Poisons; tree row 4
+Assassination,Talent,Vile Poisons,16514,16513,Rank 2/5,,Increases the damage dealt by your poisons and Envenom ability by 8% and gives your poisons an additional 16% chance to resist dispel effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16514,Talent: Vile Poisons; tree row 4
+Assassination,Talent,Vile Poisons,16515,16513,Rank 3/5,,Increases the damage dealt by your poisons and Envenom ability by 12% and gives your poisons an additional 24% chance to resist dispel effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16515,Talent: Vile Poisons; tree row 4
+Assassination,Talent,Vile Poisons,16719,16513,Rank 4/5,,Increases the damage dealt by your poisons and Envenom ability by 16% and gives your poisons an additional 32% chance to resist dispel effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16719,Talent: Vile Poisons; tree row 4
+Assassination,Talent,Vile Poisons,16720,16513,Rank 5/5,,Increases the damage dealt by your poisons and Envenom ability by 20% and gives your poisons an additional 40% chance to resist dispel effects.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=16720,Talent: Vile Poisons; tree row 4
+"Assassination, Subtlety",Ability,Backstab,53,53,Rank 1,4,"Backstab the target, causing 150% weapon damage plus 15 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=53,
+"Assassination, Subtlety",Ability,Backstab,2589,53,Rank 2,12,"Backstab the target, causing 150% weapon damage plus 30 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2589,
+"Assassination, Subtlety",Ability,Backstab,2590,53,Rank 3,20,"Backstab the target, causing 150% weapon damage plus 48 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2590,
+"Assassination, Subtlety",Ability,Backstab,2591,53,Rank 4,28,"Backstab the target, causing 150% weapon damage plus 69 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2591,
+"Assassination, Subtlety",Ability,Backstab,8721,53,Rank 5,36,"Backstab the target, causing 150% weapon damage plus 90 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8721,
+"Assassination, Subtlety",Ability,Backstab,11279,53,Rank 6,44,"Backstab the target, causing 150% weapon damage plus 135 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=11279,
+"Assassination, Subtlety",Ability,Backstab,11280,53,Rank 7,52,"Backstab the target, causing 150% weapon damage plus 165 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=11280,
+"Assassination, Subtlety",Ability,Backstab,11281,53,Rank 8,60,"Backstab the target, causing 150% weapon damage plus 210 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=11281,
+"Assassination, Subtlety",Ability,Backstab,25300,53,Rank 9,60,"Backstab the target, causing 150% weapon damage plus 225 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=25300,
+"Assassination, Subtlety",Ability,Backstab,26863,53,Rank 10,68,"Backstab the target, causing 150% weapon damage plus 255 to the target. Must be behind the target. Requires a dagger in the main hand. Awards 1 combo point.",Offensive,Main,0,,60 Energy,,Cooldown,"DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26863,
+Class-wide / Shared,Ability,Blind,2094,2094,,34,"Blinds the target, causing it to wander disoriented for up to 10 sec. Any damage caused will remove the effect.",Crowd Control,Utility,180,10,30 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=2094,
+Class-wide / Shared,Ability,Cheap Shot,1833,1833,,26,Stuns the target for 4 sec. Must be stealthed. Awards 2 combo points.,Crowd Control,Utility,0,4,60 Energy,,Cooldown,CC_HARD,https://www.wowhead.com/tbc/spell=1833,
+Class-wide / Shared,Ability,Cloak of Shadows,31224,31224,,66,Instantly removes all existing harmful spell effects and increases your chance to resist all spells by 90% for 5 sec. Does not remove effects that prevent you from using Cloak of Shadows.,Defensive,Utility,60,5,,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, IMMUNITY, MAJOR",https://www.wowhead.com/tbc/spell=31224,
+Class-wide / Shared,Ability,Crippling Poison,3408,3408,Rank 1,20,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, slowing their movement speed by 50% for 12 sec.",Crowd Control,Utility,0,1800,,,Cooldown,"BUFF, CC_SOFT, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=3408,
+Class-wide / Shared,Ability,Crippling Poison,3409,3409,Rank 1,20,,Crowd Control,Utility,,12,,,Aura,"CC_SOFT, DEBUFF",https://www.wowhead.com/tbc/spell=3409,
+Class-wide / Shared,Ability,Crippling Poison,11201,3409,Rank 2,50,,Crowd Control,Utility,,12,,,Aura,"CC_SOFT, DEBUFF",https://www.wowhead.com/tbc/spell=11201,
+Class-wide / Shared,Ability,Crippling Poison,11202,3408,Rank 2,50,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, slowing their movement speed by 70% for 12 sec.",Crowd Control,Utility,0,1800,,,Cooldown,"BUFF, CC_SOFT, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=11202,
+Class-wide / Shared,Ability,Deadly Poison,2823,2823,Rank 1,30,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 36 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=2823,
+Class-wide / Shared,Ability,Deadly Poison II,2824,2823,Rank 2,38,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 52 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=2824,
+Class-wide / Shared,Ability,Deadly Poison III,11355,2823,Rank 3,46,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 80 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=11355,
+Class-wide / Shared,Ability,Deadly Poison IV,11356,2823,Rank 4,54,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 108 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=11356,
+Class-wide / Shared,Ability,Deadly Poison V,25347,2823,Rank 5,60,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 136 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=25347,
+Class-wide / Shared,Ability,Deadly Poison VI,26967,2823,Rank 6,62,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 144 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=26967,
+Class-wide / Shared,Ability,Deadly Poison VII,27186,2823,Rank 7,70,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy for 180 Nature damage over 12 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=27186,
+Class-wide / Shared,Ability,Distract,1725,1725,,22,"Throws a distraction, attracting the attention of all nearby monsters for 10 seconds. Does not break stealth.",Utility,Utility,30,10,30 Energy,,Cooldown,"TIMED_EFFECT, UTILITY",https://www.wowhead.com/tbc/spell=1725,
+Class-wide / Shared,Ability,Evasion,5277,5277,Rank 1,8,The rogue's dodge chance will increase by 50% for 15 sec.,Defensive,Utility,300,15,,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MAJOR",https://www.wowhead.com/tbc/spell=5277,
+Class-wide / Shared,Ability,Evasion,26669,5277,Rank 2,50,Increases the rogue's dodge chance by 50% and reduces the chance ranged attacks hit the rogue by 25%. Lasts 15 sec.,Defensive,Utility,300,15,,,Cooldown + aura,"DEFENSIVE, HAS_BUFF, MAJOR",https://www.wowhead.com/tbc/spell=26669,
+Class-wide / Shared,Ability,Eviscerate,2098,2098,Rank 1,1,"Finishing move that causes damage per combo point:
+1 point : (1 + 5 + Attack Power * 0.03)-(5 + 5 + Attack Power * 0.03) damage
+2 points: [1 + (10) + Attack Power * 0.06]-[5 + (10) + Attack Power * 0.06] damage
+3 points: [1 + (15) + Attack Power * 0.09]-[5 + (15) + Attack Power * 0.09] damage
+4 points: [1 + (20) + Attack Power * 0.12]-[5 + (20) + Attack Power * 0.12] damage
+5 points: [1 + (25) + Attack Power * 0.15]-[5 + (25) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=2098,
+Class-wide / Shared,Ability,Eviscerate,6760,2098,Rank 2,8,"Finishing move that causes damage per combo point:
+1 point : (3 + 11 + Attack Power * 0.03)-(11 + 11 + Attack Power * 0.03) damage
+2 points: [3 + (22) + Attack Power * 0.06]-[11 + (22) + Attack Power * 0.06] damage
+3 points: [3 + (33) + Attack Power * 0.09]-[11 + (33) + Attack Power * 0.09] damage
+4 points: [3 + (44) + Attack Power * 0.12]-[11 + (44) + Attack Power * 0.12] damage
+5 points: [3 + (55) + Attack Power * 0.15]-[11 + (55) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6760,
+Class-wide / Shared,Ability,Eviscerate,6761,2098,Rank 3,16,"Finishing move that causes damage per combo point:
+1 point : (6 + 19 + Attack Power * 0.03)-(20 + 19 + Attack Power * 0.03) damage
+2 points: [6 + (38) + Attack Power * 0.06]-[20 + (38) + Attack Power * 0.06] damage
+3 points: [6 + (57) + Attack Power * 0.09]-[20 + (57) + Attack Power * 0.09] damage
+4 points: [6 + (76) + Attack Power * 0.12]-[20 + (76) + Attack Power * 0.12] damage
+5 points: [6 + (95) + Attack Power * 0.15]-[20 + (95) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6761,
+Class-wide / Shared,Ability,Eviscerate,6762,2098,Rank 4,24,"Finishing move that causes damage per combo point:
+1 point : (10 + 31 + Attack Power * 0.03)-(30 + 31 + Attack Power * 0.03) damage
+2 points: [10 + (62) + Attack Power * 0.06]-[30 + (62) + Attack Power * 0.06] damage
+3 points: [10 + (93) + Attack Power * 0.09]-[30 + (93) + Attack Power * 0.09] damage
+4 points: [10 + (124) + Attack Power * 0.12]-[30 + (124) + Attack Power * 0.12] damage
+5 points: [10 + (155) + Attack Power * 0.15]-[30 + (155) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=6762,
+Class-wide / Shared,Ability,Eviscerate,8623,2098,Rank 5,32,"Finishing move that causes damage per combo point:
+1 point : (15 + 45 + Attack Power * 0.03)-(45 + 45 + Attack Power * 0.03) damage
+2 points: [15 + (90) + Attack Power * 0.06]-[45 + (90) + Attack Power * 0.06] damage
+3 points: [15 + (135) + Attack Power * 0.09]-[45 + (135) + Attack Power * 0.09] damage
+4 points: [15 + (180) + Attack Power * 0.12]-[45 + (180) + Attack Power * 0.12] damage
+5 points: [15 + (225) + Attack Power * 0.15]-[45 + (225) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8623,
+Class-wide / Shared,Ability,Eviscerate,8624,2098,Rank 6,40,"Finishing move that causes damage per combo point:
+1 point : (22 + 71 + Attack Power * 0.03)-(66 + 71 + Attack Power * 0.03) damage
+2 points: [22 + (142) + Attack Power * 0.06]-[66 + (142) + Attack Power * 0.06] damage
+3 points: [22 + (213) + Attack Power * 0.09]-[66 + (213) + Attack Power * 0.09] damage
+4 points: [22 + (284) + Attack Power * 0.12]-[66 + (284) + Attack Power * 0.12] damage
+5 points: [22 + (355) + Attack Power * 0.15]-[66 + (355) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=8624,
+Class-wide / Shared,Ability,Eviscerate,11299,2098,Rank 7,48,"Finishing move that causes damage per combo point:
+1 point : (34 + 110 + Attack Power * 0.03)-(102 + 110 + Attack Power * 0.03) damage
+2 points: [34 + (220) + Attack Power * 0.06]-[102 + (220) + Attack Power * 0.06] damage
+3 points: [34 + (330) + Attack Power * 0.09]-[102 + (330) + Attack Power * 0.09] damage
+4 points: [34 + (440) + Attack Power * 0.12]-[102 + (440) + Attack Power * 0.12] damage
+5 points: [34 + (550) + Attack Power * 0.15]-[102 + (550) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=11299,
+Class-wide / Shared,Ability,Eviscerate,11300,2098,Rank 8,56,"Finishing move that causes damage per combo point:
+1 point : (48 + 151 + Attack Power * 0.03)-(144 + 151 + Attack Power * 0.03) damage
+2 points: [48 + (302) + Attack Power * 0.06]-[144 + (302) + Attack Power * 0.06] damage
+3 points: [48 + (453) + Attack Power * 0.09]-[144 + (453) + Attack Power * 0.09] damage
+4 points: [48 + (604) + Attack Power * 0.12]-[144 + (604) + Attack Power * 0.12] damage
+5 points: [48 + (755) + Attack Power * 0.15]-[144 + (755) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=11300,
+Class-wide / Shared,Ability,Eviscerate,26865,2098,Rank 9,64,"Finishing move that causes damage per combo point:
+1 point : (60 + 185 + Attack Power * 0.03)-(180 + 185 + Attack Power * 0.03) damage
+2 points: [60 + (370) + Attack Power * 0.06]-[180 + (370) + Attack Power * 0.06] damage
+3 points: [60 + (555) + Attack Power * 0.09]-[180 + (555) + Attack Power * 0.09] damage
+4 points: [60 + (740) + Attack Power * 0.12]-[180 + (740) + Attack Power * 0.12] damage
+5 points: [60 + (925) + Attack Power * 0.15]-[180 + (925) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26865,
+Class-wide / Shared,Ability,Eviscerate,31016,2098,Rank 10,60,"Finishing move that causes damage per combo point:
+1 point : (54 + 170 + Attack Power * 0.03)-(162 + 170 + Attack Power * 0.03) damage
+2 points: [54 + (340) + Attack Power * 0.06]-[162 + (340) + Attack Power * 0.06] damage
+3 points: [54 + (510) + Attack Power * 0.09]-[162 + (510) + Attack Power * 0.09] damage
+4 points: [54 + (680) + Attack Power * 0.12]-[162 + (680) + Attack Power * 0.12] damage
+5 points: [54 + (850) + Attack Power * 0.15]-[162 + (850) + Attack Power * 0.15] damage",Offensive,Main,0,,35 Energy,,Cooldown,"DPS, FINISHER, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=31016,
+Class-wide / Shared,Ability,Expose Armor,8647,8647,Rank 1,14,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 80 armor
+2 points: 160 armor
+3 points: 240 armor
+4 points: 320 armor
+5 points: 400 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8647,
+Class-wide / Shared,Ability,Expose Armor,8649,8647,Rank 2,26,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 145 armor
+2 points: 290 armor
+3 points: 435 armor
+4 points: 580 armor
+5 points: 725 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8649,
+Class-wide / Shared,Ability,Expose Armor,8650,8647,Rank 3,36,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 210 armor
+2 points: 420 armor
+3 points: 630 armor
+4 points: 840 armor
+5 points: 1050 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=8650,
+Class-wide / Shared,Ability,Expose Armor,11197,8647,Rank 4,46,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 275 armor
+2 points: 550 armor
+3 points: 825 armor
+4 points: 1100 armor
+5 points: 1375 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=11197,
+Class-wide / Shared,Ability,Expose Armor,11198,8647,Rank 5,56,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 340 armor
+2 points: 680 armor
+3 points: 1020 armor
+4 points: 1360 armor
+5 points: 1700 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=11198,
+Class-wide / Shared,Ability,Expose Armor,26866,8647,Rank 6,66,"Finishing move that exposes the target for 30 sec, reducing armor per combo point:
+1 point : 410 armor
+2 points: 820 armor
+3 points: 1230 armor
+4 points: 1640 armor
+5 points: 2050 armor",Offensive,Main,0,30,25 Energy,,Cooldown + aura,"DEBUFF, DPS, FINISHER, MAINTENANCE, PVE",https://www.wowhead.com/tbc/spell=26866,
+Class-wide / Shared,Ability,Feint,1966,1966,Rank 1,16,"Performs a feint, causing no damage but lowering your threat by a small amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=1966,
+Class-wide / Shared,Ability,Feint,6768,1966,Rank 2,28,"Performs a feint, causing no damage but lowering your threat by a medium amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=6768,
+Class-wide / Shared,Ability,Feint,8637,1966,Rank 3,40,"Performs a feint, causing no damage but lowering your threat by a large amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=8637,
+Class-wide / Shared,Ability,Feint,11303,1966,Rank 4,52,"Performs a feint, causing no damage but lowering your threat by a large amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=11303,
+Class-wide / Shared,Ability,Feint,25302,1966,Rank 5,60,"Performs a feint, causing no damage but lowering your threat by a large amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=25302,
+Class-wide / Shared,Ability,Feint,27448,1966,Rank 6,64,"Performs a feint, causing no damage but lowering your threat by a large amount, making the enemy less likely to attack you.",Utility,Utility,10,,20 Energy,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=27448,
+Class-wide / Shared,Ability,Gouge,1776,1776,Rank 1,6,"Causes 10 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=1776,
+Class-wide / Shared,Ability,Gouge,1777,1776,Rank 2,18,"Causes 20 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=1777,
+Class-wide / Shared,Ability,Gouge,8629,1776,Rank 3,32,"Causes 32 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=8629,
+Class-wide / Shared,Ability,Gouge,11285,1776,Rank 4,46,"Causes 55 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=11285,
+Class-wide / Shared,Ability,Gouge,11286,1776,Rank 5,60,"Causes 75 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=11286,
+Class-wide / Shared,Ability,Gouge,38764,1776,Rank 6,67,"Causes 105 damage, incapacitating the opponent for 4 sec, and turns off your attack. Target must be facing you. Any damage caused will revive the target. Awards 1 combo point.",Crowd Control,Utility,10,4,45 Energy,,Cooldown,"CC_HARD, DISORIENT",https://www.wowhead.com/tbc/spell=38764,
+Class-wide / Shared,Ability,Instant Poison,8679,8679,Rank 1,20,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 19 to 25 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=8679,
+Class-wide / Shared,Ability,Instant Poison II,8686,8679,Rank 2,28,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 30 to 38 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=8686,
+Class-wide / Shared,Ability,Instant Poison III,8688,8679,Rank 3,36,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 44 to 56 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=8688,
+Class-wide / Shared,Ability,Instant Poison IV,11338,8679,Rank 4,44,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 67 to 85 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=11338,
+Class-wide / Shared,Ability,Instant Poison V,11339,8679,Rank 5,52,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 92 to 118 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=11339,
+Class-wide / Shared,Ability,Instant Poison VI,11340,8679,Rank 6,60,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy which instantly inflicts 112 to 148 Nature damage.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=11340,
+Class-wide / Shared,Ability,Instant Poison VII,26890,8679,Rank 7,68,Coats a weapon with poison that lasts for 1 hour.Each strike has a 20% chance of poisoning the enemy which instantly inflicts 19 to 25 Nature damage.,Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=26890,
+Class-wide / Shared,Ability,Kick,1766,1766,Rank 1,12,A quick kick that injures a single foe for 15 damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 5 sec.,Interrupt,Utility,10,5,25 Energy,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=1766,
+Class-wide / Shared,Ability,Kick,1767,1766,Rank 2,26,A quick kick that injures a single foe for 30 damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 5 sec.,Interrupt,Utility,10,5,25 Energy,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=1767,
+Class-wide / Shared,Ability,Kick,1768,1766,Rank 3,42,A quick kick that injures a single foe for 45 damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 5 sec.,Interrupt,Utility,10,5,25 Energy,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=1768,
+Class-wide / Shared,Ability,Kick,1769,1766,Rank 4,58,A quick kick that injures a single foe for 80 damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 5 sec.,Interrupt,Utility,10,5,25 Energy,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=1769,
+Class-wide / Shared,Ability,Kick,38768,1766,Rank 5,69,A quick kick that injures a single foe for 110 damage. It also interrupts spellcasting and prevents any spell in that school from being cast for 5 sec.,Interrupt,Utility,10,5,25 Energy,,Cooldown,INTERRUPT,https://www.wowhead.com/tbc/spell=38768,
+Class-wide / Shared,Ability,Kidney Shot,408,408,Rank 1,30,"Finishing move that stuns the target. Lasts longer per combo point:
+1 point : 1 second
+2 points: 2 seconds
+3 points: 3 seconds
+4 points: 4 seconds
+5 points: 5 seconds",Crowd Control,Utility,20,6,25 Energy,,Cooldown,"CC_HARD, FINISHER",https://www.wowhead.com/tbc/spell=408,
+Class-wide / Shared,Ability,Kidney Shot,8643,408,Rank 2,50,"Finishing move that stuns the target. Lasts longer per combo point:
+1 point : 2 seconds
+2 points: 3 seconds
+3 points: 4 seconds
+4 points: 5 seconds
+5 points: 6 seconds",Crowd Control,Utility,20,6,25 Energy,,Cooldown,"CC_HARD, FINISHER",https://www.wowhead.com/tbc/spell=8643,
+Class-wide / Shared,Ability,Mind-numbing Poison,5761,5761,Rank 1,24,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy, increasing their casting time by 40% for 10 sec.",Utility,Utility,0,1800,,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=5761,
+Class-wide / Shared,Ability,Mind-numbing Poison II,8694,5761,Rank 2,38,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy, increasing their casting time by 50% for 12 sec.",Utility,Utility,0,1800,,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=8694,
+Class-wide / Shared,Ability,Mind-numbing Poison III,11400,5761,Rank 3,52,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 20% chance of poisoning the enemy, increasing their casting time by 60% for 14 sec.",Utility,Utility,0,1800,,,Cooldown,"BUFF, LONG_BUFF, SITUATIONAL, UTILITY",https://www.wowhead.com/tbc/spell=11400,
+Class-wide / Shared,Ability,Rupture,1943,1943,Rank 1,20,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 40 damage over 8 secs
+2 points: 60 damage over 10 secs
+3 points: 84 damage over 12 secs
+4 points: 112 damage over 14 secs
+5 points: 144 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1943,
+Class-wide / Shared,Ability,Rupture,8639,1943,Rank 2,28,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 60 damage over 8 secs
+2 points: 90 damage over 10 secs
+3 points: 126 damage over 12 secs
+4 points: 168 damage over 14 secs
+5 points: 216 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8639,
+Class-wide / Shared,Ability,Rupture,8640,1943,Rank 3,36,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 88 damage over 8 secs
+2 points: 130 damage over 10 secs
+3 points: 180 damage over 12 secs
+4 points: 238 damage over 14 secs
+5 points: 304 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8640,
+Class-wide / Shared,Ability,Rupture,11273,1943,Rank 4,44,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 128 damage over 8 secs
+2 points: 185 damage over 10 secs
+3 points: 252 damage over 12 secs
+4 points: 329 damage over 14 secs
+5 points: 416 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=11273,
+Class-wide / Shared,Ability,Rupture,11274,1943,Rank 5,52,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 176 damage over 8 secs
+2 points: 255 damage over 10 secs
+3 points: 348 damage over 12 secs
+4 points: 455 damage over 14 secs
+5 points: 576 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=11274,
+Class-wide / Shared,Ability,Rupture,11275,1943,Rank 6,60,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 272 damage over 8 secs
+2 points: 380 damage over 10 secs
+3 points: 504 damage over 12 secs
+4 points: 644 damage over 14 secs
+5 points: 800 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=11275,
+Class-wide / Shared,Ability,Rupture,26867,1943,Rank 7,68,"Finishing move that causes damage over time, increased by your attack power. Lasts longer per combo point:
+1 point : 324 damage over 8 secs
+2 points: 460 damage over 10 secs
+3 points: 618 damage over 12 secs
+4 points: 798 damage over 14 secs
+5 points: 1000 damage over 16 secs",Offensive,Main,0,22,25 Energy,,Cooldown,"DEBUFF, DPS, FINISHER, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=26867,
+Class-wide / Shared,Ability,Sap,2070,6770,Rank 1,28,Incapacitates the target for up to 35 sec. Must be stealthed. Only works on Humanoids that are not in combat. Any damage caused will revive the target. Only 1 target may be sapped at a time.,Crowd Control,Utility,0,45,65 Energy,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=2070,
+Class-wide / Shared,Ability,Sap,6770,6770,Rank 2,10,Incapacitates the target for up to 25 sec. Must be stealthed. Only works on Humanoids that are not in combat. Any damage caused will revive the target. Only 1 target may be sapped at a time.,Crowd Control,Utility,0,45,65 Energy,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=6770,
+Class-wide / Shared,Ability,Sap,11297,6770,Rank 3,48,Incapacitates the target for up to 45 sec. Must be stealthed. Only works on Humanoids that are not in combat. Any damage caused will revive the target. Only 1 target may be sapped at a time.,Crowd Control,Utility,0,45,65 Energy,,Cooldown,"CC_HARD, DISORIENT, FILLER",https://www.wowhead.com/tbc/spell=11297,
+Class-wide / Shared,Ability,Shiv,5938,5938,,70,Performs an instant off-hand weapon attack that automatically applies the poison from your off-hand weapon to the target. Slower weapons require more Energy. Awards 1 combo point.,Utility,Utility,0,,20 Energy,,Cooldown,"DPS, FILLER, MINOR, PVE_PVP, UTILITY",https://www.wowhead.com/tbc/spell=5938,
+Class-wide / Shared,Ability,Slice and Dice,5171,5171,Rank 1,10,"Finishing move that increases melee attack speed by 20%. Lasts longer per combo point:
+1 point : 9 seconds
+2 points: 12 seconds
+3 points: 15 seconds
+4 points: 18 seconds
+5 points: 21 seconds",Offensive,Main,0,21,25 Energy,,Cooldown + aura,"BUFF, DPS, FINISHER, HAS_BUFF, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=5171,
+Class-wide / Shared,Ability,Slice and Dice,6774,5171,Rank 2,42,"Finishing move that increases melee attack speed by 30%. Lasts longer per combo point:
+1 point : 9 seconds
+2 points: 12 seconds
+3 points: 15 seconds
+4 points: 18 seconds
+5 points: 21 seconds",Offensive,Main,0,21,25 Energy,,Cooldown + aura,"BUFF, DPS, FINISHER, HAS_BUFF, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=6774,
+Class-wide / Shared,Ability,Sprint,2983,2983,Rank 1,10,Increases the rogue's movement speed by 50% for 15 sec. Does not break stealth.,Mobility,Utility,300,15,,,Cooldown + aura,"HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=2983,
+Class-wide / Shared,Ability,Sprint,8696,2983,Rank 2,34,Increases the rogue's movement speed by 60% for 15 sec. Does not break stealth.,Mobility,Utility,300,15,,,Cooldown + aura,"HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=8696,
+Class-wide / Shared,Ability,Sprint,11305,2983,Rank 3,58,Increases the rogue's movement speed by 70% for 15 sec. Does not break stealth.,Mobility,Utility,300,15,,,Cooldown + aura,"HAS_BUFF, MOVEMENT, MOVEMENT_SPEED",https://www.wowhead.com/tbc/spell=11305,
+Class-wide / Shared,Ability,Stealth,1784,1784,Rank 1,1,"Allows the rogue to sneak around, but reduces your speed by 50%. Lasts until cancelled.",Ability,Data only,10,,,,Cooldown,STEALTH,https://www.wowhead.com/tbc/spell=1784,
+Class-wide / Shared,Ability,Stealth,1785,1784,Rank 2,20,"Allows the rogue to sneak around, but reduces your speed by 40%. Lasts until cancelled.",Ability,Data only,10,,,,Cooldown,STEALTH,https://www.wowhead.com/tbc/spell=1785,
+Class-wide / Shared,Ability,Stealth,1786,1784,Rank 3,40,"Allows the rogue to sneak around, but reduces your speed by 35%. Lasts until cancelled.",Ability,Data only,10,,,,Cooldown,STEALTH,https://www.wowhead.com/tbc/spell=1786,
+Class-wide / Shared,Ability,Stealth,1787,1784,Rank 4,60,"Allows the rogue to sneak around, but reduces your speed by 30%. Lasts until cancelled.",Ability,Data only,10,,,,Cooldown,STEALTH,https://www.wowhead.com/tbc/spell=1787,
+Class-wide / Shared,Ability,Vanish,1856,1856,Rank 1,22,"Allows the rogue to vanish from sight, entering an improved stealth mode for 10 sec. Also breaks movement impairing effects.",Defensive,Utility,300,10,,,Cooldown,"DEFENSIVE, MAJOR, MOVEMENT_ESCAPE, STEALTH",https://www.wowhead.com/tbc/spell=1856,
+Class-wide / Shared,Ability,Vanish,1857,1856,Rank 1,42,"Allows the rogue to vanish from sight, entering an improved stealth mode for 10 sec. Also breaks movement impairing effects. More effective than Vanish (Rank 1).",Defensive,Utility,300,10,,,Cooldown,"DEFENSIVE, MAJOR, MOVEMENT_ESCAPE, STEALTH",https://www.wowhead.com/tbc/spell=1857,
+Class-wide / Shared,Ability,Vanish,26889,1856,Rank 2,62,"Allows the rogue to vanish from sight, entering an improved stealth mode for 10 sec. Also breaks movement impairing effects. More effective than Vanish (Rank 2).",Defensive,Utility,300,10,,,Cooldown,"DEFENSIVE, MAJOR, MOVEMENT_ESCAPE, STEALTH",https://www.wowhead.com/tbc/spell=26889,
+Class-wide / Shared,Ability,Wound Poison,13219,13219,Rank 1,32,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, causing 17 Nature damage and reducing all healing effects used on them by 10% for 15 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=13219,
+Class-wide / Shared,Ability,Wound Poison,13225,13219,Rank 2,40,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, causing 25 Nature damage and reducing all healing effects used on them by 10% for 15 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=13225,
+Class-wide / Shared,Ability,Wound Poison,13226,13219,Rank 3,48,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, causing 38 Nature damage and reducing all healing effects used on them by 10% for 15 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=13226,
+Class-wide / Shared,Ability,Wound Poison,13227,13219,Rank 4,56,"Coats a weapon with poison that lasts for 1 hour.
+Each strike has a 30% chance of poisoning the enemy, causing 53 Nature damage and reducing all healing effects used on them by 10% for 15 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=13227,
+Class-wide / Shared,Ability,Wound Poison,27189,13219,Rank 5,64,"Coats a weapon with poison that lasts for 1 hour.Each strike has a 30% chance of poisoning the enemy, causing 17 Nature damage and reducing all healing effects used on them by 10% for 15 sec. Stacks up to 5 times on a single target.",Offensive,Main,0,1800,,,Cooldown,"BUFF, DPS, LONG_BUFF",https://www.wowhead.com/tbc/spell=27189,
+Combat,Ability,Sinister Strike,1752,1752,Rank 1,1,An instant strike that causes 3 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1752,
+Combat,Ability,Sinister Strike,1757,1752,Rank 2,6,An instant strike that causes 6 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1757,
+Combat,Ability,Sinister Strike,1758,1752,Rank 3,14,An instant strike that causes 10 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1758,
+Combat,Ability,Sinister Strike,1759,1752,Rank 4,22,An instant strike that causes 15 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1759,
+Combat,Ability,Sinister Strike,1760,1752,Rank 5,30,An instant strike that causes 22 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=1760,
+Combat,Ability,Sinister Strike,8621,1752,Rank 6,38,An instant strike that causes 33 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=8621,
+Combat,Ability,Sinister Strike,11293,1752,Rank 7,46,An instant strike that causes 52 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=11293,
+Combat,Ability,Sinister Strike,11294,1752,Rank 8,54,An instant strike that causes 68 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=11294,
+Combat,Ability,Sinister Strike,26861,1752,Rank 9,62,An instant strike that causes 80 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=26861,
+Combat,Ability,Sinister Strike,26862,1752,Rank 10,70,An instant strike that causes 98 damage in addition to your normal weapon damage. Awards 1 combo point.,Offensive,Main,0,,45 Energy,,Cooldown,"DPS, PVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=26862,
+Combat,Talent Ability,Adrenaline Rush,13750,13750,Rank 1/1,,Increases your Energy regeneration rate by 100% for 15 sec.,Offensive,Main,300,15,,,Cooldown + aura,"DPS, HAS_BUFF, MAJOR",https://www.wowhead.com/tbc/spell=13750,Talent-required | Talent: Adrenaline Rush
+Combat,Talent,Aggression,18427,18427,Rank 1/3,,"Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 2%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18427,Talent: Aggression; tree row 6
+Combat,Talent,Aggression,18428,18427,Rank 2/3,,"Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18428,Talent: Aggression; tree row 6
+Combat,Talent,Aggression,18429,18427,Rank 3/3,,"Increases the damage of your Sinister Strike, Backstab, and Eviscerate abilities by 6%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=18429,Talent: Aggression; tree row 6
+Combat,Talent Ability,Blade Flurry,13877,13877,Rank 1/1,,"Increases your attack speed by 20%. In addition, attacks strike an additional nearby opponent. Lasts 15 sec.",Offensive,Main,120,15,25 Energy,,Cooldown + aura,"AOE, DPS, HAS_BUFF, MAJOR",https://www.wowhead.com/tbc/spell=13877,Talent-required | Talent: Blade Flurry
+Combat,Talent,Blade Twisting,31124,31124,Rank 1/2,,"Gives your Sinister Strike, Backstab, Gouge and Shiv abilities a 10% chance to Daze the target for 8 sec.",Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31124,Talent: Blade Twisting; tree row 6
+Combat,Talent,Blade Twisting,31126,31124,Rank 2/2,,"Gives your Sinister Strike, Backstab, Gouge and Shiv abilities a 20% chance to Daze the target for 8 sec.",Talent Passive,Data only,,8,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31126,Talent: Blade Twisting; tree row 6
+Combat,Talent,Combat Potency,35541,35541,Rank 1/5,,Gives your successful off-hand melee attacks a 20% chance to generate 3 Energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35541,Talent: Combat Potency; tree row 8
+Combat,Talent,Combat Potency,35550,35541,Rank 2/5,,Gives your successful off-hand melee attacks a 20% chance to generate 6 Energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35550,Talent: Combat Potency; tree row 8
+Combat,Talent,Combat Potency,35551,35541,Rank 3/5,,Gives your successful off-hand melee attacks a 20% chance to generate 9 Energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35551,Talent: Combat Potency; tree row 8
+Combat,Talent,Combat Potency,35552,35541,Rank 4/5,,Gives your successful off-hand melee attacks a 20% chance to generate 12 Energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35552,Talent: Combat Potency; tree row 8
+Combat,Talent,Combat Potency,35553,35541,Rank 5/5,,Gives your successful off-hand melee attacks a 20% chance to generate 15 Energy.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=35553,Talent: Combat Potency; tree row 8
+Combat,Talent,Dagger Specialization,13706,13706,Rank 1/5,,Increases your chance to get a critical strike with Daggers by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13706,Talent: Dagger Specialization; tree row 4
+Combat,Talent,Dagger Specialization,13804,13706,Rank 2/5,,Increases your chance to get a critical strike with Daggers by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13804,Talent: Dagger Specialization; tree row 4
+Combat,Talent,Dagger Specialization,13805,13706,Rank 3/5,,Increases your chance to get a critical strike with Daggers by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13805,Talent: Dagger Specialization; tree row 4
+Combat,Talent,Dagger Specialization,13806,13706,Rank 4/5,,Increases your chance to get a critical strike with Daggers by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13806,Talent: Dagger Specialization; tree row 4
+Combat,Talent,Dagger Specialization,13807,13706,Rank 5/5,,Increases your chance to get a critical strike with Daggers by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13807,Talent: Dagger Specialization; tree row 4
+Combat,Talent,Deflection,13713,13713,Rank 1/5,,Increases your Parry chance by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13713,Talent: Deflection; tree row 2
+Combat,Talent,Deflection,13853,13713,Rank 2/5,,Increases your Parry chance by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13853,Talent: Deflection; tree row 2
+Combat,Talent,Deflection,13854,13713,Rank 3/5,,Increases your Parry chance by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13854,Talent: Deflection; tree row 2
+Combat,Talent,Deflection,13855,13713,Rank 4/5,,Increases your Parry chance by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13855,Talent: Deflection; tree row 2
+Combat,Talent,Deflection,13856,13713,Rank 5/5,,Increases your Parry chance by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13856,Talent: Deflection; tree row 2
+Combat,Talent,Dual Wield Specialization,13715,13715,Rank 1/5,,Increases the damage done by your offhand weapon by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13715,Talent: Dual Wield Specialization; tree row 4
+Combat,Talent,Dual Wield Specialization,13848,13715,Rank 2/5,,Increases the damage done by your offhand weapon by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13848,Talent: Dual Wield Specialization; tree row 4
+Combat,Talent,Dual Wield Specialization,13849,13715,Rank 3/5,,Increases the damage done by your offhand weapon by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13849,Talent: Dual Wield Specialization; tree row 4
+Combat,Talent,Dual Wield Specialization,13851,13715,Rank 4/5,,Increases the damage done by your offhand weapon by 40%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13851,Talent: Dual Wield Specialization; tree row 4
+Combat,Talent,Dual Wield Specialization,13852,13715,Rank 5/5,,Increases the damage done by your offhand weapon by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13852,Talent: Dual Wield Specialization; tree row 4
+Combat,Talent,Endurance,13742,13742,Rank 1/2,,Reduces the cooldown of your Sprint and Evasion abilities by 45 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13742,Talent: Endurance; tree row 3
+Combat,Talent,Endurance,13872,13742,Rank 2/2,,Reduces the cooldown of your Sprint and Evasion abilities by 1.5 min.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13872,Talent: Endurance; tree row 3
+Combat,Talent,Fist Weapon Specialization,13707,13707,Rank 1/5,,Increases your chance to get a critical strike with Fist Weapons by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13707,Talent: Fist Weapon Specialization; tree row 5
+Combat,Talent,Fist Weapon Specialization,13966,13707,Rank 2/5,,Increases your chance to get a critical strike with Fist Weapons by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13966,Talent: Fist Weapon Specialization; tree row 5
+Combat,Talent,Fist Weapon Specialization,13967,13707,Rank 3/5,,Increases your chance to get a critical strike with Fist Weapons by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13967,Talent: Fist Weapon Specialization; tree row 5
+Combat,Talent,Fist Weapon Specialization,13968,13707,Rank 4/5,,Increases your chance to get a critical strike with Fist Weapons by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13968,Talent: Fist Weapon Specialization; tree row 5
+Combat,Talent,Fist Weapon Specialization,13969,13707,Rank 5/5,,Increases your chance to get a critical strike with Fist Weapons by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13969,Talent: Fist Weapon Specialization; tree row 5
+Combat,Talent,Improved Gouge,13741,13741,Rank 1/3,,Increases the effect duration of your Gouge ability by 0.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13741,Talent: Improved Gouge; tree row 1
+Combat,Talent,Improved Gouge,13792,13741,Rank 3/3,,Increases the effect duration of your Gouge ability by 1.5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13792,Talent: Improved Gouge; tree row 1
+Combat,Talent,Improved Gouge,13793,13741,Rank 2/3,,Increases the effect duration of your Gouge ability by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13793,Talent: Improved Gouge; tree row 1
+Combat,Talent,Improved Kick,13754,13754,Rank 1/2,,Gives your Kick ability a 50% chance to silence the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13754,Talent: Improved Kick; tree row 4
+Combat,Talent,Improved Kick,13867,13754,Rank 2/2,,Gives your Kick ability a 100% chance to silence the target for 2 sec.,Talent Passive,Data only,,2,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13867,Talent: Improved Kick; tree row 4
+Combat,Talent,Improved Sinister Strike,13732,13732,Rank 1/2,,Reduces the Energy cost of your Sinister Strike ability by 3.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13732,Talent: Improved Sinister Strike; tree row 1
+Combat,Talent,Improved Sinister Strike,13863,13732,Rank 2/2,,Reduces the Energy cost of your Sinister Strike ability by 5.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13863,Talent: Improved Sinister Strike; tree row 1
+Combat,Talent,Improved Slice and Dice,14165,14165,Rank 1/3,,Increases the duration of your Slice and Dice ability by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14165,Talent: Improved Slice and Dice; tree row 2
+Combat,Talent,Improved Slice and Dice,14166,14165,Rank 2/3,,Increases the duration of your Slice and Dice ability by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14166,Talent: Improved Slice and Dice; tree row 2
+Combat,Talent,Improved Slice and Dice,14167,14165,Rank 3/3,,Increases the duration of your Slice and Dice ability by 45%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14167,Talent: Improved Slice and Dice; tree row 2
+Combat,Talent,Improved Sprint,13743,13743,Rank 1/2,,Gives a 50% chance to remove all Movement Impairing effects when you activate your Sprint ability.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13743,Talent: Improved Sprint; tree row 3
+Combat,Talent,Improved Sprint,13875,13743,Rank 2/2,,Gives a 100% chance to remove all Movement Impairing effects when you activate your Sprint ability.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13875,Talent: Improved Sprint; tree row 3
+Combat,Talent,Lightning Reflexes,13712,13712,Rank 1/5,,Increases your Dodge chance by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13712,Talent: Lightning Reflexes; tree row 1
+Combat,Talent,Lightning Reflexes,13788,13712,Rank 2/5,,Increases your Dodge chance by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13788,Talent: Lightning Reflexes; tree row 1
+Combat,Talent,Lightning Reflexes,13789,13712,Rank 3/5,,Increases your Dodge chance by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13789,Talent: Lightning Reflexes; tree row 1
+Combat,Talent,Lightning Reflexes,13790,13712,Rank 4/5,,Increases your Dodge chance by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13790,Talent: Lightning Reflexes; tree row 1
+Combat,Talent,Lightning Reflexes,13791,13712,Rank 5/5,,Increases your Dodge chance by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13791,Talent: Lightning Reflexes; tree row 1
+Combat,Talent,Mace Specialization,13709,13709,Rank 1/5,,"Increases the damage dealt by your critical strikes with maces by 1%, and gives you a 1% chance to stun your target for 3 sec with a mace.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13709,Talent: Mace Specialization; tree row 5
+Combat,Talent,Mace Specialization,13800,13709,Rank 2/5,,"Increases the damage dealt by your critical strikes with maces by 2%, and gives you a 2% chance to stun your target for 3 sec with a mace.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13800,Talent: Mace Specialization; tree row 5
+Combat,Talent,Mace Specialization,13801,13709,Rank 3/5,,"Increases the damage dealt by your critical strikes with maces by 3%, and gives you a 3% chance to stun your target for 3 sec with a mace.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13801,Talent: Mace Specialization; tree row 5
+Combat,Talent,Mace Specialization,13802,13709,Rank 4/5,,"Increases the damage dealt by your critical strikes with maces by 4%, and gives you a 4% chance to stun your target for 3 sec with a mace.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13802,Talent: Mace Specialization; tree row 5
+Combat,Talent,Mace Specialization,13803,13709,Rank 5/5,,"Increases the damage dealt by your critical strikes with maces by 5%, and gives you a 6% chance to stun your target for 3 sec with a mace.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13803,Talent: Mace Specialization; tree row 5
+Combat,Talent,Nerves of Steel,31130,31130,Rank 1/2,,Increases your chance to resist Stun and Fear effects by an additional 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31130,Talent: Nerves of Steel; tree row 7
+Combat,Talent,Nerves of Steel,31131,31130,Rank 2/2,,Increases your chance to resist Stun and Fear effects by an additional 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31131,Talent: Nerves of Steel; tree row 7
+Combat,Talent,Precision,13705,13705,Rank 1/5,,Increases your chance to hit with weapons by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13705,Talent: Precision; tree row 2
+Combat,Talent,Precision,13832,13705,Rank 2/5,,Increases your chance to hit with weapons by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13832,Talent: Precision; tree row 2
+Combat,Talent,Precision,13843,13705,Rank 3/5,,Increases your chance to hit with weapons by 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13843,Talent: Precision; tree row 2
+Combat,Talent,Precision,13844,13705,Rank 4/5,,Increases your chance to hit with weapons by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13844,Talent: Precision; tree row 2
+Combat,Talent,Precision,13845,13705,Rank 5/5,,Increases your chance to hit with weapons by 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13845,Talent: Precision; tree row 2
+Combat,Talent Ability,Riposte,14251,14251,Rank 1/1,,A strike that becomes active after parrying an opponent's attack. This attack deals 150% weapon damage and disarms the target for 6 sec.,Offensive,Main,6,6,10 Energy,,Cooldown,"DPS, PVP, REACTIVE, ROTATIONAL",https://www.wowhead.com/tbc/spell=14251,Talent-required | Talent: Riposte
+Combat,Talent,Surprise Attacks,32601,32601,Rank 1/1,,"Your finishing moves can no longer be dodged, and the damage dealt by your Sinister Strike, Backstab, Shiv and Gouge abilities is increased by 10%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=32601,Talent: Surprise Attacks; tree row 9
+Combat,Talent,Sword Specialization,13960,13960,Rank 1/5,,Gives you a 1% chance to get an extra attack on the same target after hitting your target with your Sword.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13960,Talent: Sword Specialization; tree row 5
+Combat,Talent,Sword Specialization,13961,13960,Rank 2/5,,Gives you a 2% chance to get an extra attack on the same target after hitting your target with your Sword.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13961,Talent: Sword Specialization; tree row 5
+Combat,Talent,Sword Specialization,13962,13960,Rank 3/5,,Gives you a 3% chance to get an extra attack on the same target after hitting your target with your Sword.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13962,Talent: Sword Specialization; tree row 5
+Combat,Talent,Sword Specialization,13963,13960,Rank 4/5,,Gives you a 4% chance to get an extra attack on the same target after hitting your target with your Sword.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13963,Talent: Sword Specialization; tree row 5
+Combat,Talent,Sword Specialization,13964,13960,Rank 5/5,,Gives you a 5% chance to get an extra attack on the same target after hitting your target with your Sword.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13964,Talent: Sword Specialization; tree row 5
+Combat,Talent,Vitality,31122,31122,Rank 1/2,,Increases your total Stamina by 2% and your total Agility by 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31122,Talent: Vitality; tree row 7
+Combat,Talent,Vitality,31123,31122,Rank 2/2,,Increases your total Stamina by 4% and your total Agility by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31123,Talent: Vitality; tree row 7
+Combat,Talent,Weapon Expertise,30919,30919,Rank 1/2,,Increases your expertise by 5.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30919,Talent: Weapon Expertise; tree row 6
+Combat,Talent,Weapon Expertise,30920,30919,Rank 2/2,,Increases your expertise by 10.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30920,Talent: Weapon Expertise; tree row 6
+Subtlety,Talent,Camouflage,13975,13975,Rank 1/5,,Increases your speed while stealthed by 3% and reduces the cooldown of your Stealth ability by 1 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13975,Talent: Camouflage; tree row 2
+Subtlety,Talent,Camouflage,14062,13975,Rank 2/5,,Increases your speed while stealthed by 6% and reduces the cooldown of your Stealth ability by 2 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14062,Talent: Camouflage; tree row 2
+Subtlety,Talent,Camouflage,14063,13975,Rank 3/5,,Increases your speed while stealthed by 9% and reduces the cooldown of your Stealth ability by 3 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14063,Talent: Camouflage; tree row 2
+Subtlety,Talent,Camouflage,14064,13975,Rank 4/5,,Increases your speed while stealthed by 12% and reduces the cooldown of your Stealth ability by 4 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14064,Talent: Camouflage; tree row 2
+Subtlety,Talent,Camouflage,14065,13975,Rank 5/5,,Increases your speed while stealthed by 15% and reduces the cooldown of your Stealth ability by 5 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14065,Talent: Camouflage; tree row 2
+Subtlety,Talent,Cheat Death,31228,31228,Rank 1/3,,"You have a 33% chance that an attack which would otherwise kill you will instead reduce you to 10% of your maximum health. In addition, all damage taken will be reduced by up to 90% for 3 sec (modified by resilience). This effect cannot occur more than once per minute.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31228,Talent: Cheat Death; tree row 7
+Subtlety,Talent,Cheat Death,31229,31228,Rank 2/3,,"You have a 66% chance that an attack which would otherwise kill you will instead reduce you to 10% of your maximum health. In addition, all damage taken will be reduced by up to 90% for 3 sec (modified by resilience). This effect cannot occur more than once per minute.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31229,Talent: Cheat Death; tree row 7
+Subtlety,Talent,Cheat Death,31230,31228,Rank 3/3,,"You have a 100% chance that an attack which would otherwise kill you will instead reduce you to 10% of your maximum health. In addition, all damage taken will be reduced by up to 90% for 3 sec (modified by resilience). This effect cannot occur more than once per minute.",Talent Passive,Data only,,3,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31230,Talent: Cheat Death; tree row 7
+Subtlety,Talent,Deadliness,30902,30902,Rank 1/5,,Increases your attack power by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30902,Talent: Deadliness; tree row 6
+Subtlety,Talent,Deadliness,30903,30902,Rank 2/5,,Increases your attack power by 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30903,Talent: Deadliness; tree row 6
+Subtlety,Talent,Deadliness,30904,30902,Rank 3/5,,Increases your attack power by 6%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30904,Talent: Deadliness; tree row 6
+Subtlety,Talent,Deadliness,30905,30902,Rank 4/5,,Increases your attack power by 8%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30905,Talent: Deadliness; tree row 6
+Subtlety,Talent,Deadliness,30906,30902,Rank 5/5,,Increases your attack power by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30906,Talent: Deadliness; tree row 6
+Subtlety,Talent,Dirty Deeds,14082,14082,Rank 1/2,,"Reduces the Energy cost of your Cheap Shot and Garrote abilities by 10. Additionally, your special abilities cause 10% more damage against targets below 35% health.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14082,Talent: Dirty Deeds; tree row 5
+Subtlety,Talent,Dirty Deeds,14083,14082,Rank 2/2,,"Reduces the Energy cost of your Cheap Shot and Garrote abilities by 20. Additionally, your special abilities cause 20% more damage against targets below 35% health.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14083,Talent: Dirty Deeds; tree row 5
+Subtlety,Talent,Dirty Tricks,14076,14076,Rank 1/2,,Increases the range of your Blind and Sap abilities by 2 yards and reduces the energy cost of your Blind and Sap abilities by 25%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14076,Talent: Dirty Tricks; tree row 2
+Subtlety,Talent,Dirty Tricks,14094,14076,Rank 2/2,,Increases the range of your Blind and Sap abilities by 5 yards and reduces the energy cost of your Blind and Sap abilities by 50%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14094,Talent: Dirty Tricks; tree row 2
+Subtlety,Talent,Elusiveness,13981,13981,Rank 1/2,,Reduces the cooldown of your Vanish and Blind abilities by 45 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13981,Talent: Elusiveness; tree row 4
+Subtlety,Talent,Elusiveness,14066,13981,Rank 2/2,,Reduces the cooldown of your Vanish and Blind abilities by 90 sec.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14066,Talent: Elusiveness; tree row 4
+Subtlety,Talent,Enveloping Shadows,31211,31211,Rank 1/3,,Increases your chance to avoid area of effect attacks by an additional 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31211,Talent: Enveloping Shadows; tree row 7
+Subtlety,Talent,Enveloping Shadows,31212,31211,Rank 2/3,,Increases your chance to avoid area of effect attacks by an additional 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31212,Talent: Enveloping Shadows; tree row 7
+Subtlety,Talent,Enveloping Shadows,31213,31211,Rank 3/3,,Increases your chance to avoid area of effect attacks by an additional 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31213,Talent: Enveloping Shadows; tree row 7
+Subtlety,Talent Ability,Ghostly Strike,14278,14278,Rank 1/1,,A strike that deals 125% weapon damage and increases your chance to dodge by 15% for 7 sec. Awards 1 combo point.,Defensive,Utility,20,7,40 Energy,,Cooldown,"DEFENSIVE, DPS, MINOR",https://www.wowhead.com/tbc/spell=14278,Talent-required | Talent: Ghostly Strike
+Subtlety,Talent,Heightened Senses,30894,30894,Rank 1/2,,Increases your Stealth detection and reduces the chance you are hit by spells and ranged attacks by 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30894,Talent: Heightened Senses; tree row 5
+Subtlety,Talent,Heightened Senses,30895,30894,Rank 1,,Increases your Stealth detection and reduces the chance you are hit by spells and ranged attacks by 4%. More effective than Heightened Senses (Rank 1).,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30895,Talent: Heightened Senses; tree row 5
+Subtlety,Talent Ability,Hemorrhage,16511,16511,Rank 1/1,,"An instant strike that deals 110 / 
+Sinister Calling
+: 
+111
+/ 
+Sinister Calling
+: 
+112
+/ 
+Sinister Calling
+: 
+113
+/ 
+Sinister Calling
+: 
+114
+% weapon damage and causes the target to hemorrhage, increasing any Physical damage dealt to the target by up to 13. Lasts 10 charges or 15 sec. Awards 1 combo point.",Offensive,Main,0,,35 Energy,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=16511,Talent-required | Talent: Hemorrhage
+Subtlety,Talent Ability,Hemorrhage,17347,16511,Rank 2,46,"An instant strike that deals 110 / 
+Sinister Calling
+: 
+111
+/ 
+Sinister Calling
+: 
+112
+/ 
+Sinister Calling
+: 
+113
+/ 
+Sinister Calling
+: 
+114
+% weapon damage and causes the target to hemorrhage, increasing any Physical damage dealt to the target by up to 21. Lasts 10 charges or 15 sec. Awards 1 combo point.",Offensive,Main,0,,35 Energy,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17347,Talent-required
+Subtlety,Talent Ability,Hemorrhage,17348,16511,Rank 3,58,"An instant strike that deals 110 / 
+Sinister Calling
+: 
+111
+/ 
+Sinister Calling
+: 
+112
+/ 
+Sinister Calling
+: 
+113
+/ 
+Sinister Calling
+: 
+114
+% weapon damage and causes the target to hemorrhage, increasing any Physical damage dealt to the target by up to 29. Lasts 10 charges or 15 sec. Awards 1 combo point.",Offensive,Main,0,,35 Energy,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=17348,Talent-required
+Subtlety,Talent Ability,Hemorrhage,26864,16511,Rank 4,70,"An instant strike that deals 110 / 
+Sinister Calling
+: 
+111
+/ 
+Sinister Calling
+: 
+112
+/ 
+Sinister Calling
+: 
+113
+/ 
+Sinister Calling
+: 
+114
+% weapon damage and causes the target to hemorrhage, increasing any Physical damage dealt to the target by up to 42. Lasts 10 charges or 15 sec. Awards 1 combo point.",Offensive,Main,0,,35 Energy,,Cooldown,"DEBUFF, DPS, PVE_PVP, ROTATIONAL",https://www.wowhead.com/tbc/spell=26864,Talent-required
+Subtlety,Talent,Improved Ambush,14079,14079,Rank 1/3,,Increases the critical strike chance of your Ambush ability by 15%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14079,Talent: Improved Ambush; tree row 3
+Subtlety,Talent,Improved Ambush,14080,14079,Rank 2/3,,Increases the critical strike chance of your Ambush ability by 30%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14080,Talent: Improved Ambush; tree row 3
+Subtlety,Talent,Improved Ambush,14081,14079,Rank 3/3,,Increases the critical strike chance of your Ambush ability by 45%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14081,Talent: Improved Ambush; tree row 3
+Subtlety,Talent,Initiative,13976,13976,Rank 1/3,,"Gives you a 25% chance to add an additional combo point to your target when using your Ambush, Garrote, or Cheap Shot ability.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13976,Talent: Initiative; tree row 3
+Subtlety,Talent,Initiative,13979,13976,Rank 2/3,,"Gives you a 50% chance to add an additional combo point to your target when using your Ambush, Garrote, or Cheap Shot ability.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13979,Talent: Initiative; tree row 3
+Subtlety,Talent,Initiative,13980,13976,Rank 3/3,,"Gives you a 75% chance to add an additional combo point to your target when using your Ambush, Garrote, or Cheap Shot ability.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13980,Talent: Initiative; tree row 3
+Subtlety,Talent,Master of Deception,13958,13958,Rank 1/5,,Reduces the chance enemies have to detect you while in Stealth mode.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13958,Talent: Master of Deception; tree row 1
+Subtlety,Talent,Master of Deception,13970,13958,Rank 1,,Reduces the chance enemies have to detect you while in Stealth mode. More effective than Master of Deception (Rank 1).,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13970,Talent: Master of Deception; tree row 1
+Subtlety,Talent,Master of Deception,13971,13958,Rank 2,,Reduces the chance enemies have to detect you while in Stealth mode. More effective than Master of Deception (Rank 2).,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13971,Talent: Master of Deception; tree row 1
+Subtlety,Talent,Master of Deception,13972,13958,Rank 3,,Reduces the chance enemies have to detect you while in Stealth mode. More effective than Master of Deception (Rank 3).,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13972,Talent: Master of Deception; tree row 1
+Subtlety,Talent,Master of Deception,13973,13958,Rank 4,,Reduces the chance enemies have to detect you while in Stealth mode. More effective than Master of Deception (Rank 4).,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13973,Talent: Master of Deception; tree row 1
+Subtlety,Talent,Master of Subtlety,31221,31221,Rank 1/3,,Attacks made while stealthed and for 6 seconds after breaking stealth cause an additional 4% damage.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31221,Talent: Master of Subtlety; tree row 6
+Subtlety,Talent,Master of Subtlety,31222,31221,Rank 2/3,,Attacks made while stealthed and for 6 seconds after breaking stealth cause an additional 7% damage.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31222,Talent: Master of Subtlety; tree row 6
+Subtlety,Talent,Master of Subtlety,31223,31221,Rank 3/3,,Attacks made while stealthed and for 6 seconds after breaking stealth cause an additional 10% damage.,Talent Passive,Data only,,6,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31223,Talent: Master of Subtlety; tree row 6
+Subtlety,Talent,Opportunity,14057,14057,Rank 1/5,,"Increases the damage dealt when striking from behind with your Backstab, Mutilate, Garrote and Ambush abilities by 4%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14057,Talent: Opportunity; tree row 1
+Subtlety,Talent,Opportunity,14072,14057,Rank 2/5,,"Increases the damage dealt when striking from behind with your Backstab, Mutilate, Garrote and Ambush abilities by 8%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14072,Talent: Opportunity; tree row 1
+Subtlety,Talent,Opportunity,14073,14057,Rank 3/5,,"Increases the damage dealt when striking from behind with your Backstab, Mutilate, Garrote and Ambush abilities by 12%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14073,Talent: Opportunity; tree row 1
+Subtlety,Talent,Opportunity,14074,14057,Rank 4/5,,"Increases the damage dealt when striking from behind with your Backstab, Mutilate, Garrote and Ambush abilities by 16%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14074,Talent: Opportunity; tree row 1
+Subtlety,Talent,Opportunity,14075,14057,Rank 5/5,,"Increases the damage dealt when striking from behind with your Backstab, Mutilate, Garrote and Ambush abilities by 20%.",Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14075,Talent: Opportunity; tree row 1
+Subtlety,Talent Ability,Premeditation,14183,14183,Rank 1/1,,"When used, adds 2 combo points to your target. You must add to or use those combo points within 10 sec or the combo points are lost.",Resource,Main,120,,,,Cooldown,"DPS, MINOR, RESOURCE",https://www.wowhead.com/tbc/spell=14183,Talent-required | Talent: Premeditation
+Subtlety,Talent Ability,Preparation,14185,14185,Rank 1/1,,"When activated, this ability immediately finishes the cooldown on your Evasion, Sprint, Vanish, Cold Blood, Shadowstep and Premeditation abilities.",Utility,Utility,600,,,,Cooldown,UTILITY,https://www.wowhead.com/tbc/spell=14185,Talent-required | Talent: Preparation
+Subtlety,Talent,Serrated Blades,14171,14171,Rank 1/3,,Causes your attacks to ignore 0 of your target's Armor and increases the damage dealt by your Rupture ability by 10%. The amount of Armor reduced increases with your level.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14171,Talent: Serrated Blades; tree row 4
+Subtlety,Talent,Serrated Blades,14172,14171,Rank 2/3,,Causes your attacks to ignore 0 of your target's Armor and increases the damage dealt by your Rupture ability by 20%. The amount of Armor reduced increases with your level.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14172,Talent: Serrated Blades; tree row 4
+Subtlety,Talent,Serrated Blades,14173,14171,Rank 3/3,,Causes your attacks to ignore 0 of your target's Armor and increases the damage dealt by your Rupture ability by 30%. The amount of Armor reduced increases with your level.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14173,Talent: Serrated Blades; tree row 4
+Subtlety,Talent,Setup,13983,13983,Rank 1/3,,Gives you a 15% chance to add a combo point to your target after dodging their attack or fully resisting one of their spells.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=13983,Talent: Setup; tree row 4
+Subtlety,Talent,Setup,14070,13983,Rank 2/3,,Gives you a 30% chance to add a combo point to your target after dodging their attack or fully resisting one of their spells.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14070,Talent: Setup; tree row 4
+Subtlety,Talent,Setup,14071,13983,Rank 3/3,,Gives you a 45% chance to add a combo point to your target after dodging their attack or fully resisting one of their spells.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=14071,Talent: Setup; tree row 4
+Subtlety,Talent Ability,Shadowstep,36554,36554,Rank 1/1,,Attempts to step through the shadows and reappear behind your enemy and increases movement speed by 70% for 3 sec. The damage of your next ability is increased by 20% and the threat caused is reduced by 50%. Lasts 10 sec.,Mobility,Utility,30,10,10 Energy,36563,Cooldown + aura,"DPS, HAS_BUFF, MINOR, MOVEMENT, MOVEMENT_GAP_CLOSE",https://www.wowhead.com/tbc/spell=36554,Talent-required | Talent: Shadowstep
+Subtlety,Talent,Sinister Calling,31216,31216,Rank 1/5,,Increases your total Agility by 3% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 1%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31216,Talent: Sinister Calling; tree row 8
+Subtlety,Talent,Sinister Calling,31217,31216,Rank 2/5,,Increases your total Agility by 6% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 2%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31217,Talent: Sinister Calling; tree row 8
+Subtlety,Talent,Sinister Calling,31218,31216,Rank 3/5,,Increases your total Agility by 9% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 3%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31218,Talent: Sinister Calling; tree row 8
+Subtlety,Talent,Sinister Calling,31219,31216,Rank 4/5,,Increases your total Agility by 12% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 4%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31219,Talent: Sinister Calling; tree row 8
+Subtlety,Talent,Sinister Calling,31220,31216,Rank 5/5,,Increases your total Agility by 15% and increases the percentage damage bonus of Backstab and Hemorrhage by an additional 5%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=31220,Talent: Sinister Calling; tree row 8
+Subtlety,Talent,Sleight of Hand,30892,30892,Rank 1/2,,Reduces the chance you are critically hit by melee and ranged attacks by 1% and increases the threat reduction of your Feint ability by 10%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30892,Talent: Sleight of Hand; tree row 2
+Subtlety,Talent,Sleight of Hand,30893,30892,Rank 2/2,,Reduces the chance you are critically hit by melee and ranged attacks by 2% and increases the threat reduction of your Feint ability by 20%.,Talent Passive,Data only,,,,,Data only,TALENT,https://www.wowhead.com/tbc/spell=30893,Talent: Sleight of Hand; tree row 2
