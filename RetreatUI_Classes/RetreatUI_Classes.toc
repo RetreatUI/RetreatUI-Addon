@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.7-beta.4
+## Version: 1.1.7-beta.5
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
