@@ -1,16 +1,16 @@
-# RetreatUI v1.1.7-beta.5
+# RetreatUI v1.1.7-beta.6
 
-This prerelease fixes the remaining WeakAuras 5.21.2 icon crash seen on Conquest of Azeroth after beta.4.
+This prerelease fixes the remaining WeakAuras 5.21.2 `Icon.lua:642` crash after beta.5 by correcting the generated displays' progress source.
 
-## WeakAuras 5.21.2 icon compatibility
+## WeakAuras progress-source fix
 
-- Fixes `WeakAuras/RegionTypes/Icon.lua:642: attempt to perform arithmetic on field 'expirationTime' (a nil value)` when a cooldown-enabled icon is shown from a static custom trigger state.
-- The reported locals showed the failing RetreatUI icon was already a valid `progressType = "static"` state. That means beta.4's timing-state validator was working, but the crash happened later inside WeakAuras' icon cooldown object.
-- WeakAuras 5.21.2 `Icon:PreShow()` checks the cooldown object's duration before calculating `expirationTime - duration`. On the Ascension client, a static icon can leave that internal duration populated without a matching WeakAuras-owned expirationTime.
-- RetreatUI now keeps real cooldowns as normal timed states, but converts otherwise-static ICON states at the final trigger boundary to a zero-duration timed state (`duration = 0`, `expirationTime = 0`). WeakAuras therefore clears/hides the cooldown safely before `PreShow()` and never enters the invalid subtraction branch.
-- The compatibility layer only touches cooldown-enabled icon regions. Resource bars, segmented resources and target aura bars retain their normal static/timed semantics.
-- Main, Utility, Buffs & Procs, class State icons, class counter icons and Trinkets are covered automatically.
-- No HUD positions, class spell databases, tracked abilities or renderer ownership changed from beta.4.
+- The beta.5 crash locals still showed `progressType = "static"` on the rendered Icon even though RetreatUI had converted the custom trigger state to a safe timed zero-duration representation.
+- WeakAuras 5.21.2 distinguishes between the trigger state and the region's selected `progressSource`. RetreatUI generated its custom-state displays with `progressSource = {1, ""}`, which does not provide WeakAuras with a concrete timer/number descriptor for these stateupdate triggers.
+- RetreatUI now sets generated custom-state Icons and AuraBars to automatic state progress (`progressSource = {-1, ""}`). WeakAuras therefore reads `state.progressType` directly and dispatches to its normal timed/static progress paths.
+- Combined with the beta.5 icon compatibility layer, ready/static cooldown-enabled Icons are represented as a zero-duration timed state and are now actually consumed as timed by the region, preventing the invalid `expirationTime - duration` subtraction in `Icon:PreShow()`.
+- Real cooldowns retain their normal timed duration and expiration time.
+- Resource bars, segmented resources and target bars also now consume the exact progress state returned by RetreatUI instead of an incomplete trigger-1 progress descriptor.
+- No HUD positions, class databases, tracked spells or renderer ownership changed.
 
 ## Existing WeakAuras HUD layout
 
@@ -24,7 +24,7 @@ This prerelease fixes the remaining WeakAuras 5.21.2 icon crash seen on Conquest
 
 ## Testing note
 
-Install beta.5 over beta.4, reload UI, then run the RetreatUI installer again. The Class WeakAuras HUD step should complete without the Icon.lua `expirationTime` crash. Existing partially-created beta.3/beta.4 RetreatUI WeakAuras are updated in place by the installer.
+Install beta.6 over beta.5, reload UI, and run the RetreatUI installer again. Existing RetreatUI WeakAuras are updated in place. The Class WeakAuras HUD step should complete without the WeakAuras 5.21.2 `expirationTime` error.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 
