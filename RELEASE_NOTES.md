@@ -1,31 +1,33 @@
-# RetreatUI v1.1.7-beta.11
+# RetreatUI v1.1.7-beta.12
 
-This prerelease locks stance/form icon geometry to the exact WeakAuras values used throughout RetreatUI and strips the CoA installer back to the same clean core-import flow as TBC.
+This prerelease applies the live-tested State position, moves player target debuffs back to ElvUI, and removes the retired secure Buff Manager runtime from the shipped load path.
 
-## Exact stance / form icon rule
+## Exact State / stance / form placement
 
-- Every State / stance / form WeakAura leaf is exactly 38x38.
-- Every State / stance / form WeakAura leaf has X Offset 0 and Y Offset 0.
-- There are no per-class or per-state icon nudges.
-- The shared State Dynamic Group owns the lane placement; individual state icons never carry their own positional correction.
-- Reinstalling the class WeakAuras deletes and rebuilds the current class State tree so stale offsets from earlier betas cannot survive.
-- Validation fails if any State child is not 38x38 at X 0 / Y 0.
+- The shared State Dynamic Group is now fixed at X Offset -159 / Y Offset -3.
+- The group remains SCREEN/CENTER anchored and uses one global rule for every CoA class.
+- Every actual State / stance / form icon remains exactly 38x38 with child X Offset 0 / Y Offset 0.
+- Reinstalling WeakAuras still rebuilds the current class State tree so older offsets cannot survive.
 
-## Clean TBC-style installer
+## Target debuffs belong to ElvUI
 
-The installer now contains only the requested core imports:
+- The class `Target` WeakAura group is retired and removed during WeakAura reinstall.
+- RetreatUI no longer renders target debuff bars/icons in its HUD.
+- The RetreatUI ElvUI profile enables Target Debuffs with filter priority `Blacklist,Personal`, so only the player's own non-blacklisted target debuffs are shown by ElvUI.
+- The WeakAura class package is now Resource, Main, Utility and State; target debuffs are owned by ElvUI.
 
-- ElvUI
-- Guardian Macros (Guardian only; the step does not exist on other classes)
-- Details
-- TurboPlates
-- WeakAuras
+## Secure runtime cleanup
 
-Welcome and Reload remain as navigation pages. Party Trackers, Buff Manager, NPC Tracking, DBM, Game Settings and Ascension Cleanup are no longer installer pages.
+- `Core/BuffManager.lua` is no longer loaded by RetreatUI.
+- The retired Buff Manager created SecureActionButtonTemplate frames, changed secure spell attributes and installed override bindings on login even when it was not part of the new installer.
+- Removing it from the load path eliminates that unnecessary secure-frame/override-binding taint surface.
+- The file remains in the repository for reference; it is simply not executed by the addon.
 
-## General WeakAuras
+## Installer
 
-`RetreatUI - General` continues to own Trinkets, Buffs & Procs and Racials. Racials are not part of class Utility.
+The clean TBC-style installer remains limited to ElvUI, Guardian Macros (Guardian only), Details, TurboPlates and WeakAuras, plus Welcome/Reload navigation pages.
+
+`RetreatUI - General` continues to own Trinkets, Buffs & Procs and Racials.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 

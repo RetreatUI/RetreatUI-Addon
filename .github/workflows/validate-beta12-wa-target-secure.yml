@@ -1,22 +1,26 @@
-name: Validate beta11 State and Installer
+name: Validate beta12 WA Target and Secure Cleanup
 
 on:
   pull_request:
     branches: [main]
     paths:
       - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
       - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - ".github/workflows/validate-beta11-state-installer.yml"
+      - ".github/workflows/validate-beta12-wa-target-secure.yml"
   push:
     branches: [main]
     paths:
       - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
       - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - ".github/workflows/validate-beta11-state-installer.yml"
+      - ".github/workflows/validate-beta12-wa-target-secure.yml"
 
 jobs:
   validate:
@@ -27,29 +31,49 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate exact state geometry and installer scope
+      - name: Validate live HUD ownership and secure cleanup
         shell: bash
         run: |
           set -euo pipefail
           luac5.1 -p RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
           luac5.1 -p RetreatUI/Installer/TBCStyleInstaller.lua
 
           grep -Fq 'Core\WeakAuraBeta11Fixes.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Core\WeakAuraBeta12Fixes.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Profiles\ElvUITargetDebuffs.lua' RetreatUI/RetreatUI.toc
+
+          # State leaves stay exactly as requested.
           grep -Fq 'local STATE_ICON_SIZE = 38' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'local STATE_CHILD_X, STATE_CHILD_Y = 0, 0' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'display.width = STATE_ICON_SIZE' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'display.height = STATE_ICON_SIZE' RetreatUI/Core/WeakAuraBeta11Fixes.lua
-          grep -Fq 'display.xOffset = STATE_CHILD_X' RetreatUI/Core/WeakAuraBeta11Fixes.lua
-          grep -Fq 'display.yOffset = STATE_CHILD_Y' RetreatUI/Core/WeakAuraBeta11Fixes.lua
-          grep -Fq 'DeleteWeakAuraTree("RetreatUI - " .. tostring(className) .. " — State")' RetreatUI/Core/WeakAuraBeta11Fixes.lua
 
+          # The shared State group uses the live-tested global placement.
+          grep -Fq 'local STATE_GROUP_X, STATE_GROUP_Y = -159, -3' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          grep -Fq 'state.xOffset = STATE_GROUP_X' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          grep -Fq 'state.yOffset = STATE_GROUP_Y' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          grep -Fq 'state.anchorFrameType = "SCREEN"' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          grep -Fq 'DeleteWeakAuraTree("RetreatUI - " .. tostring(className) .. " — Target")' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          grep -Fq 'packageData.classGroups.target = nil' RetreatUI/Core/WeakAuraBeta12Fixes.lua
+
+          # ElvUI owns personal target debuffs.
+          grep -Fq 'local PRIORITY = "Blacklist,Personal"' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+          grep -Fq 'debuffs.enable = true' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+          grep -Fq 'debuffs.priority = PRIORITY' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+          grep -Fq 'debuffs.maxDuration = 0' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+
+          # Retired secure Buff Manager must not execute at login.
+          ! grep -Fq 'Core\BuffManager.lua' RetreatUI/RetreatUI.toc
+
+          # Installer stays limited to the requested imports.
           grep -Fq 'id="elvui", key="unitframes"' RetreatUI/Installer/TBCStyleInstaller.lua
           grep -Fq 'id="macros", custom="guardianMacros"' RetreatUI/Installer/TBCStyleInstaller.lua
           grep -Fq 'if CurrentClass() == "Guardian" then' RetreatUI/Installer/TBCStyleInstaller.lua
           grep -Fq 'id="details", key="details"' RetreatUI/Installer/TBCStyleInstaller.lua
           grep -Fq 'id="turboplates", key="nameplates"' RetreatUI/Installer/TBCStyleInstaller.lua
           grep -Fq 'id="weakauras", key="classHUD"' RetreatUI/Installer/TBCStyleInstaller.lua
-
           ! grep -Fq 'key="partyTrackers"' RetreatUI/Installer/TBCStyleInstaller.lua
           ! grep -Fq 'key="buffManager"' RetreatUI/Installer/TBCStyleInstaller.lua
           ! grep -Fq 'key="npcTracking"' RetreatUI/Installer/TBCStyleInstaller.lua
@@ -59,5 +83,5 @@ jobs:
 
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.11"
+          test "$core_version" = "1.1.7-beta.12"
           test "$core_version" = "$classes_version"
