@@ -7,6 +7,8 @@ on:
       - "RetreatUI/Core/WeakAuraHUDRuntime.lua"
       - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
+      - "RetreatUI/Core/WeakAuraTBCParity.lua"
+      - "RetreatUI/Core/WeakAuraCurationSafety.lua"
       - "RetreatUI/Core/WeakAuraIconStaticCompat.lua"
       - "RetreatUI/Core/WeakAuraAutoProgressSource.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
@@ -20,6 +22,8 @@ on:
       - "RetreatUI/Core/WeakAuraHUDRuntime.lua"
       - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
+      - "RetreatUI/Core/WeakAuraTBCParity.lua"
+      - "RetreatUI/Core/WeakAuraCurationSafety.lua"
       - "RetreatUI/Core/WeakAuraIconStaticCompat.lua"
       - "RetreatUI/Core/WeakAuraAutoProgressSource.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
@@ -47,18 +51,24 @@ jobs:
           luac5.1 -p RetreatUI/Core/WeakAuraHUDRuntime.lua
           luac5.1 -p RetreatUI/Core/WeakAuraStateSafety.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPackage.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraTBCParity.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraCurationSafety.lua
           luac5.1 -p RetreatUI/Core/WeakAuraIconStaticCompat.lua
           luac5.1 -p RetreatUI/Core/WeakAuraAutoProgressSource.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPulse.lua
           luac5.1 -p RetreatUI/Integrations/WeakAuraHUDMigration.lua
+          luac5.1 -p RetreatUI_Classes/WeakAuraHUDProfiles.lua
 
           grep -Fq 'Core\WeakAuraHUDRuntime.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraStateSafety.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPackage.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Core\WeakAuraTBCParity.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Core\WeakAuraCurationSafety.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraIconStaticCompat.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraAutoProgressSource.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPulse.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Integrations\WeakAuraHUDMigration.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'WeakAuraHUDProfiles.lua' RetreatUI_Classes/RetreatUI_Classes.toc
 
           # Every genuinely timed state must have both duration and expirationTime.
           grep -Fq 'progressType == "timed" and duration and duration > 0 and expirationTime and expirationTime > 0' RetreatUI/Core/WeakAuraStateSafety.lua
@@ -69,20 +79,46 @@ jobs:
           grep -Fq 'GetWeakAuraClassStates' RetreatUI/Core/WeakAuraStateSafety.lua
           grep -Fq 'GetWeakAuraRowStates' RetreatUI/Core/WeakAuraStateSafety.lua
 
-          # WeakAuras 5.21.2 icon safety. Static cooldown-enabled icons are
-          # encoded as zero-duration timed states at the trigger boundary.
+          # WeakAuras 5.21.2 icon safety remains active.
           grep -Fq 'display.regionType ~= "icon" or display.cooldown ~= true' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.progressType = "timed"' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.duration = 0' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.expirationTime = 0' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq '_weakAuraIconStaticCompatLoaded = true' RetreatUI/Core/WeakAuraIconStaticCompat.lua
 
-          # Custom stateupdate regions must consume their own state progress.
-          # Trigger -1 makes WeakAuras dispatch from state.progressType instead
-          # of leaving the region on an incomplete trigger-1 progress source.
+          # Custom stateupdate regions consume their own state progress.
           grep -Fq 'display.progressSource = {-1, ""}' RetreatUI/Core/WeakAuraAutoProgressSource.lua
           grep -Fq 'trigger.custom_type == "stateupdate"' RetreatUI/Core/WeakAuraAutoProgressSource.lua
           grep -Fq '_weakAuraAutoProgressSourceLoaded = true' RetreatUI/Core/WeakAuraAutoProgressSource.lua
+
+          # TBC parity: separate top-level class roots + one WA per Main/Utility ability.
+          grep -Fq 'separateClassRoots = true' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'individualAbilities = true' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'group.parent = nil' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'display.retreatUIAbilityName = abilityName' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'packageData.displays = RemoveByID(packageData.displays, templateID)' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'GetWeakAuraAbilityState' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'DeleteWeakAuraTree' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'DetachLegacyOuterRoot' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'DeleteChildren("RetreatUI - " .. tostring(currentClass) .. " — Main")' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'DeleteChildren("RetreatUI - " .. tostring(currentClass) .. " — Utility")' RetreatUI/Core/WeakAuraTBCParity.lua
+
+          # Existing native class curation is captured before class HUD files register.
+          grep -Fq 'RUI.weakAuraHUDProfiles = RUI.weakAuraHUDProfiles or {}' RetreatUI_Classes/WeakAuraHUDProfiles.lua
+          grep -Fq 'originalRegisterAdvancedClassHUD' RetreatUI_Classes/WeakAuraHUDProfiles.lua
+          grep -Fq 'coreOrder' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'strictCoreOrder' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'maxUtility' RetreatUI/Core/WeakAuraTBCParity.lua
+
+          # State tracking uses the existing one-state-per-group collector.
+          grep -Fq 'tracker:Collect()' RetreatUI/Core/WeakAuraTBCParity.lua
+          grep -Fq 'BloodmageFallback' RetreatUI/Core/WeakAuraTBCParity.lua
+
+          # CoA proc row must match the old HUD: explicit auraTracker records only.
+          grep -Fq 'originalProcStates' RetreatUI/Core/WeakAuraCurationSafety.lua
+          grep -Fq 'GetAuraTrackerDefinitions(className)' RetreatUI/Core/WeakAuraCurationSafety.lua
+          grep -Fq 'RecordAllowed' RetreatUI/Core/WeakAuraCurationSafety.lua
+          grep -Fq 'record.requiresForm' RetreatUI/Core/WeakAuraCurationSafety.lua
 
           # Fixed RetreatUI geometry must remain identical to the native CoA HUD.
           grep -Fq 'local RESOURCE_X, RESOURCE_Y = 0, -152' RetreatUI/Core/WeakAuraHUDPackage.lua
@@ -96,27 +132,23 @@ jobs:
           grep -Fq 'local TRINKET_X, TRINKET_Y = -17, 1' RetreatUI/Core/WeakAuraHUDPackage.lua
           grep -Fq 'local TRINKET_FRAME = "ElvUF_Player"' RetreatUI/Core/WeakAuraHUDPackage.lua
 
-          # The package is data-driven from the existing CoA class database.
+          # The package remains data-driven from the existing CoA class database.
           grep -Fq 'GetHUDSpellDefinitions(className, row)' RetreatUI/Core/WeakAuraHUDRuntime.lua
           grep -Fq 'GetAuraTrackerDefinitions(className)' RetreatUI/Core/WeakAuraHUDRuntime.lua
           grep -Fq 'GetClassSpellRecords(className)' RetreatUI/Core/WeakAuraHUDRuntime.lua
           grep -Fq 'GetClassResourceRecords(className)' RetreatUI/Core/WeakAuraHUDPackage.lua
           grep -Fq 'ReadAscensionResourceSnapshot' RetreatUI/Core/WeakAuraHUDRuntime.lua
           grep -Fq 'GetWeakAuraTargetStates' RetreatUI/Core/WeakAuraHUDRuntime.lua
-          grep -Fq 'GetWeakAuraClassStates' RetreatUI/Core/WeakAuraHUDRuntime.lua
 
           # Custom Ascension resources keep the old 0.12s mirror cadence.
           grep -Fq 'RUI:After(0.12, Pulse)' RetreatUI/Core/WeakAuraHUDPulse.lua
           grep -Fq 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT", "player"' RetreatUI/Core/WeakAuraHUDPulse.lua
           grep -Fq 'StartWeakAuraHUDPulse' RetreatUI/Integrations/WeakAuraHUDMigration.lua
 
-          # Required hierarchy: General + per-class Resource/Main/Utility/State/Target.
+          # Required General hierarchy remains intact.
           grep -Fq 'local GENERAL_ROOT = "RetreatUI - General"' RetreatUI/Core/WeakAuraHUDPackage.lua
           grep -Fq 'GENERAL_ROOT .. " — Trinkets"' RetreatUI/Core/WeakAuraHUDPackage.lua
           grep -Fq 'GENERAL_ROOT .. " — Buffs & Procs"' RetreatUI/Core/WeakAuraHUDPackage.lua
-          for group in Resource Main Utility State Target; do
-            grep -Fq 'rootID .. " — '"$group"'"' RetreatUI/Core/WeakAuraHUDPackage.lua
-          done
 
           # Native visible HUD activation and native trinket rendering are bypassed.
           grep -Fq 'RUI.weakAuraHUDMode = true' RetreatUI/Integrations/WeakAuraHUDMigration.lua
