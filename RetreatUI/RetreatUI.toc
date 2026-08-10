@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.7
+## Version: 1.1.7-beta.8
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core, WeakAuras
 ## DefaultState: Enabled
@@ -29,6 +29,7 @@ Core\WeakAuraTBCParity.lua
 Core\WeakAuraCurationSafety.lua
 Core\WeakAuraIconStaticCompat.lua
 Core\WeakAuraAutoProgressSource.lua
+Core\WeakAuraBeta8Fixes.lua
 Core\WeakAuraHUDPulse.lua
 Core\HUDWidgets.lua
 Core\SpellRecordRuntime.lua
@@ -65,6 +66,7 @@ Integrations\WeakAuraHUDMigration.lua
 Integrations\ReleaseBaseline20260801.lua
 Installer\Installer.lua
 Installer\ModularInstaller.lua
+Installer\TBCStyleInstaller.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
