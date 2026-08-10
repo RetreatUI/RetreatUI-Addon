@@ -74,10 +74,12 @@ jobs:
           read_toc_version() { sed -n 's/^## Version:[[:space:]]*//p' "$1" | head -n 1 | tr -d '\r'; }
           CORE_TOC="RetreatUI/RetreatUI.toc"
           CLASSES_TOC="RetreatUI_Classes/RetreatUI_Classes.toc"
-          [[ -f "$CORE_TOC" && -f "$CLASSES_TOC" ]] || exit 1
+          BUFF_TOC="RetreatUI_BuffManager/RetreatUI_BuffManager.toc"
+          [[ -f "$CORE_TOC" && -f "$CLASSES_TOC" && -f "$BUFF_TOC" ]] || exit 1
           CORE_VERSION="$(read_toc_version "$CORE_TOC")"
           CLASSES_VERSION="$(read_toc_version "$CLASSES_TOC")"
-          [[ "$CORE_VERSION" == "$CLASSES_VERSION" && "$CORE_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
+          BUFF_VERSION="$(read_toc_version "$BUFF_TOC")"
+          [[ "$CORE_VERSION" == "$CLASSES_VERSION" && "$CORE_VERSION" == "$BUFF_VERSION" && "$CORE_VERSION" == "$EXPECTED_VERSION" ]] || exit 1
 
       - name: Inspect existing release
         if: steps.manifest.outputs.publish == 'true'
@@ -120,10 +122,11 @@ jobs:
           mkdir -p dist/package
           cp -a RetreatUI dist/package/RetreatUI
           cp -a RetreatUI_Classes dist/package/RetreatUI_Classes
-          (cd dist/package && zip -r "../$ASSET" RetreatUI RetreatUI_Classes)
+          cp -a RetreatUI_BuffManager dist/package/RetreatUI_BuffManager
+          (cd dist/package && zip -r "../$ASSET" RetreatUI RetreatUI_Classes RetreatUI_BuffManager)
           [[ -s "dist/$ASSET" ]] || exit 1
           mapfile -t ROOTS < <(zipinfo -1 "dist/$ASSET" | awk -F/ 'NF { print $1 }' | sort -u)
-          [[ "${#ROOTS[@]}" -eq 2 && "${ROOTS[0]}" == "RetreatUI" && "${ROOTS[1]}" == "RetreatUI_Classes" ]] || exit 1
+          [[ "${#ROOTS[@]}" -eq 3 && "${ROOTS[0]}" == "RetreatUI" && "${ROOTS[1]}" == "RetreatUI_BuffManager" && "${ROOTS[2]}" == "RetreatUI_Classes" ]] || exit 1
           (cd dist && sha256sum "$ASSET" > "$CHECKSUM")
 
       - name: Upload workflow artifact
