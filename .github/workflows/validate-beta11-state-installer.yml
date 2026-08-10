@@ -1,0 +1,63 @@
+name: Validate beta11 State and Installer
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Installer/TBCStyleInstaller.lua"
+      - "RetreatUI/RetreatUI.toc"
+      - "RetreatUI_Classes/RetreatUI_Classes.toc"
+      - ".github/workflows/validate-beta11-state-installer.yml"
+  push:
+    branches: [main]
+    paths:
+      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Installer/TBCStyleInstaller.lua"
+      - "RetreatUI/RetreatUI.toc"
+      - "RetreatUI_Classes/RetreatUI_Classes.toc"
+      - ".github/workflows/validate-beta11-state-installer.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+      - name: Validate exact state geometry and installer scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          luac5.1 -p RetreatUI/Installer/TBCStyleInstaller.lua
+
+          grep -Fq 'Core\WeakAuraBeta11Fixes.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'local STATE_ICON_SIZE = 38' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'local STATE_CHILD_X, STATE_CHILD_Y = 0, 0' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'display.width = STATE_ICON_SIZE' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'display.height = STATE_ICON_SIZE' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'display.xOffset = STATE_CHILD_X' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'display.yOffset = STATE_CHILD_Y' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          grep -Fq 'DeleteWeakAuraTree("RetreatUI - " .. tostring(className) .. " — State")' RetreatUI/Core/WeakAuraBeta11Fixes.lua
+
+          grep -Fq 'id="elvui", key="unitframes"' RetreatUI/Installer/TBCStyleInstaller.lua
+          grep -Fq 'id="macros", custom="guardianMacros"' RetreatUI/Installer/TBCStyleInstaller.lua
+          grep -Fq 'if CurrentClass() == "Guardian" then' RetreatUI/Installer/TBCStyleInstaller.lua
+          grep -Fq 'id="details", key="details"' RetreatUI/Installer/TBCStyleInstaller.lua
+          grep -Fq 'id="turboplates", key="nameplates"' RetreatUI/Installer/TBCStyleInstaller.lua
+          grep -Fq 'id="weakauras", key="classHUD"' RetreatUI/Installer/TBCStyleInstaller.lua
+
+          ! grep -Fq 'key="partyTrackers"' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'key="buffManager"' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'key="npcTracking"' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'key="dbm"' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'key="gameSettings"' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'key="cleanup"' RetreatUI/Installer/TBCStyleInstaller.lua
+
+          core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+          classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+          test "$core_version" = "1.1.7-beta.11"
+          test "$core_version" = "$classes_version"
