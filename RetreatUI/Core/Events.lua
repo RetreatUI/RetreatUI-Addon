@@ -217,10 +217,6 @@ local function ApplyRuntimeOnce()
   if ModuleEnabled("unitframes") and type(RUI.ApplyElvUIHUDPolish) == "function" then
     RUI:After(0.45, function() RUI:ApplyElvUIHUDPolish(false) end)
   end
-  local unitframeStatus = RUI:GetModuleStatus("unitframes")
-  if ModuleEnabled("unitframes") and unitframeStatus and unitframeStatus.ok and type(RUI.RemoveRightLootTradeChat) == "function" then
-    RUI:After(0.50, function() RUI:RemoveRightLootTradeChat() end)
-  end
 end
 
 events:RegisterEvent("ADDON_LOADED")
