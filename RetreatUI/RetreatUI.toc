@@ -26,6 +26,7 @@ Core\WeakAuraHUDRuntime.lua
 Core\WeakAuraStateSafety.lua
 Core\WeakAuraHUDPackage.lua
 Core\WeakAuraTBCParity.lua
+Core\WeakAuraCurationSafety.lua
 Core\WeakAuraIconStaticCompat.lua
 Core\WeakAuraAutoProgressSource.lua
 Core\WeakAuraHUDPulse.lua
