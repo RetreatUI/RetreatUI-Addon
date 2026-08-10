@@ -8,6 +8,7 @@ on:
       - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
       - "RetreatUI/Core/WeakAuraIconStaticCompat.lua"
+      - "RetreatUI/Core/WeakAuraAutoProgressSource.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
       - "RetreatUI/Integrations/WeakAuraHUDMigration.lua"
       - "RetreatUI/RetreatUI.toc"
@@ -20,6 +21,7 @@ on:
       - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
       - "RetreatUI/Core/WeakAuraIconStaticCompat.lua"
+      - "RetreatUI/Core/WeakAuraAutoProgressSource.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
       - "RetreatUI/Integrations/WeakAuraHUDMigration.lua"
       - "RetreatUI/RetreatUI.toc"
@@ -46,6 +48,7 @@ jobs:
           luac5.1 -p RetreatUI/Core/WeakAuraStateSafety.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPackage.lua
           luac5.1 -p RetreatUI/Core/WeakAuraIconStaticCompat.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraAutoProgressSource.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPulse.lua
           luac5.1 -p RetreatUI/Integrations/WeakAuraHUDMigration.lua
 
@@ -53,6 +56,7 @@ jobs:
           grep -Fq 'Core\WeakAuraStateSafety.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPackage.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraIconStaticCompat.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Core\WeakAuraAutoProgressSource.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPulse.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Integrations\WeakAuraHUDMigration.lua' RetreatUI/RetreatUI.toc
 
@@ -65,16 +69,20 @@ jobs:
           grep -Fq 'GetWeakAuraClassStates' RetreatUI/Core/WeakAuraStateSafety.lua
           grep -Fq 'GetWeakAuraRowStates' RetreatUI/Core/WeakAuraStateSafety.lua
 
-          # WeakAuras 5.21.2 on Ascension can crash in Icon:PreShow when a static
-          # icon leaves an internal cooldown duration without expirationTime.
-          # All cooldown-enabled generated icons therefore receive the zero-time
-          # compatibility encoding at the final trigger boundary.
+          # WeakAuras 5.21.2 icon safety. Static cooldown-enabled icons are
+          # encoded as zero-duration timed states at the trigger boundary.
           grep -Fq 'display.regionType ~= "icon" or display.cooldown ~= true' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.progressType = "timed"' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.duration = 0' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq 'state.expirationTime = 0' RetreatUI/Core/WeakAuraIconStaticCompat.lua
-          grep -Fq 'WeakAura icon compatibility patch could not be applied' RetreatUI/Core/WeakAuraIconStaticCompat.lua
           grep -Fq '_weakAuraIconStaticCompatLoaded = true' RetreatUI/Core/WeakAuraIconStaticCompat.lua
+
+          # Custom stateupdate regions must consume their own state progress.
+          # Trigger -1 makes WeakAuras dispatch from state.progressType instead
+          # of leaving the region on an incomplete trigger-1 progress source.
+          grep -Fq 'display.progressSource = {-1, ""}' RetreatUI/Core/WeakAuraAutoProgressSource.lua
+          grep -Fq 'trigger.custom_type == "stateupdate"' RetreatUI/Core/WeakAuraAutoProgressSource.lua
+          grep -Fq '_weakAuraAutoProgressSourceLoaded = true' RetreatUI/Core/WeakAuraAutoProgressSource.lua
 
           # Fixed RetreatUI geometry must remain identical to the native CoA HUD.
           grep -Fq 'local RESOURCE_X, RESOURCE_Y = 0, -152' RetreatUI/Core/WeakAuraHUDPackage.lua
