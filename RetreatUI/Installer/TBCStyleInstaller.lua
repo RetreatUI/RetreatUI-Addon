@@ -1,10 +1,8 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- Clean one-component-at-a-time installer, matching the RetreatUI TBC flow.
--- The older modular two-page installer stays shipped for rollback, but these
--- public methods replace it after load.
-
+-- TBC-style CoA installer: only the imports the user actually wants.
+-- Guardian gets one extra Macro step; every other class skips it entirely.
 local frame
 
 local function Theme() return RUI:GetTheme() end
@@ -47,7 +45,9 @@ local function Button(parent, label, width, callback)
 end
 
 local function CurrentClass()
-  return type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or "Class"
+  local className = type(RUI.GetDetectedClass) == "function" and RUI:GetDetectedClass() or "Class"
+  if RUI.NormalizeClassName then className = RUI:NormalizeClassName(className) or className end
+  return className
 end
 
 local function ModuleDefinition(key)
@@ -73,26 +73,66 @@ local function InstallModule(key)
   return false, record.message or "Installation failed."
 end
 
-local STEPS = {
-  {
-    id="welcome",
-    title="WELCOME",
-    subtitle="Welcome to RetreatUI for Conquest of Azeroth.",
-    description="This installer applies one part of RetreatUI at a time, just like the TBC installer. Use NEXT to skip anything you do not want. WeakAuras installs only the active CoA class together with the shared General package.",
-  },
-  {id="unitframes", key="unitframes", title="IMPORT ELVUI", subtitle="Install the RetreatUI unitframes and layout.", description="Applies the RetreatUI ElvUI profile, frame positions, castbars and shared layout."},
-  {id="weakauras", key="classHUD", title=function() return "IMPORT " .. string.upper(CurrentClass()) .. " WEAKAURAS" end, subtitle=function() return "Install General + " .. CurrentClass() .. " HUD WeakAuras." end, description="General contains Trinkets and Buffs & Procs. The class package contains Resource, Main, Utility, State and Target trackers. Other class packages are removed."},
-  {id="party", key="partyTrackers", title="ENABLE PARTY TRACKERS", subtitle="Interrupts, combat res, dispels and group utility.", description="Enables RetreatUI party utility tracking without changing the central WeakAuras HUD."},
-  {id="buffs", key="buffManager", title="ENABLE BUFF MANAGER", subtitle="Compact buff assignments and Smart Buff tools.", description="Enables the RetreatUI Buff Manager and its keybind helpers."},
-  {id="nameplates", key="nameplates", title="IMPORT NAMEPLATES", subtitle="Apply the RetreatUI TurboPlates profile.", description="Applies the shared RetreatUI nameplate profile. NPC cooldown tracking is configured separately on the next page."},
-  {id="npc", key="npcTracking", title="ENABLE NPC TRACKING", subtitle="Enemy ability names and cooldowns on nameplates.", description="Requires TurboPlates and MobSpells. If either addon is missing, simply continue to the next page."},
-  {id="details", key="details", title="IMPORT DETAILS", subtitle="Install the RetreatUI Details profile.", description="Applies the shared RetreatUI damage-meter layout, fonts and positioning."},
-  {id="dbm", key="dbm", title="IMPORT DBM", subtitle="Install the RetreatUI DBM theme.", description="Optional. If DBM is not installed, continue without it."},
-  {id="settings", key="gameSettings", title="APPLY GAME SETTINGS", subtitle="Apply RetreatUI CVars and combat-text preferences.", description="Applies the game settings used by the RetreatUI layout."},
-  {id="cleanup", key="cleanup", title="ASCENSION CLEANUP", subtitle="Hide duplicate Ascension frames and overlapping UI elements.", description="Keeps only the data sources still needed by WeakAuras and hides duplicate visible Ascension HUD elements."},
-  {id="reload", title="RELOAD", subtitle="RetreatUI setup is ready to finish.", description="Reload the UI to apply the imported profiles and refresh WeakAuras. You can reopen this installer at any time with /retreatui or /rui.", reload=true},
-}
-local TOTAL_STEPS = #STEPS
+local function InstallGuardianMacros()
+  if CurrentClass() ~= "Guardian" then return false, "Guardian macros are only installed on Guardian." end
+  if InCombatLockdown and InCombatLockdown() then return false, "Leave combat before creating Guardian macros." end
+  if type(RUI.CreateGuardianFormationMacros) ~= "function" then return false, "Guardian macro package is not loaded." end
+  local ok, err = pcall(RUI.CreateGuardianFormationMacros)
+  if not ok then return false, tostring(err) end
+  return true, "Guardian formation macros created or updated."
+end
+
+local function BuildSteps()
+  local steps = {
+    {
+      id="welcome",
+      title="WELCOME",
+      subtitle="RetreatUI for Conquest of Azeroth.",
+      description="Clean setup only: ElvUI, Details, TurboPlates and WeakAuras. Guardian also gets its formation macros. Nothing else is part of this installer.",
+    },
+    {
+      id="elvui", key="unitframes",
+      title="IMPORT ELVUI",
+      subtitle="Install the RetreatUI ElvUI profile.",
+      description="Applies the RetreatUI unitframes, castbars and shared layout.",
+    },
+  }
+
+  if CurrentClass() == "Guardian" then
+    steps[#steps + 1] = {
+      id="macros", custom="guardianMacros",
+      title="IMPORT GUARDIAN MACROS",
+      subtitle="Create or update Guardian formation macros.",
+      description="Installs the Guardian formation-aware macro package for the current character.",
+    }
+  end
+
+  steps[#steps + 1] = {
+    id="details", key="details",
+    title="IMPORT DETAILS",
+    subtitle="Install the RetreatUI Details profile.",
+    description="Applies the shared RetreatUI damage-meter layout, fonts and positioning.",
+  }
+  steps[#steps + 1] = {
+    id="turboplates", key="nameplates",
+    title="IMPORT TURBOPLATES",
+    subtitle="Install the RetreatUI TurboPlates profile.",
+    description="Applies the shared RetreatUI nameplate profile.",
+  }
+  steps[#steps + 1] = {
+    id="weakauras", key="classHUD",
+    title=function() return "IMPORT " .. string.upper(CurrentClass()) .. " WEAKAURAS" end,
+    subtitle=function() return "Install RetreatUI - General + " .. CurrentClass() .. " HUD WeakAuras." end,
+    description="General contains Trinkets, Buffs & Procs and Racials. The class package contains Resource, Main, Utility, State and Target trackers.",
+  }
+  steps[#steps + 1] = {
+    id="reload", reload=true,
+    title="RELOAD",
+    subtitle="RetreatUI setup is ready.",
+    description="Reload the UI to finish applying the imported profiles and WeakAuras. Reopen the installer any time with /retreatui or /rui.",
+  }
+  return steps
+end
 
 local function Resolve(value)
   if type(value) == "function" then return value() end
@@ -121,18 +161,20 @@ end
 
 local function Refresh()
   if not frame then return end
-  local index = math.max(1, math.min(TOTAL_STEPS, frame.currentStep or 1))
+  local steps = frame.steps or BuildSteps()
+  local total = #steps
+  local index = math.max(1, math.min(total, frame.currentStep or 1))
   frame.currentStep = index
-  local step = STEPS[index]
+  local step = steps[index]
 
-  frame.progress:SetText(string.format("STEP %d OF %d", index, TOTAL_STEPS))
+  frame.progress:SetText(string.format("STEP %d OF %d", index, total))
   frame.pageTitle:SetText(Resolve(step.title))
   frame.pageSubtitle:SetText(Resolve(step.subtitle))
   frame.description:SetText(Resolve(step.description))
   RefreshDots()
 
   frame.back:SetEnabled(index > 1)
-  frame.next:SetEnabled(index < TOTAL_STEPS)
+  frame.next:SetEnabled(index < total)
   frame.next:SetLabel(index == 1 and "GET STARTED" or "NEXT")
 
   if step.reload then
@@ -140,6 +182,12 @@ local function Refresh()
     frame.action:SetLabel("RELOAD UI")
     frame.action:SetEnabled(true)
     Status("Ready to reload.", true)
+  elseif step.custom == "guardianMacros" then
+    frame.action:Show()
+    frame.action:SetLabel("IMPORT MACROS")
+    frame.action:SetEnabled(CurrentClass() == "Guardian")
+    local saved = frame.results[step.id]
+    Status(saved and saved.message or "READY", saved and saved.success or nil)
   elseif step.key then
     frame.action:Show()
     local definition = ModuleDefinition(step.key)
@@ -155,14 +203,16 @@ local function Refresh()
     frame.action:SetEnabled(ready == true)
   else
     frame.action:Hide()
-    Status("Follow the steps to build your RetreatUI setup.", nil)
+    Status("Only the core RetreatUI imports are included here.", nil)
   end
 end
 
 local function RunAction()
   if not frame then return end
-  local step = STEPS[frame.currentStep or 1]
+  local steps = frame.steps or BuildSteps()
+  local step = steps[frame.currentStep or 1]
   if not step then return end
+
   if step.reload then
     local db = RUI:EnsureDB()
     db.installer = db.installer or {}
@@ -171,9 +221,20 @@ local function RunAction()
     ReloadUI()
     return
   end
-  if not step.key then return end
-  local success, message = InstallModule(step.key)
-  frame.results[step.id] = {success=success, message=message or (success and "Installed successfully." or "Installation failed.")}
+
+  local success, message
+  if step.custom == "guardianMacros" then
+    success, message = InstallGuardianMacros()
+  elseif step.key then
+    success, message = InstallModule(step.key)
+  else
+    return
+  end
+
+  frame.results[step.id] = {
+    success = success,
+    message = message or (success and "Installed successfully." or "Installation failed."),
+  }
   Refresh()
 end
 
@@ -204,10 +265,12 @@ local function BuildInstaller()
   divider:SetPoint("TOPRIGHT", -28, -62)
   divider:SetHeight(1)
 
+  frame.steps = BuildSteps()
   frame.dots = {}
+  local total = #frame.steps
   local dotWidth, dotGap = 8, 9
-  local totalWidth = TOTAL_STEPS * dotWidth + (TOTAL_STEPS - 1) * dotGap
-  for index = 1, TOTAL_STEPS do
+  local totalWidth = total * dotWidth + (total - 1) * dotGap
+  for index = 1, total do
     local dot = frame:CreateTexture(nil, "ARTWORK")
     dot:SetTexture("Interface\\Buttons\\WHITE8X8")
     dot:SetSize(dotWidth, 3)
@@ -247,7 +310,7 @@ local function BuildInstaller()
   end)
   frame.back:SetPoint("BOTTOMLEFT", 28, 22)
   frame.next = Button(frame, "NEXT", 120, function()
-    frame.currentStep = math.min(TOTAL_STEPS, (frame.currentStep or 1) + 1)
+    frame.currentStep = math.min(#frame.steps, (frame.currentStep or 1) + 1)
     Refresh()
   end)
   frame.next:SetPoint("BOTTOMRIGHT", -28, 22)
@@ -278,4 +341,4 @@ function RUI:RefreshInstallerTheme()
 end
 
 RUI._cleanStepInstallerLoaded = true
-RUI._cleanStepInstallerRevision = 1
+RUI._cleanStepInstallerRevision = 2

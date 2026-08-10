@@ -1,34 +1,31 @@
-# RetreatUI v1.1.7-beta.10
+# RetreatUI v1.1.7-beta.11
 
-This prerelease corrects the global CoA stance/form lane after live testing and moves normal race abilities out of class Utility packages into RetreatUI - General.
+This prerelease locks stance/form icon geometry to the exact WeakAuras values used throughout RetreatUI and strips the CoA installer back to the same clean core-import flow as TBC.
 
-## Global stance / form placement
+## Exact stance / form icon rule
 
-- beta.9 placed the State group at X -188 / Y -121. The Y coordinate was correct, but X -188 put the group outside the 360px center HUD gap and back into the player-frame area.
-- Every CoA State / stance / form group now uses one fixed screen-space rule: X 0 / Y -121.
-- The group is CENTER anchored and centered horizontally, so one or several active states remain directly above the primary resource bar instead of growing into either unit frame.
-- State icons remain 38px. Their bottom edge is Y -140 while the primary resource bar top edge is Y -144, preserving a 4px vertical gap.
-- This is one global rule for Bloodmage forms, Guardian formations, Necromancer forms, Knight of Xoroth states and every other class using the shared State tracker.
+- Every State / stance / form WeakAura leaf is exactly 38x38.
+- Every State / stance / form WeakAura leaf has X Offset 0 and Y Offset 0.
+- There are no per-class or per-state icon nudges.
+- The shared State Dynamic Group owns the lane placement; individual state icons never carry their own positional correction.
+- Reinstalling the class WeakAuras deletes and rebuilds the current class State tree so stale offsets from earlier betas cannot survive.
+- Validation fails if any State child is not 38x38 at X 0 / Y 0.
 
-## Racials belong to General
+## Clean TBC-style installer
 
-- Normal race-specific active abilities are no longer owned by each class Utility WeakAura group.
-- RetreatUI - General now contains a dedicated `Racials` subgroup.
-- The racial group uses the existing race spellbook scanner and tracks cooldowns, charges and active racial buff durations.
-- Racials are positioned beside the General trinket row rather than consuming a class Utility slot.
-- Reinstalling the WeakAura HUD clears stale General racial children before rebuilding the current character's racial tracker.
+The installer now contains only the requested core imports:
 
-## Existing HUD geometry
+- ElvUI
+- Guardian Macros (Guardian only; the step does not exist on other classes)
+- Details
+- TurboPlates
+- WeakAuras
 
-- Buffs & Procs: X 0 / Y -83.
-- Secondary/custom resources: X 0 / Y -118.
-- Primary resource: X 0 / Y -152, 360x16.
-- State / stance / form: X 0 / Y -121, 38px icons, centered.
-- Main: X 0 / Y -183, 38px icons, 1px spacing.
-- Utility: X 0 / Y -224, 32px icons, 1px spacing.
-- Trinkets remain owned by `RetreatUI - General` at the existing ElvUF_Player anchor.
+Welcome and Reload remain as navigation pages. Party Trackers, Buff Manager, NPC Tracking, DBM, Game Settings and Ascension Cleanup are no longer installer pages.
 
-Necromancer Life Force remains on the corrected mirrored-resource path introduced in beta.9, and the TBC-style CoA installer remains unchanged.
+## General WeakAuras
+
+`RetreatUI - General` continues to own Trinkets, Buffs & Procs and Racials. Racials are not part of class Utility.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 
