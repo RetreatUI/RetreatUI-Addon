@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "RetreatUI/Core/WeakAuraHUDRuntime.lua"
+      - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
       - "RetreatUI/Integrations/WeakAuraHUDMigration.lua"
@@ -15,6 +16,7 @@ on:
     branches: [main]
     paths:
       - "RetreatUI/Core/WeakAuraHUDRuntime.lua"
+      - "RetreatUI/Core/WeakAuraStateSafety.lua"
       - "RetreatUI/Core/WeakAuraHUDPackage.lua"
       - "RetreatUI/Core/WeakAuraHUDPulse.lua"
       - "RetreatUI/Integrations/WeakAuraHUDMigration.lua"
@@ -39,14 +41,26 @@ jobs:
           set -euo pipefail
 
           luac5.1 -p RetreatUI/Core/WeakAuraHUDRuntime.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraStateSafety.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPackage.lua
           luac5.1 -p RetreatUI/Core/WeakAuraHUDPulse.lua
           luac5.1 -p RetreatUI/Integrations/WeakAuraHUDMigration.lua
 
           grep -Fq 'Core\WeakAuraHUDRuntime.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Core\WeakAuraStateSafety.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPackage.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Core\WeakAuraHUDPulse.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Integrations\WeakAuraHUDMigration.lua' RetreatUI/RetreatUI.toc
+
+          # Every timed WeakAura state must have both duration and expirationTime;
+          # incomplete Ascension aura timing is downgraded to a valid static state.
+          grep -Fq 'progressType == "timed" and duration and duration > 0 and expirationTime and expirationTime > 0' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'state.progressType = "static"' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'state.expirationTime = nil' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'GetWeakAuraProcStates' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'GetWeakAuraTargetStates' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'GetWeakAuraClassStates' RetreatUI/Core/WeakAuraStateSafety.lua
+          grep -Fq 'GetWeakAuraRowStates' RetreatUI/Core/WeakAuraStateSafety.lua
 
           # Fixed RetreatUI geometry must remain identical to the native CoA HUD.
           grep -Fq 'local RESOURCE_X, RESOURCE_Y = 0, -152' RetreatUI/Core/WeakAuraHUDPackage.lua
