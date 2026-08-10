@@ -77,6 +77,7 @@ function RUI:ActivateClassHUD(force)
     if type(self.PrimeWeakAuraResourceSource) == "function" then pcall(self.PrimeWeakAuraResourceSource, self, className) end
   end
 
+  if type(self.StartWeakAuraHUDPulse) == "function" then pcall(self.StartWeakAuraHUDPulse, self) end
   if type(self.ScheduleNativeClassResourceCleanup) == "function" then
     self:After(0.10, function() self:ScheduleNativeClassResourceCleanup(true) end)
   end
@@ -89,6 +90,7 @@ end
 function RUI:DeactivateAllHUD()
   if type(self.DeactivatePrimaryPower) == "function" then pcall(self.DeactivatePrimaryPower, self) end
   if type(self.StopHUDVisibilityDriver) == "function" then pcall(self.StopHUDVisibilityDriver, self) end
+  if type(self.StopWeakAuraHUDPulse) == "function" then pcall(self.StopWeakAuraHUDPulse, self) end
   HideNativeTrinketFrame()
   self.activeClass = nil
   self.activeModule = nil
@@ -138,4 +140,4 @@ if classInstaller then
 end
 
 RUI._weakAuraHUDMigrationLoaded = true
-RUI._weakAuraHUDMigrationRevision = 1
+RUI._weakAuraHUDMigrationRevision = 2
