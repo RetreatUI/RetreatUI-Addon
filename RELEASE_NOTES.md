@@ -1,17 +1,17 @@
-# RetreatUI v1.1.7-beta.1
+# RetreatUI v1.1.7-beta.2
 
-This prerelease focuses on fixing ElvUI chat tabs overlapping after users create additional chat windows/tabs.
+This prerelease focuses on the CoA chat-tab overlap reported by users with additional ElvUI chat tabs.
 
 ## Chat and ElvUI
 
-- Stops RetreatUI from managing ElvUI/Blizzard chat docking.
-- Prevents the old Loot/Trade cleanup from undocking or closing newly-created chat frames before ElvUI finishes attaching them.
-- Leaves chat tab creation, docking, positioning and closing entirely to ElvUI/Blizzard while preserving RetreatUI chat styling.
-- Keeps the existing right-chat panel and user-created tabs untouched.
+- Removes RetreatUI's remaining runtime management of Loot/Trade chat windows.
+- Removes the old chat-docking safety module entirely.
+- Stops RetreatUI from docking, undocking, closing, hiding or repositioning chat frames after login.
+- Leaves chat tab creation, docking, positioning and closing entirely to ElvUI/Blizzard while preserving the RetreatUI ElvUI profile and chat styling.
 
 ## Testing note
 
-Users whose chat tabs were already left undocked or overlapping may need to re-dock or reset the affected tab once after updating. RetreatUI will no longer mutate chat docking afterward.
+If a chat tab is already undocked or overlapping from an older build, re-dock or reset that affected tab once after updating. RetreatUI will no longer mutate chat docking afterward.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 
