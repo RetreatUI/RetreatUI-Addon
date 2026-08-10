@@ -1,15 +1,16 @@
-# RetreatUI v1.1.7-beta.4
+# RetreatUI v1.1.7-beta.5
 
-This prerelease fixes the first live-install failure found after moving the Conquest of Azeroth HUD into WeakAuras.
+This prerelease fixes the remaining WeakAuras 5.21.2 icon crash seen on Conquest of Azeroth after beta.4.
 
-## WeakAuras install hotfix
+## WeakAuras 5.21.2 icon compatibility
 
-- Fixes `WeakAuras/RegionTypes/Icon.lua: attempt to perform arithmetic on field 'expirationTime' (a nil value)` during Class WeakAuras HUD installation.
-- Ascension can expose custom auras with a positive duration but no usable expiration timestamp. RetreatUI now validates every generated WeakAura progress state before WeakAuras receives it.
-- A state is only allowed to remain `timed` when both a valid positive `duration` and `expirationTime` exist.
-- Incomplete timed states are converted to valid static states instead of being passed to WeakAuras' cooldown renderer.
-- The safety layer covers Main, Utility, Buffs & Procs, class states, target debuffs, primary/custom resources, explicit counters and trinkets.
-- No HUD positions, class spell databases, tracking selections or renderer ownership were changed from beta.3.
+- Fixes `WeakAuras/RegionTypes/Icon.lua:642: attempt to perform arithmetic on field 'expirationTime' (a nil value)` when a cooldown-enabled icon is shown from a static custom trigger state.
+- The reported locals showed the failing RetreatUI icon was already a valid `progressType = "static"` state. That means beta.4's timing-state validator was working, but the crash happened later inside WeakAuras' icon cooldown object.
+- WeakAuras 5.21.2 `Icon:PreShow()` checks the cooldown object's duration before calculating `expirationTime - duration`. On the Ascension client, a static icon can leave that internal duration populated without a matching WeakAuras-owned expirationTime.
+- RetreatUI now keeps real cooldowns as normal timed states, but converts otherwise-static ICON states at the final trigger boundary to a zero-duration timed state (`duration = 0`, `expirationTime = 0`). WeakAuras therefore clears/hides the cooldown safely before `PreShow()` and never enters the invalid subtraction branch.
+- The compatibility layer only touches cooldown-enabled icon regions. Resource bars, segmented resources and target aura bars retain their normal static/timed semantics.
+- Main, Utility, Buffs & Procs, class State icons, class counter icons and Trinkets are covered automatically.
+- No HUD positions, class spell databases, tracked abilities or renderer ownership changed from beta.4.
 
 ## Existing WeakAuras HUD layout
 
@@ -23,7 +24,7 @@ This prerelease fixes the first live-install failure found after moving the Conq
 
 ## Testing note
 
-Run the installer again on the same class that failed in beta.3. The Class WeakAuras HUD step should now install without the `expirationTime` error. After a successful install, reload UI and verify the active class HUD normally.
+Install beta.5 over beta.4, reload UI, then run the RetreatUI installer again. The Class WeakAuras HUD step should complete without the Icon.lua `expirationTime` crash. Existing partially-created beta.3/beta.4 RetreatUI WeakAuras are updated in place by the installer.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 
