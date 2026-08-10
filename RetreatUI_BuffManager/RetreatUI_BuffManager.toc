@@ -1,0 +1,9 @@
+## Interface: 30300
+## Title: RetreatUI Buff Manager
+## Notes: Optional RetreatUI buff assignment and smart buffing module for Project Ascension: Conquest of Azeroth.
+## Author: Retreat
+## Version: 1.1.7-beta.13
+## Dependencies: RetreatUI
+## DefaultState: Disabled
+
+BuffManager.lua
