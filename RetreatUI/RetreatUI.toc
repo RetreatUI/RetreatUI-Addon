@@ -24,6 +24,7 @@ Core\HUDEditor.lua
 Core\AscensionResources.lua
 Core\WeakAuraHUDRuntime.lua
 Core\WeakAuraHUDPackage.lua
+Core\WeakAuraHUDPulse.lua
 Core\HUDWidgets.lua
 Core\SpellRecordRuntime.lua
 Core\HUDDuplicateGuard.lua
