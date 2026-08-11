@@ -81,9 +81,10 @@ jobs:
           assert 'ACTIONBAR_UPDATE_COOLDOWN' not in hud
           assert 'UNIT_POWER_FREQUENT' not in hud
 
-          # beta.19 must replace the global synthetic WA power event with a
-          # RetreatUI-only pulse and debounced owner-specific refresh events.
-          assert 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' in pulse
+          # beta.19 physically removes the global synthetic WA power event and
+          # replaces it with RetreatUI-only debounced refresh events.
+          assert 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' not in pulse
+          assert 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' not in perf
           assert 'function RUI:StartWeakAuraHUDPulse()' in perf
           assert 'RETREATUI_RESOURCE_PULSE' in perf
           assert 'RETREATUI_ROW_REFRESH' in perf
