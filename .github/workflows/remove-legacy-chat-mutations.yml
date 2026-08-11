@@ -1,0 +1,58 @@
+name: Remove legacy chat mutations
+
+on:
+  push:
+    branches:
+      - agent/fix-chat-overlap-frame-spikes-beta18
+    paths:
+      - '.github/workflows/remove-legacy-chat-mutations.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/fix-chat-overlap-frame-spikes-beta18
+          fetch-depth: 0
+
+      - name: Remove legacy chat frame mutation paths
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          elv = Path('RetreatUI/Integrations/ElvUI.lua')
+          text = elv.read_text(encoding='utf-8')
+          start_marker = 'local function ObjectName(value)\n'
+          end_marker = 'local PARTY_MOVER_OLD = '
+          start = text.find(start_marker)
+          end = text.find(end_marker, start)
+          if start < 0 or end < 0:
+              raise SystemExit('Could not locate legacy chat mutation block in ElvUI.lua')
+          replacement = (
+              '-- Chat frame visibility and docking are intentionally not managed here.\n'
+              '-- ElvUI and Blizzard are the sole owners; ChatOwnershipSafety.lua contains\n'
+              '-- the state-only compatibility no-op and one-time dock visibility repair.\n\n'
+          )
+          text = text[:start] + replacement + text[end:]
+          elv.write_text(text, encoding='utf-8')
+
+          loader = Path('RetreatUI/Loader.lua')
+          text = loader.read_text(encoding='utf-8')
+          legacy = '    {"Loot/Trade chat cleanup", "RemoveRightLootTradeChat", nil, true},\n'
+          if text.count(legacy) != 1:
+              raise SystemExit(f'Expected one legacy /rui repair action, found {text.count(legacy)}')
+          loader.write_text(text.replace(legacy, '', 1), encoding='utf-8')
+          PY
+
+          git rm .github/workflows/remove-legacy-chat-mutations.yml
+          git config user.name "Retreat"
+          git config user.email "actions@users.noreply.github.com"
+          git add RetreatUI/Integrations/ElvUI.lua RetreatUI/Loader.lua
+          git commit -m "Remove legacy chat frame mutation paths"
+          git push origin HEAD:agent/fix-chat-overlap-frame-spikes-beta18
