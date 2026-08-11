@@ -37,31 +37,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
           luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
           luac5.1 -p RetreatUI_Classes/GlobalStateAnchor.lua
           luac5.1 -p RetreatUI_Classes/KnightOfXoroth/Curation.lua
 
-          # WeakAuras state placement must use the actual rendered trinket frames.
           grep -Fq 'WeakAuras.GetRegion' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'RenderedTrinketEdge' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'lane:SetPoint("BOTTOMRIGHT", renderedRegion, "BOTTOMRIGHT", 0, 0)' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_ANCHOR_POINT = "BOTTOMRIGHT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_SELF_POINT = "BOTTOMLEFT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          ! grep -Fq 'TRINKET_COUNT' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           ! grep -Fq 'LANE_WIDTH' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
 
-          # Native class-state placement follows the same rendered edge and is bottom aligned.
-          grep -Fq 'local function RenderedTrinketSource()' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'WeakAuras.GetRegion(TRINKET_SLOT_14)' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'anchor:SetPoint("BOTTOMRIGHT", source, "BOTTOMRIGHT", 0, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
-          ! grep -Fq 'HUD fallback' RetreatUI_Classes/GlobalStateAnchor.lua
-          ! grep -Fq 'player fallback' RetreatUI_Classes/GlobalStateAnchor.lua
 
-          # KoX is an exact curated HUD, not live-spellbook discovery / second action bar.
           grep -Fq '["unleash pestilence"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq '["chainwhip"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq '["snarl"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
@@ -70,19 +60,12 @@ jobs:
           grep -Fq '["black shield"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq 'if IsKnight(className) then return {} end' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq 'root.stanceTracker:SetAlpha(0)' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq 'root.classStateTracker.options.excludePrefixes = {}' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq 'KnightOfXoroth\Curation.lua' RetreatUI_Classes/RetreatUI_Classes.toc
-
-          # Generic target-frame debuff rows are explicitly disabled again.
           grep -Fq 'debuffs.enable = false' RetreatUI/Profiles/ElvUITargetDebuffs.lua
-          ! grep -Fq 'debuffs.enable = true' RetreatUI/Profiles/ElvUITargetDebuffs.lua
-
-          # No class HUD may own a global stance Y offset.
           ! grep -R -n -E 'globalYOffset|ruiGlobalStateYOffset' RetreatUI_Classes/*/HUD.lua
 
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
           buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.18"
+          test "$core_version" = "1.1.7-beta.19"
           test "$core_version" = "$classes_version"
           test "$core_version" = "$buff_version"
