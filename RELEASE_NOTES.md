@@ -1,41 +1,39 @@
-# RetreatUI v1.1.7-beta.18
+# RetreatUI v1.1.7-beta.19
 
-This prerelease directly addresses the live chat-overlap and frame-pacing reports from CoA testing. It does not change the established HUD layout.
+This prerelease targets the remaining large CoA frame-time spikes reported with `RetreatUI_Classes` enabled. The established HUD layout and class curation are unchanged.
 
-## Chat ownership / overlapping tabs
+## WeakAuras runtime performance
 
-- Removes the old runtime behavior that force-showed `ChatFrame1` and companion chat regions.
-- Removes target-change chat refreshes entirely.
-- RetreatUI no longer docks, undocks, closes, hides, shows or repositions Blizzard/ElvUI chat frames.
-- The historical Loot/Trade cleanup is permanently replaced with a state-only no-op.
-- Adds one safe login recovery pass using Blizzard's own `FCF_DockUpdate()` so existing dock visibility is recalculated without deleting tabs or changing dock membership.
-- ElvUI and Blizzard are now the sole owners of chat tab visibility and docking.
+- Removes RetreatUI's synthetic global `UNIT_POWER_FREQUENT` wake-up that previously called `WeakAuras.ScanEvents()` every 0.12 seconds.
+- Native Ascension resource polling now uses the RetreatUI-only `RETREATUI_RESOURCE_PULSE` event at a lower cadence and only for classes that actually expose a native custom resource.
+- Main, Utility, Proc, State and Target WeakAuras no longer all react directly to raw `UNIT_AURA` storms.
+- Adds a debounced RetreatUI event coordinator so combat event bursts produce at most one short refresh batch instead of multiple complete HUD recalculations.
+- Player aura updates are routed only to player-owned HUD elements; target aura updates are routed only to target debuffs.
+- Cooldown and usable-state events are collapsed into the RetreatUI row refresh path.
 
-## ElvUI refresh storm fix
+## Runtime state caching
 
-- The old Pyromancer/Details compatibility driver no longer runs on `PLAYER_TARGET_CHANGED` or `PLAYER_ENTERING_WORLD`.
-- Removes the repeated delayed 0.10 / 0.50 / 1.50 second refresh passes.
-- Pyromancer Heat filtering is now static profile data only.
-- Removes the fallback to `ElvUI:UpdateAll(true)`, which could refresh action bars during normal gameplay and feed repeated `ActionButton_UpdateOverlayGlow` work.
+- Main/Utility rows, Proc tracking, Class State tracking and Target Debuffs now cache their final snapshots until the relevant game state changes.
+- This prevents repeated 40-aura scans and repeated spell cooldown/usable queries when several WeakAura regions refresh during the same event burst.
+- Native custom-resource snapshots use a short shared cache so bar/segment displays do not independently rescan Ascension frames during the same update.
 
-## RetreatUI_Classes frame pacing
+## Combat-log isolation
 
-- Removes `ACTIONBAR_UPDATE_COOLDOWN` from the shared AdvancedHUD event driver.
-- Removes `UNIT_POWER_FREQUENT` from the shared AdvancedHUD event driver.
-- Cooldown events now update only cooldown timers and usable-state glows instead of rescanning up to 40 player auras and rebuilding both HUD rows.
-- Power events no longer scan all player auras for classes that do not own a custom resource.
-- `UNIT_AURA` remains the owner of proc/buff state, while the existing lightweight timer remains the owner of countdown text.
+- The Hellfire Imp runtime no longer listens to `COMBAT_LOG_EVENT_UNFILTERED` on every CoA class.
+- Its combat-log listener is enabled only while Knight of Xoroth is the active class.
+- Explicit resource WeakAuras no longer wake directly on every combat-log event; relevant Knight resource changes are debounced through a RetreatUI-specific refresh event.
+
+## Preserved fixes
+
+- beta.18 chat ownership changes remain intact. RetreatUI still does not force-show, dock, undock or close chat tabs.
+- beta.17 protected-frame / secure-taint protections remain intact.
+- No HUD coordinates, icon sizes, class curation or target-aura policy were changed in this performance build.
 
 ## Testing notes
 
 Close Project Ascension completely after installing this build and start it again.
 
-Please specifically test:
-
-- Switching between General, Party and custom chat tabs and creating/selecting new tabs without two chat frames rendering on top of each other.
-- Sun Cleric and Templar frame pacing in town and inside a dungeon with `RetreatUI_Classes` enabled.
-- Whether the repeated `ActionBarButtonSpellActivationAlert` / `ActionButton_UpdateOverlayGlow` Lua error stops occurring during normal target changes and combat.
-- Normal class HUD cooldowns, procs and resources for visual regressions.
+Please specifically compare frame pacing with `RetreatUI_Classes` enabled on Sun Cleric and Templar in a dungeon or battleground. Also verify normal resource updates, cooldowns, procs, class-state icons and Knight of Xoroth Hellfire Imp tracking.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 
