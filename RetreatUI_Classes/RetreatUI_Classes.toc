@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: Class metadata, spell data and class-specific HUD modules for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.7-beta.15
+## Version: 1.1.7-beta.16
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
@@ -103,6 +103,7 @@ WitchHunter\HUD.lua
 KnightOfXoroth\Definition.lua
 KnightOfXoroth\Data.lua
 KnightOfXoroth\HUD.lua
+KnightOfXoroth\Curation.lua
 
 Templar\Definition.lua
 Templar\Data.lua
