@@ -1,15 +1,17 @@
 local RUI = RetreatUI
 if not RUI or type(RUI.CreateClassStateTracker) ~= "function" then return end
 
--- Every class-owned stance, form, aspect, oath, formation and presence uses one
--- shared horizontal lane immediately to the right of RetreatUI's trinkets.
+-- One authoritative CoA class-state lane for every class/spec.
 --
--- RetreatUI has two tracker generations:
---   1. HUDWidgets:CreateFormTracker (older class-specific HUDs)
---   2. CreateClassStateTracker (the shared grouped state tracker)
+-- The state lane is anchored to the ACTUAL rendered right edge of the trinket
+-- tracker. No theoretical icon count, screen X/Y, class offset or resource-bar
+-- calculation is allowed here. Native RetreatUI trinkets and the WeakAuras
+-- trinket group are both supported; whichever visible rendered frame ends
+-- furthest to the right becomes the source.
 --
--- Both are registered here so a class can never need its own coordinates. Only
--- visible states consume a slot, and every label is forced above its icon.
+-- State icons are bottom-aligned with the trinkets. A 38x38 state icon therefore
+-- grows upward from the 30x30 trinket row and cannot extend down into the resource
+-- bar. Every class and spec uses this exact same rule.
 local W = RUI.HUDWidgets
 local unpack = unpack or table.unpack
 local anchor = _G.RetreatUIClassStateAnchor
@@ -17,6 +19,10 @@ if not anchor then
   anchor = CreateFrame("Frame", "RetreatUIClassStateAnchor", UIParent)
   anchor:SetSize(1, 1)
 end
+
+local GENERAL_TRINKETS = "RetreatUI - General — Trinkets"
+local TRINKET_SLOT_13 = GENERAL_TRINKETS .. " — Slot 13"
+local TRINKET_SLOT_14 = GENERAL_TRINKETS .. " — Slot 14"
 
 local legacyTrackers = {}
 local classTrackers = {}
@@ -50,6 +56,13 @@ local function FrameVisible(frame)
   return true
 end
 
+local function FrameRight(frame)
+  if not FrameVisible(frame) or type(frame.GetRight) ~= "function" then return nil end
+  local ok, value = pcall(frame.GetRight, frame)
+  value = ok and tonumber(value) or nil
+  return value
+end
+
 local function StateSize(value)
   local layout = RUI.layout and RUI.layout.stanceTracker
   return math.max(18, Number(value, Number(layout and layout.size, 38)))
@@ -60,11 +73,39 @@ local function StateGap(value)
   return math.max(0, Number(value, Number(layout and layout.gap, 6)))
 end
 
+local function AddCandidate(candidates, frame, name)
+  local right = FrameRight(frame)
+  if right then
+    candidates[#candidates + 1] = {frame=frame, name=name, right=right}
+  end
+end
+
+local function RenderedTrinketSource()
+  local candidates = {}
+
+  -- Native RetreatUI tracker.
+  AddCandidate(candidates, _G.RetreatUITrinketTracker, "RetreatUITrinketTracker")
+
+  -- WeakAuras tracker. Use leaf regions first because their visible footprint is
+  -- the real on-screen result; the group frame is only a fallback.
+  if WeakAuras and type(WeakAuras.GetRegion) == "function" then
+    AddCandidate(candidates, WeakAuras.GetRegion(TRINKET_SLOT_13), TRINKET_SLOT_13)
+    AddCandidate(candidates, WeakAuras.GetRegion(TRINKET_SLOT_14), TRINKET_SLOT_14)
+    AddCandidate(candidates, WeakAuras.GetRegion(GENERAL_TRINKETS), GENERAL_TRINKETS)
+  end
+
+  local best
+  for _, candidate in ipairs(candidates) do
+    if not best or candidate.right > best.right then best = candidate end
+  end
+  return best and best.frame or nil, best and best.name or nil
+end
+
 local function MatchTrinketLayer(frame)
   if not UsableFrame(frame) then return end
-  local trinkets = _G.RetreatUITrinketTracker
-  if trinkets and type(trinkets.GetFrameLevel) == "function" and type(frame.SetFrameLevel) == "function" then
-    local ok, level = pcall(trinkets.GetFrameLevel, trinkets)
+  local source = select(1, RenderedTrinketSource())
+  if source and type(source.GetFrameLevel) == "function" and type(frame.SetFrameLevel) == "function" then
+    local ok, level = pcall(source.GetFrameLevel, source)
     if ok and tonumber(level) then pcall(frame.SetFrameLevel, frame, tonumber(level) + 1) end
   end
 end
@@ -73,68 +114,55 @@ function RUI:PositionClassStateAnchor()
   if not anchor then return false end
   anchor:ClearAllPoints()
 
-  local trinkets = _G.RetreatUITrinketTracker
-  if UsableFrame(trinkets) then
-    -- This is the authoritative CoA state position: immediately after the
-    -- complete trinket tracker, on exactly the same horizontal lane above the
-    -- primary resource bar. No class is allowed to apply its own Y offset.
-    anchor:SetPoint("CENTER", trinkets, "RIGHT", 0, 0)
-    anchor.source = "RetreatUITrinketTracker"
+  local source, sourceName = RenderedTrinketSource()
+  if source then
+    anchor:SetPoint("BOTTOMRIGHT", source, "BOTTOMRIGHT", 0, 0)
+    anchor:Show()
+    anchor.source = sourceName
+    anchor.resolved = true
     return true
   end
 
-  -- Keep the same lane even when the Trinket HUD is disabled or has not been
-  -- created yet. This is the centre of the trinket row's expected right edge.
-  local player = _G.ElvUF_Player or _G.ElvUF_PlayerMover or _G.PlayerFrame
-  if UsableFrame(player) then
-    local trinketSize = 30
-    anchor:SetPoint("CENTER", player, "TOPRIGHT", 0, 2 + trinketSize / 2)
-    anchor.source = "player fallback"
-    return true
-  end
-
-  local power = RUI.layout and RUI.layout.power or {x=0, y=-152, width=360, height=16}
-  local trinketSize = 30
-  local trinketWidth = trinketSize * 2 + 3
-  local x = Number(power.x, 0) - Number(power.width, 360) / 2 + trinketWidth
-  local y = Number(power.y, -152) + Number(power.height, 16) / 2 + trinketSize / 2 + 5
-  anchor:SetPoint("CENTER", UIParent, "CENTER", x, y)
-  anchor.source = "HUD fallback"
-  return true
+  -- Never guess. Until the real trinket region exists, keep the state lane
+  -- safely off-screen. Login/equipment/WA refresh retries move it immediately
+  -- once the actual rendered source is available.
+  anchor:SetPoint("BOTTOMRIGHT", UIParent, "BOTTOMLEFT", -1000, -1000)
+  anchor:Hide()
+  anchor.source = "pending rendered trinkets"
+  anchor.resolved = false
+  return false
 end
 
-local function ForceLabelAbove(frame, text)
+local function ForceLabelAbove(frame, text, size)
   if not UsableFrame(frame) or not text or type(text.ClearAllPoints) ~= "function" then return end
   text:ClearAllPoints()
   text:SetPoint("BOTTOM", frame, "TOP", 0, 3)
   if type(text.SetJustifyH) == "function" then text:SetJustifyH("CENTER") end
+  if type(text.SetWidth) == "function" then text:SetWidth(math.max(StateSize(size), 48)) end
+  if type(text.SetWordWrap) == "function" then text:SetWordWrap(false) end
 end
 
 function RUI:ReflowClassStateTrackers()
   self:PositionClassStateAnchor()
   local cursor = StateGap()
 
-  -- Older form trackers occupy the first visible slots. Their frame is reduced
-  -- to the icon footprint so their old 92px container cannot overlap trinkets.
   for _, frame in ipairs(legacyTrackers) do
     if FrameVisible(frame) then
       local size = StateSize(frame.ruiGlobalStateSize)
       local gap = StateGap(frame.ruiGlobalStateGap)
       frame:ClearAllPoints()
       frame:SetSize(size, size)
-      frame:SetPoint("LEFT", anchor, "RIGHT", cursor, 0)
+      frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)
       if frame.icon then
         frame.icon:ClearAllPoints()
         frame.icon:SetPoint("CENTER", frame, "CENTER", 0, 0)
       end
-      ForceLabelAbove(frame.icon or frame, frame.nameText)
+      ForceLabelAbove(frame.icon or frame, frame.nameText, size)
       MatchTrinketLayer(frame)
       cursor = cursor + size + gap
     end
   end
 
-  -- Grouped class-state frames continue directly after any visible legacy form
-  -- tracker. Hidden groups consume no space, so the lane always stays compact.
   for _, tracker in ipairs(classTrackers) do
     if type(tracker) == "table" and FrameVisible(tracker.parent) then
       local size = StateSize(tracker.ruiGlobalStateSize or (tracker.options and tracker.options.size))
@@ -142,8 +170,8 @@ function RUI:ReflowClassStateTrackers()
       for _, frame in ipairs(tracker.frames or {}) do
         if FrameVisible(frame) then
           frame:ClearAllPoints()
-          frame:SetPoint("LEFT", anchor, "RIGHT", cursor, 0)
-          ForceLabelAbove(frame, frame.stateText)
+          frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)
+          ForceLabelAbove(frame, frame.stateText, size)
           MatchTrinketLayer(frame)
           cursor = cursor + size + gap
         end
@@ -152,7 +180,7 @@ function RUI:ReflowClassStateTrackers()
   end
 
   anchor.usedWidth = math.max(0, cursor - StateGap())
-  return true
+  return anchor.resolved == true
 end
 
 local function ScheduleReflow()
@@ -181,8 +209,6 @@ local function RegisterLegacyTracker(frame, options)
   return frame
 end
 
--- Bring every old CreateFormTracker user under the same global layout without
--- editing Necromancer or any other class HUD individually.
 if W and type(W.CreateFormTracker) == "function" then
   local originalCreateFormTracker = W.CreateFormTracker
   function W:CreateFormTracker(parent, options)
@@ -194,7 +220,7 @@ if W and type(W.CreateFormTracker) == "function" then
         frame.icon:ClearAllPoints()
         frame.icon:SetPoint("CENTER", frame, "CENTER", 0, 0)
       end
-      ForceLabelAbove(frame.icon or frame, frame.nameText)
+      ForceLabelAbove(frame.icon or frame, frame.nameText, size)
       RegisterLegacyTracker(frame, options)
     end
     return frame
@@ -204,8 +230,6 @@ if W and type(W.CreateFormTracker) == "function" then
     local originalSetFormTracker = W.SetFormTracker
     function W:SetFormTracker(frame, ...)
       local results = {originalSetFormTracker(self, frame, ...)}
-      -- SetFormTracker may make a previously hidden state visible. Reflow after
-      -- the visibility change so the icon can never fall back to old coordinates.
       RUI:ReflowClassStateTrackers()
       return unpack(results)
     end
@@ -221,10 +245,6 @@ local function RegisterClassTracker(tracker, size, gap)
   tracker.ruiGlobalStateGap = StateGap(gap)
   tracker.ruiGlobalStateYOffset = 0
 
-  -- Update() shows the state frames only after its internal Position() pass.
-  -- Reflow synchronously after Update returns; otherwise one frame can remain at
-  -- the old absolute class coordinates until the scheduler runs. That was the
-  -- source of the CoA stance jumping away from the trinket row after refreshes.
   local originalUpdate = tracker.Update
   if type(originalUpdate) == "function" then
     tracker.Update = function(object, ...)
@@ -252,8 +272,6 @@ local function RegisterClassTracker(tracker, size, gap)
     end
   end
 
-  -- Keep a scheduled correction for callers that invoke Position() directly,
-  -- but Update() above remains the authoritative synchronous final placement.
   local originalPosition = tracker.Position
   if type(originalPosition) == "function" then
     tracker.Position = function(object, ...)
@@ -277,10 +295,8 @@ function RUI:CreateClassStateTracker(parent, className, options)
   configured.anchor = nil
   configured.anchorFrameName = "RetreatUIClassStateAnchor"
   configured.direction = "right"
-  -- Even the tracker's own temporary Position() pass now uses the exact same
-  -- trinket lane. The synchronous reflow after Update remains authoritative.
   configured.x = size / 2 + gap
-  configured.y = -(size / 2)
+  configured.y = size / 2
   configured.fallbackX = nil
   configured.fallbackY = nil
   configured.globalYOffset = 0
@@ -290,8 +306,6 @@ function RUI:CreateClassStateTracker(parent, className, options)
   return RegisterClassTracker(tracker, size, gap)
 end
 
--- The trinket engine can change anchors after login, equipment changes or an
--- ElvUI refresh. Reflow the complete lane immediately after it.
 local originalRefreshTrinketTracker = RUI.RefreshTrinketTracker
 if type(originalRefreshTrinketTracker) == "function" then
   function RUI:RefreshTrinketTracker(...)
@@ -314,7 +328,7 @@ events:SetScript("OnEvent", function(_, _, unit)
   if unit and unit ~= "player" then return end
   ScheduleReflow()
   if RUI.After then
-    for _, delay in ipairs({0.10, 0.50, 1.50}) do
+    for _, delay in ipairs({0.05, 0.15, 0.50, 1.50}) do
       RUI:After(delay, function() RUI:ReflowClassStateTrackers() end)
     end
   end
@@ -322,4 +336,4 @@ end)
 
 RUI:PositionClassStateAnchor()
 RUI._globalClassStateAnchorLoaded = true
-RUI._globalClassStateAnchorRevision = 4
+RUI._globalClassStateAnchorRevision = 5
