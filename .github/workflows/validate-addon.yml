@@ -72,13 +72,48 @@ jobs:
           validate_toc(classes)
 
           core_text = core.read_text(encoding='utf-8')
+          class_text = classes.read_text(encoding='utf-8')
           assert 'Core\\SpellbookScanThrottle.lua' in core_text
           assert 'Core\\PerformanceRefreshCoordinator.lua' in core_text
           assert 'Integrations\\CharacterAdvancementCrashGuard.lua' in core_text
           assert 'Core\\PartyUtility.lua' not in core_text
           assert 'Core\\PartyUtilityV4.lua' not in core_text
           assert 'Core\\RetreatCD.lua' not in core_text
+          assert 'PerformanceHotfixBeta17.lua' in class_text
           print(f'Validated RetreatUI {core_version}')
+          PY
+
+      - name: Validate secure-frame and class-driver safety
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          from pathlib import Path
+
+          cleanup = Path('RetreatUI/Integrations/Cleanup.lua').read_text(encoding='utf-8')
+          class_cleanup = Path('RetreatUI/Integrations/ClassResourceCleanup.lua').read_text(encoding='utf-8')
+          performance = Path('RetreatUI_Classes/PerformanceHotfixBeta17.lua').read_text(encoding='utf-8')
+
+          # Blizzard unit frames must never return to the generic cleanup allow-list.
+          for forbidden in ('"playerFrame"', '"PlayerFrame"', '"TargetFrame"',
+                            '"PartyMemberFrame1"', '"PartyMemberFrame2"',
+                            '"PartyMemberFrame3"', '"PartyMemberFrame4"'):
+              assert forbidden not in cleanup, f'Protected Blizzard frame returned to Cleanup.lua: {forbidden}'
+
+          # Both cleanup paths must reject protected frames before visual/mouse mutations.
+          assert 'if IsProtectedFrame(frame) then return false end' in cleanup
+          assert 'if Protected(frame) then return false end' in class_cleanup
+          assert 'secureFrameSafety = true' in cleanup
+          assert 'secureFrameSafety = true' in class_cleanup
+
+          # Idle class helpers are gated, including Guardian's high-frequency combat log.
+          assert 'RetreatUIGuardianBannerTrackerDriver' in performance
+          assert 'COMBAT_LOG_EVENT_UNFILTERED' in performance
+          assert 'UnregisterAllEvents' in performance
+          assert 'RetreatUICultistWagoMechanicsDriver' in performance
+          assert 'RetreatUITinkerHealerPetDriver' in performance
+          assert 'RetreatUIGuardianReminderDriver' in performance
+          print('Validated beta.17 secure-frame and class-driver safety')
           PY
 
       - name: Validate package roots

@@ -1,39 +1,38 @@
-# RetreatUI v1.1.7-beta.16
+# RetreatUI v1.1.7-beta.17
 
-This prerelease removes the guessed CoA stance geometry, restores the clean target frame, and puts Knight of Xoroth back on an explicitly curated HUD.
+This prerelease is a focused performance and secure-frame safety hotfix. It does not change the established HUD layout.
 
-## Stance / state placement
+## Class HUD performance
 
-- Stance, form, aspect, oath, formation, presence and Pestilence trackers now anchor to the **actual rendered right edge** of the trinket tracker.
-- The old theoretical `63px` trinket width is gone; no icon-count calculation is used to decide where stance begins.
-- Both native RetreatUI state trackers and WeakAuras state groups use the same rendered trinket edge.
-- State icons begin 6px after that edge and are bottom-aligned with the trinkets, so 38x38 state icons grow upward rather than into the resource bar.
-- If the real trinket region is not available yet, state trackers stay off-screen until it exists instead of falling back to guessed screen coordinates.
+- Stops legacy class-helper polling from running for unrelated classes.
+- Cultist Wago mechanics polling is active only while the Cultist Class HUD is active.
+- Tinker healer-pet polling is active only while the Tinker Class HUD is active.
+- Guardian reminder polling is active only while the Guardian Class HUD is active.
+- Guardian banner tracking no longer listens to `COMBAT_LOG_EVENT_UNFILTERED` for every character; the combat-log listener is registered only for an active Guardian HUD.
+- Idle helper drivers unregister their events instead of continuing to process aura/combat events in the background.
 
-## Knight of Xoroth cleanup
+## Secure-frame / combat taint safety
 
-- Retires the old bespoke KoX Pestilence tracker as a visible tracker.
-- Pestilence is now owned by the same global class-state tracker used by the other CoA classes.
-- KoX live-spellbook cooldown discovery no longer repopulates the HUD with every discovered cooldown.
-- The visible KoX action rows are deliberately small:
-  - Core: `Unleash Pestilence`
-  - Utility: `Chainwhip`, `Snarl`
-- Active aura trackers are limited to `Suffuse`, `Hellrider`, and `Black Shield`.
-- Demonfire, Hellfire Imp, Demon's Blood and the existing resource/counter logic remain intact.
+- RetreatUI generic cleanup no longer includes Blizzard `PlayerFrame`, `TargetFrame`, or party unit frames in its cleanup candidates.
+- Protected frames are rejected before RetreatUI calls `SetAlpha`, `EnableMouse`, `Hide`, or other visual/mouse mutations.
+- Native class-resource cleanup now applies the same protected-frame boundary.
+- Old persisted generic cleanup entries for Blizzard unit frames are discarded instead of being re-applied.
+- ElvUI remains responsible for Blizzard unit-frame visibility; RetreatUI cleanup is limited to safe, unprotected Ascension/CoA resource containers.
 
-## Target frame cleanup
+## Validation
 
-- The generic ElvUI target-frame debuff row is disabled again.
-- The old KoX target-frame debuff bars are suppressed.
-- Target debuffs are no longer allowed to turn the target frame into a generic aura dump; any future target mechanic display must be individually curated.
+- Adds CI regression checks preventing protected Blizzard unit frames from returning to the cleanup allow-list.
+- Adds CI checks for the beta.17 class-driver gate and protected-frame early-return rules.
 
-## Packaging
+## Testing notes
 
-The release ZIP contains the three independent WoW addon roots:
+A full `/reload` is required after installing this build. A frame that was already tainted earlier in the current WoW session cannot be made untainted by changing Lua code after it has loaded.
 
-- `RetreatUI`
-- `RetreatUI_Classes`
-- `RetreatUI_BuffManager`
+Please specifically test:
+
+- FPS/frame pacing with `RetreatUI_Classes` enabled.
+- Entering combat, changing target, party/raid transitions and secure actions without the `RetreatUI prevented the call of the secure function 'UNKNOWN()'` warning.
+- Your normal class HUD/resource tracking to confirm no visible layout regression.
 
 This is a Beta / prerelease build for live verification before promotion to Stable.
 

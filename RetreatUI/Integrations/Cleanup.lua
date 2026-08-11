@@ -1,23 +1,22 @@
 local RUI = RetreatUI
+if not RUI then return end
 
--- RetreatUI only touches a strict allow-list of Blizzard/Ascension cosmetic
--- frames plus global objects whose names unmistakably identify a CoA resource
--- container. Secure unit-frame state drivers are never modified.
+-- Beta.17 secure-frame safety.
+--
+-- RetreatUI must never mutate Blizzard/ElvUI protected unit frames directly.
+-- Hiding PlayerFrame, TargetFrame, party frames, action bars, or any protected
+-- ancestor can taint the secure execution path even when the mutation happens
+-- out of combat. ElvUI owns its unit-frame visibility; this cleanup is limited
+-- to unprotected Ascension/CoA cosmetic resource containers only.
 local cosmeticCandidates = {
-  -- Blizzard/Ascension unit-frame duplicates confirmed in the client.
-  "playerFrame", "PlayerFrame", "TargetFrame",
-  "PartyMemberFrame1", "PartyMemberFrame2", "PartyMemberFrame3", "PartyMemberFrame4",
-
-  -- Known native CoA/Ascension class-resource containers and anchors.
   "CoAResourceSegmentBar",
   "CoAResourceSegmentBarContainer", "CoAResourceSegmentContainer",
   "CoAResourceBar", "CoAResourceFrame", "CoAResourceAnchor", "CoAResourceHolder",
-  "CoAMultiCastActionBarFrame", "CoAResourceOrb",
+  "CoAResourceOrb",
   "CoAClassResourceBar", "CoAClassResourceFrame", "CoAClassBar",
   "AscensionResourceBar", "AscensionResourceFrame", "AscensionResourceAnchor",
   "AscensionClassResourceBar", "AscensionClassResourceFrame", "AscensionClassBar",
   "AscensionPowerBar", "AscensionPowerFrame",
-  "AscensionBuffFrame", "AscensionAuraFrame",
   "ClasslessResourceBar", "ClasslessResourceFrame", "ClasslessPowerBar",
   "HeroArchitectResourceBar", "HeroArchitectResourceFrame",
   "ConquestResourceBar", "ConquestResourceFrame",
@@ -25,8 +24,6 @@ local cosmeticCandidates = {
   "CharacterResourceBar", "CharacterResourceFrame",
 }
 
--- Ascension builds the segmented resource widget from a named pool. Different
--- client revisions have used both compact and zero-padded suffixes.
 for index = 1, 24 do
   cosmeticCandidates[#cosmeticCandidates + 1] = "CoAResourceSegmentBarPoolFrameCoAResourceSegmentTemplate" .. index
   cosmeticCandidates[#cosmeticCandidates + 1] = string.format("CoAResourceSegmentBarPoolFrameCoAResourceSegmentTemplate%02d", index)
@@ -62,7 +59,8 @@ end
 local function LooksLikeResourceFrameName(name)
   if type(name) ~= "string" or name == "" then return false end
   local lower = string.lower(name)
-  if lower == "coamulticastactionbarframe" or lower == "coaresourceorb" then return true end
+  if string.find(lower, "retreatui", 1, true) then return false end
+
   local hasNamespace = string.find(lower, "coa", 1, true)
     or string.find(lower, "ascension", 1, true)
     or string.find(lower, "classless", 1, true)
@@ -116,6 +114,8 @@ local function ClearLegacyState()
   db.hiddenFrames = db.hiddenFrames or {}
   local cleared = 0
 
+  -- Old builds persisted Blizzard unit-frame names here. They are deliberately
+  -- discarded rather than re-applied by beta.17.
   for name in pairs(db.hiddenFrames) do
     if not cosmeticCandidateSet[name] and not discoveredResourceNames[name] then
       db.hiddenFrames[name] = nil
@@ -125,6 +125,7 @@ local function ClearLegacyState()
 
   db.integrations.frameCleanup = db.integrations.frameCleanup or {}
   db.integrations.frameCleanup.legacyClearedVersion = RUI.version
+  db.integrations.frameCleanup.secureFrameSafety = true
   return cleared
 end
 
@@ -133,7 +134,7 @@ local function GuardResourceFrame(frame, name)
   if not LooksLikeResourceFrameName(name) or not frame.HookScript then return end
 
   local ok = pcall(frame.HookScript, frame, "OnShow", function(shownFrame)
-    if InCombat() or not HasCompleteClassResourceReplacement() then return end
+    if InCombat() or IsProtectedFrame(shownFrame) or not HasCompleteClassResourceReplacement() then return end
     local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function" and RUI:IsNativeResourceMirrorSource(shownFrame)
     if shownFrame.SetAlpha then pcall(shownFrame.SetAlpha, shownFrame, 0) end
     if shownFrame.EnableMouse then pcall(shownFrame.EnableMouse, shownFrame, false) end
@@ -145,15 +146,19 @@ end
 local function HideCosmeticFrame(frame, name)
   if not frame or InCombat() then return false end
 
-  local protected = IsProtectedFrame(frame)
+  -- Critical beta.17 rule: do absolutely nothing to a protected frame or any
+  -- frame parented beneath a protected ancestor. Even harmless-looking visual
+  -- calls can taint secure execution for the rest of the session.
+  if IsProtectedFrame(frame) then return false end
+
   local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function" and RUI:IsNativeResourceMirrorSource(frame)
   if frame.SetAlpha then pcall(frame.SetAlpha, frame, 0) end
   if frame.EnableMouse then pcall(frame.EnableMouse, frame, false) end
   if frame.SetMouseClickEnabled then pcall(frame.SetMouseClickEnabled, frame, false) end
   if frame.SetMouseMotionEnabled then pcall(frame.SetMouseMotionEnabled, frame, false) end
-  if not protected and not mirrored and frame.Hide then pcall(frame.Hide, frame) end
+  if not mirrored and frame.Hide then pcall(frame.Hide, frame) end
 
-  if not protected then GuardResourceFrame(frame, name) end
+  GuardResourceFrame(frame, name)
   local db = RUI:EnsureDB()
   db.hiddenFrames = db.hiddenFrames or {}
   db.hiddenFrames[name] = true
@@ -166,7 +171,7 @@ local function DiscoverResourceGlobals()
   local found = 0
 
   for name, value in pairs(_G) do
-    if LooksLikeResourceFrameName(name) and IsFrameLike(value) then
+    if LooksLikeResourceFrameName(name) and IsFrameLike(value) and not IsProtectedFrame(value) then
       if not discoveredResourceNames[name] then found = found + 1 end
       discoveredResourceNames[name] = true
       cosmeticCandidateSet[name] = true
@@ -187,7 +192,7 @@ local function RunLightweightCleanup(forceDiscovery)
     seen[name] = true
     if IsNativeClassResourceName(name) and not HasCompleteClassResourceReplacement() then return end
     local frame = _G[name]
-    if frame and IsFrameLike(frame) and HideCosmeticFrame(frame, name) then
+    if frame and IsFrameLike(frame) and not IsProtectedFrame(frame) and HideCosmeticFrame(frame, name) then
       hidden = hidden + 1
     end
   end
@@ -203,6 +208,7 @@ local function RunLightweightCleanup(forceDiscovery)
     db.integrations.frameCleanup.discoveredResourceCount = db.integrations.frameCleanup.discoveredResourceCount + 1
   end
   db.integrations.frameCleanup.version = RUI.version
+  db.integrations.frameCleanup.secureFrameSafety = true
   return hidden
 end
 
@@ -210,7 +216,7 @@ function RUI:RunFrameCleanupNow()
   discoveryDirty = true
   ClearLegacyState()
   local hidden = RunLightweightCleanup(true)
-  return true, tostring(hidden) .. " duplicate frames hidden"
+  return true, tostring(hidden) .. " unprotected duplicate resource frames hidden"
 end
 
 function RUI:ScheduleFrameCleanupPasses(forceDiscovery)
@@ -220,7 +226,7 @@ function RUI:ScheduleFrameCleanupPasses(forceDiscovery)
 
   if forceDiscovery then discoveryDirty = true end
   cleanupScheduled = true
-  local delays = {0.05, 0.35, 1.0, 2.5, 5.0, 10.0}
+  local delays = {0.05, 0.35, 1.0, 2.5, 5.0}
   for index, delay in ipairs(delays) do
     self:After(delay, function()
       if type(RetreatUI.IsSupportedCharacter) == "function" and not RetreatUI:IsSupportedCharacter() then
@@ -242,7 +248,7 @@ function RUI:HideDuplicateFrames()
   ClearLegacyState()
   local hidden = RunLightweightCleanup(true)
   self:ScheduleFrameCleanupPasses(true)
-  return true, tostring(hidden) .. " safe duplicate frames hidden"
+  return true, tostring(hidden) .. " safe duplicate resource frames hidden"
 end
 
 function RUI:ApplyHiddenFrames()
@@ -258,6 +264,9 @@ function RUI:ApplyHiddenFrames()
 end
 
 local function QueueEventCleanup(forceDiscovery)
+  local db = RUI:EnsureDB()
+  db.integrations.frameCleanup = db.integrations.frameCleanup or {}
+  if db.integrations.frameCleanup.enabled == false then return end
   if forceDiscovery then discoveryDirty = true end
   if eventCleanupPending then return end
   eventCleanupPending = true
@@ -268,10 +277,7 @@ local function QueueEventCleanup(forceDiscovery)
   RUI:After(0.45, function() RunLightweightCleanup(false) end)
 end
 
--- CoA may create or re-show its native resource widget after class detection,
--- spell/talent updates, shapeshifts or power changes. Re-apply the strict cleanup
--- on those lifecycle events. Registration is protected for client-version safety.
-local cleanupEvents = CreateFrame("Frame")
+local cleanupEvents = CreateFrame("Frame", "RetreatUISafeCleanupDriver")
 local cleanupPendingCombat = false
 local cleanupEventNames = {
   "ADDON_LOADED",
@@ -284,9 +290,6 @@ local cleanupEventNames = {
   "UNIT_POWER_BAR_SHOW",
   "UNIT_POWER_BAR_HIDE",
   "PLAYER_LEVEL_UP",
-  "PARTY_MEMBERS_CHANGED",
-  "RAID_ROSTER_UPDATE",
-  "GROUP_ROSTER_UPDATE",
   "PLAYER_REGEN_ENABLED",
 }
 for _, eventName in ipairs(cleanupEventNames) do
@@ -310,3 +313,5 @@ cleanupEvents:SetScript("OnEvent", function(_, event)
     or event == "UPDATE_SHAPESHIFT_FORM"
   QueueEventCleanup(rediscover)
 end)
+
+RUI._secureFrameCleanupBeta17 = true
