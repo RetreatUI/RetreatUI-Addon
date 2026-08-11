@@ -1,13 +1,19 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.12 live geometry + target ownership cleanup.
+-- CoA state geometry + target ownership cleanup.
 --
--- The State dynamic group has one exact global screen position. Individual
--- stance/form/state leaves remain 38x38 at X=0 / Y=0 from beta.11.
+-- The State dynamic group must live in the exact same lane as the General
+-- trinket row. The trinket group's right edge is ElvUF_Player TOPRIGHT at X=-17;
+-- the state group's LEFT edge begins 6px to the right at X=-11. Y=16 is the
+-- vertical centre of the 30px trinket row anchored at Y=1.
+--
 -- Target debuffs are no longer rendered by RetreatUI WeakAuras; ElvUI owns the
 -- player's target debuff display instead.
-local STATE_GROUP_X, STATE_GROUP_Y = -159, -3
+local STATE_FRAME = "ElvUF_Player"
+local STATE_ANCHOR_POINT = "TOPRIGHT"
+local STATE_SELF_POINT = "LEFT"
+local STATE_GROUP_X, STATE_GROUP_Y = -11, 16
 
 local function CurrentClass(self, className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
@@ -42,14 +48,14 @@ local function ApplyStateGroupPosition(packageData)
   local stateID = packageData.classGroups and packageData.classGroups.state
   local state = stateID and (FindByID(packageData.groups, stateID) or FindByID(packageData.roots, stateID))
   if not state then return false end
-  state.anchorFrameType = "SCREEN"
-  state.anchorFrameFrame = nil
-  state.anchorPoint = "CENTER"
-  state.selfPoint = "CENTER"
+  state.anchorFrameType = "SELECTFRAME"
+  state.anchorFrameFrame = STATE_FRAME
+  state.anchorPoint = STATE_ANCHOR_POINT
+  state.selfPoint = STATE_SELF_POINT
   state.xOffset = STATE_GROUP_X
   state.yOffset = STATE_GROUP_Y
   state.grow = "HORIZONTAL"
-  state.align = "CENTER"
+  state.align = "LEFT"
   return true
 end
 
@@ -86,11 +92,17 @@ if type(previousBuildWeakAuraHUDPackage) == "function" then
     local packageData, buildError = previousBuildWeakAuraHUDPackage(self, className)
     if type(packageData) ~= "table" then return packageData, buildError end
     if not ApplyStateGroupPosition(packageData) then
-      return nil, "Class State WeakAura group could not be positioned at X -159 / Y -3"
+      return nil, "Class State WeakAura group could not be anchored beside the trinket row"
     end
     RemoveTargetWeakAuras(packageData)
     packageData.beta12 = {
-      stateGroup = {frame="SCREEN", x=STATE_GROUP_X, y=STATE_GROUP_Y},
+      stateGroup = {
+        frame=STATE_FRAME,
+        anchorPoint=STATE_ANCHOR_POINT,
+        selfPoint=STATE_SELF_POINT,
+        x=STATE_GROUP_X,
+        y=STATE_GROUP_Y,
+      },
       targetDebuffsOwner = "ElvUI",
     }
     return packageData, buildError
@@ -130,12 +142,13 @@ if type(previousValidateWeakAuraHUD) == "function" then
     local stateID = packageData and packageData.classGroups and packageData.classGroups.state
     local state = stateID and WeakAuras and WeakAuras.GetData and WeakAuras.GetData(stateID)
     if not state
-      or state.anchorFrameType ~= "SCREEN"
-      or state.anchorPoint ~= "CENTER"
-      or state.selfPoint ~= "CENTER"
+      or state.anchorFrameType ~= "SELECTFRAME"
+      or state.anchorFrameFrame ~= STATE_FRAME
+      or state.anchorPoint ~= STATE_ANCHOR_POINT
+      or state.selfPoint ~= STATE_SELF_POINT
       or (tonumber(state.xOffset) or 0) ~= STATE_GROUP_X
       or (tonumber(state.yOffset) or 0) ~= STATE_GROUP_Y then
-      return false, "State/Form group must be at X -159 / Y -3"
+      return false, "State/Form group must sit directly beside the trinket row"
     end
 
     local current = CurrentClass(self, className)
@@ -149,4 +162,4 @@ if type(previousValidateWeakAuraHUD) == "function" then
 end
 
 RUI._weakAuraBeta12FixesLoaded = true
-RUI._weakAuraBeta12FixesRevision = 1
+RUI._weakAuraBeta12FixesRevision = 2
