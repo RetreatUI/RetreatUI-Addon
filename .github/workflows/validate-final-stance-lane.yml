@@ -83,6 +83,6 @@ jobs:
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
           buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.17"
+          test "$core_version" = "1.1.7-beta.18"
           test "$core_version" = "$classes_version"
           test "$core_version" = "$buff_version"

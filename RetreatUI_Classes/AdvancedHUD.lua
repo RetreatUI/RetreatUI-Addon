@@ -1134,8 +1134,8 @@ function RUI:RegisterAdvancedClassHUD(className, options)
     for _, eventName in ipairs({
       "PLAYER_ENTERING_WORLD", "SPELLS_CHANGED", "PLAYER_TALENT_UPDATE", "CHARACTER_POINTS_CHANGED",
       "UNIT_AURA", "PLAYER_TARGET_CHANGED", "UNIT_TARGET",
-      "SPELL_UPDATE_COOLDOWN", "ACTIONBAR_UPDATE_COOLDOWN", "UNIT_SPELLCAST_SUCCEEDED",
-      "UNIT_POWER", "UNIT_POWER_FREQUENT", "UNIT_DISPLAYPOWER", "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE",
+      "SPELL_UPDATE_COOLDOWN", "UNIT_SPELLCAST_SUCCEEDED",
+      "UNIT_POWER", "UNIT_DISPLAYPOWER", "UNIT_POWER_BAR_SHOW", "UNIT_POWER_BAR_HIDE",
       "UPDATE_SHAPESHIFT_FORM", "UPDATE_SHAPESHIFT_FORMS", "UPDATE_SHAPESHIFT_USABLE",
     }) do pcall(state.events.RegisterEvent, state.events, eventName) end
     if GetSpellCharges then pcall(state.events.RegisterEvent, state.events, "SPELL_UPDATE_CHARGES") end
@@ -1158,17 +1158,26 @@ function RUI:RegisterAdvancedClassHUD(className, options)
         UpdatePlayerState(false)
         return
       end
-      if event == "UNIT_POWER" or event == "UNIT_POWER_FREQUENT" or event == "UNIT_DISPLAYPOWER"
+      if event == "UNIT_POWER" or event == "UNIT_DISPLAYPOWER"
         or event == "UNIT_POWER_BAR_SHOW" or event == "UNIT_POWER_BAR_HIDE" then
         if unit and unit ~= "player" then return end
         if RUI.UpdatePrimaryPower then RUI:UpdatePrimaryPower(true) end
-        local playerAuras = ReadAura("player", false)
-        UpdateResource(playerAuras, false)
+        -- Do not scan all player auras on every power tick. Only classes with
+        -- a custom resource need an aura/resource read here; usable glows do
+        -- not require an aura scan.
+        if type(ResourceConfig()) == "table" then
+          UpdateResource(ReadAura("player", false), false)
+        end
         UpdateUsableGlowsOnly()
         return
       end
-      if event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" or event == "ACTIONBAR_UPDATE_COOLDOWN" then
-        UpdateCooldownsOnly(); return
+      if event == "SPELL_UPDATE_COOLDOWN" or event == "SPELL_UPDATE_CHARGES" then
+        -- Cooldown events must stay lightweight. Aura/proc state is owned by
+        -- UNIT_AURA; the 0.10s timer owns countdown text. This avoids full
+        -- aura scans and row refreshes on action-bar update storms.
+        UpdateCooldownTimersOnly()
+        UpdateUsableGlowsOnly()
+        return
       end
       if event == "SPELLS_CHANGED" or event == "PLAYER_TALENT_UPDATE" or event == "CHARACTER_POINTS_CHANGED" then
         if state.spellRefreshPending then return end
