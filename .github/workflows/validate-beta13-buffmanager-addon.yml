@@ -10,7 +10,7 @@ on:
       - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
+      - "RetreatUI_Classes/**"
       - "RetreatUI_BuffManager/**"
       - ".github/workflows/publish-release.yml"
       - ".github/workflows/validate-beta13-buffmanager-addon.yml"
@@ -23,7 +23,7 @@ on:
       - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
+      - "RetreatUI_Classes/**"
       - "RetreatUI_BuffManager/**"
       - ".github/workflows/publish-release.yml"
       - ".github/workflows/validate-beta13-buffmanager-addon.yml"
@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate standalone Buff Manager and final stance lane
+      - name: Validate standalone Buff Manager and beta.16 HUD contract
         shell: bash
         run: |
           set -euo pipefail
@@ -46,56 +46,56 @@ jobs:
           luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
           luac5.1 -p RetreatUI/Installer/TBCStyleInstaller.lua
+          luac5.1 -p RetreatUI_Classes/GlobalStateAnchor.lua
+          luac5.1 -p RetreatUI_Classes/KnightOfXoroth/Curation.lua
           luac5.1 -p RetreatUI_BuffManager/BuffManager.lua
 
-          # Buff Manager is a real independent WoW addon with RetreatUI as its dependency.
           test -f RetreatUI_BuffManager/RetreatUI_BuffManager.toc
           grep -Fq '## Title: RetreatUI Buff Manager' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
           grep -Fq '## Author: Retreat' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
           grep -Fq '## Dependencies: RetreatUI' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
           grep -Fq '## DefaultState: Disabled' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          grep -Fq 'BuffManager.lua' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
           test ! -e RetreatUI/Core/BuffManager.lua
           ! grep -Fq 'BuffManager.lua' RetreatUI/RetreatUI.toc
 
-          # beta.15 is the only final stance geometry authority.
+          # Final stance placement uses rendered trinket frames; no guessed 63px lane remains.
           grep -Fq 'Core\WeakAuraBeta15StanceLane.lua' RetreatUI/RetreatUI.toc
-          grep -Fq 'local LANE_FRAME = "RetreatUIWeakAuraTrinketLane"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local LANE_WIDTH = TRINKET_ICON * TRINKET_COUNT + TRINKET_SPACING * (TRINKET_COUNT - 1)' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local LANE_X, LANE_Y = -17, 1' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'WeakAuras.GetRegion' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'RenderedTrinketEdge' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          ! grep -Fq 'LANE_WIDTH' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          ! grep -Fq 'TRINKET_COUNT' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'local STATE_ICON = 38' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_ANCHOR_POINT = "BOTTOMRIGHT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_SELF_POINT = "BOTTOMLEFT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           grep -Fq 'state.anchorFrameFrame = LANE_FRAME' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'state.xOffset = STATE_X' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'state.yOffset = STATE_Y' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'allClasses = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'allSpecs = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'Every State/Form icon must be 38x38 with no per-class offset' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'Deliberately do NOT call the older validation chain here' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
 
-          # Historical state leaves still remain locked to their invariant child geometry.
+          # Native state trackers follow the same actual rendered edge.
+          grep -Fq 'local function RenderedTrinketSource()' RetreatUI_Classes/GlobalStateAnchor.lua
+          grep -Fq 'anchor:SetPoint("BOTTOMRIGHT", source, "BOTTOMRIGHT", 0, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
+          grep -Fq 'frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
+
+          # KoX is explicitly curated and the old bespoke Pestilence tracker is retired.
+          grep -Fq 'KnightOfXoroth\Curation.lua' RetreatUI_Classes/RetreatUI_Classes.toc
+          grep -Fq '["unleash pestilence"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
+          grep -Fq '["chainwhip"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
+          grep -Fq '["snarl"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
+          grep -Fq 'root.stanceTracker:SetAlpha(0)' RetreatUI_Classes/KnightOfXoroth/Curation.lua
+          grep -Fq 'root.classStateTracker.options.excludePrefixes = {}' RetreatUI_Classes/KnightOfXoroth/Curation.lua
+
+          # Generic ElvUI target debuff rows are disabled.
+          grep -Fq 'debuffs.enable = false' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+          ! grep -Fq 'debuffs.enable = true' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+
+          # Historical state leaves remain 38x38 and target WeakAuras remain retired.
           grep -Fq 'local STATE_ICON_SIZE = 38' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'local STATE_CHILD_X, STATE_CHILD_Y = 0, 0' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'packageData.classGroups.target = nil' RetreatUI/Core/WeakAuraBeta12Fixes.lua
-          grep -Fq 'local PRIORITY = "Blacklist,Personal"' RetreatUI/Profiles/ElvUITargetDebuffs.lua
 
-          # Installer remains intentionally clean and does not own the optional Buff Manager.
-          grep -Fq 'id="elvui", key="unitframes"' RetreatUI/Installer/TBCStyleInstaller.lua
-          grep -Fq 'id="macros", custom="guardianMacros"' RetreatUI/Installer/TBCStyleInstaller.lua
-          grep -Fq 'id="details", key="details"' RetreatUI/Installer/TBCStyleInstaller.lua
-          grep -Fq 'id="turboplates", key="nameplates"' RetreatUI/Installer/TBCStyleInstaller.lua
-          grep -Fq 'id="weakauras", key="classHUD"' RetreatUI/Installer/TBCStyleInstaller.lua
-          ! grep -Fq 'key="buffManager"' RetreatUI/Installer/TBCStyleInstaller.lua
-
-          # Release package must contain all three addon roots.
           grep -Fq 'cp -a RetreatUI_BuffManager dist/package/RetreatUI_BuffManager' .github/workflows/publish-release.yml
           grep -Fq 'zip -r "../$ASSET" RetreatUI RetreatUI_Classes RetreatUI_BuffManager' .github/workflows/publish-release.yml
 
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
           buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.15"
+          test "$core_version" = "1.1.7-beta.16"
           test "$core_version" = "$classes_version"
           test "$core_version" = "$buff_version"

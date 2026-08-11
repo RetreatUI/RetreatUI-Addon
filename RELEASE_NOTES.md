@@ -1,16 +1,31 @@
-# RetreatUI v1.1.7-beta.15
+# RetreatUI v1.1.7-beta.16
 
-This prerelease makes the Conquest of Azeroth stance/state lane deterministic for every class and every spec.
+This prerelease removes the guessed CoA stance geometry, restores the clean target frame, and puts Knight of Xoroth back on an explicitly curated HUD.
 
-## Final CoA stance lane
+## Stance / state placement
 
-- One global placement rule now applies to all stance, form, aspect, oath, formation, presence and other class-state icons.
-- The two 30x30 trinkets define an exact 63x30 anchor lane above the player/resource area.
-- Every 38x38 class-state icon starts exactly 6px to the right of that trinket lane.
-- State icons are bottom-aligned with the trinkets, so their extra 8px of height grows upward and cannot extend down into the primary resource bar.
-- No class or spec is allowed to apply a separate stance X/Y offset.
-- The final validator supersedes the retired beta.10 screen-centre validation that caused Bloodmage to fail with `Class State WeakAura is not on the global center lane`.
-- Existing beta.9-beta.12 migration layers remain for upgrade compatibility, but beta.15 is the final authority for state geometry and validation.
+- Stance, form, aspect, oath, formation, presence and Pestilence trackers now anchor to the **actual rendered right edge** of the trinket tracker.
+- The old theoretical `63px` trinket width is gone; no icon-count calculation is used to decide where stance begins.
+- Both native RetreatUI state trackers and WeakAuras state groups use the same rendered trinket edge.
+- State icons begin 6px after that edge and are bottom-aligned with the trinkets, so 38x38 state icons grow upward rather than into the resource bar.
+- If the real trinket region is not available yet, state trackers stay off-screen until it exists instead of falling back to guessed screen coordinates.
+
+## Knight of Xoroth cleanup
+
+- Retires the old bespoke KoX Pestilence tracker as a visible tracker.
+- Pestilence is now owned by the same global class-state tracker used by the other CoA classes.
+- KoX live-spellbook cooldown discovery no longer repopulates the HUD with every discovered cooldown.
+- The visible KoX action rows are deliberately small:
+  - Core: `Unleash Pestilence`
+  - Utility: `Chainwhip`, `Snarl`
+- Active aura trackers are limited to `Suffuse`, `Hellrider`, and `Black Shield`.
+- Demonfire, Hellfire Imp, Demon's Blood and the existing resource/counter logic remain intact.
+
+## Target frame cleanup
+
+- The generic ElvUI target-frame debuff row is disabled again.
+- The old KoX target-frame debuff bars are suppressed.
+- Target debuffs are no longer allowed to turn the target frame into a generic aura dump; any future target mechanic display must be individually curated.
 
 ## Packaging
 
