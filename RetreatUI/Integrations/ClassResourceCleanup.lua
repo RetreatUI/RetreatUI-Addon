@@ -1,10 +1,9 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- The native Ascension class-resource widget is part of the Class HUD contract,
--- not the optional general cleanup preset. Hide only confirmed resource frames
--- after the active RetreatUI class module reports a complete replacement, and
--- restore them when the user disables Class HUD or changes to an incomplete HUD.
+-- Beta.17: class-resource cleanup may only mutate unprotected Ascension frames.
+-- A protected frame (or a child of a protected ancestor) is never hidden,
+-- faded, reparented, mouse-disabled, or restored by RetreatUI.
 local knownNames = {
   "CoAResourceSegmentBar",
   "CoAResourceSegmentBarContainer", "CoAResourceSegmentContainer",
@@ -101,7 +100,7 @@ local function CompleteReplacement()
 end
 
 local function RememberFrame(frame)
-  if managed[frame] then return end
+  if managed[frame] or Protected(frame) then return end
   local alpha = 1
   if frame.GetAlpha then
     local ok, value = pcall(frame.GetAlpha, frame)
@@ -111,7 +110,7 @@ local function RememberFrame(frame)
 end
 
 local function RestoreFrame(frame, state)
-  if not frame or not state then return end
+  if not frame or not state or Protected(frame) then return end
   if frame.SetAlpha then pcall(frame.SetAlpha, frame, tonumber(state.alpha) or 1) end
   if frame.EnableMouse then pcall(frame.EnableMouse, frame, true) end
   if frame.SetMouseClickEnabled then pcall(frame.SetMouseClickEnabled, frame, true) end
@@ -122,7 +121,7 @@ end
 function RUI:RestoreNativeClassResourceFrames()
   if InCombat() then pendingCombat = true; return false end
   for frame, state in pairs(managed) do
-    RestoreFrame(frame, state)
+    if not Protected(frame) then RestoreFrame(frame, state) end
     managed[frame] = nil
   end
   if type(self.RestoreNativeResourceMirrorSources) == "function" then
@@ -133,8 +132,11 @@ end
 
 local function HideFrame(frame, name)
   if not frame or not FrameLike(frame) or InCombat() or not CompleteReplacement() then return false end
+
+  -- Secure boundary: do not call any mutating method on protected frames.
+  if Protected(frame) then return false end
+
   RememberFrame(frame)
-  local protected = Protected(frame)
   local mirrored = type(RUI.IsNativeResourceMirrorSource) == "function"
     and RUI:IsNativeResourceMirrorSource(frame)
 
@@ -142,14 +144,11 @@ local function HideFrame(frame, name)
   if frame.EnableMouse then pcall(frame.EnableMouse, frame, false) end
   if frame.SetMouseClickEnabled then pcall(frame.SetMouseClickEnabled, frame, false) end
   if frame.SetMouseMotionEnabled then pcall(frame.SetMouseMotionEnabled, frame, false) end
+  if not mirrored and frame.Hide then pcall(frame.Hide, frame) end
 
-  -- Mirrored frames must stay alive so Ascension continues updating the values
-  -- read by RetreatUI. Non-mirrored, non-protected duplicates can be hidden.
-  if not protected and not mirrored and frame.Hide then pcall(frame.Hide, frame) end
-
-  if not protected and not guarded[frame] and frame.HookScript then
+  if not guarded[frame] and frame.HookScript then
     local ok = pcall(frame.HookScript, frame, "OnShow", function(shown)
-      if InCombat() or not CompleteReplacement() then return end
+      if InCombat() or Protected(shown) or not CompleteReplacement() then return end
       RememberFrame(shown)
       local source = type(RUI.IsNativeResourceMirrorSource) == "function"
         and RUI:IsNativeResourceMirrorSource(shown)
@@ -165,16 +164,19 @@ local function HideFrame(frame, name)
   db.integrations.classResourceCleanup = db.integrations.classResourceCleanup or {}
   db.integrations.classResourceCleanup.lastFrame = tostring(name or "unknown")
   db.integrations.classResourceCleanup.version = RUI.version
+  db.integrations.classResourceCleanup.secureFrameSafety = true
   return true
 end
 
 local function Discover()
   for _, name in ipairs(knownNames) do
     local frame = _G[name]
-    if FrameLike(frame) then discovered[frame] = name end
+    if FrameLike(frame) and not Protected(frame) then discovered[frame] = name end
   end
   for name, frame in pairs(_G) do
-    if DynamicResourceName(name) and FrameLike(frame) then discovered[frame] = name end
+    if DynamicResourceName(name) and FrameLike(frame) and not Protected(frame) then
+      discovered[frame] = name
+    end
   end
 end
 
@@ -188,7 +190,7 @@ function RUI:HideNativeClassResourceFrames(forceDiscovery)
 
   local hidden = 0
   for frame, name in pairs(discovered) do
-    if HideFrame(frame, name) then hidden = hidden + 1 end
+    if not Protected(frame) and HideFrame(frame, name) then hidden = hidden + 1 end
   end
   return hidden > 0, hidden
 end
@@ -228,4 +230,4 @@ events:SetScript("OnEvent", function(_, eventName)
   RUI:ScheduleNativeClassResourceCleanup(rediscover)
 end)
 
-RUI._classResourceCleanupLoaded = true
+RUI._classResourceSecureSafetyBeta17 = true
