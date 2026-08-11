@@ -2,7 +2,7 @@ local RUI = RetreatUI
 if not RUI then return end
 
 local HEAT_SPELL_ID = 807389
-local REPAIR_REVISION = 2
+local REPAIR_REVISION = 3
 
 local function CurrentElvUIProfile(E)
   if E and E.data and E.data.GetCurrentProfile then
@@ -41,6 +41,9 @@ local function ApplyHeatFilterToProfile(profile)
   if type(target.auraBar) == "table" then target.auraBar.priority = target.aurabar.priority end
   target.debuffs = target.debuffs or {}
   target.debuffs.priority = PrependBlacklist(target.debuffs.priority)
+
+  -- Keep the profile preference only. ElvUI/Blizzard own the actual chat-frame
+  -- visibility and docking state; RetreatUI must never Show/Hide chat frames.
   profile.chat = profile.chat or {}
   profile.chat.retreatHideLeftChat = false
   return true
@@ -65,100 +68,55 @@ local function EnsureHeatBlacklist(E)
   return true
 end
 
-function RUI:ApplyPyromancerHeatAuraFilter(refreshLive)
+function RUI:ApplyPyromancerHeatAuraFilter()
   local E = ElvUI and unpack(ElvUI)
   local changed = EnsureHeatBlacklist(E)
   if type(self.ElvUIProfile) == "table" then changed = ApplyHeatFilterToProfile(self.ElvUIProfile) or changed end
   if type(ElvDB) == "table" and type(ElvDB.profiles) == "table" then
     changed = ApplyHeatFilterToProfile(ElvDB.profiles.RetreatUI) or changed
   end
-  if E and E.db and CurrentElvUIProfile(E) == "RetreatUI" then changed = ApplyHeatFilterToProfile(E.db) or changed end
+  if E and E.db and CurrentElvUIProfile(E) == "RetreatUI" then
+    changed = ApplyHeatFilterToProfile(E.db) or changed
+  end
 
   local db = self:EnsureDB()
   db.integrations.elvui = db.integrations.elvui or {}
   db.integrations.elvui.pyromancerHeatFilterRevision = REPAIR_REVISION
   db.integrations.elvui.pyromancerHeatFilterVersion = self.version
 
-  if refreshLive and E and E.GetModule then
-    local ok, unitFrames = pcall(E.GetModule, E, "UnitFrames", true)
-    if ok and unitFrames and unitFrames.Update_AllFrames then
-      pcall(unitFrames.Update_AllFrames, unitFrames)
-    elseif E.UpdateAll then
-      pcall(E.UpdateAll, E, true)
-    end
-  end
+  -- Deliberately no UnitFrames:Update_AllFrames() / ElvUI:UpdateAll() here.
+  -- The filter is static profile data. Global live refreshes on target changes
+  -- caused action-bar update storms and severe frame pacing spikes.
   return true, changed
 end
 
-local function RestoreRegion(region, show)
-  if not region then return false end
-  if region.SetAlpha then pcall(region.SetAlpha, region, 1) end
-  if region.EnableMouse then pcall(region.EnableMouse, region, true) end
-  if show and region.Show then pcall(region.Show, region) end
-  region.RetreatUIHiddenBehindDetails = nil
-  return true
-end
-
-local function RestoreChatFrame(frame, show)
-  if not frame then return false end
-  RestoreRegion(frame, show)
-  local name = type(frame.GetName) == "function" and frame:GetName() or nil
-  if name then
-    for _, suffix in ipairs({"Tab", "ButtonFrame", "ScrollBar", "ScrollToBottomButton"}) do
-      RestoreRegion(_G[name .. suffix], suffix == "Tab")
-    end
-  end
-  return true
-end
-
 function RUI:RestoreLeftChat()
-  local restored = RestoreChatFrame(_G.ChatFrame1, true)
-  local count = tonumber(NUM_CHAT_WINDOWS) or 10
-  for index = 2, count do
-    local frame = _G["ChatFrame" .. index]
-    if frame and frame.RetreatUIHiddenBehindDetails then
-      restored = RestoreChatFrame(frame, true) or restored
-    end
-  end
-  for _, region in ipairs({_G.LeftChatPanel, _G.LeftChatDataPanel, _G.LeftChatTab}) do
-    restored = RestoreRegion(region, true) or restored
-  end
+  -- Historical versions force-showed ChatFrame1 and companion regions. If the
+  -- user had another docked tab selected, that made two chat frames render in
+  -- the same panel. From beta.18 onward this function is state-only.
   local db = self:EnsureDB()
   db.integrations.details = db.integrations.details or {}
   db.integrations.details.leftChatHidden = false
-  db.integrations.details.leftChatRestored = restored
+  db.integrations.details.leftChatRestored = false
+  db.integrations.details.chatOwnedByElvUI = true
   db.integrations.details.chatSeparationRevision = REPAIR_REVISION
   db.integrations.details.chatSeparationVersion = self.version
-  return restored
+  return false
 end
 
 function RUI:ApplyDetailsChatSeparation()
   return self:RestoreLeftChat()
 end
 
-local function Later(delay, callback)
-  if RUI.After then RUI:After(delay, callback)
-  elseif C_Timer and C_Timer.After then C_Timer.After(delay, callback) end
+if type(RUI.ElvUIProfile) == "table" then
+  ApplyHeatFilterToProfile(RUI.ElvUIProfile)
 end
-
-local function ReapplyAll()
-  RUI:ApplyPyromancerHeatAuraFilter(true)
-  RUI:RestoreLeftChat()
-  for _, delay in ipairs({0.10, 0.50, 1.50}) do
-    Later(delay, function()
-      RUI:ApplyPyromancerHeatAuraFilter(true)
-      RUI:RestoreLeftChat()
-    end)
-  end
-end
-
-if type(RUI.ElvUIProfile) == "table" then ApplyHeatFilterToProfile(RUI.ElvUIProfile) end
 
 local originalInstallElvUIProfile = RUI.InstallElvUIProfile
 if type(originalInstallElvUIProfile) == "function" then
   function RUI:InstallElvUIProfile(...)
     local results = {originalInstallElvUIProfile(self, ...)}
-    self:ApplyPyromancerHeatAuraFilter(true)
+    self:ApplyPyromancerHeatAuraFilter()
     self:RestoreLeftChat()
     return unpack(results)
   end
@@ -168,8 +126,7 @@ local originalApplyElvUIHUDPolish = RUI.ApplyElvUIHUDPolish
 if type(originalApplyElvUIHUDPolish) == "function" then
   function RUI:ApplyElvUIHUDPolish(...)
     local results = {originalApplyElvUIHUDPolish(self, ...)}
-    self:ApplyPyromancerHeatAuraFilter(true)
-    self:RestoreLeftChat()
+    self:ApplyPyromancerHeatAuraFilter()
     return unpack(results)
   end
 end
@@ -183,14 +140,12 @@ if type(originalInstallDetailsProfile) == "function" then
   end
 end
 
+-- Only repair static profile data when ElvUI becomes available. Never refresh
+-- on PLAYER_TARGET_CHANGED / PLAYER_ENTERING_WORLD and never touch chat frames.
 local events = CreateFrame("Frame", "RetreatUIPyromancerAuraAndDetailsChatDriver")
-for _, eventName in ipairs({"PLAYER_LOGIN", "PLAYER_ENTERING_WORLD", "PLAYER_TARGET_CHANGED", "ADDON_LOADED"}) do
-  pcall(events.RegisterEvent, events, eventName)
-end
-
-events:SetScript("OnEvent", function(_, eventName, addonName)
-  if eventName == "ADDON_LOADED" and addonName ~= "ElvUI" and addonName ~= "Details" then return end
-  ReapplyAll()
+events:RegisterEvent("ADDON_LOADED")
+events:SetScript("OnEvent", function(_, _, addonName)
+  if addonName == "ElvUI" then RUI:ApplyPyromancerHeatAuraFilter() end
 end)
 
 RUI._pyromancerAuraAndDetailsChatLoaded = true
