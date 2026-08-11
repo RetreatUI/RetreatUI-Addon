@@ -1,26 +1,19 @@
-# RetreatUI v1.1.7-beta.13
+# RetreatUI v1.1.7-beta.14
 
-This prerelease splits the Buff Manager out of the RetreatUI core into its own optional addon while preserving the beta.12 HUD, State and ElvUI target-debuff rules.
+This prerelease fixes the Conquest of Azeroth class state / stance placement so stance, form, aspect, oath, formation and presence trackers use the trinket row as their single authoritative anchor.
 
-## RetreatUI_BuffManager
+## CoA stance placement
 
-- New separate addon folder: `RetreatUI_BuffManager`.
-- Hard dependency: `RetreatUI`.
-- Author remains `Retreat`.
-- The existing Buff Manager implementation is moved out of `RetreatUI/Core` and is no longer shipped as dead core code.
-- The addon is disabled by default so secure buff buttons and override bindings only exist for players who explicitly enable the Buff Manager addon.
-- It keeps the existing compact buff bar, assignment manager, equivalent-buff coverage, Smart Buff keybind support and class-specific buff rules.
-
-## Core separation
-
-- `RetreatUI` itself does not load or own the Buff Manager runtime.
-- The clean TBC-style RetreatUI installer stays limited to ElvUI, Guardian Macros when applicable, Details, TurboPlates and WeakAuras.
-- Target debuffs remain owned by ElvUI with `Blacklist,Personal`.
-- State / stance / form placement remains the beta.12 global rule at X -159 / Y -3, with 38x38 child icons at X 0 / Y 0.
+- Class state icons now sit directly to the right of the RetreatUI trinket tracker.
+- State icons use the exact same vertical lane as the trinkets, immediately above the primary resource bar.
+- Removed the Guardian-specific vertical state offset so Guardian follows the same placement rule as every other CoA class.
+- Removed the old absolute-position behavior as the final authority after HUD refreshes.
+- State placement is reflowed synchronously after state updates and trinket refreshes, preventing icons from jumping back to stale class-specific coordinates.
+- Legacy form trackers and the shared class-state tracker both use the same global placement rule.
 
 ## Packaging
 
-The release ZIP now contains three independent WoW addon roots:
+The release ZIP contains the three independent WoW addon roots:
 
 - `RetreatUI`
 - `RetreatUI_Classes`
