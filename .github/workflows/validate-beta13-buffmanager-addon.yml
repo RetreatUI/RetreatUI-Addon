@@ -6,6 +6,7 @@ on:
     paths:
       - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
       - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
       - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
@@ -18,6 +19,7 @@ on:
     paths:
       - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
       - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
       - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
       - "RetreatUI/Installer/TBCStyleInstaller.lua"
       - "RetreatUI/RetreatUI.toc"
@@ -35,12 +37,13 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate standalone Buff Manager and HUD ownership
+      - name: Validate standalone Buff Manager and final stance lane
         shell: bash
         run: |
           set -euo pipefail
           luac5.1 -p RetreatUI/Core/WeakAuraBeta11Fixes.lua
           luac5.1 -p RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
           luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
           luac5.1 -p RetreatUI/Installer/TBCStyleInstaller.lua
           luac5.1 -p RetreatUI_BuffManager/BuffManager.lua
@@ -55,13 +58,26 @@ jobs:
           test ! -e RetreatUI/Core/BuffManager.lua
           ! grep -Fq 'BuffManager.lua' RetreatUI/RetreatUI.toc
 
-          # State leaves remain 38x38, while the State group now shares the exact
-          # trinket lane instead of using the retired absolute screen position.
+          # beta.15 is the only final stance geometry authority.
+          grep -Fq 'Core\WeakAuraBeta15StanceLane.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'local LANE_FRAME = "RetreatUIWeakAuraTrinketLane"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local LANE_WIDTH = TRINKET_ICON * TRINKET_COUNT + TRINKET_SPACING * (TRINKET_COUNT - 1)' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local LANE_X, LANE_Y = -17, 1' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_ICON = 38' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_ANCHOR_POINT = "BOTTOMRIGHT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_SELF_POINT = "BOTTOMLEFT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.anchorFrameFrame = LANE_FRAME' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.xOffset = STATE_X' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.yOffset = STATE_Y' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'allClasses = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'allSpecs = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'Every State/Form icon must be 38x38 with no per-class offset' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'Deliberately do NOT call the older validation chain here' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+
+          # Historical state leaves still remain locked to their invariant child geometry.
           grep -Fq 'local STATE_ICON_SIZE = 38' RetreatUI/Core/WeakAuraBeta11Fixes.lua
           grep -Fq 'local STATE_CHILD_X, STATE_CHILD_Y = 0, 0' RetreatUI/Core/WeakAuraBeta11Fixes.lua
-          grep -Fq 'local STATE_FRAME = "ElvUF_Player"' RetreatUI/Core/WeakAuraBeta12Fixes.lua
-          grep -Fq 'local STATE_GROUP_X, STATE_GROUP_Y = -11, 16' RetreatUI/Core/WeakAuraBeta12Fixes.lua
-          grep -Fq 'state.anchorFrameType = "SELECTFRAME"' RetreatUI/Core/WeakAuraBeta12Fixes.lua
           grep -Fq 'packageData.classGroups.target = nil' RetreatUI/Core/WeakAuraBeta12Fixes.lua
           grep -Fq 'local PRIORITY = "Blacklist,Personal"' RetreatUI/Profiles/ElvUITargetDebuffs.lua
 
@@ -80,6 +96,6 @@ jobs:
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
           buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.14"
+          test "$core_version" = "1.1.7-beta.15"
           test "$core_version" = "$classes_version"
           test "$core_version" = "$buff_version"

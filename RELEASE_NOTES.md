@@ -1,15 +1,16 @@
-# RetreatUI v1.1.7-beta.14
+# RetreatUI v1.1.7-beta.15
 
-This prerelease fixes the Conquest of Azeroth class state / stance placement so stance, form, aspect, oath, formation and presence trackers use the trinket row as their single authoritative anchor.
+This prerelease makes the Conquest of Azeroth stance/state lane deterministic for every class and every spec.
 
-## CoA stance placement
+## Final CoA stance lane
 
-- Class state icons now sit directly to the right of the RetreatUI trinket tracker.
-- State icons use the exact same vertical lane as the trinkets, immediately above the primary resource bar.
-- Removed the Guardian-specific vertical state offset so Guardian follows the same placement rule as every other CoA class.
-- Removed the old absolute-position behavior as the final authority after HUD refreshes.
-- State placement is reflowed synchronously after state updates and trinket refreshes, preventing icons from jumping back to stale class-specific coordinates.
-- Legacy form trackers and the shared class-state tracker both use the same global placement rule.
+- One global placement rule now applies to all stance, form, aspect, oath, formation, presence and other class-state icons.
+- The two 30x30 trinkets define an exact 63x30 anchor lane above the player/resource area.
+- Every 38x38 class-state icon starts exactly 6px to the right of that trinket lane.
+- State icons are bottom-aligned with the trinkets, so their extra 8px of height grows upward and cannot extend down into the primary resource bar.
+- No class or spec is allowed to apply a separate stance X/Y offset.
+- The final validator supersedes the retired beta.10 screen-centre validation that caused Bloodmage to fail with `Class State WeakAura is not on the global center lane`.
+- Existing beta.9-beta.12 migration layers remain for upgrade compatibility, but beta.15 is the final authority for state geometry and validation.
 
 ## Packaging
 

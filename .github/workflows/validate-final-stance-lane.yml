@@ -1,0 +1,67 @@
+name: Validate Final CoA Stance Lane
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
+      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Core/WeakAuraTBCParity.lua"
+      - "RetreatUI/RetreatUI.toc"
+      - "RetreatUI_Classes/**"
+      - ".github/workflows/validate-final-stance-lane.yml"
+  push:
+    branches: [main]
+    paths:
+      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
+      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
+      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
+      - "RetreatUI/Core/WeakAuraTBCParity.lua"
+      - "RetreatUI/RetreatUI.toc"
+      - "RetreatUI_Classes/**"
+      - ".github/workflows/validate-final-stance-lane.yml"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+      - name: Validate one global stance rule
+        shell: bash
+        run: |
+          set -euo pipefail
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta11Fixes.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraBeta12Fixes.lua
+          luac5.1 -p RetreatUI/Core/WeakAuraTBCParity.lua
+
+          grep -Fq 'Core\WeakAuraBeta15StanceLane.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'local PLAYER_FRAME = "ElvUF_Player"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local LANE_FRAME = "RetreatUIWeakAuraTrinketLane"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local TRINKET_ICON = 30' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local TRINKET_SPACING = 3' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local TRINKET_COUNT = 2' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local LANE_X, LANE_Y = -17, 1' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_ICON = 38' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_ANCHOR_POINT = "BOTTOMRIGHT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'local STATE_SELF_POINT = "BOTTOMLEFT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.anchorFrameFrame = LANE_FRAME' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.align = "LEFT"' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'state.space = STATE_GAP' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'allClasses = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+          grep -Fq 'allSpecs = true' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
+
+          # No class folder is allowed to own a final stance coordinate in beta.15.
+          ! grep -R -n -E 'globalYOffset|ruiGlobalStateYOffset' RetreatUI_Classes/*/HUD.lua
+
+          # Every supported CoA class still feeds the same shared state framework.
+          classes=(Necromancer Pyromancer Cultist Starcaller SunCleric Tinker Runemaster Primalist Reaper Venomancer Chronomancer Bloodmage Guardian Stormbringer Felsworn Barbarian WitchDoctor WitchHunter KnightOfXoroth Templar Ranger)
+          for class in "${classes[@]}"; do
+            test -f "RetreatUI_Classes/$class/Data.lua"
+          done
