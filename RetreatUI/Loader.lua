@@ -44,7 +44,6 @@ local function RunRepair()
     {"TurboPlates", "ApplyTurboPlatesRuntime"},
     {"NPC cooldowns", "RefreshNPCSpellCooldowns"},
     {"Party Utility", "RefreshPartyUtility"},
-    {"Loot/Trade chat cleanup", "RemoveRightLootTradeChat", nil, true},
   }
 
   for _, action in ipairs(actions) do

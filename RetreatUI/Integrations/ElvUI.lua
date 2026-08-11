@@ -122,92 +122,9 @@ function RUI:AreElvUINamePlatesDisabled()
   return true
 end
 
-local function ObjectName(value)
-  if not value or type(value.GetName) ~= "function" then return nil end
-  local ok, name = pcall(value.GetName, value)
-  return ok and type(name) == "string" and name or nil
-end
-
-local function IsRightChatNamed(value)
-  local name = ObjectName(value)
-  return name and string.find(string.lower(name), "rightchat", 1, true) ~= nil
-end
-
-local function TouchesRightChatPanel(value, seen, depth)
-  if not value or depth > 8 then return false end
-  seen = seen or {}
-  if seen[value] then return false end
-  seen[value] = true
-
-  if IsRightChatNamed(value)
-    or value == _G.RightChatPanel
-    or value == _G.RightChatDataPanel
-    or value == _G.RightChatTab then
-    return true
-  end
-
-  if type(value.GetParent) == "function" then
-    local ok, parent = pcall(value.GetParent, value)
-    if ok and parent and TouchesRightChatPanel(parent, seen, depth + 1) then return true end
-  end
-
-  if type(value.GetNumPoints) == "function" and type(value.GetPoint) == "function" then
-    local ok, count = pcall(value.GetNumPoints, value)
-    if ok then
-      for pointIndex = 1, tonumber(count) or 0 do
-        local pointOK, _, relativeTo = pcall(value.GetPoint, value, pointIndex)
-        if pointOK and relativeTo and TouchesRightChatPanel(relativeTo, seen, depth + 1) then return true end
-      end
-    end
-  end
-
-  return false
-end
-
-local function IsChatFrameInRightPanel(frame)
-  if not frame then return false end
-  if TouchesRightChatPanel(frame, {}, 0) then return true end
-
-  local frameName = ObjectName(frame)
-  if frameName then
-    for _, suffix in ipairs({"Tab", "ButtonFrame", "EditBox"}) do
-      local companion = _G[frameName .. suffix]
-      if companion and TouchesRightChatPanel(companion, {}, 0) then return true end
-    end
-  end
-
-  return false
-end
-
-function RUI:RemoveRightLootTradeChat()
-  local removed = false
-
-  -- Close standalone Loot/Trade windows only. Any chat frame or tab attached
-  -- to ElvUI's right chat panel is user-managed content and must be preserved.
-  if type(NUM_CHAT_WINDOWS) == "number" and type(GetChatWindowInfo) == "function" then
-    for index = NUM_CHAT_WINDOWS, 1, -1 do
-      local name = GetChatWindowInfo(index)
-      local lower = type(name) == "string" and string.lower(name) or ""
-      if lower ~= "" and (string.find(lower, "loot", 1, true) or string.find(lower, "trade", 1, true)) then
-        local frame = _G["ChatFrame" .. index]
-        if frame and not IsChatFrameInRightPanel(frame) then
-          if type(FCF_UnDockFrame) == "function" then pcall(FCF_UnDockFrame, frame) end
-          if type(FCF_Close) == "function" then
-            pcall(FCF_Close, frame)
-          else
-            SafeHide(frame)
-          end
-          removed = true
-        end
-      end
-    end
-  end
-
-  -- The right chat container, its data-text panel, and every chat tab placed
-  -- inside it remain untouched.
-  return removed
-end
-
+-- Chat frame visibility and docking are intentionally not managed here.
+-- ElvUI and Blizzard are the sole owners; ChatOwnershipSafety.lua contains
+-- the state-only compatibility no-op and one-time dock visibility repair.
 
 local PARTY_MOVER_OLD = "TOPLEFT,ElvUIParent,BOTTOMLEFT,24,603"
 local PARTY_MOVER_INTERMEDIATE = "TOPLEFT,ElvUIParent,BOTTOMLEFT,250,603"
