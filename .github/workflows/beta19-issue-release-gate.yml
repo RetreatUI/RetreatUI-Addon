@@ -1,0 +1,104 @@
+name: Beta19 Issue Release Gate
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  validate-and-release:
+    if: github.event.issue.title == 'Beta19 release gate'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout exact beta19 merge
+        uses: actions/checkout@v4
+        with:
+          ref: 599bf95aa9f6fdbecd47e92b6d2248cf74f8b21e
+
+      - name: Install validation tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1 zip
+
+      - name: Validate beta19 runtime and package
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Full Lua 5.1 syntax gate for all shipped addons.
+          find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+
+          core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+          classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+          buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
+          manifest_version="$(jq -r '.version' .github/release-manifest.json)"
+          test "$core_version" = "1.1.7-beta.19"
+          test "$core_version" = "$classes_version"
+          test "$core_version" = "$buff_version"
+          test "$core_version" = "$manifest_version"
+
+          # Performance regressions: never restore the global synthetic power pulse.
+          grep -Fq 'Core\WeakAuraPerformanceBeta19.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'RETREATUI_RESOURCE_PULSE' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          grep -Fq 'RETREATUI_ROW_REFRESH' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          grep -Fq 'RETREATUI_PLAYER_AURA_REFRESH' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          grep -Fq 'RETREATUI_TARGET_AURA_REFRESH' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          grep -Fq 'RETREATUI_EXPLICIT_RESOURCE_REFRESH' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          grep -Fq 'UnregisterEvent, imp, "COMBAT_LOG_EVENT_UNFILTERED"' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          ! grep -Fq 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' RetreatUI/Core/WeakAuraHUDPulse.lua
+          ! grep -Fq 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
+          ! grep -Fq 'ACTIONBAR_UPDATE_COOLDOWN' RetreatUI_Classes/AdvancedHUD.lua
+          ! grep -Fq 'UNIT_POWER_FREQUENT' RetreatUI_Classes/AdvancedHUD.lua
+
+          # Preserve beta18 chat ownership and beta17 safety contracts.
+          ! grep -Fq 'FCF_UnDockFrame' RetreatUI/Integrations/ElvUI.lua
+          ! grep -Fq 'FCF_Close' RetreatUI/Integrations/ElvUI.lua
+          grep -Fq 'FCF_DockUpdate' RetreatUI/Integrations/ChatOwnershipSafety.lua
+          ! grep -Fq 'PLAYER_TARGET_CHANGED' RetreatUI/Integrations/PyromancerAuraAndDetailsChat.lua
+          grep -Fq 'Core\WeakAuraBeta15StanceLane.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'debuffs.enable = false' RetreatUI/Profiles/ElvUITargetDebuffs.lua
+
+          ASSET='RetreatUI_v1.1.7-beta.19.zip'
+          CHECKSUM="$ASSET.sha256"
+          rm -rf dist
+          mkdir -p dist/package
+          cp -a RetreatUI dist/package/RetreatUI
+          cp -a RetreatUI_Classes dist/package/RetreatUI_Classes
+          cp -a RetreatUI_BuffManager dist/package/RetreatUI_BuffManager
+          (cd dist/package && zip -qr "../$ASSET" RetreatUI RetreatUI_Classes RetreatUI_BuffManager)
+          test -s "dist/$ASSET"
+          mapfile -t ROOTS < <(zipinfo -1 "dist/$ASSET" | awk -F/ 'NF { print $1 }' | sort -u)
+          test "${#ROOTS[@]}" -eq 3
+          test "${ROOTS[0]}" = 'RetreatUI'
+          test "${ROOTS[1]}" = 'RetreatUI_BuffManager'
+          test "${ROOTS[2]}" = 'RetreatUI_Classes'
+          zipinfo -1 "dist/$ASSET" | grep -Fq 'RetreatUI/Core/WeakAuraPerformanceBeta19.lua'
+          (cd dist && sha256sum "$ASSET" > "$CHECKSUM")
+
+      - name: Publish beta19 prerelease
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG='v1.1.7-beta.19'
+          TITLE='RetreatUI v1.1.7-beta.19'
+          ASSET='RetreatUI_v1.1.7-beta.19.zip'
+          CHECKSUM="$ASSET.sha256"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release upload "$TAG" "dist/$ASSET" "dist/$CHECKSUM" --repo "$GITHUB_REPOSITORY" --clobber
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TITLE" --notes-file RELEASE_NOTES.md --prerelease
+          else
+            gh release create "$TAG" "dist/$ASSET" "dist/$CHECKSUM" --repo "$GITHUB_REPOSITORY" --target 599bf95aa9f6fdbecd47e92b6d2248cf74f8b21e --title "$TITLE" --notes-file RELEASE_NOTES.md --prerelease
+          fi
+
+      - name: Confirm on gate issue
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue comment "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --body '✅ beta.19 validation passed and prerelease was published.'
+          gh issue close "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY"
