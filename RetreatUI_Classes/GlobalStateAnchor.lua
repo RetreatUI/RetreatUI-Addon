@@ -75,6 +75,9 @@ function RUI:PositionClassStateAnchor()
 
   local trinkets = _G.RetreatUITrinketTracker
   if UsableFrame(trinkets) then
+    -- This is the authoritative CoA state position: immediately after the
+    -- complete trinket tracker, on exactly the same horizontal lane above the
+    -- primary resource bar. No class is allowed to apply its own Y offset.
     anchor:SetPoint("CENTER", trinkets, "RIGHT", 0, 0)
     anchor.source = "RetreatUITrinketTracker"
     return true
@@ -136,11 +139,10 @@ function RUI:ReflowClassStateTrackers()
     if type(tracker) == "table" and FrameVisible(tracker.parent) then
       local size = StateSize(tracker.ruiGlobalStateSize or (tracker.options and tracker.options.size))
       local gap = StateGap(tracker.ruiGlobalStateGap or (tracker.options and tracker.options.gap))
-      local yOffset = Number(tracker.ruiGlobalStateYOffset, 0)
       for _, frame in ipairs(tracker.frames or {}) do
         if FrameVisible(frame) then
           frame:ClearAllPoints()
-          frame:SetPoint("LEFT", anchor, "RIGHT", cursor, yOffset)
+          frame:SetPoint("LEFT", anchor, "RIGHT", cursor, 0)
           ForceLabelAbove(frame, frame.stateText)
           MatchTrinketLayer(frame)
           cursor = cursor + size + gap
@@ -202,7 +204,9 @@ if W and type(W.CreateFormTracker) == "function" then
     local originalSetFormTracker = W.SetFormTracker
     function W:SetFormTracker(frame, ...)
       local results = {originalSetFormTracker(self, frame, ...)}
-      ScheduleReflow()
+      -- SetFormTracker may make a previously hidden state visible. Reflow after
+      -- the visibility change so the icon can never fall back to old coordinates.
+      RUI:ReflowClassStateTrackers()
       return unpack(results)
     end
   end
@@ -215,21 +219,50 @@ local function RegisterClassTracker(tracker, size, gap)
   tracker.usesGlobalStateAnchor = true
   tracker.ruiGlobalStateSize = StateSize(size)
   tracker.ruiGlobalStateGap = StateGap(gap)
+  tracker.ruiGlobalStateYOffset = 0
 
-  local normalizedClass = RUI.NormalizeClassName and RUI:NormalizeClassName(tracker.className) or tracker.className
-  local defaultYOffset = normalizedClass == "Guardian" and 10 or 0
-  tracker.ruiGlobalStateYOffset = Number(tracker.options and tracker.options.globalYOffset, defaultYOffset)
-
-  for _, methodName in ipairs({"Update", "UpdateTimers", "Hide", "Position"}) do
-    local original = tracker[methodName]
-    if type(original) == "function" then
-      tracker[methodName] = function(object, ...)
-        local results = {original(object, ...)}
-        ScheduleReflow()
-        return unpack(results)
-      end
+  -- Update() shows the state frames only after its internal Position() pass.
+  -- Reflow synchronously after Update returns; otherwise one frame can remain at
+  -- the old absolute class coordinates until the scheduler runs. That was the
+  -- source of the CoA stance jumping away from the trinket row after refreshes.
+  local originalUpdate = tracker.Update
+  if type(originalUpdate) == "function" then
+    tracker.Update = function(object, ...)
+      local results = {originalUpdate(object, ...)}
+      RUI:ReflowClassStateTrackers()
+      return unpack(results)
     end
   end
+
+  local originalUpdateTimers = tracker.UpdateTimers
+  if type(originalUpdateTimers) == "function" then
+    tracker.UpdateTimers = function(object, ...)
+      local results = {originalUpdateTimers(object, ...)}
+      RUI:ReflowClassStateTrackers()
+      return unpack(results)
+    end
+  end
+
+  local originalHide = tracker.Hide
+  if type(originalHide) == "function" then
+    tracker.Hide = function(object, ...)
+      local results = {originalHide(object, ...)}
+      RUI:ReflowClassStateTrackers()
+      return unpack(results)
+    end
+  end
+
+  -- Keep a scheduled correction for callers that invoke Position() directly,
+  -- but Update() above remains the authoritative synchronous final placement.
+  local originalPosition = tracker.Position
+  if type(originalPosition) == "function" then
+    tracker.Position = function(object, ...)
+      local results = {originalPosition(object, ...)}
+      ScheduleReflow()
+      return unpack(results)
+    end
+  end
+
   ScheduleReflow()
   return tracker
 end
@@ -244,12 +277,13 @@ function RUI:CreateClassStateTracker(parent, className, options)
   configured.anchor = nil
   configured.anchorFrameName = "RetreatUIClassStateAnchor"
   configured.direction = "right"
-  -- These values keep the frame approximately aligned during the original
-  -- tracker's own Position pass; the shared reflow is authoritative afterwards.
+  -- Even the tracker's own temporary Position() pass now uses the exact same
+  -- trinket lane. The synchronous reflow after Update remains authoritative.
   configured.x = size / 2 + gap
-  configured.y = -(size / 2) + 3
+  configured.y = -(size / 2)
   configured.fallbackX = nil
   configured.fallbackY = nil
+  configured.globalYOffset = 0
 
   self:PositionClassStateAnchor()
   local tracker = originalCreateClassStateTracker(self, parent, className, configured)
@@ -262,7 +296,7 @@ local originalRefreshTrinketTracker = RUI.RefreshTrinketTracker
 if type(originalRefreshTrinketTracker) == "function" then
   function RUI:RefreshTrinketTracker(...)
     local results = {originalRefreshTrinketTracker(self, ...)}
-    ScheduleReflow()
+    RUI:ReflowClassStateTrackers()
     return unpack(results)
   end
 end
@@ -288,4 +322,4 @@ end)
 
 RUI:PositionClassStateAnchor()
 RUI._globalClassStateAnchorLoaded = true
-RUI._globalClassStateAnchorRevision = 3
+RUI._globalClassStateAnchorRevision = 4
