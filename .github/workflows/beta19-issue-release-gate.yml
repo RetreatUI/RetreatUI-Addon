@@ -1,6 +1,7 @@
-name: Beta19 Issue Release Gate
+name: Beta19 Release Gate
 
 on:
+  workflow_dispatch:
   issues:
     types: [opened]
 
@@ -10,7 +11,7 @@ permissions:
 
 jobs:
   validate-and-release:
-    if: github.event.issue.title == 'Beta19 release gate'
+    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Beta19 release gate'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact beta19 merge
@@ -28,7 +29,6 @@ jobs:
         run: |
           set -euo pipefail
 
-          # Full Lua 5.1 syntax gate for all shipped addons.
           find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
 
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
@@ -40,7 +40,6 @@ jobs:
           test "$core_version" = "$buff_version"
           test "$core_version" = "$manifest_version"
 
-          # Performance regressions: never restore the global synthetic power pulse.
           grep -Fq 'Core\WeakAuraPerformanceBeta19.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'RETREATUI_RESOURCE_PULSE' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
           grep -Fq 'RETREATUI_ROW_REFRESH' RetreatUI/Core/WeakAuraPerformanceBeta19.lua
@@ -53,7 +52,6 @@ jobs:
           ! grep -Fq 'ACTIONBAR_UPDATE_COOLDOWN' RetreatUI_Classes/AdvancedHUD.lua
           ! grep -Fq 'UNIT_POWER_FREQUENT' RetreatUI_Classes/AdvancedHUD.lua
 
-          # Preserve beta18 chat ownership and beta17 safety contracts.
           ! grep -Fq 'FCF_UnDockFrame' RetreatUI/Integrations/ElvUI.lua
           ! grep -Fq 'FCF_Close' RetreatUI/Integrations/ElvUI.lua
           grep -Fq 'FCF_DockUpdate' RetreatUI/Integrations/ChatOwnershipSafety.lua
@@ -96,6 +94,7 @@ jobs:
           fi
 
       - name: Confirm on gate issue
+        if: github.event_name == 'issues'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
