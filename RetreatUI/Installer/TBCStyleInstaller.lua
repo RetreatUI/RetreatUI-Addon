@@ -1,8 +1,6 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- TBC-style CoA installer: only the imports the user actually wants.
--- Guardian gets one extra Macro step; every other class skips it entirely.
 local frame
 
 local function Theme() return RUI:GetTheme() end
@@ -25,15 +23,17 @@ local function Button(parent, label, width, callback)
   local button = CreateFrame("Button", nil, parent)
   button:SetSize(width or 140, 30)
   button:RegisterForClicks("LeftButtonUp")
-  Backdrop(button, theme.panelStrong, {theme.accent[1]*0.58, theme.accent[2]*0.58, theme.accent[3]*0.58, 1})
+  Backdrop(button, theme.panelStrong, {theme.accent[1] * 0.58, theme.accent[2] * 0.58, theme.accent[3] * 0.58, 1})
   button.label = Text(button, label, 10, theme.text)
   button.label:SetPoint("CENTER")
-  button:SetScript("OnClick", function(self) if not self.disabled and callback then callback(self) end end)
+  button:SetScript("OnClick", function(self)
+    if not self.disabled and callback then callback(self) end
+  end)
   button:SetScript("OnEnter", function(self)
     if not self.disabled then self:SetBackdropBorderColor(theme.accent[1], theme.accent[2], theme.accent[3], 1) end
   end)
   button:SetScript("OnLeave", function(self)
-    self:SetBackdropBorderColor(theme.accent[1]*0.58, theme.accent[2]*0.58, theme.accent[3]*0.58, 1)
+    self:SetBackdropBorderColor(theme.accent[1] * 0.58, theme.accent[2] * 0.58, theme.accent[3] * 0.58, 1)
   end)
   function button:SetEnabled(enabled)
     self.disabled = not enabled
@@ -50,88 +50,88 @@ local function CurrentClass()
   return className
 end
 
-local function ModuleDefinition(key)
-  return RUI.moduleInstallers and RUI.moduleInstallers[key]
-end
-
-local function ModuleReady(key)
-  local definition = ModuleDefinition(key)
-  if not definition then return false, "Component is not registered." end
-  local available, reason = RUI:GetInstallerModuleAvailability(key)
-  if not available then return false, tostring(reason or definition.missing or "Dependency is missing.") end
-  return true, "READY"
-end
-
-local function InstallModule(key)
-  if InCombatLockdown and InCombatLockdown() then return false, "Leave combat before applying this step." end
-  if not ModuleDefinition(key) then return false, "Component is not registered." end
-  RUI:SetInstallerModuleEnabled(key, true)
-  local record = RUI:InstallModule(key)
-  if not record then return false, "The installer did not return a result." end
-  if record.state == "success" then return true, record.message or "Installed successfully." end
-  if record.state == "skipped" then return false, record.message or "This component was skipped." end
-  return false, record.message or "Installation failed."
-end
-
-local function InstallGuardianMacros()
-  if CurrentClass() ~= "Guardian" then return false, "Guardian macros are only installed on Guardian." end
-  if InCombatLockdown and InCombatLockdown() then return false, "Leave combat before creating Guardian macros." end
-  if type(RUI.CreateGuardianFormationMacros) ~= "function" then return false, "Guardian macro package is not loaded." end
-  local ok, err = pcall(RUI.CreateGuardianFormationMacros)
-  if not ok then return false, tostring(err) end
-  return true, "Guardian formation macros created or updated."
-end
-
 local function BuildSteps()
-  local steps = {
+  return {
     {
-      id="welcome",
-      title="WELCOME",
-      subtitle="RetreatUI for Conquest of Azeroth.",
-      description="Clean setup only: ElvUI, Details, TurboPlates and WeakAuras. Guardian also gets its formation macros. Nothing else is part of this installer.",
+      id = "welcome",
+      title = "WELCOME",
+      subtitle = "RetreatUI for Conquest of Azeroth.",
+      description = "Continue through the installer to apply the shared profiles, General WeakAuras and the verified WeakAura package for your current CoA class.",
     },
     {
-      id="elvui", key="unitframes",
-      title="IMPORT ELVUI",
-      subtitle="Install the RetreatUI ElvUI profile.",
-      description="Applies the RetreatUI unitframes, castbars and shared layout.",
+      id = "elvui",
+      component = "elvui",
+      title = "ELVUI",
+      subtitle = "Choose the resolution profile to import.",
+      description = "Imports the full RetreatUI ElvUI profile through ElvUI's native Distributor.",
+      options = {
+        {label = "1440P", method = "ImportParityElvUI", argument = "1440p"},
+        {label = "1080P", method = "ImportParityElvUI", argument = "1080p"},
+      },
+    },
+    {
+      id = "bigwigs",
+      component = "bigwigs",
+      title = "BIGWIGS",
+      subtitle = "Choose the resolution profile to import.",
+      description = "Registers and imports the RetreatUI BigWigs profile through BigWigsAPI.",
+      options = {
+        {label = "1440P", method = "ImportParityBigWigs", argument = "1440p"},
+        {label = "1080P", method = "ImportParityBigWigs", argument = "1080p"},
+      },
+    },
+    {
+      id = "details",
+      component = "details",
+      title = "DETAILS",
+      subtitle = "Import the shared damage-meter profile.",
+      description = "Imports the RetreatUI Details profile through DetailsAPI.",
+      options = {
+        {label = "SETUP DETAILS", method = "ImportParityDetails"},
+      },
+    },
+    {
+      id = "turboplates",
+      component = "turboplates",
+      title = "TURBOPLATES",
+      subtitle = "Choose the resolution profile to apply.",
+      description = "Applies the verified nameplate settings translated to TurboPlates. This step remains locked until the mapping is complete; no approximate fallback is used.",
+      options = {
+        {label = "1440P", method = "ImportParityTurboPlates", argument = "1440p"},
+        {label = "1080P", method = "ImportParityTurboPlates", argument = "1080p"},
+      },
+    },
+    {
+      id = "generalwa",
+      component = "generalwa",
+      title = "GENERAL WEAKAURAS",
+      subtitle = "Import the shared Core WeakAura package.",
+      description = "Opens WeakAuras' normal import window with the complete General Core export.",
+      options = {
+        {label = "CORE", method = "ImportParityGeneralWeakAuras"},
+      },
+    },
+    {
+      id = "classwa",
+      component = "classwa",
+      title = "CLASS WEAKAURA",
+      subtitle = function() return "Current class: " .. CurrentClass() end,
+      description = "Opens WeakAuras' normal import window for the verified package mapped to your current CoA class. The button stays locked until that class mapping is complete.",
+      options = {
+        {label = "IMPORT CLASS WA", method = "ImportParityClassWeakAuras"},
+      },
+    },
+    {
+      id = "reload",
+      title = "INSTALLATION COMPLETE",
+      subtitle = "The selected profiles and WeakAuras are ready.",
+      description = "Reload the UI to finish applying the imported settings. Reopen this installer at any time with /retreatui or /rui.",
+      reload = true,
+      options = {
+        {label = "RELOAD", reload = true},
+      },
     },
   }
-
-  if CurrentClass() == "Guardian" then
-    steps[#steps + 1] = {
-      id="macros", custom="guardianMacros",
-      title="IMPORT GUARDIAN MACROS",
-      subtitle="Create or update Guardian formation macros.",
-      description="Installs the Guardian formation-aware macro package for the current character.",
-    }
-  end
-
-  steps[#steps + 1] = {
-    id="details", key="details",
-    title="IMPORT DETAILS",
-    subtitle="Install the RetreatUI Details profile.",
-    description="Applies the shared RetreatUI damage-meter layout, fonts and positioning.",
-  }
-  steps[#steps + 1] = {
-    id="turboplates", key="nameplates",
-    title="IMPORT TURBOPLATES",
-    subtitle="Install the RetreatUI TurboPlates profile.",
-    description="Applies the shared RetreatUI nameplate profile.",
-  }
-  steps[#steps + 1] = {
-    id="weakauras", key="classHUD",
-    title=function() return "IMPORT " .. string.upper(CurrentClass()) .. " WEAKAURAS" end,
-    subtitle=function() return "Install RetreatUI - General + " .. CurrentClass() .. " HUD WeakAuras." end,
-    description="General contains Trinkets, Buffs & Procs and Racials. The class package contains Resource, Main, Utility, State and Target trackers.",
-  }
-  steps[#steps + 1] = {
-    id="reload", reload=true,
-    title="RELOAD",
-    subtitle="RetreatUI setup is ready.",
-    description="Reload the UI to finish applying the imported profiles and WeakAuras. Reopen the installer any time with /retreatui or /rui.",
-  }
-  return steps
 end
 
 local function Resolve(value)
@@ -147,6 +147,22 @@ local function Status(text, success)
   frame.status:SetTextColor(color[1], color[2], color[3], color[4] or 1)
 end
 
+local function ComponentReady(component)
+  if not component then return true end
+  if type(RUI.IsParityImportReady) ~= "function" then return false end
+  return RUI:IsParityImportReady(component) == true
+end
+
+local function NotReadyMessage(component)
+  if component == "elvui" then return "Enable ElvUI to unlock this step." end
+  if component == "bigwigs" then return "Enable BigWigs to unlock this step." end
+  if component == "details" then return "Enable Details to unlock this step." end
+  if component == "turboplates" then return "TurboPlates parity mapping is still being verified." end
+  if component == "generalwa" then return "Enable WeakAuras to unlock this step." end
+  if component == "classwa" then return "The " .. CurrentClass() .. " WeakAura mapping is still being verified." end
+  return "This step is not ready."
+end
+
 local function RefreshDots()
   if not frame or not frame.dots then return end
   local theme = Theme()
@@ -159,61 +175,56 @@ local function RefreshDots()
   end
 end
 
+local function SetOptionButton(button, option, ready)
+  if not option then
+    button:Hide()
+    return
+  end
+  button:Show()
+  button:SetLabel(option.label or "APPLY")
+  button:SetEnabled(ready)
+end
+
 local function Refresh()
   if not frame then return end
-  local steps = frame.steps or BuildSteps()
+  local steps = frame.steps
   local total = #steps
-  local index = math.max(1, math.min(total, frame.currentStep or 1))
-  frame.currentStep = index
-  local step = steps[index]
+  frame.currentStep = math.max(1, math.min(total, frame.currentStep or 1))
+  local step = steps[frame.currentStep]
+  local ready = ComponentReady(step.component)
 
-  frame.progress:SetText(string.format("STEP %d OF %d", index, total))
+  frame.progress:SetText(string.format("STEP %d OF %d", frame.currentStep, total))
   frame.pageTitle:SetText(Resolve(step.title))
   frame.pageSubtitle:SetText(Resolve(step.subtitle))
   frame.description:SetText(Resolve(step.description))
   RefreshDots()
 
-  frame.back:SetEnabled(index > 1)
-  frame.next:SetEnabled(index < total)
-  frame.next:SetLabel(index == 1 and "GET STARTED" or "NEXT")
+  frame.back:SetEnabled(frame.currentStep > 1)
+  frame.next:SetEnabled(frame.currentStep < total)
+  frame.next:SetLabel(frame.currentStep == 1 and "CONTINUE" or "NEXT")
 
-  if step.reload then
-    frame.action:Show()
-    frame.action:SetLabel("RELOAD UI")
-    frame.action:SetEnabled(true)
+  SetOptionButton(frame.action1, step.options and step.options[1], step.reload or ready)
+  SetOptionButton(frame.action2, step.options and step.options[2], step.reload or ready)
+
+  local saved = frame.results[step.id]
+  if saved then
+    Status(saved.message, saved.success)
+  elseif step.reload then
     Status("Ready to reload.", true)
-  elseif step.custom == "guardianMacros" then
-    frame.action:Show()
-    frame.action:SetLabel("IMPORT MACROS")
-    frame.action:SetEnabled(CurrentClass() == "Guardian")
-    local saved = frame.results[step.id]
-    Status(saved and saved.message or "READY", saved and saved.success or nil)
-  elseif step.key then
-    frame.action:Show()
-    local definition = ModuleDefinition(step.key)
-    frame.action:SetLabel(definition and ("APPLY " .. string.upper(definition.label or "COMPONENT")) or "APPLY")
-    local saved = frame.results[step.id]
-    if saved then
-      Status(saved.message, saved.success)
-    else
-      local ready, reason = ModuleReady(step.key)
-      Status(ready and "READY" or reason, ready and nil or false)
-    end
-    local ready = ModuleReady(step.key)
-    frame.action:SetEnabled(ready == true)
+  elseif step.component then
+    Status(ready and "READY" or NotReadyMessage(step.component), ready and nil or false)
   else
-    frame.action:Hide()
-    Status("Only the core RetreatUI imports are included here.", nil)
+    Status("Continue to begin setup.", nil)
   end
 end
 
-local function RunAction()
+local function RunOption(slot)
   if not frame then return end
-  local steps = frame.steps or BuildSteps()
-  local step = steps[frame.currentStep or 1]
-  if not step then return end
+  local step = frame.steps[frame.currentStep]
+  local option = step and step.options and step.options[slot]
+  if not option then return end
 
-  if step.reload then
+  if option.reload then
     local db = RUI:EnsureDB()
     db.installer = db.installer or {}
     db.installer.initialCompleted = true
@@ -222,18 +233,27 @@ local function RunAction()
     return
   end
 
-  local success, message
-  if step.custom == "guardianMacros" then
-    success, message = InstallGuardianMacros()
-  elseif step.key then
-    success, message = InstallModule(step.key)
-  else
+  local method = option.method and RUI[option.method]
+  if type(method) ~= "function" then
+    frame.results[step.id] = {success = false, message = "This import is not available yet."}
+    Refresh()
     return
   end
 
+  if InCombatLockdown and InCombatLockdown() then
+    frame.results[step.id] = {success = false, message = "Leave combat before applying this step."}
+    Refresh()
+    return
+  end
+
+  local ok, success, message = pcall(method, RUI, option.argument)
+  if not ok then
+    success, message = false, tostring(success)
+  end
+
   frame.results[step.id] = {
-    success = success,
-    message = message or (success and "Installed successfully." or "Installation failed."),
+    success = success == true,
+    message = message or (success and "Imported successfully." or "Import failed."),
   }
   Refresh()
 end
@@ -249,9 +269,11 @@ local function BuildInstaller()
   frame:SetMovable(true)
   frame:EnableMouse(true)
   frame:RegisterForDrag("LeftButton")
-  frame:SetScript("OnDragStart", function(self) if not InCombatLockdown or not InCombatLockdown() then self:StartMoving() end end)
+  frame:SetScript("OnDragStart", function(self)
+    if not InCombatLockdown or not InCombatLockdown() then self:StartMoving() end
+  end)
   frame:SetScript("OnDragStop", frame.StopMovingOrSizing)
-  Backdrop(frame, theme.background, {theme.accent[1]*0.58, theme.accent[2]*0.58, theme.accent[3]*0.58, 1})
+  Backdrop(frame, theme.background, {theme.accent[1] * 0.58, theme.accent[2] * 0.58, theme.accent[3] * 0.58, 1})
 
   frame.brand = Text(frame, "RETREATUI — CONQUEST OF AZEROTH", 18, theme.accent)
   frame.brand:SetPoint("TOPLEFT", 28, -26)
@@ -274,7 +296,7 @@ local function BuildInstaller()
     local dot = frame:CreateTexture(nil, "ARTWORK")
     dot:SetTexture("Interface\\Buttons\\WHITE8X8")
     dot:SetSize(dotWidth, 3)
-    dot:SetPoint("TOPLEFT", frame, "TOP", -totalWidth/2 + (index-1)*(dotWidth+dotGap), -75)
+    dot:SetPoint("TOPLEFT", frame, "TOP", -totalWidth / 2 + (index - 1) * (dotWidth + dotGap), -75)
     frame.dots[index] = dot
   end
 
@@ -302,18 +324,23 @@ local function BuildInstaller()
   frame.status:SetJustifyH("LEFT")
   frame.status:SetWordWrap(true)
 
-  frame.action = Button(frame, "APPLY", 230, RunAction)
-  frame.action:SetPoint("CENTER", 0, -126)
+  frame.action1 = Button(frame, "APPLY", 180, function() RunOption(1) end)
+  frame.action1:SetPoint("CENTER", -100, -126)
+  frame.action2 = Button(frame, "APPLY", 180, function() RunOption(2) end)
+  frame.action2:SetPoint("CENTER", 100, -126)
+
   frame.back = Button(frame, "BACK", 100, function()
     frame.currentStep = math.max(1, (frame.currentStep or 1) - 1)
     Refresh()
   end)
   frame.back:SetPoint("BOTTOMLEFT", 28, 22)
+
   frame.next = Button(frame, "NEXT", 120, function()
     frame.currentStep = math.min(#frame.steps, (frame.currentStep or 1) + 1)
     Refresh()
   end)
   frame.next:SetPoint("BOTTOMRIGHT", -28, 22)
+
   frame.close = Button(frame, "X", 32, function() frame:Hide() end)
   frame.close:SetPoint("TOPRIGHT", -10, -10)
 
@@ -341,4 +368,4 @@ function RUI:RefreshInstallerTheme()
 end
 
 RUI._cleanStepInstallerLoaded = true
-RUI._cleanStepInstallerRevision = 2
+RUI._cleanStepInstallerRevision = 3
