@@ -53,7 +53,6 @@ Profiles\ElvUI.lua
 Profiles\NaowhElvUIExports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
-Profiles\NaowhDetailsExport.lua
 Integrations\ElvUI.lua
 Integrations\ElvUINaowhBeta20.lua
 Integrations\ElvUIPartyText.lua
