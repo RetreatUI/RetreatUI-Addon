@@ -12,6 +12,7 @@ Core\Init.lua
 Data\SpellDatabase.lua
 Data\WeakAurasBeta20Payloads.lua
 Data\WeakAurasBeta20\99_ExactLayoutFix.lua
+Data\WeakAurasBeta20\10_Bloodmage.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
 Core\SpellbookScanThrottle.lua
