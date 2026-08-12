@@ -1,24 +1,23 @@
 #!/usr/bin/env python3
-"""Generate beta.20 CoA payloads with the exact Naowh TBC layout skeleton.
+"""Generate beta.20 CoA payloads with the approved TBC reference geometry.
 
-This remains a build-time tool. The shipped addon receives ordinary static
-!WA:2! imports; RetreatUI does not create or reposition WeakAuras at runtime.
+This is a build-time tool only. The shipped addon receives ordinary static
+!WA:2! imports; RetreatUI does not generate or reposition WeakAuras at runtime.
 """
 from __future__ import annotations
 
 import generate_beta20_weakauras as generator
 
-# Project Ascension's WeakAuras fork is 4.2.5 and reports internalVersion 53.
-# Keep generated payloads native to that schema instead of emitting modern
-# retail/TBC WeakAuras metadata and relying on downgrade behavior in game.
-generator.INTERNAL = 53
-WEAKAURAS_VERSION = "4.2.5"
+# Live Vol'jin / Conquest of Azeroth testing reports WeakAuras 5.21.2.
+# Match that payload schema directly instead of relying on WA modernization.
+generator.INTERNAL = 90
+WEAKAURAS_VERSION = "5.21.2"
 
 CLASS_ANCHOR = "WeakAuras:Class Power Bar"
 
-# Verbatim custom-grow geometry from the user-supplied NaowhUI TBC class packs.
-# It is part of the imported WeakAura data, not RetreatUI runtime Lua.
-NAOWH_MAIN_GROW = '''function(newPositions, activeRegions)
+# Exact custom-grow geometry from the approved TBC reference pack. This code is
+# embedded in the imported WeakAura itself; RetreatUI does not execute it.
+REFERENCE_MAIN_GROW = '''function(newPositions, activeRegions)
     --First row variables
     local firstRowLimit = 9 -- limit of icons in first row
     local wFR = 36 -- width of first row icons
@@ -50,9 +49,7 @@ NAOWH_MAIN_GROW = '''function(newPositions, activeRegions)
     for i, regionData in ipairs(activeRegions) do
         local region = regionData.region
         
-        
         local rowTotal = 1
-        
         local localWidth = 1
         local localHeight = 1
         local currentRow = 0
@@ -91,17 +88,15 @@ NAOWH_MAIN_GROW = '''function(newPositions, activeRegions)
         region:SetRegionHeight(localHeight)
         region:SetFrameStrata(localFrameStrata)
         
-        
         xOffset = 0 - (region.width + spacing) / 2 * (rowTotal-1) + (xCount * (region.width + spacing))
         
         if currentRow == 1 then
             yOffset = 0 - hFR - spacing - correctionYspacing
         elseif currentRow == 2 then
-            yOffset =  0 - (hFR + hSR) - spacing * 2 - correctionYspacing
+            yOffset = 0 - (hFR + hSR) - spacing * 2 - correctionYspacing
         end
         
         xCount = xCount + 1
-        
         if xCount >= rowTotal then
             xCount = 0
         end
@@ -111,9 +106,26 @@ NAOWH_MAIN_GROW = '''function(newPositions, activeRegions)
 end'''
 
 
-def naowh_dynamic(aura_id: str, parent: str, children: list[str], *, anchor: str,
-                  self_point: str, y: int, grow: str, spacing: int,
-                  frame: str = CLASS_ANCHOR, align: str = "CENTER"):
+def exact_spell_load(spell_id: int | None):
+    """Ascension-safe Spell Known load.
+
+    Exact matching prevents WeakAuras from falling through to GetSpellInfo on
+    an unresolved custom CoA numeric identifier.
+    """
+    load = {"spec": {"multi": {}}, "use_never": False}
+    if spell_id:
+        load["use_spellknown"] = True
+        load["spellknown"] = spell_id
+        load["use_exact_spellknown"] = True
+    return load
+
+
+generator.load_for_spell = exact_spell_load
+
+
+def reference_dynamic(aura_id: str, parent: str, children: list[str], *, anchor: str,
+                      self_point: str, y: int, grow: str, spacing: int,
+                      frame: str = CLASS_ANCHOR, align: str = "CENTER"):
     data = generator.dynamic_group(aura_id, parent, children, y, spacing, 26, 28)
     data["anchorFrameType"] = "SELECTFRAME" if frame else "SCREEN"
     if frame:
@@ -134,7 +146,7 @@ def naowh_dynamic(aura_id: str, parent: str, children: list[str], *, anchor: str
     data["centerType"] = "LR"
     data.pop("height", None)
     if grow == "CUSTOM":
-        data["customGrow"] = NAOWH_MAIN_GROW
+        data["customGrow"] = REFERENCE_MAIN_GROW
     return data
 
 
@@ -163,7 +175,7 @@ def build_general():
     root = generator.static_group(root_id, None, [anchors_id, ui_id])
     anchors = generator.static_group(anchors_id, root_id, ["Class Power Bar"])
     ui = generator.static_group(ui_id, root_id, [buffs_id])
-    buffs = naowh_dynamic(
+    buffs = reference_dynamic(
         buffs_id, ui_id, trinkets, anchor="TOPRIGHT", self_point="BOTTOMRIGHT",
         y=2, grow="GRID", spacing=3, frame="ElvUF_Player", align="RIGHT",
     )
@@ -183,12 +195,16 @@ def build_general():
 
 
 def learned_icon(aura_id: str, parent: str, record: dict, width: int, height: int, *, active=False):
-    name = record.get("buff") or record["name"] if active else record["name"]
-    data = generator.icon(aura_id, parent, name, record.get("id"), width, height,
-                          active=active, target=False if active else record.get("target", False))
+    name = (record.get("buff") or record["name"]) if active else record["name"]
+    data = generator.icon(
+        aura_id, parent, name, record.get("id"), width, height,
+        active=active, target=False if active else record.get("target", False),
+    )
+    # Name-only CoA records deliberately have no Spell Known load filter. The
+    # normal spell/aura trigger resolves them without feeding names or unknown
+    # custom IDs through Ascension's fragile load fallback.
     if not active and not record.get("id"):
-        data["load"]["use_spellknown"] = True
-        data["load"]["spellknown"] = record["name"]
+        data["load"] = {"spec": {"multi": {}}, "use_never": False}
     return data
 
 
@@ -214,8 +230,6 @@ def build_class(class_name: str, resources: list[dict], spells: list[dict]):
         key=lambda s: (s["order"], s["name"]),
     )[:24]
 
-    # Records previously hidden only because RetreatUI's native HUD rendered
-    # them are legitimate static WA aura trackers in beta.20.
     seen = {s["name"] for s in active}
     for record in sorted(
         (s for s in spells if s["aura"] and not s["review"] and not s["target"] and s["category"] in {"proc", "buff", "defensive", "offensive"}),
@@ -235,14 +249,14 @@ def build_class(class_name: str, resources: list[dict], spells: list[dict]):
     root = generator.static_group(root_id, None, root_children)
 
     nodes = [
-        naowh_dynamic(aura_id, root_id, aura_children, anchor="TOP", self_point="CENTER", y=47, grow="HORIZONTAL", spacing=4),
-        naowh_dynamic(main_id, root_id, main_children, anchor="BOTTOM", self_point="CENTER", y=-17, grow="CUSTOM", spacing=2),
+        reference_dynamic(aura_id, root_id, aura_children, anchor="TOP", self_point="CENTER", y=47, grow="HORIZONTAL", spacing=4),
+        reference_dynamic(main_id, root_id, main_children, anchor="BOTTOM", self_point="CENTER", y=-17, grow="CUSTOM", spacing=2),
         generator.static_group(resource_id, root_id, [bars_id]),
         generator.static_group(bars_id, resource_id, [dynamic_bars_id]),
     ]
 
     resource_bar_ids = [f"{class_name} - Primary Power"]
-    dynamic_bars = naowh_dynamic(
+    dynamic_bars = reference_dynamic(
         dynamic_bars_id, bars_id, resource_bar_ids, anchor="BOTTOM", self_point="BOTTOM",
         y=0, grow="UP", spacing=1,
     )
@@ -258,9 +272,6 @@ def build_class(class_name: str, resources: list[dict], spells: list[dict]):
     primary["yOffset"] = 0
     nodes.append(primary)
 
-    # Standard aura-trigger stack resources are placed in Naowh's Dynamic Bars
-    # stack. Bespoke summon/counter resources are deliberately not recreated as
-    # custom runtime WA code.
     for resource in resources:
         if resource.get("type") != "stacks":
             continue
@@ -281,7 +292,7 @@ def build_class(class_name: str, resources: list[dict], spells: list[dict]):
     dynamic_bars["controlledChildren"] = resource_bar_ids
 
     if aux_children:
-        nodes.append(naowh_dynamic(
+        nodes.append(reference_dynamic(
             aux_id, root_id, aux_children, anchor="BOTTOM", self_point="CENTER",
             y=-239, grow="HORIZONTAL", spacing=3,
         ))
@@ -302,10 +313,9 @@ generator.build_class = build_class
 
 def main():
     generator.main()
-    # The base writer owns only the output wrapper; ensure its compatibility
-    # marker cannot drift from the Ascension payload version above.
     text = generator.OUTPUT.read_text(encoding="utf-8")
-    text = text.replace('weakAurasVersion = "5.21.2"', 'weakAurasVersion = "4.2.5"')
+    text = text.replace("RUI.NaowhCoAWeakAuras", "RUI.Beta20WeakAuras")
+    text = text.replace('weakAurasVersion = "4.2.5"', 'weakAurasVersion = "5.21.2"')
     generator.OUTPUT.write_text(text, encoding="utf-8")
 
 
