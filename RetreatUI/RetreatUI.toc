@@ -65,11 +65,11 @@ Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
 Integrations\ChatOwnershipSafety.lua
-Integrations\WeakAurasNaowhCoA.lua
+Integrations\WeakAurasBeta20.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
-Installer\NaowhBeta20Installer.lua
+Installer\Beta20Installer.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
