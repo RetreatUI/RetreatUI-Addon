@@ -51,7 +51,7 @@ Integrations\RaidFrameHotfix.lua
 Integrations\CVars.lua
 Integrations\CombatText.lua
 Integrations\TurboPlates.lua
-Integrations\TurboPlatesNaowhBeta20.lua
+Integrations\TurboPlatesBeta20.lua
 Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
