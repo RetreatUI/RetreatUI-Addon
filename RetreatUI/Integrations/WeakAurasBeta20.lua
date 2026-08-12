@@ -2,21 +2,17 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- beta.20 imports finished WeakAuras export strings only.
--- No runtime aura generation, custom grow code or synthetic WA events live here.
+-- No runtime aura generation, RetreatUI custom-grow framework or synthetic WA
+-- event engine lives here.
 local function PayloadRegistry()
-  local registry = RUI.Beta20WeakAuras
-  if type(registry) == "table" then return registry end
-
-  -- Compatibility bridge for payload files created earlier in the beta.20 branch.
-  local legacyKey = "Na" .. "owhCoAWeakAuras"
-  registry = RUI[legacyKey]
-  if type(registry) == "table" then
-    RUI.Beta20WeakAuras = registry
-    return registry
+  local registry = RUI.Beta20WeakAuras or RUI.NaowhCoAWeakAuras
+  if type(registry) ~= "table" then
+    registry = {classes = {}}
   end
-
-  RUI.Beta20WeakAuras = {classes = {}}
-  return RUI.Beta20WeakAuras
+  registry.classes = registry.classes or {}
+  RUI.Beta20WeakAuras = registry
+  RUI.NaowhCoAWeakAuras = registry -- branch-upgrade compatibility alias
+  return registry
 end
 
 local function WeakAurasReady()
@@ -30,6 +26,9 @@ local function ImportPayload(payload, label)
   if type(payload) ~= "string" or payload == "" then
     return false, tostring(label or "WeakAura") .. " payload is missing."
   end
+  if payload:sub(1, 6) ~= "!WA:2!" then
+    return false, tostring(label or "WeakAura") .. " payload is not a WeakAuras 2 export."
+  end
 
   local ok, result = pcall(WeakAuras.Import, payload)
   if not ok then return false, tostring(result) end
@@ -41,7 +40,11 @@ function RUI:ValidateCoAWeakAurasImportAPI()
   if not WeakAurasReady() then
     return false, "WeakAuras.Import is unavailable in the installed CoA WeakAuras version."
   end
-  return true, "WeakAuras.Import is available."
+  local payloads = PayloadRegistry()
+  if type(payloads.general) ~= "string" or payloads.general:sub(1, 6) ~= "!WA:2!" then
+    return false, "General WeakAuras payload is not registered."
+  end
+  return true, "WeakAuras.Import and the beta.20 General payload are available."
 end
 
 function RUI:InstallGeneralWeakAuras()
@@ -66,4 +69,4 @@ function RUI:InstallClassWeakAuras(className)
 end
 
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 21
+RUI._beta20WeakAuraImportRevision = 22
