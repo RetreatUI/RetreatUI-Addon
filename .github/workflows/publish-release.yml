@@ -68,6 +68,20 @@ jobs:
         if: steps.manifest.outputs.publish != 'true'
         run: echo "Manifest is configured with publish=false."
 
+      - name: Generate beta20 static WeakAuras payloads
+        if: steps.manifest.outputs.publish == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/generate_beta20_weakauras.py
+          FILE="RetreatUI/Data/WeakAurasBeta20Payloads.lua"
+          test -s "$FILE"
+          test "$(grep -c '^RUI.NaowhCoAWeakAuras.classes\[' "$FILE")" -eq 21
+          grep -Fq 'RUI.NaowhCoAWeakAuras.general = "!WA:2!' "$FILE"
+          grep -Fq 'weakAurasVersion = "5.21.2"' "$FILE"
+          ! grep -Fq 'customGrow' "$FILE"
+          ! grep -Fq 'custom_type' "$FILE"
+
       - name: Validate addon versions
         if: steps.manifest.outputs.publish == 'true'
         shell: bash
