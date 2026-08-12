@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assert that beta.20 ships the exact user-supplied Naowh layout payloads."""
+"""Assert that beta.20 ships the exact user-supplied Naowh profile payloads."""
 from __future__ import annotations
 
 import hashlib
@@ -24,22 +24,20 @@ def check(label: str, payload: str) -> None:
 
 
 def details_payload() -> str:
-    text = (ROOT / "RetreatUI/Profiles/NaowhDetailsExport.lua").read_text(encoding="utf-8")
-    chunks = []
-    for key in ("p1", "p2", "p3", "p4"):
-        match = re.search(rf"local {key} = \[=\[(.*?)\]=\]", text, re.S)
-        assert match, key
-        chunks.append(match.group(1))
-    assert "RUI.DetailsProfileString = p1 .. p2 .. p3 .. p4" in text
-    return "".join(chunks)
+    path = ROOT / "RetreatUI/Profiles/Details.lua"
+    text = path.read_text(encoding="utf-8")
+    match = re.search(r"RUI\.DetailsProfileString\s*=\s*\[=\[(.*?)\]=\]", text, re.S)
+    assert match, f"Details payload not found in {path}"
+    return match.group(1)
 
 
 def elvui_payloads() -> tuple[str, str]:
-    text = (ROOT / "RetreatUI/Profiles/NaowhElvUIExports.lua").read_text(encoding="utf-8")
-    payloads = {}
+    path = ROOT / "RetreatUI/Profiles/ElvUIBeta20Exports.lua"
+    text = path.read_text(encoding="utf-8")
+    payloads: dict[str, str] = {}
     for resolution in ("1440p", "1080p"):
         match = re.search(rf'\["{resolution}"\]\s*=\s*\[=\[(.*?)\]=\]', text, re.S)
-        assert match, resolution
+        assert match, f"{resolution} ElvUI payload not found in {path}"
         payloads[resolution] = match.group(1)
     return payloads["1440p"], payloads["1080p"]
 
