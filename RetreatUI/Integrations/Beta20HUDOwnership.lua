@@ -14,6 +14,25 @@ local currentClass
 local stateDriver
 local stateTimerElapsed = 0
 
+local LEGACY_RUNTIME_KEYS = {
+  classHUD = true,
+  trinketHUD = true,
+  partyTrackers = true,
+  unitframes = true,
+  nameplates = true,
+}
+
+-- Events.lua asks the installer registry whether historical runtime owners should
+-- auto-start. Keep normal installer modules untouched, but permanently decline
+-- the old visual owners above so they cannot modify a correctly imported Naowh UI.
+local previousIsInstallerModuleEnabled = RUI.IsInstallerModuleEnabled
+if type(previousIsInstallerModuleEnabled) == "function" then
+  function RUI:IsInstallerModuleEnabled(key)
+    if LEGACY_RUNTIME_KEYS[key] then return false end
+    return previousIsInstallerModuleEnabled(self, key)
+  end
+end
+
 local function InstallerCompleted()
   local db = type(RUI.EnsureDB) == "function" and RUI:EnsureDB() or nil
   return db and db.installer and db.installer.initialCompleted == true
@@ -93,9 +112,9 @@ function RUI:RefreshBeta20StateLane(force)
   return true, tonumber(count) or 0
 end
 
--- Keep the public activation API compatible because Events.lua and upgrade
--- databases can still request "classHUD". In beta.20 that request means:
--- retire the old native HUD and refresh the one allowed native state lane.
+-- Keep the public activation API compatible for old saved databases. In beta.20
+-- this request no longer activates an ability HUD; it can only refresh the one
+-- allowed native state lane.
 function RUI:ActivateClassHUD(force)
   StopLegacyHUD()
   local ok, reason = self:RefreshBeta20StateLane(force == true)
