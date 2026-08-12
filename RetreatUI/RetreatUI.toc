@@ -56,6 +56,7 @@ Profiles\ElvUI.lua
 Profiles\NaowhElvUIExports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
+Profiles\NaowhDetailsExport.lua
 Integrations\ElvUI.lua
 Integrations\ElvUINaowhBeta20.lua
 Integrations\ElvUIPartyText.lua
@@ -74,9 +75,7 @@ Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\WeakAuraHUDMigration.lua
 Integrations\ReleaseBaseline20260801.lua
-Installer\Installer.lua
-Installer\ModularInstaller.lua
-Installer\TBCStyleInstaller.lua
+Installer\NaowhBeta20Installer.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
