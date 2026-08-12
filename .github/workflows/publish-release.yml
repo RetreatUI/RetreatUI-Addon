@@ -50,15 +50,19 @@ jobs:
           if [[ "$VERSION" == *-* && "$PRERELEASE" != "true" ]]; then exit 1; fi
           if [[ "$VERSION" != *-* && "$PRERELEASE" == "true" ]]; then exit 1; fi
           TAG="v$VERSION"
-          ASSET="RetreatUI_v$VERSION.zip"
-          CHECKSUM="$ASSET.sha256"
+          MAIN_ASSET="RetreatUI_v$VERSION.zip"
+          MAIN_CHECKSUM="$MAIN_ASSET.sha256"
+          BUFF_ASSET="RetreatUI_BuffManager_v$VERSION.zip"
+          BUFF_CHECKSUM="$BUFF_ASSET.sha256"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "title=$TITLE" >> "$GITHUB_OUTPUT"
           echo "notes_file=$NOTES_FILE" >> "$GITHUB_OUTPUT"
           echo "prerelease=$PRERELEASE" >> "$GITHUB_OUTPUT"
-          echo "asset=$ASSET" >> "$GITHUB_OUTPUT"
-          echo "checksum=$CHECKSUM" >> "$GITHUB_OUTPUT"
+          echo "main_asset=$MAIN_ASSET" >> "$GITHUB_OUTPUT"
+          echo "main_checksum=$MAIN_CHECKSUM" >> "$GITHUB_OUTPUT"
+          echo "buff_asset=$BUFF_ASSET" >> "$GITHUB_OUTPUT"
+          echo "buff_checksum=$BUFF_CHECKSUM" >> "$GITHUB_OUTPUT"
 
       - name: No release requested
         if: steps.manifest.outputs.publish != 'true'
@@ -89,54 +93,62 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.manifest.outputs.tag }}
         run: |
-          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
-          fi
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then echo "exists=true" >> "$GITHUB_OUTPUT"; else echo "exists=false" >> "$GITHUB_OUTPUT"; fi
 
-      - name: Recover existing release asset
+      - name: Recover existing release assets
         if: steps.manifest.outputs.publish == 'true' && steps.existing.outputs.exists == 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.manifest.outputs.tag }}
-          ASSET: ${{ steps.manifest.outputs.asset }}
-          CHECKSUM: ${{ steps.manifest.outputs.checksum }}
+          MAIN_ASSET: ${{ steps.manifest.outputs.main_asset }}
+          MAIN_CHECKSUM: ${{ steps.manifest.outputs.main_checksum }}
+          BUFF_ASSET: ${{ steps.manifest.outputs.buff_asset }}
+          BUFF_CHECKSUM: ${{ steps.manifest.outputs.buff_checksum }}
         run: |
           set -euo pipefail
           rm -rf dist && mkdir -p dist
-          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$ASSET" --dir dist
-          [[ -s "dist/$ASSET" ]] || exit 1
-          (cd dist && sha256sum "$ASSET" > "$CHECKSUM")
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$MAIN_ASSET" --dir dist
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$BUFF_ASSET" --dir dist
+          [[ -s "dist/$MAIN_ASSET" && -s "dist/$BUFF_ASSET" ]] || exit 1
+          (cd dist && sha256sum "$MAIN_ASSET" > "$MAIN_CHECKSUM")
+          (cd dist && sha256sum "$BUFF_ASSET" > "$BUFF_CHECKSUM")
 
       - name: Package new addon release
         if: steps.manifest.outputs.publish == 'true' && steps.existing.outputs.exists != 'true'
         shell: bash
         env:
-          ASSET: ${{ steps.manifest.outputs.asset }}
-          CHECKSUM: ${{ steps.manifest.outputs.checksum }}
+          MAIN_ASSET: ${{ steps.manifest.outputs.main_asset }}
+          MAIN_CHECKSUM: ${{ steps.manifest.outputs.main_checksum }}
+          BUFF_ASSET: ${{ steps.manifest.outputs.buff_asset }}
+          BUFF_CHECKSUM: ${{ steps.manifest.outputs.buff_checksum }}
         run: |
           set -euo pipefail
           rm -rf dist
-          mkdir -p dist/package
-          cp -a RetreatUI dist/package/RetreatUI
-          cp -a RetreatUI_Classes dist/package/RetreatUI_Classes
-          cp -a RetreatUI_BuffManager dist/package/RetreatUI_BuffManager
-          (cd dist/package && zip -r "../$ASSET" RetreatUI RetreatUI_Classes RetreatUI_BuffManager)
-          [[ -s "dist/$ASSET" ]] || exit 1
-          mapfile -t ROOTS < <(zipinfo -1 "dist/$ASSET" | awk -F/ 'NF { print $1 }' | sort -u)
-          [[ "${#ROOTS[@]}" -eq 3 && "${ROOTS[0]}" == "RetreatUI" && "${ROOTS[1]}" == "RetreatUI_BuffManager" && "${ROOTS[2]}" == "RetreatUI_Classes" ]] || exit 1
-          (cd dist && sha256sum "$ASSET" > "$CHECKSUM")
+          mkdir -p dist/main dist/buff
+          cp -a RetreatUI dist/main/RetreatUI
+          cp -a RetreatUI_Classes dist/main/RetreatUI_Classes
+          (cd dist/main && zip -r "../$MAIN_ASSET" RetreatUI RetreatUI_Classes)
+          cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager
+          (cd dist/buff && zip -r "../$BUFF_ASSET" RetreatUI_BuffManager)
+          [[ -s "dist/$MAIN_ASSET" && -s "dist/$BUFF_ASSET" ]] || exit 1
+          mapfile -t MAIN_ROOTS < <(zipinfo -1 "dist/$MAIN_ASSET" | awk -F/ 'NF { print $1 }' | sort -u)
+          [[ "${#MAIN_ROOTS[@]}" -eq 2 && "${MAIN_ROOTS[0]}" == "RetreatUI" && "${MAIN_ROOTS[1]}" == "RetreatUI_Classes" ]] || exit 1
+          mapfile -t BUFF_ROOTS < <(zipinfo -1 "dist/$BUFF_ASSET" | awk -F/ 'NF { print $1 }' | sort -u)
+          [[ "${#BUFF_ROOTS[@]}" -eq 1 && "${BUFF_ROOTS[0]}" == "RetreatUI_BuffManager" ]] || exit 1
+          (cd dist && sha256sum "$MAIN_ASSET" > "$MAIN_CHECKSUM")
+          (cd dist && sha256sum "$BUFF_ASSET" > "$BUFF_CHECKSUM")
 
-      - name: Upload workflow artifact
+      - name: Upload workflow artifacts
         if: steps.manifest.outputs.publish == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.manifest.outputs.asset }}
+          name: RetreatUI-${{ steps.manifest.outputs.version }}
           path: |
-            dist/${{ steps.manifest.outputs.asset }}
-            dist/${{ steps.manifest.outputs.checksum }}
+            dist/${{ steps.manifest.outputs.main_asset }}
+            dist/${{ steps.manifest.outputs.main_checksum }}
+            dist/${{ steps.manifest.outputs.buff_asset }}
+            dist/${{ steps.manifest.outputs.buff_checksum }}
           if-no-files-found: error
 
       - name: Create GitHub release
@@ -148,27 +160,30 @@ jobs:
           TITLE: ${{ steps.manifest.outputs.title }}
           NOTES_FILE: ${{ steps.manifest.outputs.notes_file }}
           PRERELEASE: ${{ steps.manifest.outputs.prerelease }}
-          ASSET: ${{ steps.manifest.outputs.asset }}
-          CHECKSUM: ${{ steps.manifest.outputs.checksum }}
+          MAIN_ASSET: ${{ steps.manifest.outputs.main_asset }}
+          MAIN_CHECKSUM: ${{ steps.manifest.outputs.main_checksum }}
+          BUFF_ASSET: ${{ steps.manifest.outputs.buff_asset }}
+          BUFF_CHECKSUM: ${{ steps.manifest.outputs.buff_checksum }}
         run: |
           set -euo pipefail
-          FLAGS=("$TAG" "dist/$ASSET" "dist/$CHECKSUM" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --notes-file "$NOTES_FILE")
+          FLAGS=("$TAG" "dist/$MAIN_ASSET" "dist/$MAIN_CHECKSUM" "dist/$BUFF_ASSET" "dist/$BUFF_CHECKSUM" --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" --title "$TITLE" --notes-file "$NOTES_FILE")
           if [[ "$PRERELEASE" == "true" ]]; then FLAGS+=(--prerelease); else FLAGS+=(--latest); fi
           gh release create "${FLAGS[@]}"
 
-      - name: Upload checksum to existing release
+      - name: Upload checksums to existing release
         if: steps.manifest.outputs.publish == 'true' && steps.existing.outputs.exists == 'true'
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ steps.manifest.outputs.tag }}
-          CHECKSUM: ${{ steps.manifest.outputs.checksum }}
-        run: gh release upload "$TAG" "dist/$CHECKSUM" --repo "$GITHUB_REPOSITORY" --clobber
+          MAIN_CHECKSUM: ${{ steps.manifest.outputs.main_checksum }}
+          BUFF_CHECKSUM: ${{ steps.manifest.outputs.buff_checksum }}
+        run: gh release upload "$TAG" "dist/$MAIN_CHECKSUM" "dist/$BUFF_CHECKSUM" --repo "$GITHUB_REPOSITORY" --clobber
 
       - name: Write release summary
         if: steps.manifest.outputs.publish == 'true'
         run: |
           echo "## RetreatUI release verified" >> "$GITHUB_STEP_SUMMARY"
           echo "- Version: ${{ steps.manifest.outputs.version }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Asset: ${{ steps.manifest.outputs.asset }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "- Checksum: ${{ steps.manifest.outputs.checksum }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Main CoA asset: ${{ steps.manifest.outputs.main_asset }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Optional Buff Manager asset: ${{ steps.manifest.outputs.buff_asset }}" >> "$GITHUB_STEP_SUMMARY"
