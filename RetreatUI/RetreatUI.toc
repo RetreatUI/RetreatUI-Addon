@@ -54,7 +54,7 @@ Profiles\NaowhElvUIExports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
-Integrations\ElvUINaowhBeta20.lua
+Integrations\ElvUIBeta20.lua
 Integrations\ElvUIPartyText.lua
 Integrations\RaidFrameHotfix.lua
 Integrations\CVars.lua
