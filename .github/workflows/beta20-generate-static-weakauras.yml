@@ -1,28 +1,25 @@
-name: Generate beta20 static WeakAuras
+name: Validate beta20 static WeakAuras
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/beta20-naowh-coa-layout
+      - main
     paths:
       - "tools/generate_beta20_weakauras.py"
       - "RetreatUI_Classes/**/Data.lua"
+      - "RetreatUI/Data/WeakAurasBeta20Payloads.lua"
+      - "RetreatUI/Integrations/WeakAurasNaowhCoA.lua"
+      - "RetreatUI/Installer/TBCStyleInstaller.lua"
+      - "RetreatUI/RetreatUI.toc"
       - ".github/workflows/beta20-generate-static-weakauras.yml"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  generate:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: agent/beta20-naowh-coa-layout
-          fetch-depth: 0
 
-      # beta.20 produces finished WA2 exports at build time; the addon only imports them.
       - name: Generate finished WeakAuras exports
         run: python3 tools/generate_beta20_weakauras.py
 
@@ -39,16 +36,14 @@ jobs:
           ! grep -Fq 'custom_type' "$FILE"
           ! grep -Fq 'customGrow' "$FILE"
 
-      - name: Commit generated payloads to beta20 branch
+      - name: Validate beta20 runtime contract
         shell: bash
         run: |
           set -euo pipefail
-          if git diff --quiet -- RetreatUI/Data/WeakAurasBeta20Payloads.lua; then
-            echo "Static payloads are already current."
-            exit 0
-          fi
-          git config user.name "RetreatUI Build"
-          git config user.email "build@retreatui.local"
-          git add RetreatUI/Data/WeakAurasBeta20Payloads.lua
-          git commit -m "Generate beta20 static CoA WeakAuras payloads"
-          git push origin HEAD:agent/beta20-naowh-coa-layout
+          grep -Fq 'Data\\WeakAurasBeta20Payloads.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Integrations\\WeakAurasNaowhCoA.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'Integrations\\DBM.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'pcall(WeakAuras.Import, payload)' RetreatUI/Integrations/WeakAurasNaowhCoA.lua
+          ! grep -Fq 'guardianMacros' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'DBM' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'BigWigs' RetreatUI/Installer/TBCStyleInstaller.lua
