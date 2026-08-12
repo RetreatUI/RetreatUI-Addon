@@ -1,6 +1,6 @@
 ## Interface: 30300
 ## Title: RetreatUI
-## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
+## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
 ## Version: 1.1.7-beta.19
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
@@ -23,21 +23,6 @@ Core\BuildProfiles.lua
 Core\PerformanceRefreshCoordinator.lua
 Core\HUDEditor.lua
 Core\AscensionResources.lua
-Core\WeakAuraHUDRuntime.lua
-Core\WeakAuraStateSafety.lua
-Core\WeakAuraHUDPackage.lua
-Core\WeakAuraTBCParity.lua
-Core\WeakAuraCurationSafety.lua
-Core\WeakAuraIconStaticCompat.lua
-Core\WeakAuraAutoProgressSource.lua
-Core\WeakAuraBeta8Fixes.lua
-Core\WeakAuraBeta9Fixes.lua
-Core\WeakAuraBeta10Fixes.lua
-Core\WeakAuraBeta11Fixes.lua
-Core\WeakAuraBeta12Fixes.lua
-Core\WeakAuraBeta15StanceLane.lua
-Core\WeakAuraHUDPulse.lua
-Core\WeakAuraPerformanceBeta19.lua
 Core\HUDWidgets.lua
 Core\SpellRecordRuntime.lua
 Core\HUDDuplicateGuard.lua
@@ -48,6 +33,8 @@ Core\TrinketTrackerCompat.lua
 Core\TankFramework.lua
 Core\Modules.lua
 Core\ModularModules.lua
+Integrations\Beta20ClassSupport.lua
+Integrations\Beta20HUDOwnership.lua
 Core\RetiredPartyTrackers.lua
 Core\RecoverySafety.lua
 Core\TotemBarMover.lua
@@ -68,13 +55,10 @@ Integrations\TurboPlatesNaowhBeta20.lua
 Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
-Integrations\PyromancerAuraAndDetailsChat.lua
 Integrations\ChatOwnershipSafety.lua
 Integrations\WeakAurasNaowhCoA.lua
-Integrations\WeakAurasCompanion.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
-Integrations\WeakAuraHUDMigration.lua
 Integrations\ReleaseBaseline20260801.lua
 Installer\NaowhBeta20Installer.lua
 Core\Compatibility.lua
