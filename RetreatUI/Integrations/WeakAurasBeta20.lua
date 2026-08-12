@@ -19,6 +19,33 @@ local function WeakAurasReady()
   return type(WeakAuras) == "table" and type(WeakAuras.Import) == "function"
 end
 
+-- beta.8-beta.19 and the first beta.20 test build used RetreatUI-owned WA IDs
+-- that can remain in WeakAurasSaved even after their Lua files stop loading.
+-- Remove only those known obsolete IDs before importing the replacement pack;
+-- never scan/delete unrelated user WeakAuras and never edit WeakAurasSaved raw.
+local function DeleteWeakAuraByID(id)
+  if type(id) ~= "string" or id == "" then return false end
+  if type(WeakAuras) ~= "table" or type(WeakAuras.GetData) ~= "function" or type(WeakAuras.Delete) ~= "function" then
+    return false
+  end
+  local okData, data = pcall(WeakAuras.GetData, id)
+  if not okData or type(data) ~= "table" then return false end
+  local okDelete = pcall(WeakAuras.Delete, data)
+  return okDelete == true
+end
+
+local function CleanupLegacyGeneralWeakAuras()
+  DeleteWeakAuraByID("RetreatUI - General")
+end
+
+local function CleanupLegacyClassWeakAuras(className)
+  if type(className) ~= "string" or className == "" then return end
+  DeleteWeakAuraByID("RetreatUI - " .. className)
+  DeleteWeakAuraByID("Main Row 1 - " .. className)
+  DeleteWeakAuraByID("Main Row 2 - " .. className)
+  DeleteWeakAuraByID("Main Row 3 - " .. className)
+end
+
 local function ImportPayload(payload, label)
   if not WeakAurasReady() then
     return false, "WeakAuras.Import is unavailable in the installed CoA WeakAuras build."
@@ -49,6 +76,7 @@ end
 
 function RUI:InstallGeneralWeakAuras()
   local payloads = PayloadRegistry()
+  CleanupLegacyGeneralWeakAuras()
   return ImportPayload(payloads.general, "General WeakAuras")
 end
 
@@ -61,6 +89,7 @@ function RUI:InstallClassWeakAuras(className)
     return false, "No beta.20 WeakAura payload is registered for " .. tostring(className or "this CoA class") .. "."
   end
 
+  CleanupLegacyClassWeakAuras(className)
   local ok, message = ImportPayload(payload, tostring(className) .. " WeakAura")
   if ok and type(self.MarkClassInstallCompleted) == "function" then
     self:MarkClassInstallCompleted(className)
@@ -69,4 +98,4 @@ function RUI:InstallClassWeakAuras(className)
 end
 
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 22
+RUI._beta20WeakAuraImportRevision = 23
