@@ -2,16 +2,14 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- beta.20 imports finished WeakAuras export strings only.
--- No runtime aura generation, RetreatUI custom-grow framework or synthetic WA
--- event engine lives here.
+-- No runtime aura generation or synthetic WeakAuras event engine lives here.
 local function PayloadRegistry()
-  local registry = RUI.Beta20WeakAuras or RUI.NaowhCoAWeakAuras
+  local registry = RUI.Beta20WeakAuras
   if type(registry) ~= "table" then
     registry = {classes = {}}
   end
   registry.classes = registry.classes or {}
   RUI.Beta20WeakAuras = registry
-  RUI.NaowhCoAWeakAuras = registry -- branch-upgrade compatibility alias
   return registry
 end
 
@@ -19,10 +17,6 @@ local function WeakAurasReady()
   return type(WeakAuras) == "table" and type(WeakAuras.Import) == "function"
 end
 
--- beta.8-beta.19 and the first beta.20 test build used RetreatUI-owned WA IDs
--- that can remain in WeakAurasSaved even after their Lua files stop loading.
--- Remove only those known obsolete IDs before importing the replacement pack;
--- never scan/delete unrelated user WeakAuras and never edit WeakAurasSaved raw.
 local function DeleteWeakAuraByID(id)
   if type(id) ~= "string" or id == "" then return false end
   if type(WeakAuras) ~= "table" or type(WeakAuras.GetData) ~= "function" or type(WeakAuras.Delete) ~= "function" then
@@ -98,4 +92,4 @@ function RUI:InstallClassWeakAuras(className)
 end
 
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 23
+RUI._beta20WeakAuraImportRevision = 24
