@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Assert that beta.20 ships the exact user-supplied Naowh profile payloads."""
+"""Assert that beta.20 ships the exact approved reference profile payloads."""
 from __future__ import annotations
 
 import hashlib
