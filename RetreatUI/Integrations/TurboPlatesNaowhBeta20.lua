@@ -142,6 +142,21 @@ local function ApplyNaowhCVars()
   SafeSetCVar("nameplateSelectedScale", 1.15)
 end
 
+local function RecordInstall(self, resolution, mobOK)
+  local db = self.EnsureDB and self:EnsureDB() or nil
+  if not db then return end
+  db.integrations = db.integrations or {}
+  db.integrations.turboNaowhBeta20 = {
+    enabled = true,
+    resolution = resolution,
+    nativeSettingsOnly = true,
+    platerScriptsImported = false,
+    legacyRuntimeDisabled = true,
+    mobSpells = mobOK == true,
+    version = self.version,
+  }
+end
+
 function RUI:InstallTurboPlatesProfile(resolution)
   resolution = tostring(resolution or "1440p"):lower()
   if resolution ~= "1440p" and resolution ~= "1080p" then
@@ -165,22 +180,24 @@ function RUI:InstallTurboPlatesProfile(resolution)
     ApplyFlatProfile(TurboPlatesDB)
   end
 
-  local db = self.EnsureDB and self:EnsureDB() or nil
-  if db then
-    db.integrations = db.integrations or {}
-    db.integrations.turboNaowhBeta20 = {
-      enabled = true,
-      resolution = resolution,
-      nativeSettingsOnly = true,
-      platerScriptsImported = false,
-      mobSpells = mobOK,
-      version = self.version,
-    }
-  end
+  RecordInstall(self, resolution, mobOK)
 
   return true, mobOK
     and "Naowh TurboPlates layout applied; CoA NPC spell whitelist retained. Reload UI to finish."
     or "Naowh TurboPlates layout applied. Reload UI to finish."
+end
+
+-- beta.19 exposed ApplyTurboPlatesRuntime() as a broad repair/runtime entry point.
+-- Leaving that function alive would re-enable the old mana-coloring scanner,
+-- old aura geometry and old stacking values whenever /rui repair is used.
+-- In beta.20 the Naowh native profile is the sole TurboPlates owner, so every
+-- legacy caller is deliberately routed through the same static profile path.
+function RUI:ApplyTurboPlatesRuntime(resolution)
+  local db = self.EnsureDB and self:EnsureDB() or nil
+  local installed = db and db.integrations and db.integrations.turboNaowhBeta20
+  local selected = tostring(resolution or (installed and installed.resolution) or "1440p"):lower()
+  if selected ~= "1080p" then selected = "1440p" end
+  return self:InstallTurboPlatesProfile(selected)
 end
 
 RUI._naowhTurboPlatesBeta20Loaded = true
