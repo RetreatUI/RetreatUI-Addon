@@ -25,6 +25,29 @@ local function MediaExists(mediaType, name)
   return ok and value ~= nil
 end
 
+-- Never use a broad substring match here. In particular, "text" contains
+-- "tex"; the old beta.20 normalizer consequently replaced ElvUI tag/text
+-- strings with the literal statusbar media name "ElvUI Norm".
+local STATUSBAR_MEDIA_KEYS = {
+  texture = true,
+  statusbar = true,
+  statusbartexture = true,
+  bartexture = true,
+  healthtexture = true,
+  powertexture = true,
+  castbartexture = true,
+  normtex = true,
+  glosstex = true,
+}
+
+local function IsStatusbarMediaKey(key)
+  local lowered = tostring(key or ""):lower()
+  if STATUSBAR_MEDIA_KEYS[lowered] then return true end
+  if lowered:sub(-7) == "texture" then return true end
+  if lowered:sub(-9) == "statusbar" then return true end
+  return false
+end
+
 local function NormalizeUnsupportedMedia(value)
   if type(value) ~= "table" then return end
   for key, child in pairs(value) do
@@ -34,7 +57,7 @@ local function NormalizeUnsupportedMedia(value)
       local lowered = tostring(key):lower()
       if lowered:find("font", 1, true) and not MediaExists("font", child) then
         value[key] = "Fira Sans Heavy"
-      elseif (lowered:find("texture", 1, true) or lowered:find("tex", 1, true) or lowered:find("statusbar", 1, true))
+      elseif IsStatusbarMediaKey(key)
         and not child:find("\\", 1, true)
         and not MediaExists("statusbar", child) then
         value[key] = "ElvUI Norm"
@@ -171,4 +194,4 @@ function RUI:ApplyElvUIHUDPolish()
 end
 
 RUI._elvUIBeta20Loaded = true
-RUI._elvUIBeta20Revision = 21
+RUI._elvUIBeta20Revision = 22
