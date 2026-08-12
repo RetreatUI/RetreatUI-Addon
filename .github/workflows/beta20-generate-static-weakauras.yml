@@ -1,0 +1,53 @@
+name: Generate beta20 static WeakAuras
+
+on:
+  push:
+    branches:
+      - agent/beta20-naowh-coa-layout
+    paths:
+      - "tools/generate_beta20_weakauras.py"
+      - "RetreatUI_Classes/**/Data.lua"
+      - ".github/workflows/beta20-generate-static-weakauras.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/beta20-naowh-coa-layout
+          fetch-depth: 0
+
+      - name: Generate finished WeakAuras exports
+        run: python3 tools/generate_beta20_weakauras.py
+
+      - name: Validate generated payload registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          FILE="RetreatUI/Data/WeakAurasBeta20Payloads.lua"
+          test -s "$FILE"
+          test "$(grep -c '^RUI.NaowhCoAWeakAuras.classes\[' "$FILE")" -eq 21
+          grep -Fq 'RUI.NaowhCoAWeakAuras.general = "!WA:2!' "$FILE"
+          grep -Fq 'weakAurasVersion = "5.21.2"' "$FILE"
+          ! grep -Fq 'function(allstates' "$FILE"
+          ! grep -Fq 'custom_type' "$FILE"
+          ! grep -Fq 'customGrow' "$FILE"
+
+      - name: Commit generated payloads to beta20 branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- RetreatUI/Data/WeakAurasBeta20Payloads.lua; then
+            echo "Static payloads are already current."
+            exit 0
+          fi
+          git config user.name "RetreatUI Build"
+          git config user.email "build@retreatui.local"
+          git add RetreatUI/Data/WeakAurasBeta20Payloads.lua
+          git commit -m "Generate beta20 static CoA WeakAuras payloads"
+          git push origin HEAD:agent/beta20-naowh-coa-layout
