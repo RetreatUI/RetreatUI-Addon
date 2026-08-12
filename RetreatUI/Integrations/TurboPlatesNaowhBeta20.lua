@@ -4,8 +4,11 @@ if not RUI then return end
 -- beta.20 native TurboPlates translation of the NaowhUI TBC Plater profile.
 -- The source 1440p and 1080p Plater profiles use the same visual geometry;
 -- only profile metadata differs. Plater mods/scripts are intentionally not ported.
+-- Values in this file are mapped from the decoded !PLATER:2! profile rather than
+-- inferred from screenshots.
 
 local NAOWH = {
+  -- plate_config.enemynpc / enemyplayer: health [186,14], cast [186,11]
   width = 186,
   hpHeight = 14,
   castHeight = 11,
@@ -13,18 +16,21 @@ local NAOWH = {
   targetScale = 1.15,
   friendlyScale = 1,
   healthBarBorder = true,
+
+  -- indicator_raidmark_scale = 1.4. TurboPlates' 20px baseline maps to 28px.
   raidMarkerSize = 28,
   raidMarkerAnchor = "LEFT",
   raidMarkerX = 0,
   raidMarkerY = 0,
 
   -- NaowhGradient/NaowhLeft are not bundled with RetreatUI. ElvUI Norm is the
-  -- closest native TurboPlates texture already shipped with the addon.
+  -- closest flat native TurboPlates texture already shipped with the addon.
   texture = "ElvUI Norm",
   backgroundAlpha = 1,
   castColor = {r = 1, g = 0.9333334, b = 0.4313726},
   noInterruptColor = {r = 0.7058824, g = 0.7333333, b = 0.6941177},
 
+  -- Enemy NPC/player text from plate_config.
   font = "Fira Sans Heavy",
   fontSize = 12,
   fontOutline = "OUTLINE",
@@ -37,21 +43,30 @@ local NAOWH = {
   nameTextYOffset = -5,
   nameInHealthbar = false,
   hidePercentWhenFull = false,
+  levelMode = "disabled",
 
+  -- enemyplayer.use_playerclass_color = true.
   classColoredHealth = true,
   classColoredName = false,
   nonTargetAlpha = 0.6,
-  targetGlow = "none",
+
+  -- Naowh has target_highlight + "Double Arrows". TurboPlates has no identical
+  -- selection_indicator3 texture, so its native white border + double arrows is
+  -- the closest script-free equivalent.
+  targetGlow = "border",
   targetArrow = "arrows_double",
   targetGlowColor = {r = 1, g = 1, b = 1},
 
   showCastbar = true,
-  showCastIcon = true,
+  -- castbar_icon_show = false in both enemy profiles.
+  showCastIcon = false,
   showCastSpark = true,
-  showCastTimer = true,
+  -- spellpercent_text_enabled = false: no numeric cast timer in the Naowh enemy plate.
+  showCastTimer = false,
 
-  -- Naowh tank colors.
-  tankMode = 1,
+  -- tank_threat_colors = false in the source profile. Keep the decoded colors
+  -- available but do not enable TurboPlates threat recoloring.
+  tankMode = 0,
   secureColor = {r = 0.3803922, g = 0.8745099, b = 0.2313726},
   transColor = {r = 1, g = 0.9333334, b = 0.4313726},
   insecureColor = {r = 0.9960785, g = 0.2980392, b = 0.3098039},
@@ -60,7 +75,8 @@ local NAOWH = {
 
 local AURAS = {
   showDebuffs = true,
-  maxDebuffs = 8,
+  -- auras_per_row_amount = 4, aura size 28x18.
+  maxDebuffs = 4,
   debuffIconWidth = 28,
   debuffIconHeight = 18,
   debuffFontSize = 11,
@@ -73,12 +89,13 @@ local AURAS = {
 
   showBuffs = true,
   buffFilterMode = "WHITELIST_DISPELLABLE",
-  maxBuffs = 4,
+  -- buffs_on_aura2=true and auras_per_row_amount2=2.
+  maxBuffs = 2,
   buffIconWidth = 28,
   buffIconHeight = 18,
   buffFontSize = 11,
   buffStackFontSize = 11,
-  buffXOffset = 1,
+  buffXOffset = -1,
   buffYOffset = 0,
   buffGrowDirection = "CENTER",
   buffDurationAnchor = "BOTTOM",
@@ -97,6 +114,7 @@ local AURAS = {
 }
 
 local STACKING = {
+  -- Source: stacking_nameplates_enabled=true and auto-toggle stacking enabled.
   enabled = true,
   preset = "balanced",
   xSpaceRatio = 1.0,
@@ -133,8 +151,8 @@ local function SafeSetCVar(name, value)
 end
 
 local function ApplyNaowhCVars()
-  -- Values taken from the Naowh Plater profile's saved CVars where a direct
-  -- TurboPlates/3.3.5 equivalent exists.
+  -- Only direct 3.3.5/TurboPlates equivalents are copied. No Plater scripts,
+  -- hooks, mods or unsupported CVars are recreated.
   SafeSetCVar("nameplateMotion", 1)
   SafeSetCVar("nameplateOverlapH", 1.0)
   SafeSetCVar("nameplateOverlapV", 1.6)
@@ -152,6 +170,7 @@ local function RecordInstall(self, resolution, mobOK)
     nativeSettingsOnly = true,
     platerScriptsImported = false,
     legacyRuntimeDisabled = true,
+    decodedPlaterSettings = 383,
     mobSpells = mobOK == true,
     version = self.version,
   }
