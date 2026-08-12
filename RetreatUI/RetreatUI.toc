@@ -11,16 +11,6 @@ Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
 Data\WeakAurasBeta20Payloads.lua
-Data\WeakAurasBeta20\00_General.lua
-Data\WeakAurasBeta20\01_Barbarian_Bloodmage.lua
-Data\WeakAurasBeta20\02_Chronomancer_Cultist.lua
-Data\WeakAurasBeta20\03_Felsworn_Guardian.lua
-Data\WeakAurasBeta20\04_Knight_Necromancer.lua
-Data\WeakAurasBeta20\05_Primalist_Pyromancer.lua
-Data\WeakAurasBeta20\06_Ranger_Reaper.lua
-Data\WeakAurasBeta20\07_Runemaster_Starcaller.lua
-Data\WeakAurasBeta20\08_Stormbringer_SunCleric.lua
-Data\WeakAurasBeta20\09_Templar_Tinker.lua
 Data\WeakAurasBeta20\99_ExactLayoutFix.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
