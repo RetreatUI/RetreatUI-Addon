@@ -68,7 +68,7 @@ jobs:
         if: steps.manifest.outputs.publish != 'true'
         run: echo "Manifest is configured with publish=false."
 
-      - name: Generate beta20 static WeakAuras payloads
+      - name: Generate and validate beta20 static WeakAuras payloads
         if: steps.manifest.outputs.publish == 'true'
         shell: bash
         run: |
@@ -82,6 +82,16 @@ jobs:
           grep -Fq 'generatedFor = "1.1.7-beta.20"' "$FILE"
           ! grep -Fq 'customGrow' "$FILE"
           ! grep -Fq 'custom_type' "$FILE"
+          ! grep -Fq 'function(allstates' "$FILE"
+          ! grep -Fq 'RETREATUI_RESOURCE_PULSE' "$FILE"
+          ! grep -Fq 'RETREATUI_ROW_REFRESH' "$FILE"
+
+      - name: Validate exact Naowh reference payloads
+        if: steps.manifest.outputs.publish == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 tools/validate_beta20_reference_payloads.py
 
       - name: Validate addon versions
         if: steps.manifest.outputs.publish == 'true'
