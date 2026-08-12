@@ -3,29 +3,41 @@ if not RUI then return end
 
 -- beta.20 ships ordinary static !WA:2! exports only.
 -- RetreatUI does not generate WeakAuras or synthetic WeakAuras events at runtime.
+local canonicalRegistry
+
+local function MergeRegistry(target, source)
+  if type(target) ~= "table" or type(source) ~= "table" or target == source then return target end
+  target.classes = target.classes or {}
+  if type(target.general) ~= "string" and type(source.general) == "string" then
+    target.general = source.general
+  end
+  for className, payload in pairs(source.classes or {}) do
+    if target.classes[className] == nil then target.classes[className] = payload end
+  end
+  return target
+end
+
 local function PayloadRegistry()
-  local registry = RUI.Beta20WeakAuras
+  local current = RUI.Beta20WeakAuras
   local legacy = RUI.NaowhCoAWeakAuras
 
-  if type(registry) ~= "table" then
-    registry = type(legacy) == "table" and legacy or {classes = {}}
-  elseif type(legacy) == "table" and legacy ~= registry then
-    if type(registry.general) ~= "string" and type(legacy.general) == "string" then
-      registry.general = legacy.general
-    end
-    registry.classes = registry.classes or {}
-    for className, payload in pairs(legacy.classes or {}) do
-      if registry.classes[className] == nil then
-        registry.classes[className] = payload
-      end
+  if type(canonicalRegistry) ~= "table" then
+    if type(current) == "table" then
+      canonicalRegistry = current
+    elseif type(legacy) == "table" then
+      canonicalRegistry = legacy
+    else
+      canonicalRegistry = {classes = {}}
     end
   end
 
-  registry.classes = registry.classes or {}
-  RUI.Beta20WeakAuras = registry
+  MergeRegistry(canonicalRegistry, current)
+  MergeRegistry(canonicalRegistry, legacy)
+  canonicalRegistry.classes = canonicalRegistry.classes or {}
+  RUI.Beta20WeakAuras = canonicalRegistry
   -- Remove the old beta.20 alias after recovering any payloads from it.
   RUI.NaowhCoAWeakAuras = nil
-  return registry
+  return canonicalRegistry
 end
 
 local function WeakAurasReady()
@@ -124,6 +136,10 @@ local function EnsureWeakAurasOptionsLoaded()
     return false, "WeakAuras is unavailable."
   end
 
+  if InCombatLockdown and InCombatLockdown() then
+    return false, "Leave combat before importing WeakAuras."
+  end
+
   if IsAddOnLoaded and not IsAddOnLoaded("WeakAurasOptions") then
     if type(LoadAddOn) ~= "function" then
       return false, "WeakAuras Options cannot be loaded by this client."
@@ -134,9 +150,9 @@ local function EnsureWeakAurasOptionsLoaded()
     end
   end
 
-  -- On Ascension the import UI is LoadOnDemand. Initialising the options frame
-  -- first makes the normal WeakAuras.Import path register its update/import
-  -- handler before Transmission.lua tries to use it.
+  -- The import UI is LoadOnDemand. Initialising the options frame first makes
+  -- the normal WeakAuras.Import path register its update/import handler before
+  -- Transmission.lua tries to use it.
   if type(WeakAuras.OpenOptions) == "function" then
     local ok, err = pcall(WeakAuras.OpenOptions)
     if not ok then return false, "WeakAuras Options failed to open: " .. tostring(err) end
@@ -220,10 +236,14 @@ function RUI:InstallClassWeakAuras(className)
   return ok, message
 end
 
+-- Capture the registry immediately after the static data files load. Later
+-- modules cannot accidentally replace the table and make a class disappear.
+PayloadRegistry()
+
 -- Remove broken beta.20 test imports as soon as RetreatUI loads. A stale aura
 -- can still throw once earlier in the same login while WeakAuras itself starts;
 -- after this cleanup and one reload it is gone from WeakAurasSaved.
 local cleaned = CleanupKnownBrokenBeta20Imports()
 RUI._beta20WeakAuraCleanupRemoved = cleaned
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 25
+RUI._beta20WeakAuraImportRevision = 26
