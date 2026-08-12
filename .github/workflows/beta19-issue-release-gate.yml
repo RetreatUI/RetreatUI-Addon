@@ -4,6 +4,10 @@ on:
   workflow_dispatch:
   issues:
     types: [opened]
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/beta19-issue-release-gate.yml'
 
 permissions:
   contents: write
@@ -11,7 +15,7 @@ permissions:
 
 jobs:
   validate-and-release:
-    if: github.event_name == 'workflow_dispatch' || github.event.issue.title == 'Beta19 release gate'
+    if: github.event_name == 'workflow_dispatch' || github.event_name == 'push' || github.event.issue.title == 'Beta19 release gate'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact beta19 merge
