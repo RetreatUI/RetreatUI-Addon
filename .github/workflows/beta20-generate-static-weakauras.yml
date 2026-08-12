@@ -6,10 +6,11 @@ on:
       - main
     paths:
       - "tools/generate_beta20_weakauras.py"
+      - "tools/generate_beta20_weakauras_curated.py"
       - "RetreatUI_Classes/**/Data.lua"
       - "RetreatUI/Data/WeakAurasBeta20Payloads.lua"
       - "RetreatUI/Integrations/WeakAurasNaowhCoA.lua"
-      - "RetreatUI/Installer/TBCStyleInstaller.lua"
+      - "RetreatUI/Installer/NaowhBeta20Installer.lua"
       - "RetreatUI/RetreatUI.toc"
       - ".github/workflows/beta20-generate-static-weakauras.yml"
   workflow_dispatch:
@@ -21,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Generate finished WeakAuras exports
-        run: python3 tools/generate_beta20_weakauras.py
+        run: python3 tools/generate_beta20_weakauras_curated.py
 
       - name: Validate generated payload registry
         shell: bash
@@ -32,9 +33,18 @@ jobs:
           test "$(grep -c '^RUI.NaowhCoAWeakAuras.classes\[' "$FILE")" -eq 21
           grep -Fq 'RUI.NaowhCoAWeakAuras.general = "!WA:2!' "$FILE"
           grep -Fq 'weakAurasVersion = "5.21.2"' "$FILE"
+          grep -Fq 'generatedFor = "1.1.7-beta.20"' "$FILE"
           ! grep -Fq 'function(allstates' "$FILE"
           ! grep -Fq 'custom_type' "$FILE"
           ! grep -Fq 'customGrow' "$FILE"
+
+          # Knight of Xoroth has an exact tester-curated visual contract.
+          python3 - <<'PY'
+          import pathlib, re
+          text = pathlib.Path("RetreatUI_Classes/KnightOfXoroth/Curation.lua").read_text(encoding="utf-8")
+          for name in ("unleash pestilence", "chainwhip", "snarl", "suffuse", "hellrider", "black shield"):
+              assert f'["{name}"] = true' in text, name
+          PY
 
       - name: Validate beta20 runtime contract
         shell: bash
@@ -42,8 +52,12 @@ jobs:
           set -euo pipefail
           grep -Fq 'Data\\WeakAurasBeta20Payloads.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'Integrations\\WeakAurasNaowhCoA.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Integrations\\Beta20HUDOwnership.lua' RetreatUI/RetreatUI.toc
+          grep -Fq 'Integrations\\Beta20ClassSupport.lua' RetreatUI/RetreatUI.toc
           ! grep -Fq 'Integrations\\DBM.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'WeakAuraPerformanceBeta19.lua' RetreatUI/RetreatUI.toc
+          ! grep -Fq 'WeakAuraHUDPackage.lua' RetreatUI/RetreatUI.toc
           grep -Fq 'pcall(WeakAuras.Import, payload)' RetreatUI/Integrations/WeakAurasNaowhCoA.lua
-          ! grep -Fq 'guardianMacros' RetreatUI/Installer/TBCStyleInstaller.lua
-          ! grep -Fq 'DBM' RetreatUI/Installer/TBCStyleInstaller.lua
-          ! grep -Fq 'BigWigs' RetreatUI/Installer/TBCStyleInstaller.lua
+          ! grep -Fq 'guardianMacros' RetreatUI/Installer/NaowhBeta20Installer.lua
+          ! grep -Fq 'DBM' RetreatUI/Installer/NaowhBeta20Installer.lua
+          ! grep -Fq 'BigWigs' RetreatUI/Installer/NaowhBeta20Installer.lua
