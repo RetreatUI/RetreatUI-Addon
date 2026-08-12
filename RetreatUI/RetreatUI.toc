@@ -50,7 +50,7 @@ Core\RecoverySafety.lua
 Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
-Profiles\NaowhElvUIExports.lua
+Profiles\ElvUIBeta20Exports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
