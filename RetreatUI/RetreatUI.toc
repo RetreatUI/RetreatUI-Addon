@@ -4,7 +4,7 @@
 ## Author: Retreat
 ## Version: 1.1.7-beta.19
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
-## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core, WeakAuras
+## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, BigWigs, DBM-Core, WeakAuras
 ## DefaultState: Enabled
 
 Loader.lua
@@ -51,6 +51,18 @@ Core\RetiredPartyTrackers.lua
 Core\RecoverySafety.lua
 Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
+Profiles\ParityElvUI.lua
+Profiles\ParityElvUI1080p.lua
+Profiles\ParityDetails.lua
+Profiles\ParityBigWigs.lua
+WeakAuras\ParityGeneral01.lua
+WeakAuras\ParityGeneral02.lua
+WeakAuras\ParityGeneral03.lua
+WeakAuras\ParityGeneral04.lua
+WeakAuras\ParityGeneral05.lua
+WeakAuras\ParityGeneral06.lua
+WeakAuras\ParityGeneralAssemble.lua
+Integrations\ParityImports.lua
 Profiles\ElvUI.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
