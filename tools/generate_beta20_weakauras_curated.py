@@ -8,6 +8,12 @@ from __future__ import annotations
 
 import generate_beta20_weakauras as generator
 
+# Project Ascension's WeakAuras fork is 4.2.5 and reports internalVersion 53.
+# Keep generated payloads native to that schema instead of emitting modern
+# retail/TBC WeakAuras metadata and relying on downgrade behavior in game.
+generator.INTERNAL = 53
+WEAKAURAS_VERSION = "4.2.5"
+
 CLASS_ANCHOR = "WeakAuras:Class Power Bar"
 
 # Verbatim custom-grow geometry from the user-supplied NaowhUI TBC class packs.
@@ -170,7 +176,7 @@ def build_general():
     t1 = generator.trinket_icon(13, buffs_id)
     t2 = generator.trinket_icon(14, buffs_id)
     transmission = {
-        "s": "5.21.2", "m": "d", "d": root,
+        "s": WEAKAURAS_VERSION, "m": "d", "d": root,
         "c": [anchors, class_power_anchor(), ui, buffs, t1, t2], "v": 2000,
     }
     return generator.export_wa(transmission)
@@ -287,11 +293,21 @@ def build_class(class_name: str, resources: list[dict], spells: list[dict]):
     for child_id, record in zip(aux_children, utility):
         nodes.append(learned_icon(child_id, aux_id, record, 36, 28))
 
-    return generator.export_wa({"s": "5.21.2", "m": "d", "d": root, "c": nodes, "v": 2000})
+    return generator.export_wa({"s": WEAKAURAS_VERSION, "m": "d", "d": root, "c": nodes, "v": 2000})
 
 
 generator.build_general = build_general
 generator.build_class = build_class
 
-if __name__ == "__main__":
+
+def main():
     generator.main()
+    # The base writer owns only the output wrapper; ensure its compatibility
+    # marker cannot drift from the Ascension payload version above.
+    text = generator.OUTPUT.read_text(encoding="utf-8")
+    text = text.replace('weakAurasVersion = "5.21.2"', 'weakAurasVersion = "4.2.5"')
+    generator.OUTPUT.write_text(text, encoding="utf-8")
+
+
+if __name__ == "__main__":
+    main()
