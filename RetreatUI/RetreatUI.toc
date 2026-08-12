@@ -53,9 +53,11 @@ Core\RecoverySafety.lua
 Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
+Profiles\NaowhElvUIExports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
+Integrations\ElvUINaowhBeta20.lua
 Integrations\ElvUIPartyText.lua
 Integrations\RaidFrameHotfix.lua
 Integrations\CVars.lua
