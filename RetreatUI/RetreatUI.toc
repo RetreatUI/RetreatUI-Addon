@@ -21,6 +21,7 @@ Data\WeakAurasBeta20\06_Ranger_Reaper.lua
 Data\WeakAurasBeta20\07_Runemaster_Starcaller.lua
 Data\WeakAurasBeta20\08_Stormbringer_SunCleric.lua
 Data\WeakAurasBeta20\09_Templar_Tinker.lua
+Data\WeakAurasBeta20\99_ExactLayoutFix.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
 Core\SpellbookScanThrottle.lua
