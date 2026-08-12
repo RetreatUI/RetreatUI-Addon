@@ -45,7 +45,12 @@ function RUI:InstallNaowhClassWeakAuras(className)
   if type(payload) ~= "string" or payload == "" then
     return false, "No beta.20 WeakAura payload is registered for " .. tostring(className or "this CoA class") .. "."
   end
-  return ImportPayload(payload, tostring(className) .. " WeakAura")
+
+  local ok, message = ImportPayload(payload, tostring(className) .. " WeakAura")
+  if ok and type(self.MarkClassInstallCompleted) == "function" then
+    self:MarkClassInstallCompleted(className)
+  end
+  return ok, message
 end
 
 RUI._naowhCoAWeakAuraImportLoaded = true
