@@ -22,6 +22,7 @@ jobs:
           ref: agent/beta20-naowh-coa-layout
           fetch-depth: 0
 
+      # beta.20 produces finished WA2 exports at build time; the addon only imports them.
       - name: Generate finished WeakAuras exports
         run: python3 tools/generate_beta20_weakauras.py
 
