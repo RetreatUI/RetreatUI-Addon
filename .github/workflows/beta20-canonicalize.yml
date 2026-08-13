@@ -1,39 +1,10 @@
-name: beta20 normalize WA validator
+name: Retired beta.20 canonicalization helper
 
 on:
-  pull_request:
-    branches: [main]
-  push:
-    branches: [agent/beta20-coa-layout]
-
-permissions:
-  contents: write
+  workflow_dispatch:
 
 jobs:
-  normalize:
-    if: github.actor != 'github-actions[bot]'
+  retired:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: agent/beta20-coa-layout
-          fetch-depth: 0
-      - name: Normalize validator
-        shell: bash
-        run: |
-          set -euo pipefail
-          sed -i '/weakAurasInternalVersion = 90/d' tools/validate_beta20_weakauras.py
-          grep -Fq 'INTERNAL = 90' tools/generate_beta20_weakauras.py
-          python3 tools/validate_beta20_weakauras.py
-          python3 tools/validate_beta20_reference_payloads.py
-      - name: Commit validator
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add tools/validate_beta20_weakauras.py
-          git commit -m 'beta20: align WA validator with generated registry format'
-          git fetch origin agent/beta20-coa-layout
-          git rebase origin/agent/beta20-coa-layout
-          git push origin HEAD:agent/beta20-coa-layout
+      - run: echo 'Canonicalization is complete; permanent validators own beta.20 now.'
