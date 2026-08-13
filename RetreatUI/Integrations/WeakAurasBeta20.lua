@@ -1,9 +1,8 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.20 only installs prebuilt !WA:2! payloads. RetreatUI does not create
--- aura tables, triggers, grow logic or synthetic WeakAuras events at runtime.
-local CLEANUP_REVISION = 31
+local CLEANUP_REVISION = 32
+
 local CLASS_NAMES = {
   "Barbarian", "Bloodmage", "Chronomancer", "Cultist", "Felsworn", "Guardian",
   "Knight of Xoroth", "Necromancer", "Primalist", "Pyromancer", "Ranger", "Reaper",
@@ -12,105 +11,83 @@ local CLASS_NAMES = {
 }
 
 local function PayloadRegistry()
-  if type(RUI.Beta20WeakAuras) ~= "table" then
-    RUI.Beta20WeakAuras = {classes = {}}
+  local registry = RUI.Beta20WeakAuras
+  if type(registry) ~= "table" then
+    registry = { classes = {} }
+    RUI.Beta20WeakAuras = registry
   end
-  RUI.Beta20WeakAuras.classes = RUI.Beta20WeakAuras.classes or {}
-  return RUI.Beta20WeakAuras
+  registry.classes = registry.classes or {}
+  return registry
 end
 
-local function WeakAurasReady()
-  return type(WeakAuras) == "table" and type(WeakAuras.Import) == "function"
+local function AddOwnedRoot(roots, id)
+  if type(id) == "string" and id ~= "" then roots[id] = true end
 end
 
-local function GetData(id)
-  if type(id) ~= "string" or id == "" then return nil end
-  if type(WeakAuras) ~= "table" or type(WeakAuras.GetData) ~= "function" then return nil end
-  local ok, data = pcall(WeakAuras.GetData, id)
-  if ok and type(data) == "table" then return data end
-  return nil
+local function BuildOwnedRoots()
+  local roots = {}
+  AddOwnedRoot(roots, "RetreatUI - General")
+  AddOwnedRoot(roots, "Core & Essentials")
+  AddOwnedRoot(roots, "Anchors")
+  AddOwnedRoot(roots, "UI Elements")
+  AddOwnedRoot(roots, "Aura bar (Player buffs)")
+  AddOwnedRoot(roots, "Class Power Bar")
+  AddOwnedRoot(roots, "Trinket 1")
+  AddOwnedRoot(roots, "Trinket 2")
+
+  for _, className in ipairs(CLASS_NAMES) do
+    AddOwnedRoot(roots, "RetreatUI - " .. className)
+    AddOwnedRoot(roots, className .. " Class Pack")
+    AddOwnedRoot(roots, "Aura Bar - " .. className)
+    AddOwnedRoot(roots, "Main - " .. className)
+    AddOwnedRoot(roots, "Resources - " .. className)
+    AddOwnedRoot(roots, "Bars - " .. className)
+    AddOwnedRoot(roots, "Dynamic Bars - " .. className)
+    AddOwnedRoot(roots, "Aux Bar - " .. className)
+    AddOwnedRoot(roots, "Main Row 1 - " .. className)
+    AddOwnedRoot(roots, "Main Row 2 - " .. className)
+    AddOwnedRoot(roots, "Main Row 3 - " .. className)
+    AddOwnedRoot(roots, className .. " - Primary Power")
+  end
+  return roots
 end
 
-local function IsGeneralRoot(id)
-  return id == "RetreatUI - General" or id == "Core & Essentials"
-end
+local OWNED_ROOTS = BuildOwnedRoots()
 
-local function IsClassRoot(id, className)
-  if type(id) ~= "string" or type(className) ~= "string" then return false end
-  return id == "RetreatUI - " .. className
-    or id == className .. " Class Pack"
-    or id == "Aura Bar - " .. className
-    or id == "Main - " .. className
-    or id == "Resources - " .. className
-    or id == "Bars - " .. className
-    or id == "Dynamic Bars - " .. className
-    or id == "Aux Bar - " .. className
-    or id == "Main Row 1 - " .. className
-    or id == "Main Row 2 - " .. className
-    or id == "Main Row 3 - " .. className
-    or id == className .. " - Primary Power"
-end
+-- Recovery migration for broken beta.20 test imports. Only RetreatUI-owned
+-- display records are touched. Direct saved-data removal is intentional here:
+-- calling WeakAuras.Delete can evaluate the invalid load conditions we need to
+-- remove and can therefore recreate the login error before cleanup completes.
+local function PurgeOwnedSavedDisplays()
+  if type(WeakAurasSaved) ~= "table" or type(WeakAurasSaved.displays) ~= "table" then
+    return 0
+  end
 
-local function DeleteOwnedTree(seedPredicate)
-  if type(WeakAuras) ~= "table" or type(WeakAuras.Delete) ~= "function" then return nil end
-  local displays = type(WeakAurasSaved) == "table" and WeakAurasSaved.displays or nil
-  if type(displays) ~= "table" then return nil end
-
-  local owned = {}
-  for id, data in pairs(displays) do
-    if type(data) == "table" and seedPredicate(id, data) then owned[id] = true end
+  local displays = WeakAurasSaved.displays
+  local remove = {}
+  for id in pairs(OWNED_ROOTS) do
+    if displays[id] ~= nil then remove[id] = true end
   end
 
   local changed = true
   while changed do
     changed = false
     for id, data in pairs(displays) do
-      if type(data) == "table" and type(data.parent) == "string" and owned[data.parent] and not owned[id] then
-        owned[id] = true
+      if not remove[id] and type(data) == "table" and type(data.parent) == "string" and remove[data.parent] then
+        remove[id] = true
         changed = true
       end
     end
   end
 
-  local function Depth(id)
-    local depth, seen = 0, {}
-    local data = displays[id]
-    while type(data) == "table" and type(data.parent) == "string" and not seen[data.parent] do
-      seen[data.parent] = true
-      depth = depth + 1
-      data = displays[data.parent]
-    end
-    return depth
-  end
-
-  local ids = {}
-  for id in pairs(owned) do ids[#ids + 1] = id end
-  table.sort(ids, function(a, b) return Depth(a) > Depth(b) end)
-
-  local removed = 0
-  for _, id in ipairs(ids) do
-    local data = GetData(id)
-    if data then
-      local ok = pcall(WeakAuras.Delete, data)
-      if ok then removed = removed + 1 end
+  local count = 0
+  for id in pairs(remove) do
+    if displays[id] ~= nil then
+      displays[id] = nil
+      count = count + 1
     end
   end
-  return removed
-end
-
-local function CleanupAllBeta20Displays()
-  return DeleteOwnedTree(function(id)
-    if IsGeneralRoot(id) then return true end
-    for _, className in ipairs(CLASS_NAMES) do
-      if IsClassRoot(id, className) then return true end
-    end
-    return false
-  end)
-end
-
-local function CleanupClassDisplay(className)
-  if type(className) ~= "string" or className == "" then return 0 end
-  return DeleteOwnedTree(function(id) return IsClassRoot(id, className) end) or 0
+  return count
 end
 
 local function CleanupState()
@@ -120,21 +97,40 @@ local function CleanupState()
   return RetreatUIDB.integrations.weakAuras
 end
 
-local function RunOneTimeStartupCleanup()
+local function RunStartupRecovery()
   local state = CleanupState()
-  if tonumber(state.beta20CleanupRevision) == CLEANUP_REVISION then return 0 end
-
-  local removed = CleanupAllBeta20Displays()
-  if removed ~= nil then
-    state.beta20CleanupRevision = CLEANUP_REVISION
-    state.beta20CleanupRemoved = removed
-    return removed
-  end
-  return 0
+  if tonumber(state.beta20CleanupRevision) >= CLEANUP_REVISION then return 0 end
+  local removed = PurgeOwnedSavedDisplays()
+  state.beta20CleanupRevision = CLEANUP_REVISION
+  state.beta20CleanupRemoved = removed
+  return removed
 end
 
-local function EnsureOptionsReady()
-  if not WeakAurasReady() then
+RUI._beta20WeakAuraCleanupRemoved = RunStartupRecovery()
+
+local function WeakAurasImportAvailable()
+  return type(WeakAuras) == "table" and type(WeakAuras.Import) == "function"
+end
+
+local function After(delay, callback)
+  if C_Timer and type(C_Timer.After) == "function" then
+    C_Timer.After(delay, callback)
+    return
+  end
+
+  local frame = CreateFrame("Frame")
+  local elapsed = 0
+  frame:SetScript("OnUpdate", function(self, dt)
+    elapsed = elapsed + (dt or 0)
+    if elapsed >= delay then
+      self:SetScript("OnUpdate", nil)
+      callback()
+    end
+  end)
+end
+
+local function PrepareWeakAurasOptions()
+  if not WeakAurasImportAvailable() then
     return false, "WeakAuras is unavailable."
   end
   if InCombatLockdown and InCombatLockdown() then
@@ -143,25 +139,24 @@ local function EnsureOptionsReady()
 
   if IsAddOnLoaded and not IsAddOnLoaded("WeakAurasOptions") then
     if type(LoadAddOn) ~= "function" then
-      return false, "WeakAuras Options cannot be loaded by this client."
+      return false, "WeakAurasOptions cannot be loaded by this client."
     end
     local loaded, reason = LoadAddOn("WeakAurasOptions")
-    if not loaded then
-      return false, "WeakAuras Options failed to load: " .. tostring(reason or "unknown error")
+    if not loaded and not (IsAddOnLoaded and IsAddOnLoaded("WeakAurasOptions")) then
+      return false, "WeakAurasOptions could not be loaded: " .. tostring(reason or "unknown reason")
     end
   end
 
-  -- Initialize exactly the options window used by a manual /wa import. The
-  -- CoA build splits the update-frame setup across its options files, so the
-  -- import is not allowed to run until that window has actually opened.
-  if type(WeakAuras.OpenOptions) == "function" then
-    local ok, err = pcall(WeakAuras.OpenOptions)
-    if not ok then return false, "WeakAuras Options failed to initialize: " .. tostring(err) end
-  elseif type(WeakAuras.ShowOptions) == "function" then
-    local ok, err = pcall(WeakAuras.ShowOptions)
-    if not ok then return false, "WeakAuras Options failed to initialize: " .. tostring(err) end
+  -- WeakAuras 5.21.2 wires Transmission.lua's update callback during the
+  -- first ShowOptions frame construction. Loading WeakAurasOptions alone (or
+  -- merely checking IsOptionsOpen) is not sufficient.
+  if type(WeakAuras.ShowOptions) ~= "function" then
+    return false, "WeakAuras 5.21.2 options API is unavailable."
   end
-
+  local ok, err = pcall(WeakAuras.ShowOptions)
+  if not ok then
+    return false, "WeakAuras options could not be initialized: " .. tostring(err)
+  end
   return true
 end
 
@@ -177,17 +172,20 @@ local function SetImportResult(ok, message)
 end
 
 local function ImportPayload(payload, label)
+  label = tostring(label or "WeakAura")
   if type(payload) ~= "string" or payload == "" then
-    return false, tostring(label or "WeakAura") .. " payload is missing."
+    return false, label .. " payload is missing."
   end
   if payload:sub(1, 6) ~= "!WA:2!" then
-    return false, tostring(label or "WeakAura") .. " payload is not a WeakAuras 2 export."
+    return false, label .. " payload is not a WeakAuras 2 export."
   end
 
-  local ready, reason = EnsureOptionsReady()
+  local ready, reason = PrepareWeakAurasOptions()
   if not ready then return false, reason end
 
-  local function RunImport()
+  -- Give the options frame two tenths of a second to finish its first layout
+  -- pass before Transmission.lua enters its import/update phase.
+  After(0.20, function()
     local called, result, detail = pcall(WeakAuras.Import, payload)
     if not called then
       SetImportResult(false, tostring(result))
@@ -197,55 +195,15 @@ local function ImportPayload(payload, label)
       SetImportResult(false, tostring(detail or "WeakAuras rejected the import."))
       return
     end
-    SetImportResult(true, tostring(label or "WeakAura") .. " import opened successfully.")
-  end
+    SetImportResult(true, label .. " import opened successfully.")
+  end)
 
-  local attempts = 0
-  local function WaitForOptionsThenImport()
-    attempts = attempts + 1
-    local optionsOpen = true
-    if type(WeakAuras.IsOptionsOpen) == "function" then
-      local ok, value = pcall(WeakAuras.IsOptionsOpen)
-      optionsOpen = ok and value == true
-    end
-
-    if optionsOpen then
-      RunImport()
-      return
-    end
-
-    if attempts >= 20 then
-      SetImportResult(false, "WeakAuras Options did not finish opening; import cancelled safely.")
-      return
-    end
-
-    if C_Timer and type(C_Timer.After) == "function" then
-      C_Timer.After(0.05, WaitForOptionsThenImport)
-    else
-      local f = CreateFrame("Frame")
-      f:SetScript("OnUpdate", function(self)
-        self:SetScript("OnUpdate", nil)
-        WaitForOptionsThenImport()
-      end)
-    end
-  end
-
-  if C_Timer and type(C_Timer.After) == "function" then
-    C_Timer.After(0.10, WaitForOptionsThenImport)
-  else
-    local f = CreateFrame("Frame")
-    f:SetScript("OnUpdate", function(self)
-      self:SetScript("OnUpdate", nil)
-      WaitForOptionsThenImport()
-    end)
-  end
-
-  return true, tostring(label or "WeakAura") .. " import is opening."
+  return true, label .. " import is opening."
 end
 
 function RUI:ValidateCoAWeakAurasImportAPI()
-  if not WeakAurasReady() then
-    return false, "WeakAuras.Import is unavailable in the installed CoA WeakAuras version."
+  if not WeakAurasImportAvailable() then
+    return false, "WeakAuras.Import is unavailable in the installed WeakAuras version."
   end
   local payloads = PayloadRegistry()
   if type(payloads.general) ~= "string" or payloads.general:sub(1, 6) ~= "!WA:2!" then
@@ -255,20 +213,22 @@ function RUI:ValidateCoAWeakAurasImportAPI()
 end
 
 function RUI:InstallGeneralWeakAuras()
-  CleanupAllBeta20Displays()
+  PurgeOwnedSavedDisplays()
   local state = CleanupState()
   state.beta20CleanupRevision = CLEANUP_REVISION
-  return ImportPayload(PayloadRegistry().general, "General WeakAuras")
+  local payloads = PayloadRegistry()
+  return ImportPayload(payloads.general, "General WeakAuras")
 end
 
 function RUI:InstallClassWeakAuras(className)
   className = self.NormalizeClassName and self:NormalizeClassName(className or self:GetDetectedClass()) or (className or self:GetDetectedClass())
-  local payload = PayloadRegistry().classes[className]
+  local payloads = PayloadRegistry()
+  local payload = payloads.classes and payloads.classes[className]
   if type(payload) ~= "string" or payload == "" then
     return false, "No beta.20 WeakAura payload is registered for " .. tostring(className or "this CoA class") .. "."
   end
 
-  CleanupClassDisplay(className)
+  PurgeOwnedSavedDisplays()
   local ok, message = ImportPayload(payload, tostring(className) .. " WeakAura")
   if ok and type(self.MarkClassInstallCompleted) == "function" then
     self:MarkClassInstallCompleted(className)
@@ -276,6 +236,5 @@ function RUI:InstallClassWeakAuras(className)
   return ok, message
 end
 
-RUI._beta20WeakAuraCleanupRemoved = RunOneTimeStartupCleanup()
 RUI._beta20WeakAuraImportLoaded = true
 RUI._beta20WeakAuraImportRevision = 32
