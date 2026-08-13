@@ -5,7 +5,6 @@ if not RUI then return end
 -- Only native TurboPlates settings are applied; no Plater mods or scripts are recreated.
 
 local PROFILE = {
-  -- Slightly reduced from the first beta.20 test build for a cleaner combat footprint.
   width = 176,
   hpHeight = 13,
   castHeight = 10,
@@ -108,6 +107,16 @@ local function CopyColor(value)
   return {r = value.r, g = value.g, b = value.b, a = value.a}
 end
 
+local function EnsureTurboTables(db)
+  if type(db) ~= "table" then return nil end
+  db.auras = db.auras or {}
+  db.auras.whitelist = db.auras.whitelist or {}
+  db.auras.blacklist = db.auras.blacklist or {}
+  db.highlightSpells = db.highlightSpells or {}
+  db.stacking = db.stacking or {}
+  return db
+end
+
 local function ApplyFlatProfile(db)
   for key, value in pairs(PROFILE) do
     if type(value) == "table" then
@@ -117,14 +126,11 @@ local function ApplyFlatProfile(db)
     end
   end
 
-  db.auras = db.auras or {}
+  EnsureTurboTables(db)
   for key, value in pairs(AURAS) do
     db.auras[key] = value
   end
-  db.auras.whitelist = db.auras.whitelist or {}
-  db.auras.blacklist = db.auras.blacklist or {}
 
-  db.stacking = db.stacking or {}
   for key, value in pairs(STACKING) do
     db.stacking[key] = value
   end
@@ -147,6 +153,50 @@ local function ApplyProfileCVars()
   SafeSetCVar("nameplateOverlapV", 1.6)
   SafeSetCVar("nameplateMaxDistance", 45)
   SafeSetCVar("nameplateSelectedScale", 1.13)
+end
+
+-- beta.20 no longer loads the old TurboPlates runtime integration. Keep the
+-- useful CoA MobSpells data import here as a one-time native DB operation so
+-- enemy spell names/IDs survive without re-enabling any legacy frame scanner.
+function RUI:ApplyMobSpellsToTurboPlates()
+  local db = EnsureTurboTables(_G.TurboPlatesDB)
+  if not db then return false, "TurboPlates is not loaded" end
+  if type(_G.MobSpellsDB) ~= "table" then
+    return false, "MobSpells is not loaded; NPC spell whitelisting is unavailable"
+  end
+
+  local spellCount, namedCount = 0, 0
+  for _, records in pairs(_G.MobSpellsDB) do
+    if type(records) == "table" then
+      for _, record in ipairs(records) do
+        local spellID = type(record) == "table" and tonumber(record[1]) or nil
+        if spellID and spellID > 0 then
+          if db.auras.whitelist[spellID] ~= true then
+            db.auras.whitelist[spellID] = true
+            spellCount = spellCount + 1
+          end
+          local spellName = type(GetSpellInfo) == "function" and GetSpellInfo(spellID) or nil
+          if spellName and spellName ~= "" and db.highlightSpells[spellName] ~= true then
+            db.highlightSpells[spellName] = true
+            namedCount = namedCount + 1
+          end
+        end
+      end
+    end
+  end
+
+  local ruiDB = self.EnsureDB and self:EnsureDB() or nil
+  if ruiDB then
+    ruiDB.integrations = ruiDB.integrations or {}
+    ruiDB.integrations.mobSpells = {
+      enabled = true,
+      whitelistEntries = spellCount,
+      highlightEntries = namedCount,
+      version = self.version,
+    }
+  end
+
+  return true, string.format("CoA NPC spell data retained (%d IDs, %d names)", spellCount, namedCount)
 end
 
 local function RecordInstall(self, resolution, mobOK)
@@ -177,17 +227,16 @@ function RUI:InstallTurboPlatesProfile(resolution)
   if type(self.EnsureAddOnLoaded) == "function" then
     self:EnsureAddOnLoaded("TurboPlates")
   end
-  if type(TurboPlatesDB) ~= "table" then
+  if type(_G.TurboPlatesDB) ~= "table" then
     return false, "TurboPlates is not loaded."
   end
 
-  ApplyFlatProfile(TurboPlatesDB)
+  ApplyFlatProfile(_G.TurboPlatesDB)
   ApplyProfileCVars()
 
   local mobOK = false
-  if type(MobSpellsDB) == "table" and type(self.ApplyMobSpellsToTurboPlates) == "function" then
+  if type(_G.MobSpellsDB) == "table" then
     mobOK = select(1, self:ApplyMobSpellsToTurboPlates()) == true
-    ApplyFlatProfile(TurboPlatesDB)
   end
 
   RecordInstall(self, resolution, mobOK)
@@ -207,4 +256,4 @@ function RUI:ApplyTurboPlatesRuntime(resolution)
 end
 
 RUI._turboPlatesBeta20Loaded = true
-RUI._turboPlatesBeta20Revision = 21
+RUI._turboPlatesBeta20Revision = 22
