@@ -73,18 +73,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          python3 tools/generate_beta20_weakauras_curated.py
+          python3 tools/generate_beta20_weakauras.py
           FILE="RetreatUI/Data/WeakAurasBeta20Payloads.lua"
           test -s "$FILE"
-          test "$(grep -c '^RUI.Beta20WeakAuras.classes\[' "$FILE")" -eq 21
-          grep -Fq 'RUI.Beta20WeakAuras.general = "!WA:2!' "$FILE"
+          test "$(grep -Ec '^    \["[^"]+"\] = "!WA:2!' "$FILE")" -eq 21
+          grep -Fq 'general = "!WA:2!' "$FILE"
           grep -Fq 'weakAurasVersion = "5.21.2"' "$FILE"
+          grep -Fq 'classPayloadCount = 21' "$FILE"
           grep -Fq 'generatedFor = "1.1.7-beta.20"' "$FILE"
-          grep -Fq 'use_exact_spellknown' tools/generate_beta20_weakauras_curated.py
+          ! grep -Fq 'use_spellknown' "$FILE"
+          ! grep -Fq 'spellknown' "$FILE"
           ! grep -Fq 'custom_type' "$FILE"
           ! grep -Fq 'function(allstates' "$FILE"
           ! grep -Fq 'RETREATUI_RESOURCE_PULSE' "$FILE"
           ! grep -Fq 'RETREATUI_ROW_REFRESH' "$FILE"
+          ! grep -Fq 'RETREATUI_PLAYER_AURA_REFRESH' "$FILE"
+          ! grep -Fq 'RETREATUI_TARGET_AURA_REFRESH' "$FILE"
 
       - name: Validate exact reference payloads
         if: steps.manifest.outputs.publish == 'true'
