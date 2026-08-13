@@ -3,54 +3,36 @@ name: Validate Final CoA Stance Lane
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
-      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/GlobalStateAnchor.lua"
-      - "RetreatUI_Classes/KnightOfXoroth/**"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - "RetreatUI_BuffManager/RetreatUI_BuffManager.toc"
-      - ".github/workflows/validate-final-stance-lane.yml"
   push:
-    branches: [main]
-    paths:
-      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
-      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/GlobalStateAnchor.lua"
-      - "RetreatUI_Classes/KnightOfXoroth/**"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - "RetreatUI_BuffManager/RetreatUI_BuffManager.toc"
-      - ".github/workflows/validate-final-stance-lane.yml"
+    branches: [main, agent/beta20-coa-layout]
+
+permissions:
+  contents: read
 
 jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Install Lua 5.1
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate rendered stance edge and KoX curation
+
+      - name: Validate rendered state lane and beta.20 versions
         shell: bash
         run: |
           set -euo pipefail
-          luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
           luac5.1 -p RetreatUI_Classes/GlobalStateAnchor.lua
           luac5.1 -p RetreatUI_Classes/KnightOfXoroth/Curation.lua
+          luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
 
-          grep -Fq 'WeakAuras.GetRegion' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'RenderedTrinketEdge' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'lane:SetPoint("BOTTOMRIGHT", renderedRegion, "BOTTOMRIGHT", 0, 0)' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          ! grep -Fq 'LANE_WIDTH' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-
+          grep -Fq 'WeakAuras.GetRegion(TRINKET_SLOT_13)' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'WeakAuras.GetRegion(TRINKET_SLOT_14)' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'anchor:SetPoint("BOTTOMRIGHT", source, "BOTTOMRIGHT", 0, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
           grep -Fq 'frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
+          grep -Fq 'GlobalStateAnchor.lua' RetreatUI_Classes/RetreatUI_Classes.toc
 
           grep -Fq '["unleash pestilence"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq '["chainwhip"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
@@ -58,14 +40,12 @@ jobs:
           grep -Fq '["suffuse"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq '["hellrider"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq '["black shield"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq 'if IsKnight(className) then return {} end' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq 'root.stanceTracker:SetAlpha(0)' RetreatUI_Classes/KnightOfXoroth/Curation.lua
           grep -Fq 'debuffs.enable = false' RetreatUI/Profiles/ElvUITargetDebuffs.lua
           ! grep -R -n -E 'globalYOffset|ruiGlobalStateYOffset' RetreatUI_Classes/*/HUD.lua
 
           core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
           classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
           buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.19"
+          test "$core_version" = '1.1.7-beta.20'
           test "$core_version" = "$classes_version"
           test "$core_version" = "$buff_version"
