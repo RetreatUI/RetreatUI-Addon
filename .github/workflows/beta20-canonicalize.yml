@@ -1,0 +1,49 @@
+name: beta20 canonicalize
+on:
+  pull_request:
+  push:
+    branches: [agent/beta20-coa-layout]
+permissions:
+  contents: write
+jobs:
+  canonicalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/beta20-coa-layout
+          fetch-depth: 0
+      - name: Canonicalize source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil, subprocess
+          p = Path('RetreatUI/Profiles/ElvUIBeta20Exports.lua')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('RUI.NaowhElvUIExports', 'RUI.Beta20ElvUIExports').replace('RUI.NaowhElvUIScales', 'RUI.Beta20ElvUIScales')
+          s = s.replace('-- Exact NaowhUI TBC ElvUI profile exports supplied by the user for beta.20.', '-- Exact approved beta.20 ElvUI profile exports supplied for RetreatUI.')
+          p.write_text(s, encoding='utf-8')
+          shutil.rmtree('RetreatUI/Data/WeakAurasBeta20', ignore_errors=True)
+          for f in ['RetreatUI/Data/WeakAurasBeta20Finalize.lua','RetreatUI/Data/WeakAurasBeta20ShardBridge.lua','RetreatUI/Profiles/ElvUIBeta20Registry.lua']:
+              Path(f).unlink(missing_ok=True)
+          subprocess.run(['python3','tools/generate_beta20_weakauras.py'], check=True)
+          PY
+      - name: Syntax check
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+          find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+      - name: Commit canonicalized source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if ! git diff --cached --quiet; then
+            git commit -m 'beta20: canonicalize generated source package'
+            git push origin HEAD:agent/beta20-coa-layout
+          fi
