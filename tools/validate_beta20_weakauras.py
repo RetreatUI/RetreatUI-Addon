@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
-"""Hard validation for the beta.20 CoA WeakAuras generator.
+"""Hard validation for the beta.20 CoA WeakAuras generator and static registry.
 
 This validator executes the build-time generator in-memory and inspects the
-actual WeakAuras transmission tables before they are serialized. It prevents
-regressions that caused the beta.20 test failures: missing class payloads,
-unsafe Spell Known load filters, wrong WeakAuras metadata, and drift from the
-reference HUD coordinates.
+actual WeakAuras transmission tables before they are serialized. It also proves
+that the committed static registry is byte-for-byte the output of that generator.
+That prevents smoke/placeholder payloads from satisfying the 21-class gate.
 """
 from __future__ import annotations
 
 import importlib.util
+import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -93,6 +93,11 @@ def capture_export(tx: dict):
     return original_export(tx)
 
 
+def lua_unquote(value: str) -> str:
+    """Decode the limited escaping used by generate_beta20_weakauras.lua_quote."""
+    return value.replace('\\"', '"').replace('\\\\', '\\')
+
+
 g.export_wa = capture_export
 
 # The generator's canonical source is RetreatUI_Classes/*/Data.lua. Validate
@@ -111,12 +116,14 @@ assert actual_classes == EXPECTED_CLASSES, (
 )
 assert len(parsed) == EXPECTED_COUNT
 
-general = g.build_general()
-assert general.startswith("!WA:2!")
+expected_general = g.build_general()
+assert expected_general.startswith("!WA:2!")
 
+expected_classes: dict[str, str] = {}
 for class_name, resources, spells in parsed:
     payload = g.build_class(class_name, resources, spells)
     assert payload.startswith("!WA:2!"), class_name
+    expected_classes[class_name] = payload
 
 assert len(transmissions) == EXPECTED_COUNT + 1
 
@@ -124,12 +131,35 @@ registry_path = ROOT / "RetreatUI" / "Data" / "WeakAurasBeta20Payloads.lua"
 registry = registry_path.read_text(encoding="utf-8")
 assert 'weakAurasVersion = "5.21.2"' in registry
 assert "classPayloadCount = 21" in registry
+
+# Presence alone is not enough: beta.20 previously carried smoke/placeholder
+# transmissions. Parse the committed literal registry and prove every payload
+# exactly matches the current canonical generator output.
+general_match = re.search(r'^\s*general\s*=\s*"((?:\\.|[^"\\])*)",\s*$', registry, re.MULTILINE)
+assert general_match, "Static registry is missing General WeakAura"
+committed_general = lua_unquote(general_match.group(1))
+assert committed_general == expected_general, "Static General payload is stale or not generator output"
+
+committed_classes = {
+    name: lua_unquote(payload)
+    for name, payload in re.findall(
+        r'^\s*\["([^"]+)"\]\s*=\s*"((?:\\.|[^"\\])*)",\s*$',
+        registry,
+        re.MULTILINE,
+    )
+}
+assert set(committed_classes) == EXPECTED_CLASSES, (
+    f"Static registry class mismatch. Missing={sorted(EXPECTED_CLASSES - set(committed_classes))} "
+    f"Extra={sorted(set(committed_classes) - EXPECTED_CLASSES)}"
+)
 for class_name in sorted(EXPECTED_CLASSES):
-    assert f'["{class_name}"] = "!WA:2!' in registry, class_name
+    assert committed_classes[class_name] == expected_classes[class_name], (
+        f"Static payload for {class_name} is stale, duplicated, or not canonical generator output"
+    )
 
 print("beta.20 WeakAuras validation passed")
-print("- General payload: present")
-print("- CoA class payloads: 21/21")
+print("- General payload: canonical static generator output")
+print("- CoA class payloads: 21/21 canonical static generator output")
 print("- WeakAuras schema: 5.21.2 / internalVersion 90")
 print("- Spell Known load filters: none")
 print("- HUD geometry: reference coordinates verified")
