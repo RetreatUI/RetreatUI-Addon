@@ -3,15 +3,13 @@ if not RUI then return end
 
 -- beta.20 only installs prebuilt !WA:2! payloads. RetreatUI does not create
 -- aura tables, triggers, grow logic or synthetic WeakAuras events at runtime.
+local CLEANUP_REVISION = 31
 local CLASS_NAMES = {
   "Barbarian", "Bloodmage", "Chronomancer", "Cultist", "Felsworn", "Guardian",
   "Knight of Xoroth", "Necromancer", "Primalist", "Pyromancer", "Ranger", "Reaper",
   "Runemaster", "Starcaller", "Stormbringer", "Sun Cleric", "Templar", "Tinker",
   "Venomancer", "Witch Doctor", "Witch Hunter",
 }
-
-local classLookup = {}
-for _, className in ipairs(CLASS_NAMES) do classLookup[className] = true end
 
 local function PayloadRegistry()
   if type(RUI.Beta20WeakAuras) ~= "table" then
@@ -33,44 +31,36 @@ local function GetData(id)
   return nil
 end
 
-local function IsRetreatUITestDisplay(id, data)
-  if type(id) ~= "string" then return false end
-
-  if id == "RetreatUI - General" or id == "Core & Essentials" then return true end
-
-  for _, className in ipairs(CLASS_NAMES) do
-    if id == "RetreatUI - " .. className then return true end
-    if id == className .. " Class Pack" then return true end
-    if id == "Aura Bar - " .. className then return true end
-    if id == "Main - " .. className then return true end
-    if id == "Resources - " .. className then return true end
-    if id == "Bars - " .. className then return true end
-    if id == "Dynamic Bars - " .. className then return true end
-    if id == "Aux Bar - " .. className then return true end
-    if id == "Main Row 1 - " .. className or id == "Main Row 2 - " .. className or id == "Main Row 3 - " .. className then return true end
-    if id == className .. " - Primary Power" then return true end
-  end
-
-  -- Children below a known RetreatUI beta.20 root are removed recursively by
-  -- CleanupKnownBeta20Displays; they do not need name-based matching here.
-  return false
+local function IsGeneralRoot(id)
+  return id == "RetreatUI - General" or id == "Core & Essentials"
 end
 
-local function CleanupKnownBeta20Displays()
-  if type(WeakAuras) ~= "table" or type(WeakAuras.Delete) ~= "function" then return 0 end
+local function IsClassRoot(id, className)
+  if type(id) ~= "string" or type(className) ~= "string" then return false end
+  return id == "RetreatUI - " .. className
+    or id == className .. " Class Pack"
+    or id == "Aura Bar - " .. className
+    or id == "Main - " .. className
+    or id == "Resources - " .. className
+    or id == "Bars - " .. className
+    or id == "Dynamic Bars - " .. className
+    or id == "Aux Bar - " .. className
+    or id == "Main Row 1 - " .. className
+    or id == "Main Row 2 - " .. className
+    or id == "Main Row 3 - " .. className
+    or id == className .. " - Primary Power"
+end
+
+local function DeleteOwnedTree(seedPredicate)
+  if type(WeakAuras) ~= "table" or type(WeakAuras.Delete) ~= "function" then return nil end
   local displays = type(WeakAurasSaved) == "table" and WeakAurasSaved.displays or nil
-  if type(displays) ~= "table" then return 0 end
+  if type(displays) ~= "table" then return nil end
 
   local owned = {}
   for id, data in pairs(displays) do
-    if type(data) == "table" and IsRetreatUITestDisplay(id, data) then
-      owned[id] = true
-    end
+    if type(data) == "table" and seedPredicate(id, data) then owned[id] = true end
   end
 
-  -- Include every descendant of a known beta.20 test display. This is what
-  -- removes the old Spell Known children which can otherwise throw during the
-  -- next WeakAuras load scan even after RetreatUI itself has been updated.
   local changed = true
   while changed do
     changed = false
@@ -108,6 +98,44 @@ local function CleanupKnownBeta20Displays()
   return removed
 end
 
+local function CleanupAllBeta20Displays()
+  return DeleteOwnedTree(function(id)
+    if IsGeneralRoot(id) then return true end
+    for _, className in ipairs(CLASS_NAMES) do
+      if IsClassRoot(id, className) then return true end
+    end
+    return false
+  end)
+end
+
+local function CleanupClassDisplay(className)
+  if type(className) ~= "string" or className == "" then return 0 end
+  return DeleteOwnedTree(function(id) return IsClassRoot(id, className) end) or 0
+end
+
+local function CleanupState()
+  RetreatUIDB = RetreatUIDB or {}
+  RetreatUIDB.integrations = RetreatUIDB.integrations or {}
+  RetreatUIDB.integrations.weakAuras = RetreatUIDB.integrations.weakAuras or {}
+  return RetreatUIDB.integrations.weakAuras
+end
+
+local function RunOneTimeStartupCleanup()
+  local state = CleanupState()
+  if tonumber(state.beta20CleanupRevision) == CLEANUP_REVISION then return 0 end
+
+  local removed = CleanupAllBeta20Displays()
+  -- nil means WeakAuras/SavedVariables were not available, so do not consume
+  -- the migration gate. With WeakAuras enabled as an OptionalDep they are
+  -- available before PLAYER_LOGIN, which is when this cleanup must run.
+  if removed ~= nil then
+    state.beta20CleanupRevision = CLEANUP_REVISION
+    state.beta20CleanupRemoved = removed
+    return removed
+  end
+  return 0
+end
+
 local function EnsureOptionsReady()
   if not WeakAurasReady() then
     return false, "WeakAuras is unavailable."
@@ -126,9 +154,9 @@ local function EnsureOptionsReady()
     end
   end
 
-  -- WeakAuras 5.21.2's Transmission.lua expects its options-side update
-  -- handler to exist before it opens the import/update window. Force the same
-  -- options initialisation path a manual /wa import has already completed.
+  -- WeakAuras 5.21.2 routes encoded imports through its options-side update
+  -- frame. Initialize the same options UI a manual /wa import uses before
+  -- handing the static payload to WeakAuras.Import.
   if type(WeakAuras.OpenOptions) == "function" then
     local ok, err = pcall(WeakAuras.OpenOptions)
     if not ok then return false, "WeakAuras Options failed to initialize: " .. tostring(err) end
@@ -163,21 +191,21 @@ local function ImportPayload(payload, label)
   if not ready then return false, reason end
 
   local function RunImport()
-    local ok, result, detail = pcall(WeakAuras.Import, payload)
-    if not ok then
+    local called, result, detail = pcall(WeakAuras.Import, payload)
+    if not called then
       SetImportResult(false, tostring(result))
       return
     end
-    if result == false or result == nil then
-      SetImportResult(false, tostring(detail or result or (tostring(label) .. " import was rejected.")))
+
+    -- WeakAuras.Import returns nil,nil on a normal successful hand-off to its
+    -- import/update window. Explicit false or a second return value is an error.
+    if result == false or detail ~= nil then
+      SetImportResult(false, tostring(detail or "WeakAuras rejected the import."))
       return
     end
     SetImportResult(true, tostring(label or "WeakAura") .. " import opened successfully.")
   end
 
-  -- Loading the LoadOnDemand options addon and constructing its import frame
-  -- happens synchronously, but defer one frame before Transmission.lua enters
-  -- its update window. This avoids racing options-side registration on CoA.
   if C_Timer and type(C_Timer.After) == "function" then
     C_Timer.After(0.05, RunImport)
   else
@@ -203,7 +231,11 @@ function RUI:ValidateCoAWeakAurasImportAPI()
 end
 
 function RUI:InstallGeneralWeakAuras()
-  CleanupKnownBeta20Displays()
+  -- General is the first WA installer step, so it is safe to replace every
+  -- earlier beta.20 test tree here and then install the shared anchor anew.
+  CleanupAllBeta20Displays()
+  local state = CleanupState()
+  state.beta20CleanupRevision = CLEANUP_REVISION
   return ImportPayload(PayloadRegistry().general, "General WeakAuras")
 end
 
@@ -214,7 +246,9 @@ function RUI:InstallClassWeakAuras(className)
     return false, "No beta.20 WeakAura payload is registered for " .. tostring(className or "this CoA class") .. "."
   end
 
-  CleanupKnownBeta20Displays()
+  -- Replace only this class. Never remove General here: its Class Power Bar is
+  -- the anchor the class package intentionally uses.
+  CleanupClassDisplay(className)
   local ok, message = ImportPayload(payload, tostring(className) .. " WeakAura")
   if ok and type(self.MarkClassInstallCompleted) == "function" then
     self:MarkClassInstallCompleted(className)
@@ -222,9 +256,6 @@ function RUI:InstallClassWeakAuras(className)
   return ok, message
 end
 
--- Run before PLAYER_LOGIN. WeakAuras is an OptionalDep, so its SavedVariables
--- are available here; removing stale beta.20 displays now prevents their old
--- load functions from being compiled/scanned on the upcoming login pass.
-RUI._beta20WeakAuraCleanupRemoved = CleanupKnownBeta20Displays()
+RUI._beta20WeakAuraCleanupRemoved = RunOneTimeStartupCleanup()
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 30
+RUI._beta20WeakAuraImportRevision = 31
