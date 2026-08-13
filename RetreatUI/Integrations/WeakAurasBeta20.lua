@@ -125,9 +125,6 @@ local function RunOneTimeStartupCleanup()
   if tonumber(state.beta20CleanupRevision) == CLEANUP_REVISION then return 0 end
 
   local removed = CleanupAllBeta20Displays()
-  -- nil means WeakAuras/SavedVariables were not available, so do not consume
-  -- the migration gate. With WeakAuras enabled as an OptionalDep they are
-  -- available before PLAYER_LOGIN, which is when this cleanup must run.
   if removed ~= nil then
     state.beta20CleanupRevision = CLEANUP_REVISION
     state.beta20CleanupRemoved = removed
@@ -154,9 +151,9 @@ local function EnsureOptionsReady()
     end
   end
 
-  -- WeakAuras 5.21.2 routes encoded imports through its options-side update
-  -- frame. Initialize the same options UI a manual /wa import uses before
-  -- handing the static payload to WeakAuras.Import.
+  -- Initialize exactly the options window used by a manual /wa import. The
+  -- CoA build splits the update-frame setup across its options files, so the
+  -- import is not allowed to run until that window has actually opened.
   if type(WeakAuras.OpenOptions) == "function" then
     local ok, err = pcall(WeakAuras.OpenOptions)
     if not ok then return false, "WeakAuras Options failed to initialize: " .. tostring(err) end
@@ -196,9 +193,6 @@ local function ImportPayload(payload, label)
       SetImportResult(false, tostring(result))
       return
     end
-
-    -- WeakAuras.Import returns nil,nil on a normal successful hand-off to its
-    -- import/update window. Explicit false or a second return value is an error.
     if result == false or detail ~= nil then
       SetImportResult(false, tostring(detail or "WeakAuras rejected the import."))
       return
@@ -206,13 +200,43 @@ local function ImportPayload(payload, label)
     SetImportResult(true, tostring(label or "WeakAura") .. " import opened successfully.")
   end
 
+  local attempts = 0
+  local function WaitForOptionsThenImport()
+    attempts = attempts + 1
+    local optionsOpen = true
+    if type(WeakAuras.IsOptionsOpen) == "function" then
+      local ok, value = pcall(WeakAuras.IsOptionsOpen)
+      optionsOpen = ok and value == true
+    end
+
+    if optionsOpen then
+      RunImport()
+      return
+    end
+
+    if attempts >= 20 then
+      SetImportResult(false, "WeakAuras Options did not finish opening; import cancelled safely.")
+      return
+    end
+
+    if C_Timer and type(C_Timer.After) == "function" then
+      C_Timer.After(0.05, WaitForOptionsThenImport)
+    else
+      local f = CreateFrame("Frame")
+      f:SetScript("OnUpdate", function(self)
+        self:SetScript("OnUpdate", nil)
+        WaitForOptionsThenImport()
+      end)
+    end
+  end
+
   if C_Timer and type(C_Timer.After) == "function" then
-    C_Timer.After(0.05, RunImport)
+    C_Timer.After(0.10, WaitForOptionsThenImport)
   else
     local f = CreateFrame("Frame")
     f:SetScript("OnUpdate", function(self)
       self:SetScript("OnUpdate", nil)
-      RunImport()
+      WaitForOptionsThenImport()
     end)
   end
 
@@ -231,8 +255,6 @@ function RUI:ValidateCoAWeakAurasImportAPI()
 end
 
 function RUI:InstallGeneralWeakAuras()
-  -- General is the first WA installer step, so it is safe to replace every
-  -- earlier beta.20 test tree here and then install the shared anchor anew.
   CleanupAllBeta20Displays()
   local state = CleanupState()
   state.beta20CleanupRevision = CLEANUP_REVISION
@@ -246,8 +268,6 @@ function RUI:InstallClassWeakAuras(className)
     return false, "No beta.20 WeakAura payload is registered for " .. tostring(className or "this CoA class") .. "."
   end
 
-  -- Replace only this class. Never remove General here: its Class Power Bar is
-  -- the anchor the class package intentionally uses.
   CleanupClassDisplay(className)
   local ok, message = ImportPayload(payload, tostring(className) .. " WeakAura")
   if ok and type(self.MarkClassInstallCompleted) == "function" then
@@ -258,4 +278,4 @@ end
 
 RUI._beta20WeakAuraCleanupRemoved = RunOneTimeStartupCleanup()
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 31
+RUI._beta20WeakAuraImportRevision = 32
