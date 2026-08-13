@@ -95,8 +95,11 @@ def capture_export(tx: dict):
 
 g.export_wa = capture_export
 
+# The generator's canonical source is RetreatUI_Classes/*/Data.lua. Validate
+# the exact same files here; SpellDatabase.lua is runtime glue and is not the
+# beta.20 payload source of truth.
 parsed = []
-for path in sorted(CLASS_ROOT.glob("*/SpellDatabase.lua")):
+for path in sorted(CLASS_ROOT.glob("*/Data.lua")):
     entry = g.parse_class(path)
     if entry:
         parsed.append(entry)
