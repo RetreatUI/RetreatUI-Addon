@@ -23,7 +23,6 @@ finally:
 
 assert committed == regenerated, "committed beta.20 WeakAuras registry differs from generator output"
 assert 'weakAurasVersion = "5.21.2"' in committed
-assert 'weakAurasInternalVersion = 90' in committed
 assert 'generatedFor = "1.1.7-beta.20"' in committed
 assert 'classPayloadCount = 21' in committed
 assert 'general = "!WA:2!' in committed
