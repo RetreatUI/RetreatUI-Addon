@@ -8,12 +8,6 @@ local PROFILE_NAME = "RetreatUI"
 
 local function GetExports(self)
   if type(self.Beta20ElvUIExports) == "table" then return self.Beta20ElvUIExports end
-  local legacyKey = "Na" .. "owhElvUIExports"
-  local exports = self[legacyKey]
-  if type(exports) == "table" then
-    self.Beta20ElvUIExports = exports
-    return exports
-  end
   return nil
 end
 
@@ -95,11 +89,6 @@ end
 
 local function ApplyGlobalSettings(E, resolution)
   local scales = RUI.Beta20ElvUIScales
-  if type(scales) ~= "table" then
-    local legacyKey = "Na" .. "owhElvUIScales"
-    scales = RUI[legacyKey]
-    if type(scales) == "table" then RUI.Beta20ElvUIScales = scales end
-  end
   local scale = type(scales) == "table" and scales[resolution] or nil
 
   if E and E.data and type(E.data.global) == "table" then
@@ -194,4 +183,4 @@ function RUI:ApplyElvUIHUDPolish()
 end
 
 RUI._elvUIBeta20Loaded = true
-RUI._elvUIBeta20Revision = 22
+RUI._elvUIBeta20Revision = 23
