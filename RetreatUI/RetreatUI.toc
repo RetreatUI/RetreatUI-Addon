@@ -60,6 +60,7 @@ Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
 Installer\Beta20Installer.lua
+Installer\Beta20WeakAurasBridge.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
