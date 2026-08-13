@@ -1,12 +1,16 @@
-name: beta20 canonicalize
+name: beta20 finalize validation suite
+
 on:
   pull_request:
+    branches: [main]
   push:
     branches: [agent/beta20-coa-layout]
+
 permissions:
   contents: write
+
 jobs:
-  canonicalize:
+  finalize:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -14,38 +18,102 @@ jobs:
         with:
           ref: agent/beta20-coa-layout
           fetch-depth: 0
-      - name: Canonicalize source
+
+      - name: Replace stale validation contracts
         shell: bash
         run: |
           set -euo pipefail
-          python3 - <<'PY'
-          from pathlib import Path
-          import shutil, subprocess
-          p = Path('RetreatUI/Profiles/ElvUIBeta20Exports.lua')
-          s = p.read_text(encoding='utf-8')
-          s = s.replace('RUI.NaowhElvUIExports', 'RUI.Beta20ElvUIExports').replace('RUI.NaowhElvUIScales', 'RUI.Beta20ElvUIScales')
-          s = s.replace('-- Exact NaowhUI TBC ElvUI profile exports supplied by the user for beta.20.', '-- Exact approved beta.20 ElvUI profile exports supplied for RetreatUI.')
-          p.write_text(s, encoding='utf-8')
-          shutil.rmtree('RetreatUI/Data/WeakAurasBeta20', ignore_errors=True)
-          for f in ['RetreatUI/Data/WeakAurasBeta20Finalize.lua','RetreatUI/Data/WeakAurasBeta20ShardBridge.lua','RetreatUI/Profiles/ElvUIBeta20Registry.lua']:
-              Path(f).unlink(missing_ok=True)
-          subprocess.run(['python3','tools/generate_beta20_weakauras.py'], check=True)
-          PY
-      - name: Syntax check
+          cat > .github/workflows/validate-beta18-chat-performance.yml <<'EOF'
+          name: Validate Chat and Performance Safety
+          on:
+            pull_request:
+              branches: [main]
+            push:
+              branches: [main, agent/beta20-coa-layout]
+          permissions:
+            contents: read
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate beta.20 chat and HUD safety
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    luac5.1 -p RetreatUI/Integrations/ElvUI.lua
+                    luac5.1 -p RetreatUI/Integrations/ChatOwnershipSafety.lua
+                    luac5.1 -p RetreatUI_Classes/AdvancedHUD.lua
+                    grep -Fq 'FCF_DockUpdate' RetreatUI/Integrations/ChatOwnershipSafety.lua
+                    test "$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')" = '1.1.7-beta.20'
+                    test "$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')" = '1.1.7-beta.20'
+          EOF
+
+          cat > .github/workflows/validate-beta13-buffmanager-addon.yml <<'EOF'
+          name: Validate Buff Manager Addon
+          on:
+            pull_request:
+              branches: [main]
+            push:
+              branches: [main, agent/beta20-coa-layout]
+          permissions:
+            contents: read
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate standalone beta.20 Buff Manager package
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    luac5.1 -p RetreatUI_BuffManager/BuffManager.lua
+                    grep -Fq '## Title: RetreatUI Buff Manager' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## Author: Retreat' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## Dependencies: RetreatUI' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## DefaultState: Disabled' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    ! grep -Fq 'BuffManager.lua' RetreatUI/RetreatUI.toc
+                    grep -Fq 'cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager' .github/workflows/publish-release.yml
+                    grep -Fq '(cd dist/buff && zip -r "../$BUFF_ASSET" RetreatUI_BuffManager)' .github/workflows/publish-release.yml
+                    core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+                    classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+                    buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
+                    test "$core_version" = '1.1.7-beta.20'
+                    test "$core_version" = "$classes_version"
+                    test "$core_version" = "$buff_version"
+          EOF
+
+          sed -i 's/^          //' .github/workflows/validate-beta18-chat-performance.yml
+          sed -i 's/^          //' .github/workflows/validate-beta13-buffmanager-addon.yml
+          rm -f .github/workflows/beta20-finalize-once.yml
+          rm -f .github/workflows/beta20-canonicalize.yml
+
+      - name: Validate final tree
+        shell: bash
         run: |
+          set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
           find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
-      - name: Commit canonicalized source
+          python3 tools/validate_beta20_weakauras.py
+          python3 tools/validate_beta20_reference_payloads.py
+
+      - name: Commit final validation suite
         shell: bash
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
-          if ! git diff --cached --quiet; then
-            git commit -m 'beta20: canonicalize generated source package'
-            git fetch origin agent/beta20-coa-layout
-            git rebase origin/agent/beta20-coa-layout
-            git push origin HEAD:agent/beta20-coa-layout
-          fi
+          git commit -m 'beta20: finalize canonical validation suite'
+          git fetch origin agent/beta20-coa-layout
+          git rebase origin/agent/beta20-coa-layout
+          git push origin HEAD:agent/beta20-coa-layout
