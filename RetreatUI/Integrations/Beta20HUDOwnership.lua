@@ -6,7 +6,7 @@ if not RUI then return end
 --   * The native class package only keeps the CoA state/form/stance lane because
 --     Ascension exposes several of those states outside normal WA spell triggers.
 --   * Legacy beta.8-beta.19 class HUD roots and the duplicate native power bar
---     must never reactivate after a Naowh profile import.
+--     must never reactivate after the beta.20 profile import.
 --   * DBM is not part of the CoA installer anymore.
 
 local currentTracker
@@ -24,7 +24,7 @@ local LEGACY_RUNTIME_KEYS = {
 
 -- Events.lua asks the installer registry whether historical runtime owners should
 -- auto-start. Keep normal installer modules untouched, but permanently decline
--- the old visual owners above so they cannot modify a correctly imported Naowh UI.
+-- the old visual owners above so they cannot modify the imported beta.20 UI.
 local previousIsInstallerModuleEnabled = RUI.IsInstallerModuleEnabled
 if type(previousIsInstallerModuleEnabled) == "function" then
   function RUI:IsInstallerModuleEnabled(key)
@@ -151,9 +151,9 @@ local function FinalizeModuleOwnership()
     turbo.install = function(self) return self:InstallTurboPlatesProfile("1440p") end
     turbo.validate = function(self)
       local db = self:EnsureDB()
-      local record = db.integrations and db.integrations.turboNaowhBeta20
+      local record = db.integrations and db.integrations.turboBeta20
       return type(TurboPlatesDB) == "table" and record and record.version == self.version,
-        "Naowh TurboPlates beta.20 profile was not applied"
+        "RetreatUI TurboPlates beta.20 profile was not applied"
     end
   end
 end
@@ -206,4 +206,4 @@ if IsAddOnLoaded and IsAddOnLoaded("RetreatUI_Classes") then
 end
 
 RUI._beta20HUDOwnershipLoaded = true
-RUI._beta20HUDOwnershipRevision = 20
+RUI._beta20HUDOwnershipRevision = 21
