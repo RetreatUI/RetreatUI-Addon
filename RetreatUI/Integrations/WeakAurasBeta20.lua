@@ -1,8 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-local CLEANUP_REVISION = 33
-local EXPECTED_CLASS_PAYLOADS = 21
+local CLEANUP_REVISION = 34
 
 local CLASS_NAMES = {
   "Barbarian", "Bloodmage", "Chronomancer", "Cultist", "Felsworn", "Guardian",
@@ -18,29 +17,13 @@ local function PayloadRegistry()
   return registry
 end
 
-local function ValidatePayloadRegistry()
+local function ValidateBaseRegistry()
   local registry = PayloadRegistry()
   if not registry then
     return false, "beta.20 WeakAuras registry is missing."
   end
   if type(registry.general) ~= "string" or registry.general:sub(1, 6) ~= "!WA:2!" then
     return false, "General WeakAuras payload is not registered."
-  end
-
-  local count = 0
-  for _, className in ipairs(CLASS_NAMES) do
-    local payload = registry.classes[className]
-    if type(payload) ~= "string" or payload:sub(1, 6) ~= "!WA:2!" then
-      return false, "WeakAura payload is missing for " .. className .. "."
-    end
-    count = count + 1
-  end
-
-  if count ~= EXPECTED_CLASS_PAYLOADS then
-    return false, "WeakAuras registry contains an invalid CoA class count."
-  end
-  if registry.classPayloadCount and tonumber(registry.classPayloadCount) ~= EXPECTED_CLASS_PAYLOADS then
-    return false, "WeakAuras registry metadata does not match the 21 CoA classes."
   end
   if registry.weakAurasVersion and tostring(registry.weakAurasVersion) ~= "5.21.2" then
     return false, "WeakAuras payloads were generated for the wrong WeakAuras version."
@@ -84,9 +67,8 @@ local OWNED_ROOTS = BuildOwnedRoots()
 
 -- Recovery migration for beta.20 test imports that contained unsafe CoA
 -- Spell Known load conditions. Only RetreatUI-owned displays are removed.
--- WeakAuras can scan its SavedVariables before RetreatUI loads, so an already
--- broken test aura can still throw once on the first login with this build.
--- Once this function runs the bad saved displays are gone for the next reload.
+-- Direct saved-data removal avoids evaluating the broken load conditions via
+-- WeakAuras.Delete while the recovery is in progress.
 local function PurgeOwnedSavedDisplays()
   if type(WeakAurasSaved) ~= "table" or type(WeakAurasSaved.displays) ~= "table" then
     return 0
@@ -128,7 +110,15 @@ end
 
 local function RunStartupRecovery()
   local state = CleanupState()
-  if tonumber(state.beta20CleanupRevision) >= CLEANUP_REVISION then return 0 end
+  local previousRevision = tonumber(state.beta20CleanupRevision) or 0
+
+  -- A reload after a successful purge is the boundary that makes the new
+  -- import safe. Clear the one-shot block automatically on that next load.
+  if previousRevision >= CLEANUP_REVISION then
+    state.beta20ReloadRequired = false
+    return 0
+  end
+
   local removed = PurgeOwnedSavedDisplays()
   state.beta20CleanupRevision = CLEANUP_REVISION
   state.beta20CleanupRemoved = removed
@@ -141,11 +131,6 @@ RUI._beta20WeakAuraCleanupRemoved = RunStartupRecovery()
 function RUI:Beta20WeakAurasNeedsRecoveryReload()
   local state = CleanupState()
   return state.beta20ReloadRequired == true
-end
-
-function RUI:ClearBeta20WeakAurasRecoveryReloadFlag()
-  local state = CleanupState()
-  state.beta20ReloadRequired = false
 end
 
 local function WeakAurasImportAvailable()
@@ -204,8 +189,7 @@ local function OptionsAreReady()
     local ok, isOpen = pcall(WeakAuras.IsOptionsOpen)
     if ok and isOpen == true then return true end
   end
-  local options = _G.WeakAurasOptions
-  return type(options) == "table"
+  return type(_G.WeakAurasOptions) == "table"
 end
 
 local function SetImportResult(ok, message)
@@ -255,7 +239,7 @@ local function ImportPayload(payload, label)
   end
 
   if RUI:Beta20WeakAurasNeedsRecoveryReload() then
-    return false, "Old beta.20 WeakAuras were cleaned. Reload the UI once before importing the replacement pack."
+    return false, "Old beta.20 WeakAuras were cleaned. Reload the UI once, then run this step again."
   end
 
   local ready, reason = EnsureWeakAurasOptionsLoaded()
@@ -269,20 +253,20 @@ function RUI:ValidateCoAWeakAurasImportAPI()
   if not WeakAurasImportAvailable() then
     return false, "WeakAuras.Import is unavailable in the installed WeakAuras version."
   end
-  local valid, registryOrMessage = ValidatePayloadRegistry()
+  local valid, registryOrMessage = ValidateBaseRegistry()
   if not valid then return false, registryOrMessage end
-  return true, "WeakAuras 5.21.2 import path and all 21 CoA payloads are available."
+  return true, "WeakAuras 5.21.2 import path and General payload are available."
 end
 
 function RUI:InstallGeneralWeakAuras()
-  local valid, registryOrMessage = ValidatePayloadRegistry()
+  local valid, registryOrMessage = ValidateBaseRegistry()
   if not valid then return false, registryOrMessage end
   return ImportPayload(registryOrMessage.general, "General WeakAuras")
 end
 
 function RUI:InstallClassWeakAuras(className)
   className = self.NormalizeClassName and self:NormalizeClassName(className or self:GetDetectedClass()) or (className or self:GetDetectedClass())
-  local valid, registryOrMessage = ValidatePayloadRegistry()
+  local valid, registryOrMessage = ValidateBaseRegistry()
   if not valid then return false, registryOrMessage end
 
   local payload = registryOrMessage.classes[className]
@@ -298,4 +282,4 @@ function RUI:InstallClassWeakAuras(className)
 end
 
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 33
+RUI._beta20WeakAuraImportRevision = 34
