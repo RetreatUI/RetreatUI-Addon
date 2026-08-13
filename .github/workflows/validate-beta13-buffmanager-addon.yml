@@ -3,30 +3,11 @@ name: Validate Buff Manager Addon
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
-      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
-      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
-      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
-      - "RetreatUI/Installer/TBCStyleInstaller.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/**"
-      - "RetreatUI_BuffManager/**"
-      - ".github/workflows/publish-release.yml"
-      - ".github/workflows/validate-beta13-buffmanager-addon.yml"
   push:
-    branches: [main]
-    paths:
-      - "RetreatUI/Core/WeakAuraBeta11Fixes.lua"
-      - "RetreatUI/Core/WeakAuraBeta12Fixes.lua"
-      - "RetreatUI/Core/WeakAuraBeta15StanceLane.lua"
-      - "RetreatUI/Profiles/ElvUITargetDebuffs.lua"
-      - "RetreatUI/Installer/TBCStyleInstaller.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/**"
-      - "RetreatUI_BuffManager/**"
-      - ".github/workflows/publish-release.yml"
-      - ".github/workflows/validate-beta13-buffmanager-addon.yml"
+    branches: [main, agent/beta20-coa-layout]
+
+permissions:
+  contents: read
 
 jobs:
   validate:
@@ -37,46 +18,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate standalone Buff Manager and current HUD contract
-        shell: bash
+      - name: Validate beta.20 Buff Manager
         run: |
-          set -euo pipefail
-          luac5.1 -p RetreatUI/Core/WeakAuraBeta11Fixes.lua
-          luac5.1 -p RetreatUI/Core/WeakAuraBeta12Fixes.lua
-          luac5.1 -p RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          luac5.1 -p RetreatUI/Profiles/ElvUITargetDebuffs.lua
-          luac5.1 -p RetreatUI/Installer/TBCStyleInstaller.lua
-          luac5.1 -p RetreatUI_Classes/GlobalStateAnchor.lua
-          luac5.1 -p RetreatUI_Classes/KnightOfXoroth/Curation.lua
           luac5.1 -p RetreatUI_BuffManager/BuffManager.lua
-
-          test -f RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          grep -Fq '## Title: RetreatUI Buff Manager' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          grep -Fq '## Author: Retreat' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          grep -Fq '## Dependencies: RetreatUI' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          grep -Fq '## DefaultState: Disabled' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
-          test ! -e RetreatUI/Core/BuffManager.lua
-          ! grep -Fq 'BuffManager.lua' RetreatUI/RetreatUI.toc
-
-          grep -Fq 'Core\WeakAuraBeta15StanceLane.lua' RetreatUI/RetreatUI.toc
-          grep -Fq 'WeakAuras.GetRegion' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'RenderedTrinketEdge' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          ! grep -Fq 'LANE_WIDTH' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_ICON = 38' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-          grep -Fq 'local STATE_GAP = 6' RetreatUI/Core/WeakAuraBeta15StanceLane.lua
-
-          grep -Fq 'KnightOfXoroth\Curation.lua' RetreatUI_Classes/RetreatUI_Classes.toc
-          grep -Fq '["unleash pestilence"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq '["chainwhip"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq '["snarl"] = true' RetreatUI_Classes/KnightOfXoroth/Curation.lua
-          grep -Fq 'debuffs.enable = false' RetreatUI/Profiles/ElvUITargetDebuffs.lua
-
-          grep -Fq 'cp -a RetreatUI_BuffManager dist/package/RetreatUI_BuffManager' .github/workflows/publish-release.yml
-          grep -Fq 'zip -r "../$ASSET" RetreatUI RetreatUI_Classes RetreatUI_BuffManager' .github/workflows/publish-release.yml
-
-          core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
-          classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
-          buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
-          test "$core_version" = "1.1.7-beta.19"
-          test "$core_version" = "$classes_version"
-          test "$core_version" = "$buff_version"
+          python3 tools/validate_beta20_buffmanager.py
