@@ -29,23 +29,41 @@ function RUI:ApplyDetailsFont()
   end
 
   if type(details.RefreshMainWindow) == "function" then pcall(details.RefreshMainWindow, details, -1, true) end
-  return true, "Fira Sans Heavy applied to Details"
+  return true, "RetreatUI font applied to Details"
 end
 
-function RUI:InstallDetailsProfile()
-  local loaded = self:EnsureAddOnLoaded("Details")
-  if not loaded then return false, "Details is not installed or could not be loaded" end
-
-  local details = _G.Details or _G._detalhes
-  if type(details) ~= "table" or type(details.ImportProfile) ~= "function" then
-    return false, "Details profile API is unavailable"
+local function ImportV2Profile(payload, profileName)
+  local api = _G.DetailsAPI
+  if type(api) ~= "table" then
+    return false, "This Details build does not expose the V2 profile API required by the bundled profile."
   end
-  if type(self.DetailsProfileString) ~= "string" or self.DetailsProfileString == "" then
-    return false, "Bundled Details profile is missing"
+  if type(api.ImportProfile) ~= "function" then
+    return false, "DetailsAPI.ImportProfile is unavailable in this Details build."
   end
 
-  local profileName = self.DetailsProfileName or "RetreatUI"
-  local ok, imported, importError = pcall(details.ImportProfile, details, self.DetailsProfileString, profileName, false, false, true)
+  local ok, result, detail = pcall(api.ImportProfile, api, payload, profileName)
+  if not ok then
+    -- Some Details builds expose the API as plain functions rather than methods.
+    ok, result, detail = pcall(api.ImportProfile, payload, profileName)
+  end
+  if not ok then return false, "Details V2 import error: " .. tostring(result) end
+  if result == false then return false, tostring(detail or "Details rejected the V2 profile") end
+
+  if type(api.SetProfile) == "function" then
+    local setOK, setResult = pcall(api.SetProfile, api, profileName)
+    if not setOK then setOK, setResult = pcall(api.SetProfile, profileName) end
+    if not setOK or setResult == false then
+      return false, "Details profile imported, but activation failed: " .. tostring(setResult)
+    end
+  end
+  return true
+end
+
+local function ImportLegacyProfile(details, payload, profileName)
+  if type(details.ImportProfile) ~= "function" then
+    return false, "Details legacy profile API is unavailable"
+  end
+  local ok, imported, importError = pcall(details.ImportProfile, details, payload, profileName, false, false, true)
   if not ok then return false, "Details import error: " .. tostring(imported) end
   if imported == false then return false, tostring(importError or "Details rejected the profile") end
 
@@ -55,6 +73,32 @@ function RUI:InstallDetailsProfile()
       return false, "Profile imported, but activation failed: " .. tostring(applyResult)
     end
   end
+  return true
+end
+
+function RUI:InstallDetailsProfile()
+  local loaded = self:EnsureAddOnLoaded("Details")
+  if not loaded then return false, "Details is not installed or could not be loaded" end
+
+  local details = _G.Details or _G._detalhes
+  if type(details) ~= "table" then return false, "Details profile API is unavailable" end
+  if type(self.DetailsProfileString) ~= "string" or self.DetailsProfileString == "" then
+    return false, "Bundled Details profile is missing"
+  end
+
+  local profileName = self.DetailsProfileName or "RetreatUI"
+  local isV2 = self.DetailsProfileFormat == "D!ProfileV2" or self.DetailsProfileString:sub(1, 12) == "D!ProfileV2-"
+
+  local ok, message
+  if isV2 then
+    -- Never feed a D!ProfileV2 payload into Details:ImportProfile(). The legacy
+    -- importer attempts its old decompress/deserialize path and produces the
+    -- "couldn't decode / failed to decompress" failure seen in CoA.
+    ok, message = ImportV2Profile(self.DetailsProfileString, profileName)
+  else
+    ok, message = ImportLegacyProfile(details, self.DetailsProfileString, profileName)
+  end
+  if not ok then return false, message end
 
   self:ApplyDetailsFont()
   local db = self:EnsureDB()
@@ -62,8 +106,9 @@ function RUI:InstallDetailsProfile()
     version = self.version,
     profile = profileName,
     imported = true,
+    format = isV2 and "D!ProfileV2" or "legacy",
   }
-  return true, "RetreatUI Details profile imported with Fira Sans Heavy"
+  return true, "RetreatUI Details profile imported"
 end
 
 function RUI:ValidateDetailsProfile()
@@ -72,6 +117,13 @@ function RUI:ValidateDetailsProfile()
 
   local details = _G.Details or _G._detalhes
   if type(details) ~= "table" then return false, "Details! did not initialize" end
+
+  if self.DetailsProfileFormat == "D!ProfileV2" then
+    local api = _G.DetailsAPI
+    if type(api) ~= "table" or type(api.ImportProfile) ~= "function" then
+      return false, "The installed Details build does not support the bundled V2 profile format"
+    end
+  end
 
   local db = self:EnsureDB()
   local marker = db.integrations and db.integrations.details
