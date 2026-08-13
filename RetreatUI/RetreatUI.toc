@@ -11,8 +11,7 @@ Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
 Data\WeakAurasBeta20Payloads.lua
-Data\WeakAurasBeta20\99_ExactLayoutFix.lua
-Data\WeakAurasBeta20\10_Bloodmage.lua
+Integrations\WeakAurasBeta20.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
 Core\SpellbookScanThrottle.lua
@@ -57,7 +56,6 @@ Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
 Integrations\ChatOwnershipSafety.lua
-Integrations\WeakAurasBeta20.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
