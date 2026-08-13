@@ -20,6 +20,16 @@ for path in files:
     for name in re.findall(r'classes\["([^"]+)"\]\s*=', text):
         assert name not in seen, f"duplicate class payload: {name}"
         seen.add(name)
-
 assert seen == expected, f"class mismatch: missing={sorted(expected-seen)} extra={sorted(seen-expected)}"
-print("beta.20 WeakAuras: 21/21 unique CoA class payloads present")
+
+finalizer = (ROOT / "RetreatUI" / "Data" / "WeakAurasBeta20Finalize.lua").read_text(encoding="utf-8")
+assert "count == 21" in finalizer
+
+toc = (ROOT / "RetreatUI" / "RetreatUI.toc").read_text(encoding="utf-8")
+for path in files:
+    assert "Data\\WeakAurasBeta20\\" + path.name in toc, f"TOC does not load {path.name}"
+assert toc.index("Data\\WeakAurasBeta20ShardBridge.lua") < toc.index("Data\\WeakAurasBeta20\\01_Barbarian_Bloodmage.lua")
+assert toc.index("Data\\WeakAurasBeta20\\11_WitchHunter.lua") < toc.index("Data\\WeakAurasBeta20Finalize.lua")
+assert toc.index("Data\\WeakAurasBeta20Finalize.lua") < toc.index("Integrations\\WeakAurasBeta20.lua")
+
+print("beta.20 WeakAuras validation passed: 21/21 unique CoA payloads and canonical load order")
