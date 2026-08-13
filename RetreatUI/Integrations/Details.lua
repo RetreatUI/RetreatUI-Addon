@@ -32,38 +32,23 @@ function RUI:ApplyDetailsFont()
   return true, "RetreatUI font applied to Details"
 end
 
-local function ImportV2Profile(payload, profileName)
-  local api = _G.DetailsAPI
-  if type(api) ~= "table" then
-    return false, "This Details build does not expose the V2 profile API required by the bundled profile."
-  end
-  if type(api.ImportProfile) ~= "function" then
-    return false, "DetailsAPI.ImportProfile is unavailable in this Details build."
-  end
-
-  local ok, result, detail = pcall(api.ImportProfile, api, payload, profileName)
-  if not ok then
-    -- Some Details builds expose the API as plain functions rather than methods.
-    ok, result, detail = pcall(api.ImportProfile, payload, profileName)
-  end
-  if not ok then return false, "Details V2 import error: " .. tostring(result) end
-  if result == false then return false, tostring(detail or "Details rejected the V2 profile") end
-
-  if type(api.SetProfile) == "function" then
-    local setOK, setResult = pcall(api.SetProfile, api, profileName)
-    if not setOK then setOK, setResult = pcall(api.SetProfile, profileName) end
-    if not setOK or setResult == false then
-      return false, "Details profile imported, but activation failed: " .. tostring(setResult)
-    end
-  end
-  return true
-end
-
-local function ImportLegacyProfile(details, payload, profileName)
+local function ImportProfile(details, payload, profileName)
+  -- Ascension's Details build exposes the canonical Details:ImportProfile API.
+  -- Newer DetailsAPI:ImportProfile is only a thin wrapper around this same call,
+  -- so beta.20 deliberately uses the native API that exists on both builds.
   if type(details.ImportProfile) ~= "function" then
-    return false, "Details legacy profile API is unavailable"
+    return false, "Details profile import API is unavailable"
   end
-  local ok, imported, importError = pcall(details.ImportProfile, details, payload, profileName, false, false, true)
+
+  local ok, imported, importError = pcall(
+    details.ImportProfile,
+    details,
+    payload,
+    profileName,
+    false, -- do not import autorun code
+    false, -- not opened from the manual import prompt
+    true   -- overwrite the RetreatUI profile
+  )
   if not ok then return false, "Details import error: " .. tostring(imported) end
   if imported == false then return false, tostring(importError or "Details rejected the profile") end
 
@@ -87,17 +72,7 @@ function RUI:InstallDetailsProfile()
   end
 
   local profileName = self.DetailsProfileName or "RetreatUI"
-  local isV2 = self.DetailsProfileFormat == "D!ProfileV2" or self.DetailsProfileString:sub(1, 12) == "D!ProfileV2-"
-
-  local ok, message
-  if isV2 then
-    -- Never feed a D!ProfileV2 payload into Details:ImportProfile(). The legacy
-    -- importer attempts its old decompress/deserialize path and produces the
-    -- "couldn't decode / failed to decompress" failure seen in CoA.
-    ok, message = ImportV2Profile(self.DetailsProfileString, profileName)
-  else
-    ok, message = ImportLegacyProfile(details, self.DetailsProfileString, profileName)
-  end
+  local ok, message = ImportProfile(details, self.DetailsProfileString, profileName)
   if not ok then return false, message end
 
   self:ApplyDetailsFont()
@@ -106,7 +81,7 @@ function RUI:InstallDetailsProfile()
     version = self.version,
     profile = profileName,
     imported = true,
-    format = isV2 and "D!ProfileV2" or "legacy",
+    format = self.DetailsProfileFormat or "native",
   }
   return true, "RetreatUI Details profile imported"
 end
@@ -116,13 +91,8 @@ function RUI:ValidateDetailsProfile()
   if not loaded then return false, "Details! is required but could not be loaded" end
 
   local details = _G.Details or _G._detalhes
-  if type(details) ~= "table" then return false, "Details! did not initialize" end
-
-  if self.DetailsProfileFormat == "D!ProfileV2" then
-    local api = _G.DetailsAPI
-    if type(api) ~= "table" or type(api.ImportProfile) ~= "function" then
-      return false, "The installed Details build does not support the bundled V2 profile format"
-    end
+  if type(details) ~= "table" or type(details.ImportProfile) ~= "function" then
+    return false, "Details! profile importer is unavailable"
   end
 
   local db = self:EnsureDB()
