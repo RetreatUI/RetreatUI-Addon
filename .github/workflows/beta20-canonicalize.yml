@@ -45,5 +45,7 @@ jobs:
           git add -A
           if ! git diff --cached --quiet; then
             git commit -m 'beta20: canonicalize generated source package'
+            git fetch origin agent/beta20-coa-layout
+            git rebase origin/agent/beta20-coa-layout
             git push origin HEAD:agent/beta20-coa-layout
           fi
