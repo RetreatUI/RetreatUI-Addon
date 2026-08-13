@@ -42,6 +42,7 @@ Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
 Profiles\ElvUIBeta20Exports.lua
+Profiles\ElvUIBeta20Registry.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
