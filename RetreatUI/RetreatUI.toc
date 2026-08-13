@@ -11,19 +11,6 @@ Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
 Data\WeakAurasBeta20Payloads.lua
-Data\WeakAurasBeta20ShardBridge.lua
-Data\WeakAurasBeta20\01_Barbarian_Bloodmage.lua
-Data\WeakAurasBeta20\02_Chronomancer_Cultist.lua
-Data\WeakAurasBeta20\03_Felsworn_Guardian.lua
-Data\WeakAurasBeta20\04_Knight_Necromancer.lua
-Data\WeakAurasBeta20\05_Primalist_Pyromancer.lua
-Data\WeakAurasBeta20\06_Ranger_Reaper.lua
-Data\WeakAurasBeta20\07_Runemaster_Starcaller.lua
-Data\WeakAurasBeta20\08_Stormbringer_SunCleric.lua
-Data\WeakAurasBeta20\09_Templar_Tinker.lua
-Data\WeakAurasBeta20\10_Venomancer_WitchDoctor.lua
-Data\WeakAurasBeta20\11_WitchHunter.lua
-Data\WeakAurasBeta20Finalize.lua
 Integrations\WeakAurasBeta20.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
@@ -55,7 +42,6 @@ Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
 Profiles\ElvUIBeta20Exports.lua
-Profiles\ElvUIBeta20Registry.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
