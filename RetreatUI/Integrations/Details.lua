@@ -6,90 +6,63 @@ local function DetailsObject()
   return type(details) == "table" and details or nil
 end
 
-function RUI:ApplyDetailsFont()
-  local details = DetailsObject()
-  if not details then return false, "Details is not loaded" end
-  local changed = 0
-  local profileName = self.DetailsProfileName or "RetreatUI"
-
+local function ProfileExists(details, profileName)
   if type(details.GetProfile) == "function" then
-    local ok, profile = pcall(details.GetProfile, details, profileName)
-    if ok and type(profile) == "table" then changed = changed + self:ForceFontFields(profile) end
+    local ok, profile = pcall(details.GetProfile, details, profileName, false)
+    if ok and type(profile) == "table" then return true end
   end
-  if type(_detalhes_global) == "table" then changed = changed + self:ForceFontFields(_detalhes_global) end
-  if type(details.GetInstance) == "function" then
-    for index = 1, 20 do
-      local ok, instance = pcall(details.GetInstance, details, index)
-      if ok and type(instance) == "table" then
-        instance.row_info = instance.row_info or {}
-        instance.row_info.font_face = self.fontName
-        instance.window_info = instance.window_info or {}
-        instance.window_info.font_face = self.fontName
-        changed = changed + 2
-      end
-    end
+  if type(_G._detalhes_global) == "table"
+    and type(_G._detalhes_global.__profiles) == "table"
+    and type(_G._detalhes_global.__profiles[profileName]) == "table" then
+    return true
   end
-  if type(details.RefreshMainWindow) == "function" then pcall(details.RefreshMainWindow, details, -1, true) end
-  return true, "RetreatUI font applied to Details"
+  return false
 end
 
-local PROFILE_PREFIX = "D!ProfileV2-"
-
-local function RawProfilePayload(payload)
-  if type(payload) ~= "string" then return nil end
-  if payload:sub(1, #PROFILE_PREFIX) == PROFILE_PREFIX then
-    return payload:sub(#PROFILE_PREFIX + 1)
-  end
-  return payload
-end
-
-local function TryNativeImport(details, payload, profileName)
-  if type(details.ImportProfile) ~= "function" then return nil, "native importer unavailable" end
-  local ok, result = pcall(details.ImportProfile, details, payload, profileName, false, false, true)
+local function ApplyImportedProfile(details, profileName)
+  if type(details.ApplyProfile) ~= "function" then return true end
+  local ok, result = pcall(details.ApplyProfile, details, profileName, true)
   if not ok then return false, tostring(result) end
-  if result == false or result == nil then return false, "profile rejected" end
+  if result == false then return false, "Details refused to activate the imported profile" end
   return true
 end
 
 local function ImportProfile(payload, profileName)
   local details = DetailsObject()
   if not details then return false, "Details is not loaded" end
-
-  -- The visible D!ProfileV2- marker is an export envelope. The native profile
-  -- importer hands its argument directly to the Details decompressor, which
-  -- expects the compressed printable body rather than the envelope prefix.
-  local raw = RawProfilePayload(payload)
-  if type(raw) ~= "string" or raw == "" then return false, "Bundled Details profile payload is empty" end
-
-  if type(details.ImportProfile) == "function" then
-    local ok, reason = TryNativeImport(details, raw, profileName)
-    if ok then return true end
-
-    -- Compatibility only for builds that perform envelope handling internally.
-    if raw ~= payload then
-      local wrappedOK, wrappedReason = TryNativeImport(details, payload, profileName)
-      if wrappedOK then return true end
-      reason = tostring(reason) .. "; wrapped form: " .. tostring(wrappedReason)
-    end
-    return false, "Details rejected the bundled profile: " .. tostring(reason)
+  if type(details.ImportProfile) ~= "function" then
+    return false, "The installed Details build does not expose ImportProfile"
+  end
+  if type(payload) ~= "string" or payload == "" then
+    return false, "Bundled Details profile payload is empty"
   end
 
-  local api = _G.DetailsAPI
-  if type(api) == "table" and type(api.ImportProfile) == "function" then
-    local ok, result, detail = pcall(api.ImportProfile, api, raw, profileName)
-    if not ok then ok, result, detail = pcall(api.ImportProfile, raw, profileName) end
-    if not ok then return false, "Details profile import error: " .. tostring(result) end
-    if result == false or result == nil then return false, tostring(detail or "Details rejected the bundled profile") end
-    if type(details.ApplyProfile) == "function" then
-      local applied, applyResult = pcall(details.ApplyProfile, details, profileName, true)
-      if not applied or applyResult == false then
-        return false, "Details profile imported, but activation failed: " .. tostring(applyResult)
-      end
-    end
-    return true
+  -- Use the exact same contract as the working RetreatUI-TBC installer:
+  -- pass the complete D!ProfileV2 transmission to Details:ImportProfile.
+  -- Some Classic/CoA builds return nil even after a successful side-effect,
+  -- so only an explicit false means rejection. We then verify the profile
+  -- actually exists and activate it before reporting success.
+  local ok, imported, importError = pcall(
+    details.ImportProfile,
+    details,
+    payload,
+    profileName,
+    false,
+    false,
+    true
+  )
+
+  if not ok then return false, "Details import error: " .. tostring(imported) end
+  if imported == false then
+    return false, tostring(importError or "Details rejected the bundled profile")
+  end
+  if not ProfileExists(details, profileName) then
+    return false, "Details import returned without creating the RetreatUI profile"
   end
 
-  return false, "The installed Details build does not expose a profile importer"
+  local applied, applyError = ApplyImportedProfile(details, profileName)
+  if not applied then return false, applyError end
+  return true
 end
 
 function RUI:InstallDetailsProfile()
@@ -100,7 +73,7 @@ function RUI:InstallDetailsProfile()
   if type(self.DetailsProfileString) ~= "string" or self.DetailsProfileString == "" then
     return false, "Bundled Details profile is missing"
   end
-  if self.DetailsProfileFormat ~= "D!ProfileV2" and self.DetailsProfileString:sub(1, #PROFILE_PREFIX) ~= PROFILE_PREFIX then
+  if self.DetailsProfileFormat ~= "D!ProfileV2" and self.DetailsProfileString:sub(1, 11) ~= "D!ProfileV2-" then
     return false, "Bundled Details profile is not D!ProfileV2"
   end
 
@@ -108,7 +81,6 @@ function RUI:InstallDetailsProfile()
   local ok, message = ImportProfile(self.DetailsProfileString, profileName)
   if not ok then return false, message end
 
-  self:ApplyDetailsFont()
   local db = self:EnsureDB()
   db.integrations = db.integrations or {}
   db.integrations.details = {
@@ -117,7 +89,7 @@ function RUI:InstallDetailsProfile()
     imported = true,
     format = "D!ProfileV2",
   }
-  return true, "RetreatUI Details profile imported and activated"
+  return true, "RetreatUI Details profile imported, verified and activated"
 end
 
 function RUI:ValidateDetailsProfile()
@@ -125,17 +97,19 @@ function RUI:ValidateDetailsProfile()
   if not loaded then return false, "Details is required but could not be loaded" end
   local details = DetailsObject()
   if not details then return false, "Details did not initialize" end
-  local hasImporter = type(details.ImportProfile) == "function"
-  if not hasImporter then
-    local api = _G.DetailsAPI
-    hasImporter = type(api) == "table" and type(api.ImportProfile) == "function"
+  if type(details.ImportProfile) ~= "function" then
+    return false, "The installed Details build does not expose ImportProfile"
   end
-  if not hasImporter then return false, "The installed Details build does not expose a profile importer" end
+
+  local profileName = self.DetailsProfileName or "RetreatUI"
+  if not ProfileExists(details, profileName) then
+    return false, "The RetreatUI Details profile does not exist"
+  end
 
   local db = self:EnsureDB()
   local marker = db.integrations and db.integrations.details
   if type(marker) ~= "table" or marker.version ~= self.version or marker.imported ~= true or marker.format ~= "D!ProfileV2" then
-    return false, "The RetreatUI Details profile was not imported"
+    return false, "The RetreatUI Details profile was not installed by this version"
   end
   return true
 end
