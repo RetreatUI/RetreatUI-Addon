@@ -46,12 +46,15 @@ jobs:
           details_profile = Path('RetreatUI/Profiles/Details.lua').read_text(encoding='utf-8')
           wa = Path('RetreatUI/Integrations/WeakAurasBeta20.lua').read_text(encoding='utf-8')
 
-          assert 'local PROFILE_PREFIX = "D!ProfileV2-"' in details
-          assert 'RawProfilePayload' in details
-          assert 'details.ImportProfile' in details, 'Details must use Details:ImportProfile'
-          assert 'pcall(details.ImportProfile, details, payload, profileName, false, false, true)' in details
-          assert 'local raw = RawProfilePayload(payload)' in details
-          assert 'DetailsAPI' in details, 'separate DetailsAPI is compatibility fallback only'
+          # Details: same proven contract as RetreatUI-TBC. Pass the complete
+          # D!ProfileV2 transmission, reject only explicit false, verify profile.
+          assert 'pcall(\n    details.ImportProfile' in details
+          assert 'payload,\n    profileName,\n    false,\n    false,\n    true' in details
+          assert 'if imported == false then' in details
+          assert 'ProfileExists(details, profileName)' in details
+          assert 'ApplyImportedProfile(details, profileName)' in details
+          assert 'RawProfilePayload' not in details
+          assert 'DetailsAPI' not in details
 
           match = re.search(r'D!ProfileV2-([A-Za-z0-9+/=]+)', details_profile)
           assert match, 'bundled Details D!ProfileV2 envelope missing'
@@ -59,17 +62,24 @@ jobs:
           decoded = zlib.decompress(compressed, -15)
           assert len(decoded) > 1000, 'bundled Details profile body did not raw-deflate decode'
 
-          assert 'pcall(WeakAuras.Import' not in wa, 'CoA must not use the broken options-side WeakAuras import path'
+          # WeakAuras: never use the broken options import path and never install
+          # by writing decoded displays straight into SavedVariables. Decode the
+          # static payload, add through the public Add API, and verify via GetData.
+          assert 'pcall(WeakAuras.Import' not in wa
+          assert 'WeakAuras.Import(' not in wa
           assert 'LoadAddOn("WeakAurasOptions")' not in wa
           assert '_G.WeakAurasOptions' not in wa
           assert 'LibStub("LibDeflate", true)' in wa
           assert 'LibStub("LibSerialize", true)' in wa
-          assert 'WeakAurasSaved.displays' in wa
-          assert 'SaveTransmission' in wa and 'DecodeTransmission' in wa
-          assert 'SanitizeDisplay' in wa
-          assert 'CLEANUP_REVISION = 36' in wa
-          assert 'INSTALL_REVISION = 36' in wa
-          print('Validated direct WeakAuras SavedVariables install and Details profile-body import')
+          assert 'pcall(WeakAuras.Add, data)' in wa
+          assert 'WeakAuras.GetData(data.id)' in wa
+          assert 'WeakAuras.ScanForLoads' in wa
+          assert 'SaveTransmission' not in wa
+          assert 'displays[root.id] = root' not in wa
+          assert 'CLEANUP_REVISION = 37' in wa
+          assert 'INSTALL_REVISION = 37' in wa
+          assert 'installed and verified' in wa
+          print('Validated WeakAuras Add/GetData installer and proven Details import semantics')
           PY
 
       - name: Validate versions and TOC references
