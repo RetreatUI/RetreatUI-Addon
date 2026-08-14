@@ -33,27 +33,53 @@ function RUI:ApplyDetailsFont()
   return true, "RetreatUI font applied to Details"
 end
 
+local PROFILE_PREFIX = "D!ProfileV2-"
+
+local function RawProfilePayload(payload)
+  if type(payload) ~= "string" then return nil end
+  if payload:sub(1, #PROFILE_PREFIX) == PROFILE_PREFIX then
+    return payload:sub(#PROFILE_PREFIX + 1)
+  end
+  return payload
+end
+
+local function TryNativeImport(details, payload, profileName)
+  if type(details.ImportProfile) ~= "function" then return nil, "native importer unavailable" end
+  local ok, result = pcall(details.ImportProfile, details, payload, profileName, false, false, true)
+  if not ok then return false, tostring(result) end
+  if result == false or result == nil then return false, "profile rejected" end
+  return true
+end
+
 local function ImportProfile(payload, profileName)
   local details = DetailsObject()
   if not details then return false, "Details is not loaded" end
 
-  -- Details exposes the profile importer on the Details object itself.
-  -- Signature: Details:ImportProfile(profileString, newProfileName,
-  --   bImportAutoRunCode, bIsFromImportPrompt, overwriteExisting)
+  -- The visible D!ProfileV2- marker is an export envelope. The native profile
+  -- importer hands its argument directly to the Details decompressor, which
+  -- expects the compressed printable body rather than the envelope prefix.
+  local raw = RawProfilePayload(payload)
+  if type(raw) ~= "string" or raw == "" then return false, "Bundled Details profile payload is empty" end
+
   if type(details.ImportProfile) == "function" then
-    local ok, result = pcall(details.ImportProfile, details, payload, profileName, false, false, true)
-    if not ok then return false, "Details profile import error: " .. tostring(result) end
-    if result == false then return false, "Details rejected the bundled profile" end
-    return true
+    local ok, reason = TryNativeImport(details, raw, profileName)
+    if ok then return true end
+
+    -- Compatibility only for builds that perform envelope handling internally.
+    if raw ~= payload then
+      local wrappedOK, wrappedReason = TryNativeImport(details, payload, profileName)
+      if wrappedOK then return true end
+      reason = tostring(reason) .. "; wrapped form: " .. tostring(wrappedReason)
+    end
+    return false, "Details rejected the bundled profile: " .. tostring(reason)
   end
 
-  -- Compatibility fallback for builds that expose a separate API table.
   local api = _G.DetailsAPI
   if type(api) == "table" and type(api.ImportProfile) == "function" then
-    local ok, result, detail = pcall(api.ImportProfile, api, payload, profileName)
-    if not ok then ok, result, detail = pcall(api.ImportProfile, payload, profileName) end
+    local ok, result, detail = pcall(api.ImportProfile, api, raw, profileName)
+    if not ok then ok, result, detail = pcall(api.ImportProfile, raw, profileName) end
     if not ok then return false, "Details profile import error: " .. tostring(result) end
-    if result == false then return false, tostring(detail or "Details rejected the bundled profile") end
+    if result == false or result == nil then return false, tostring(detail or "Details rejected the bundled profile") end
     if type(details.ApplyProfile) == "function" then
       local applied, applyResult = pcall(details.ApplyProfile, details, profileName, true)
       if not applied or applyResult == false then
@@ -74,7 +100,7 @@ function RUI:InstallDetailsProfile()
   if type(self.DetailsProfileString) ~= "string" or self.DetailsProfileString == "" then
     return false, "Bundled Details profile is missing"
   end
-  if self.DetailsProfileFormat ~= "D!ProfileV2" and self.DetailsProfileString:sub(1, 12) ~= "D!ProfileV2-" then
+  if self.DetailsProfileFormat ~= "D!ProfileV2" and self.DetailsProfileString:sub(1, #PROFILE_PREFIX) ~= PROFILE_PREFIX then
     return false, "Bundled Details profile is not D!ProfileV2"
   end
 
