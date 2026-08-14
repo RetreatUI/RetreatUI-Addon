@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-local CLEANUP_REVISION = 34
+local CLEANUP_REVISION = 35
 
 local CLASS_NAMES = {
   "Barbarian", "Bloodmage", "Chronomancer", "Cultist", "Felsworn", "Guardian",
@@ -65,10 +65,10 @@ end
 
 local OWNED_ROOTS = BuildOwnedRoots()
 
--- Recovery migration for beta.20 test imports that contained unsafe CoA
--- Spell Known load conditions. Only RetreatUI-owned displays are removed.
--- Direct saved-data removal avoids evaluating the broken load conditions via
--- WeakAuras.Delete while the recovery is in progress.
+-- One-time recovery for beta.20 test imports. Previous builds could leave
+-- RetreatUI-owned displays with unsafe Spell Known load conditions in
+-- WeakAurasSaved. Remove only RetreatUI-owned roots and their descendants,
+-- then require one reload before importing the corrected static payloads.
 local function PurgeOwnedSavedDisplays()
   if type(WeakAurasSaved) ~= "table" or type(WeakAurasSaved.displays) ~= "table" then
     return 0
@@ -112,8 +112,6 @@ local function RunStartupRecovery()
   local state = CleanupState()
   local previousRevision = tonumber(state.beta20CleanupRevision) or 0
 
-  -- A reload after a successful purge is the boundary that makes the new
-  -- import safe. Clear the one-shot block automatically on that next load.
   if previousRevision >= CLEANUP_REVISION then
     state.beta20ReloadRequired = false
     return 0
@@ -154,44 +152,6 @@ local function After(delay, callback)
   end)
 end
 
-local function EnsureWeakAurasOptionsLoaded()
-  if not WeakAurasImportAvailable() then
-    return false, "WeakAuras is unavailable."
-  end
-  if InCombatLockdown and InCombatLockdown() then
-    return false, "Leave combat before importing WeakAuras."
-  end
-
-  if IsAddOnLoaded and not IsAddOnLoaded("WeakAurasOptions") then
-    if type(LoadAddOn) ~= "function" then
-      return false, "WeakAurasOptions cannot be loaded by this client."
-    end
-    local loaded, reason = LoadAddOn("WeakAurasOptions")
-    if not loaded and not (IsAddOnLoaded and IsAddOnLoaded("WeakAurasOptions")) then
-      return false, "WeakAurasOptions could not be loaded: " .. tostring(reason or "unknown reason")
-    end
-  end
-
-  local open = WeakAuras.OpenOptions or WeakAuras.ShowOptions
-  if type(open) ~= "function" then
-    return false, "WeakAuras 5.21.2 options API is unavailable."
-  end
-  local ok, err = pcall(open)
-  if not ok then
-    return false, "WeakAuras options could not be initialized: " .. tostring(err)
-  end
-  return true
-end
-
-local function OptionsAreReady()
-  if type(WeakAuras) ~= "table" then return false end
-  if type(WeakAuras.IsOptionsOpen) == "function" then
-    local ok, isOpen = pcall(WeakAuras.IsOptionsOpen)
-    if ok and isOpen == true then return true end
-  end
-  return type(_G.WeakAurasOptions) == "table"
-end
-
 local function SetImportResult(ok, message)
   RUI._beta20LastWeakAuraImportOK = ok == true
   RUI._beta20LastWeakAuraImportMessage = tostring(message or "")
@@ -203,29 +163,31 @@ local function SetImportResult(ok, message)
   end
 end
 
-local function ImportWhenOptionsReady(payload, label, elapsed)
+local function ConfirmImportWindow(label, elapsed)
   elapsed = tonumber(elapsed) or 0
-  if OptionsAreReady() then
-    local called, result, detail = pcall(WeakAuras.Import, payload)
-    if not called then
-      SetImportResult(false, tostring(result))
-      return
-    end
-    if result == false or detail ~= nil then
-      SetImportResult(false, tostring(detail or "WeakAuras rejected the import."))
-      return
-    end
+  if type(WeakAuras) ~= "table" then
+    SetImportResult(false, "WeakAuras unloaded while opening the import window.")
+    return
+  end
+
+  if type(WeakAuras.IsOptionsOpen) ~= "function" then
     SetImportResult(true, label .. " import opened successfully.")
     return
   end
 
-  if elapsed >= 3.0 then
-    SetImportResult(false, "WeakAurasOptions did not become ready for import.")
+  local ok, isOpen = pcall(WeakAuras.IsOptionsOpen)
+  if ok and isOpen == true then
+    SetImportResult(true, label .. " import opened successfully.")
+    return
+  end
+
+  if elapsed >= 2.0 then
+    SetImportResult(false, "WeakAuras did not open its import window.")
     return
   end
 
   After(0.05, function()
-    ImportWhenOptionsReady(payload, label, elapsed + 0.05)
+    ConfirmImportWindow(label, elapsed + 0.05)
   end)
 end
 
@@ -239,13 +201,32 @@ local function ImportPayload(payload, label)
   end
 
   if RUI:Beta20WeakAurasNeedsRecoveryReload() then
-    return false, "Old beta.20 WeakAuras were cleaned. Reload the UI once, then run this step again."
+    return false, "Old beta.20 WeakAuras were removed. Reload the UI once, then run this step again."
   end
 
-  local ready, reason = EnsureWeakAurasOptionsLoaded()
-  if not ready then return false, reason end
+  if InCombatLockdown and InCombatLockdown() then
+    return false, "Leave combat before importing WeakAuras."
+  end
 
-  ImportWhenOptionsReady(payload, label, 0)
+  if not WeakAurasImportAvailable() then
+    local loaded = RUI.EnsureAddOnLoaded and RUI:EnsureAddOnLoaded("WeakAuras")
+    if not loaded or not WeakAurasImportAvailable() then
+      return false, "WeakAuras.Import is unavailable in the installed WeakAuras build."
+    end
+  end
+
+  -- WeakAuras.Import is the supported entry point. It decodes the payload,
+  -- loads WeakAurasOptions itself and opens the import/update window. Do not
+  -- manually LoadAddOn/OpenOptions or wait for a WeakAurasOptions global.
+  local called, result, detail = pcall(WeakAuras.Import, payload)
+  if not called then
+    return false, "WeakAuras import error: " .. tostring(result)
+  end
+  if result == false or detail ~= nil then
+    return false, tostring(detail or "WeakAuras rejected the import.")
+  end
+
+  After(0.05, function() ConfirmImportWindow(label, 0.05) end)
   return true, label .. " import is opening."
 end
 
@@ -255,7 +236,7 @@ function RUI:ValidateCoAWeakAurasImportAPI()
   end
   local valid, registryOrMessage = ValidateBaseRegistry()
   if not valid then return false, registryOrMessage end
-  return true, "WeakAuras 5.21.2 import path and General payload are available."
+  return true, "WeakAuras 5.21.2 native import path and General payload are available."
 end
 
 function RUI:InstallGeneralWeakAuras()
@@ -282,4 +263,4 @@ function RUI:InstallClassWeakAuras(className)
 end
 
 RUI._beta20WeakAuraImportLoaded = true
-RUI._beta20WeakAuraImportRevision = 34
+RUI._beta20WeakAuraImportRevision = 35
