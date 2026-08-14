@@ -1,14 +1,12 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.20 revision 36 deliberately does not use WeakAuras.Import().
--- The CoA 5.21.2 build can expose WeakAuras.Import while its options-side
--- Private.OpenUpdate callback is absent. RetreatUI therefore decodes its own
--- already-generated !WA:2! transmissions and installs only the contained
--- display tables into WeakAurasSaved. WeakAuras consumes those normal display
--- tables on the final installer reload.
-local CLEANUP_REVISION = 36
-local INSTALL_REVISION = 36
+-- beta.20 revision 37 follows the same proven install path as RetreatUI-TBC:
+-- decode the bundled transmission, add real display tables through WeakAuras.Add,
+-- then verify every display through WeakAuras.GetData before reporting success.
+-- No WeakAurasOptions import UI and no direct SavedVariables installation.
+local CLEANUP_REVISION = 37
+local INSTALL_REVISION = 37
 
 local CLASS_NAMES = {
   "Barbarian", "Bloodmage", "Chronomancer", "Cultist", "Felsworn", "Guardian",
@@ -46,7 +44,7 @@ local function ValidateBaseRegistry()
   return true, registry
 end
 
-local function CleanupState()
+local function IntegrationState()
   RetreatUIDB = RetreatUIDB or {}
   RetreatUIDB.integrations = RetreatUIDB.integrations or {}
   RetreatUIDB.integrations.weakAuras = RetreatUIDB.integrations.weakAuras or {}
@@ -58,8 +56,6 @@ local function IsClassOwnedID(id, className)
   if id == "RetreatUI - " .. className or id == className .. " Class Pack" then return true end
   if id:sub(1, #className + 3) == className .. " - " then return true end
   if id:find(" - " .. className, 1, true) then return true end
-  if id:find(" - " .. className .. " Aux", 1, true) then return true end
-  if id:find("(Active) - " .. className, 1, true) then return true end
   if id == "Aura Bar - " .. className or id == "Main - " .. className then return true end
   if id == "Resources - " .. className or id == "Bars - " .. className then return true end
   if id == "Dynamic Bars - " .. className or id == "Aux Bar - " .. className then return true end
@@ -68,6 +64,8 @@ local function IsClassOwnedID(id, className)
 end
 
 local function IsAnyRetreatUIOwnedID(id)
+  if type(id) ~= "string" then return false end
+  if id:sub(1, 12) == "RetreatUI - " then return true end
   if GENERAL_IDS[id] then return true end
   for _, className in ipairs(CLASS_NAMES) do
     if IsClassOwnedID(id, className) then return true end
@@ -75,32 +73,18 @@ local function IsAnyRetreatUIOwnedID(id)
   return false
 end
 
-local function IsUnsafeSpellKnownLoad(data)
-  if type(data) ~= "table" or type(data.load) ~= "table" then return false end
-  local function Scan(value)
-    if type(value) ~= "table" then return false end
-    for key, child in pairs(value) do
-      local normalized = tostring(key):lower():gsub("[_%-%s]", "")
-      if normalized:find("spellknown", 1, true) then return true end
-      if type(child) == "table" and Scan(child) then return true end
-    end
-    return false
-  end
-  return Scan(data.load)
-end
-
-local function BuildOwnedRemovalSet(displays, className, generalOnly, unsafeOnly)
+local function BuildOwnedRemovalSet(displays, className, generalOnly)
   local remove = {}
-  for id, data in pairs(displays or {}) do
+  for id in pairs(displays or {}) do
     local owned
     if generalOnly then
-      owned = GENERAL_IDS[id] == true
+      owned = GENERAL_IDS[id] == true or id == "RetreatUI - General"
     elseif className then
       owned = IsClassOwnedID(id, className)
     else
       owned = IsAnyRetreatUIOwnedID(id)
     end
-    if owned and (not unsafeOnly or IsUnsafeSpellKnownLoad(data)) then remove[id] = true end
+    if owned then remove[id] = true end
   end
 
   local changed = true
@@ -116,47 +100,16 @@ local function BuildOwnedRemovalSet(displays, className, generalOnly, unsafeOnly
   return remove
 end
 
-local function RemoveDisplays(displays, remove)
-  local count = 0
-  for id in pairs(remove or {}) do
-    if displays[id] ~= nil then
-      displays[id] = nil
-      count = count + 1
-    end
-  end
-  return count
-end
-
-local function PurgeOldBeta20Displays()
-  if type(WeakAurasSaved) ~= "table" or type(WeakAurasSaved.displays) ~= "table" then return 0 end
-  return RemoveDisplays(WeakAurasSaved.displays, BuildOwnedRemovalSet(WeakAurasSaved.displays))
-end
-
-local function RunStartupRecovery()
-  local state = CleanupState()
-  local previousRevision = tonumber(state.beta20CleanupRevision) or 0
-  if previousRevision >= CLEANUP_REVISION then
-    state.beta20RecoveryReloadRequired = false
-    return 0
-  end
-
-  local removed = PurgeOldBeta20Displays()
-  state.beta20CleanupRevision = CLEANUP_REVISION
-  state.beta20CleanupRemoved = removed
-  state.beta20RecoveryReloadRequired = removed > 0
-  return removed
-end
-
-RUI._beta20WeakAuraCleanupRemoved = RunStartupRecovery()
-
-function RUI:Beta20WeakAurasNeedsRecoveryReload()
-  return CleanupState().beta20RecoveryReloadRequired == true
-end
-
 local function EnsureWeakAurasLoaded()
-  if type(WeakAurasSaved) == "table" then return true end
+  if type(_G.WeakAuras) == "table"
+    and type(_G.WeakAuras.Add) == "function"
+    and type(_G.WeakAuras.GetData) == "function" then
+    return true
+  end
   if RUI.EnsureAddOnLoaded then RUI:EnsureAddOnLoaded("WeakAuras") end
-  return type(WeakAurasSaved) == "table"
+  return type(_G.WeakAuras) == "table"
+    and type(_G.WeakAuras.Add) == "function"
+    and type(_G.WeakAuras.GetData) == "function"
 end
 
 local function GetCodecLibraries()
@@ -180,7 +133,7 @@ local function DecodeTransmission(payload)
   if type(payload) ~= "string" or payload:sub(1, 6) ~= "!WA:2!" then
     return nil, "Payload is not a WeakAuras 2 transmission."
   end
-  if not EnsureWeakAurasLoaded() then return nil, "WeakAuras could not be loaded." end
+  if not EnsureWeakAurasLoaded() then return nil, "WeakAuras Add API is unavailable." end
 
   local deflate, serialize, reason = GetCodecLibraries()
   if not deflate then return nil, reason end
@@ -198,78 +151,177 @@ local function DecodeTransmission(payload)
   return transmission
 end
 
-local function SanitizeDisplay(data)
-  if type(data) ~= "table" then return end
-  data.load = type(data.load) == "table" and data.load or {spec = {multi = {}}, use_never = false}
-  local function StripSpellKnown(value)
-    if type(value) ~= "table" then return end
-    local delete = {}
-    for key, child in pairs(value) do
-      local normalized = tostring(key):lower():gsub("[_%-%s]", "")
-      if normalized:find("spellknown", 1, true) then
-        delete[#delete + 1] = key
-      elseif type(child) == "table" then
-        StripSpellKnown(child)
-      end
+local function StripSpellKnown(value)
+  if type(value) ~= "table" then return end
+  local delete = {}
+  for key, child in pairs(value) do
+    local normalized = tostring(key):lower():gsub("[_%-%s]", "")
+    if normalized:find("spellknown", 1, true) then
+      delete[#delete + 1] = key
+    elseif type(child) == "table" then
+      StripSpellKnown(child)
     end
-    for _, key in ipairs(delete) do value[key] = nil end
   end
-  StripSpellKnown(data.load)
+  for _, key in ipairs(delete) do value[key] = nil end
 end
 
-local function SaveTransmission(transmission, className, isGeneral)
-  if not EnsureWeakAurasLoaded() then return false, "WeakAuras could not be loaded." end
-  WeakAurasSaved.displays = type(WeakAurasSaved.displays) == "table" and WeakAurasSaved.displays or {}
-  local displays = WeakAurasSaved.displays
+local function PrepareDisplay(data)
+  if type(data) ~= "table" then return false, "WeakAuras display is not a table." end
+  if type(data.id) ~= "string" or data.id == "" then return false, "WeakAuras display has no ID." end
+  if type(data.load) == "table" then StripSpellKnown(data.load) end
 
-  local remove = isGeneral
-    and BuildOwnedRemovalSet(displays, nil, true, false)
-    or BuildOwnedRemovalSet(displays, className, false, false)
-  RemoveDisplays(displays, remove)
+  -- The CoA fork can carry a different internal revision while retaining the
+  -- 5.21.2 transmission format. Mark generated tables with the actual runtime
+  -- revision before WeakAuras.Add owns them.
+  if type(WeakAuras.InternalVersion) == "function" then
+    local ok, runtimeVersion = pcall(WeakAuras.InternalVersion)
+    if ok and type(runtimeVersion) == "number" then data.internalVersion = runtimeVersion end
+  end
+  return true
+end
+
+local function DisplayDepth(displays, id)
+  local depth, seen, data = 0, {}, displays and displays[id]
+  while type(data) == "table" and type(data.parent) == "string" and not seen[data.parent] and depth < 50 do
+    seen[data.parent] = true
+    depth = depth + 1
+    data = displays[data.parent]
+  end
+  return depth
+end
+
+local function RemoveOwnedDisplays(className, isGeneral)
+  local displays = type(WeakAurasSaved) == "table" and WeakAurasSaved.displays or nil
+  if type(displays) ~= "table" then return 0 end
+
+  local remove = BuildOwnedRemovalSet(displays, className, isGeneral)
+  local ids = {}
+  for id in pairs(remove) do ids[#ids + 1] = id end
+  table.sort(ids, function(a, b) return DisplayDepth(displays, a) > DisplayDepth(displays, b) end)
+
+  local removed = 0
+  for _, id in ipairs(ids) do
+    local data = WeakAuras.GetData(id) or displays[id]
+    if type(data) == "table" and type(WeakAuras.Delete) == "function" then
+      pcall(WeakAuras.Delete, data)
+    end
+    if displays[id] ~= nil then displays[id] = nil end
+    if WeakAuras.GetData(id) == nil then removed = removed + 1 end
+  end
+  return removed
+end
+
+local function AddDisplay(data)
+  local prepared, reason = PrepareDisplay(data)
+  if not prepared then return false, reason end
+
+  local existing = WeakAuras.GetData(data.id)
+  if existing and existing.uid then data.uid = existing.uid end
+
+  local ok, err = pcall(WeakAuras.Add, data)
+  if not ok then return false, tostring(err) end
+  if not WeakAuras.GetData(data.id) then
+    return false, data.id .. " was not present after WeakAuras.Add"
+  end
+  return true
+end
+
+local function InstallTransmission(transmission, className, isGeneral)
+  if not EnsureWeakAurasLoaded() then return false, "WeakAuras Add API is unavailable." end
+
+  RemoveOwnedDisplays(className, isGeneral)
 
   local root = transmission.d
   local children = type(transmission.c) == "table" and transmission.c or {}
-  SanitizeDisplay(root)
-  if type(root.id) ~= "string" or root.id == "" then return false, "WeakAuras package root has no ID." end
-  displays[root.id] = root
+  local prepared, reason = PrepareDisplay(root)
+  if not prepared then return false, reason end
 
-  local saved = 1
-  for _, child in ipairs(children) do
-    if type(child) == "table" and type(child.id) == "string" and child.id ~= "" then
-      SanitizeDisplay(child)
-      displays[child.id] = child
-      saved = saved + 1
+  -- Seed the package root first, exactly as the proven TBC installer does.
+  local seed = {}
+  for key, value in pairs(root) do seed[key] = value end
+  seed.controlledChildren = {}
+  local ok, err = AddDisplay(seed)
+  if not ok then return false, err end
+
+  -- Add parents before their descendants when the transmission contains nested
+  -- dynamic groups. This makes the direct Add path deterministic.
+  local installed = {[root.id] = true}
+  local pending = {}
+  for index, child in ipairs(children) do pending[index] = child end
+  local remaining = #pending
+
+  while remaining > 0 do
+    local progressed = false
+    for index, child in ipairs(pending) do
+      if child ~= false then
+        local parent = type(child) == "table" and child.parent or nil
+        if not parent or installed[parent] or WeakAuras.GetData(parent) then
+          local childOK, childErr = AddDisplay(child)
+          if not childOK then return false, childErr end
+          installed[child.id] = true
+          pending[index] = false
+          remaining = remaining - 1
+          progressed = true
+        end
+      end
+    end
+    if not progressed then
+      -- Preserve transmission order as a last resort for unusual parent graphs.
+      for index, child in ipairs(pending) do
+        if child ~= false then
+          local childOK, childErr = AddDisplay(child)
+          if not childOK then return false, childErr end
+          installed[child.id] = true
+          pending[index] = false
+          remaining = remaining - 1
+        end
+      end
     end
   end
 
-  local state = CleanupState()
+  -- Restore the exported root with its final controlledChildren ordering.
+  ok, err = AddDisplay(root)
+  if not ok then return false, err end
+
+  if type(WeakAuras.ScanForLoads) == "function" then pcall(WeakAuras.ScanForLoads) end
+
+  if not WeakAuras.GetData(root.id) then return false, root.id .. " is missing after installation" end
+  for _, child in ipairs(children) do
+    if type(child) == "table" and type(child.id) == "string" and not WeakAuras.GetData(child.id) then
+      return false, child.id .. " is missing after installation"
+    end
+  end
+
+  local state = IntegrationState()
+  state.beta20CleanupRevision = CLEANUP_REVISION
   state.beta20InstallRevision = INSTALL_REVISION
-  state.beta20InstallReloadRequired = true
-  state.beta20LastSavedDisplays = saved
-  return true, saved
+  state.beta20LastInstalledDisplays = 1 + #children
+  state.beta20InstallReloadRequired = false
+  return true, 1 + #children
 end
 
 local function InstallPayload(payload, label, className, isGeneral)
   label = tostring(label or "WeakAuras")
-  if RUI:Beta20WeakAurasNeedsRecoveryReload() then
-    return false, "Old RetreatUI WeakAuras were removed. Reload once, reopen the installer, then continue."
-  end
   if InCombatLockdown and InCombatLockdown() then return false, "Leave combat before installing WeakAuras." end
 
   local transmission, reason = DecodeTransmission(payload)
   if not transmission then return false, reason end
-  local ok, savedOrReason = SaveTransmission(transmission, className, isGeneral)
-  if not ok then return false, savedOrReason end
-  return true, string.format("%s installed (%d displays). Continue; the final Reload activates it.", label, savedOrReason)
+  local ok, countOrReason = InstallTransmission(transmission, className, isGeneral)
+  if not ok then return false, countOrReason end
+  return true, string.format("%s installed and verified (%d displays).", label, countOrReason)
+end
+
+function RUI:Beta20WeakAurasNeedsRecoveryReload()
+  return false
 end
 
 function RUI:ValidateCoAWeakAurasImportAPI()
   local valid, registryOrMessage = ValidateBaseRegistry()
   if not valid then return false, registryOrMessage end
-  if not EnsureWeakAurasLoaded() then return false, "WeakAuras could not be loaded." end
+  if not EnsureWeakAurasLoaded() then return false, "WeakAuras Add/GetData API is unavailable." end
   local deflate, serialize, reason = GetCodecLibraries()
   if not deflate or not serialize then return false, reason end
-  return true, "WeakAuras 5.21.2 direct display installer is ready."
+  return true, "WeakAuras 5.21.2 Add/GetData installer is ready."
 end
 
 function RUI:InstallGeneralWeakAuras()
