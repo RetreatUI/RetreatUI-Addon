@@ -110,3 +110,31 @@ jobs:
               assert roots == ['RetreatUI_BuffManager'], roots
           print('Validated package roots')
           PY
+
+      - name: Build validated beta.20 test packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf dist
+          mkdir -p dist/main dist/buff
+          cp -a RetreatUI dist/main/RetreatUI
+          cp -a RetreatUI_Classes dist/main/RetreatUI_Classes
+          cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager
+          (cd dist/main && zip -qr ../RetreatUI_v1.1.7-beta.20-test.zip RetreatUI RetreatUI_Classes)
+          (cd dist/buff && zip -qr ../RetreatUI_BuffManager_v1.1.7-beta.20-test.zip RetreatUI_BuffManager)
+          (cd dist && sha256sum RetreatUI_v1.1.7-beta.20-test.zip > RetreatUI_v1.1.7-beta.20-test.zip.sha256)
+          (cd dist && sha256sum RetreatUI_BuffManager_v1.1.7-beta.20-test.zip > RetreatUI_BuffManager_v1.1.7-beta.20-test.zip.sha256)
+          test -s dist/RetreatUI_v1.1.7-beta.20-test.zip
+          test -s dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip
+
+      - name: Upload validated beta.20 test packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-v1.1.7-beta.20-test
+          path: |
+            dist/RetreatUI_v1.1.7-beta.20-test.zip
+            dist/RetreatUI_v1.1.7-beta.20-test.zip.sha256
+            dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip
+            dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip.sha256
+          if-no-files-found: error
+          retention-days: 14
