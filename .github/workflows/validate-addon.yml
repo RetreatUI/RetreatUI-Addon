@@ -32,6 +32,30 @@ jobs:
           python3 tools/validate_beta20_reference_payloads.py
           python3 tools/validate_beta20_buffmanager.py
 
+      - name: Validate runtime import contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+
+          details = Path('RetreatUI/Integrations/Details.lua').read_text(encoding='utf-8')
+          wa = Path('RetreatUI/Integrations/WeakAurasBeta20.lua').read_text(encoding='utf-8')
+
+          assert 'details.ImportProfile' in details, 'Details must use Details:ImportProfile'
+          assert 'pcall(details.ImportProfile, details, payload, profileName, false, false, true)' in details
+          assert 'DetailsAPI' in details, 'separate DetailsAPI is compatibility fallback only'
+          assert 'local api = _G.DetailsAPI' in details
+
+          assert 'pcall(WeakAuras.Import, payload)' in wa, 'WeakAuras must use native WeakAuras.Import'
+          assert 'LoadAddOn("WeakAurasOptions")' not in wa
+          assert 'WeakAurasOptions did not become ready' not in wa
+          assert '_G.WeakAurasOptions' not in wa
+          assert 'CLEANUP_REVISION = 35' in wa
+          assert 'Old beta.20 WeakAuras were removed. Reload the UI once' in wa
+          print('Validated Details and WeakAuras runtime import contracts')
+          PY
+
       - name: Validate versions and TOC references
         shell: bash
         run: |
