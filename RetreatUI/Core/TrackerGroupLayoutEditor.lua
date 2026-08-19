@@ -34,6 +34,13 @@ local function GroupTrackers(className, key)
   return grouped[key] or {}
 end
 
+local function SpellIcon(spellID)
+  if not tonumber(spellID) or type(GetSpellInfo) ~= "function" then return nil end
+  local ok, _, _, icon = pcall(GetSpellInfo, tonumber(spellID))
+  if ok then return icon end
+  return nil
+end
+
 local function PositionHandle(handle, className)
   if not handle then return end
   local layout = RUI:GetTrackerGroupLayout(className, handle.key)
@@ -70,9 +77,7 @@ local function PositionHandle(handle, className)
     local tracker = trackers[index]
     if tracker then
       texture:Show()
-      local spellID = tonumber(tracker.spellID)
-      local icon = spellID and GetSpellTexture and GetSpellTexture(spellID)
-      texture:SetTexture(icon or "Interface\\Icons\\INV_Misc_QuestionMark")
+      texture:SetTexture(SpellIcon(tracker.spellID) or "Interface\\Icons\\INV_Misc_QuestionMark")
     else
       texture:Hide()
     end
