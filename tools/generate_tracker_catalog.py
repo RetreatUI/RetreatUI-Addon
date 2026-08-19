@@ -1,14 +1,20 @@
 #!/usr/bin/env python3
-"""Generate compact CoA tracker catalog data from the professional audit workbook.
+"""Generate the compact CoA Tracker Builder catalog from the Professional Audit workbook.
 
 Usage:
   python tools/generate_tracker_catalog.py "RetreatUI Spell Database — Professional Audit.xlsx"
 
-The output is RetreatUI/Data/GeneratedSpellAuditCatalog.lua. The runtime keeps
-raw class data as strings and only materializes the class being browsed.
+Output:
+  RetreatUI/Data/GeneratedSpellAuditCatalog.lua
+
+The generated file intentionally does not embed descriptions or spell names.
+The 3.3.5 client resolves names/icons from the spell ID. This keeps the full
+21-class audit catalog small while preserving spec/category/cooldown/duration/
+charge/stack/related-aura hints used by RetreatUI.
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 import zipfile
@@ -17,19 +23,19 @@ from pathlib import Path
 
 NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 RID = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"
-REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 OUTPUT = Path("RetreatUI/Data/GeneratedSpellAuditCatalog.lua")
 SHEET_NAME = "CoA • All Spells"
+CATEGORY_CODE = {"Utility": "U", "Offensive": "O", "Defensive": "D", "Interrupts": "I"}
 
 
 def shared_strings(zf: zipfile.ZipFile) -> list[str]:
     if "xl/sharedStrings.xml" not in zf.namelist():
         return []
     root = ET.fromstring(zf.read("xl/sharedStrings.xml"))
-    result = []
-    for si in root.findall("m:si", NS):
-        result.append("".join((node.text or "") for node in si.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t")))
-    return result
+    return [
+        "".join((node.text or "") for node in si.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t"))
+        for si in root.findall("m:si", NS)
+    ]
 
 
 def sheet_path(zf: zipfile.ZipFile, name: str) -> str:
@@ -68,8 +74,7 @@ def workbook_rows(path: Path):
         for row in root.findall(".//m:sheetData/m:row", NS):
             values = {}
             for cell in row.findall("m:c", NS):
-                ref = cell.attrib.get("r", "")
-                match = re.match(r"([A-Z]+)", ref)
+                match = re.match(r"([A-Z]+)", cell.attrib.get("r", ""))
                 if match:
                     values[match.group(1)] = cell_value(cell, shared)
             yield int(row.attrib.get("r", 0)), values
@@ -77,9 +82,11 @@ def workbook_rows(path: Path):
 
 def seconds_from(description: str, keyword: str) -> float:
     text = description.lower()
-    patterns = ((r"([\d.]+)\s*(?:hr|hour)s?\s+" + keyword, 3600),
-                (r"([\d.]+)\s*mins?\s+" + keyword, 60),
-                (r"([\d.]+)\s*secs?\s+" + keyword, 1))
+    patterns = (
+        (r"([\d.]+)\s*(?:hr|hour)s?\s+" + keyword, 3600),
+        (r"([\d.]+)\s*mins?\s+" + keyword, 60),
+        (r"([\d.]+)\s*secs?\s+" + keyword, 1),
+    )
     for pattern, multiplier in patterns:
         match = re.search(pattern, text)
         if match:
@@ -94,19 +101,27 @@ def hints(name: str, description: str, category: str, interrupt: str):
     recharge = seconds_from(description, "recharge")
     charge_match = re.search(r"(\d+)\s+charges?", low)
     charges = int(charge_match.group(1)) if charge_match else 0
+
     duration = 0.0
     duration_match = re.search(r"\bfor\s+([\d.]+)\s*(sec|secs|second|seconds|min|mins|minute|minutes)\b", low)
     if duration_match:
         duration = float(duration_match.group(1)) * (60 if duration_match.group(2).startswith("min") else 1)
+
     stacks = 0
     for pattern in (r"stacking\s+(?:up\s+to\s+)?(\d+)\s+times?", r"stacking\s+(?:up\s+to\s+)?(\d+)\s+stacks?"):
         match = re.search(pattern, low)
         if match:
-            stacks = int(match.group(1)); break
-    related = sorted({int(v) for v in re.findall(r"\[Spell ID\s+(\d+)\]", description, re.I)})
+            stacks = int(match.group(1))
+            break
+
+    related = sorted({int(value) for value in re.findall(r"\[Spell ID\s+(\d+)\]", description, re.I)})
     passive = "passive" in low
-    advanced_words = ("visual", " trigger", "trigger ", "dummy", "test ", " test", "reset ", "remove ", " check", "check ", "applier", "proc source", "internal", "debug", "placeholder")
+    advanced_words = (
+        "visual", " trigger", "trigger ", "dummy", "test ", " test", "reset ", "remove ",
+        " check", "check ", "applier", "proc source", "internal", "debug", "placeholder",
+    )
     advanced = any(word in lname for word in advanced_words)
+
     flags = ""
     if cooldown: flags += "C"
     if charges: flags += "H"
@@ -121,11 +136,11 @@ def hints(name: str, description: str, category: str, interrupt: str):
 
 
 def field(value) -> str:
-    if not value:
+    if value in (None, "", 0, 0.0):
         return ""
     if isinstance(value, float) and value.is_integer():
         return str(int(value))
-    return str(value).replace("\\", "\\\\").replace("\t", "\\t").replace("\r", "").replace("\n", "\\n")
+    return str(value)
 
 
 def lua_long_string(text: str) -> str:
@@ -137,32 +152,65 @@ def lua_long_string(text: str) -> str:
 
 def main() -> int:
     source = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("RetreatUI Spell Database — Professional Audit.xlsx")
-    by_class: dict[str, list[str]] = {}
+    classes: dict[str, dict] = {}
     total = 0
+
     for row_number, row in workbook_rows(source):
         if row_number < 5:
             continue
-        cls, spec, name = row.get("A", ""), row.get("B", ""), row.get("C", "")
+        class_name, spec, name = row.get("A", ""), row.get("B", ""), row.get("C", "")
         raw_id = row.get("D", "")
-        if not cls or not name or not raw_id:
+        if not class_name or not spec or not name or not raw_id:
             continue
         try:
             spell_id = int(float(raw_id))
         except ValueError:
             continue
+
         description, category = row.get("E", ""), row.get("F", "")
         cooldown, duration, charges, recharge, stacks, related, flags = hints(name, description, category, row.get("H", ""))
-        values = [spell_id, spec, name, category, flags, cooldown, duration, charges, recharge, stacks, ",".join(map(str, related))]
-        by_class.setdefault(cls, []).append("\t".join(field(value) for value in values))
+        bucket = classes.setdefault(class_name, {"specs": [], "spec_index": {}, "rows": []})
+        if spec not in bucket["spec_index"]:
+            bucket["specs"].append(spec)
+            bucket["spec_index"][spec] = len(bucket["specs"])
+
+        values = [
+            spell_id,
+            bucket["spec_index"][spec],
+            CATEGORY_CODE.get(category, "X"),
+            flags,
+            cooldown,
+            duration,
+            charges,
+            recharge,
+            stacks,
+            ",".join(map(str, related)),
+        ]
+        bucket["rows"].append("|".join(field(value) for value in values))
         total += 1
 
-    lines = ["local RUI = RetreatUI", "if not RUI then return end", "", "-- AUTO-GENERATED. Do not edit by hand."]
-    for cls in sorted(by_class):
-        raw = "\n".join(by_class[cls])
-        lines.append(f"RUI:RegisterRawAuditSpellCatalog({cls!r}, {lua_long_string(raw)})")
+    lines = [
+        "local RUI = RetreatUI",
+        "if not RUI then return end",
+        "",
+        "-- AUTO-GENERATED. Do not edit by hand.",
+        "-- Source: RetreatUI Spell Database - Professional Audit.xlsx",
+    ]
+    for class_name in sorted(classes):
+        bucket = classes[class_name]
+        specs = "{" + ",".join(json.dumps(value, ensure_ascii=False) for value in bucket["specs"]) + "}"
+        raw = "\n".join(bucket["rows"])
+        lines.append(
+            "RUI:RegisterCompactAuditSpellCatalog("
+            + json.dumps(class_name, ensure_ascii=False)
+            + ", " + specs + ", " + lua_long_string(raw) + ")"
+        )
     lines.append("")
+
+    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text("\n".join(lines), encoding="utf-8")
-    print(f"Generated {total} CoA spell rows across {len(by_class)} classes -> {OUTPUT}")
+    size_kib = OUTPUT.stat().st_size / 1024
+    print(f"Generated {total} CoA spell rows across {len(classes)} classes -> {OUTPUT} ({size_kib:.1f} KiB)")
     return 0
 
 
