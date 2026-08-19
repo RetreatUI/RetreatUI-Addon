@@ -2,7 +2,7 @@
 ## Title: RetreatUI Classes
 ## Notes: CoA class metadata, spell data and native state tracking for RetreatUI.
 ## Author: Retreat
-## Version: 1.1.7-beta.33
+## Version: 1.1.7-beta.34
 ## Dependencies: RetreatUI
 ## DefaultState: Enabled
 
