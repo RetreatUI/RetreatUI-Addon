@@ -9,12 +9,36 @@ local LEGACY_PLAYER_DEBUFF_NAMES = {
   "Pestilence of Famine", "Pestilence of War", "Pestilence of Conquest",
 }
 
+local function HasTrackingType(entry, wanted)
+  if type(entry) ~= "table" then return false end
+  if type(entry.trackingTypes) == "table" then
+    for _, value in ipairs(entry.trackingTypes) do
+      if value == wanted then return true end
+    end
+  end
+  return entry.trackingType == wanted
+end
+
+local function EntrySpellID(entry)
+  if type(entry) ~= "table" then return nil end
+  local spellID = tonumber(entry.auraID) or tonumber(entry.spellID)
+  if not spellID and entry.auraName and RUI.GetSpellID then
+    local ok, resolved = pcall(RUI.GetSpellID, RUI, entry.auraName)
+    if ok then spellID = tonumber(resolved) end
+  end
+  if not spellID and entry.name and RUI.GetSpellID then
+    local ok, resolved = pcall(RUI.GetSpellID, RUI, entry.name)
+    if ok then spellID = tonumber(resolved) end
+  end
+  return spellID and spellID > 0 and spellID or nil
+end
+
 local function DesiredNameplateDebuffs(className)
   local desired = {}
   if not RUI.GetTrackerDestinationEntries then return desired end
   for _, entry in ipairs(RUI:GetTrackerDestinationEntries(className, "nameplates", "debuff") or {}) do
-    local spellID = tonumber(entry.auraID) or tonumber(entry.spellID)
-    if spellID and spellID > 0 then desired[spellID] = true end
+    local spellID = EntrySpellID(entry)
+    if spellID then desired[spellID] = true end
   end
   return desired
 end
@@ -67,6 +91,88 @@ function RUI:CleanLegacyTurboPlatesTrackerWhitelists(className)
   end
 
   return true, removed
+end
+
+-- TurboPlates documents blacklist entries as spells that are never shown and
+-- whitelist entries as spells that bypass normal filters. For every selected
+-- RetreatUI debuff tracker, make the destination checkbox authoritative:
+-- Nameplates ON  -> whitelist it and remove any blacklist entry.
+-- Nameplates OFF -> blacklist it and remove any whitelist entry.
+-- Removing the tracker entirely restores the pre-RetreatUI TurboPlates state.
+local function ApplyAuthoritativeTrackerDestinations(className)
+  if type(TurboPlatesDB) ~= "table" then return false, "TurboPlates is not loaded" end
+  TurboPlatesDB.auras = TurboPlatesDB.auras or {}
+  TurboPlatesDB.auras.whitelist = TurboPlatesDB.auras.whitelist or {}
+  TurboPlatesDB.auras.blacklist = TurboPlatesDB.auras.blacklist or {}
+
+  className = className or (RUI.GetDetectedClass and RUI:GetDetectedClass())
+  if type(className) ~= "string" or className == "" then return false, "class unavailable" end
+
+  RetreatUIDB = RetreatUIDB or {}
+  RetreatUIDB.integrations = RetreatUIDB.integrations or {}
+  RetreatUIDB.integrations.turboTrackerDestinationAuthority = RetreatUIDB.integrations.turboTrackerDestinationAuthority or {}
+  local managed = RetreatUIDB.integrations.turboTrackerDestinationAuthority
+  local selected = {}
+
+  for _, entry in ipairs(RUI:GetSelectedTrackers(className) or {}) do
+    if HasTrackingType(entry, "debuff") then
+      local spellID = EntrySpellID(entry)
+      if spellID then
+        local enabled = RUI.TrackerUsesDestination and RUI:TrackerUsesDestination(entry, "nameplates") or false
+        selected[spellID] = enabled and true or false
+      end
+    end
+  end
+
+  for key, record in pairs(managed) do
+    local spellID = tonumber(record.spellID) or tonumber(key)
+    if spellID and selected[spellID] == nil then
+      if record.hadWhitelist then
+        TurboPlatesDB.auras.whitelist[spellID] = record.originalWhitelist
+      else
+        TurboPlatesDB.auras.whitelist[spellID] = nil
+      end
+      if record.hadBlacklist then
+        TurboPlatesDB.auras.blacklist[spellID] = record.originalBlacklist
+      else
+        TurboPlatesDB.auras.blacklist[spellID] = nil
+      end
+      managed[key] = nil
+    end
+  end
+
+  for spellID, enabled in pairs(selected) do
+    local key = tostring(spellID)
+    if not managed[key] then
+      managed[key] = {
+        spellID = spellID,
+        hadWhitelist = TurboPlatesDB.auras.whitelist[spellID] ~= nil,
+        originalWhitelist = TurboPlatesDB.auras.whitelist[spellID],
+        hadBlacklist = TurboPlatesDB.auras.blacklist[spellID] ~= nil,
+        originalBlacklist = TurboPlatesDB.auras.blacklist[spellID],
+      }
+    end
+
+    if enabled then
+      TurboPlatesDB.auras.blacklist[spellID] = nil
+      TurboPlatesDB.auras.whitelist[spellID] = true
+    else
+      TurboPlatesDB.auras.whitelist[spellID] = nil
+      TurboPlatesDB.auras.blacklist[spellID] = true
+    end
+  end
+
+  return true, "TurboPlates tracker destinations enforced"
+end
+
+local BaseApplyTurboPlatesTrackerDestinations = RUI.ApplyTurboPlatesTrackerDestinations
+if type(BaseApplyTurboPlatesTrackerDestinations) == "function" then
+  function RUI:ApplyTurboPlatesTrackerDestinations(className)
+    local ok, message = BaseApplyTurboPlatesTrackerDestinations(self, className)
+    local authorityOK, authorityMessage = ApplyAuthoritativeTrackerDestinations(className)
+    if not ok then return ok, message end
+    return authorityOK, authorityMessage or message
+  end
 end
 
 -- If the legacy TurboPlates profile installer runs later, let it finish first,
