@@ -3,6 +3,11 @@ if not RUI then return end
 
 local ROWS = 12
 local ROW_HEIGHT = 42
+local ALLOWED_TYPES = {
+  cooldown=true, buff=true, proc=true, debuff=true, stacks=true,
+  charges=true, resource=true, summon=true,
+}
+local ALLOWED_UNITS = {player=true, target=true, focus=true, pet=true}
 
 local function EnsureState(self)
   RetreatUIDB = RetreatUIDB or {}
@@ -20,6 +25,44 @@ local function ClassSelection(self, className)
   return db.selected[className]
 end
 
+local function AddType(result, seen, value)
+  if type(value) ~= "string" or not ALLOWED_TYPES[value] or seen[value] then return end
+  seen[value] = true
+  result[#result + 1] = value
+end
+
+local function CleanTypes(values, fallback)
+  local result, seen = {}, {}
+  if type(values) == "table" then
+    for _, value in ipairs(values) do AddType(result, seen, value) end
+  elseif type(values) == "string" then
+    AddType(result, seen, values)
+  end
+  if #result == 0 and type(fallback) == "table" then
+    for _, value in ipairs(fallback) do AddType(result, seen, value) end
+  end
+  if #result == 0 then AddType(result, seen, "cooldown") end
+  return result
+end
+
+local function HasType(types, value)
+  for _, current in ipairs(types or {}) do if current == value then return true end end
+  return false
+end
+
+local function TemplateForTypes(types)
+  if HasType(types, "resource") then return "resource" end
+  if HasType(types, "debuff") then return "debuff" end
+  if HasType(types, "proc") and HasType(types, "stacks") then return "proc_stacks" end
+  if HasType(types, "proc") then return "proc" end
+  if HasType(types, "buff") and HasType(types, "stacks") then return "buff_stacks" end
+  if HasType(types, "buff") and HasType(types, "cooldown") then return "cooldown_aura" end
+  if HasType(types, "buff") then return "buff" end
+  if HasType(types, "charges") then return "charges" end
+  if HasType(types, "summon") then return "summon" end
+  return "cooldown"
+end
+
 function RUI:GetSelectedTrackers(className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
   local selected = ClassSelection(self, className)
@@ -29,23 +72,74 @@ function RUI:GetSelectedTrackers(className)
   return result
 end
 
-function RUI:IsTrackerSelected(className, key)
-  return ClassSelection(self, className)[key] ~= nil
+function RUI:GetTrackerSelection(className, key)
+  if type(key) ~= "string" or key == "" then return nil end
+  return ClassSelection(self, className)[key]
 end
 
+function RUI:IsTrackerSelected(className, key)
+  return self:GetTrackerSelection(className, key) ~= nil
+end
+
+function RUI:RemoveTrackerSelection(className, key)
+  if type(className) ~= "string" or className == "" or type(key) ~= "string" or key == "" then return false end
+  local selected = ClassSelection(self, className)
+  if not selected[key] then return false end
+  selected[key] = nil
+  return true
+end
+
+function RUI:SaveTrackerSelection(item, config)
+  if type(item) ~= "table" or type(item.key) ~= "string" or type(item.className) ~= "string" then
+    return false, "invalid tracker item"
+  end
+  config = type(config) == "table" and config or {}
+  local types = CleanTypes(config.trackingTypes, item.trackingTypes)
+  local unit = ALLOWED_UNITS[config.unit] and config.unit or item.defaultUnit or "player"
+  if not ALLOWED_UNITS[unit] then unit = "player" end
+
+  local display = config.display == "bar" and "bar" or "icon"
+  if HasType(types, "resource") and config.display == nil then display = "bar" end
+  local iconSize = tonumber(config.iconSize) or 36
+  iconSize = math.max(20, math.min(80, math.floor(iconSize + 0.5)))
+  local glow = (config.glow == "ready" or config.glow == "active") and config.glow or "off"
+
+  local selected = ClassSelection(self, item.className)
+  selected[item.key] = {
+    key = item.key,
+    className = item.className,
+    name = item.name,
+    spellID = item.spellID,
+    auraID = item.auraID,
+    auraName = item.auraName,
+    template = TemplateForTypes(types),
+    unit = unit,
+    trackingType = types[1], -- legacy compatibility for beta.22/.23 saved data
+    trackingTypes = types,
+    specialization = item.specialization,
+    category = item.category,
+    settings = {
+      display = display,
+      iconSize = iconSize,
+      showCooldownText = config.showCooldownText ~= false,
+      showDuration = config.showDuration ~= false,
+      showStacks = config.showStacks == true,
+      learnedOnly = config.learnedOnly ~= false,
+      combatOnly = config.combatOnly == true,
+      glow = glow,
+    },
+  }
+  return true, selected[item.key]
+end
+
+-- Compatibility helper retained for any older caller. New UI uses the editor.
 function RUI:ToggleTrackerSelection(item)
   if type(item) ~= "table" or type(item.key) ~= "string" or type(item.className) ~= "string" then return false end
-  local selected = ClassSelection(self, item.className)
-  if selected[item.key] then
-    selected[item.key] = nil
+  if self:IsTrackerSelected(item.className, item.key) then
+    self:RemoveTrackerSelection(item.className, item.key)
     return false
   end
-  local trackingType = item.trackingTypes and item.trackingTypes[1] or nil
-  selected[item.key] = {
-    key=item.key, className=item.className, name=item.name, spellID=item.spellID,
-    auraID=item.auraID, template=item.template or "cooldown", unit=item.defaultUnit or "player",
-    trackingType=trackingType, specialization=item.specialization,
-  }
+  self:SaveTrackerSelection(item, {trackingTypes=item.trackingTypes, unit=item.defaultUnit})
   return true
 end
 
@@ -72,7 +166,7 @@ local function CreateBuilder(self)
   if type(CreateFrame) ~= "function" or not UIParent then return nil end
 
   local frame = CreateFrame("Frame", "RetreatUITrackerBuilder", UIParent)
-  frame:SetWidth(690); frame:SetHeight(650)
+  frame:SetWidth(690); frame:SetHeight(710)
   frame:SetPoint("CENTER")
   frame:SetFrameStrata("DIALOG")
   frame:EnableMouse(true)
@@ -89,11 +183,15 @@ local function CreateBuilder(self)
 
   local subtitle = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
   subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
-  subtitle:SetText("Choose what you want to track. RetreatUI only stores the tracker definition in this test build.")
+  subtitle:SetText("Choose abilities, then configure exactly what each tracker should watch.")
   frame.subtitle = subtitle
 
   local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
   close:SetPoint("TOPRIGHT", -4, -4)
+  close:SetScript("OnClick", function()
+    if RUI.trackerEditorFrame then RUI.trackerEditorFrame:Hide() end
+    frame:Hide()
+  end)
 
   local search = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
   search:SetAutoFocus(false); search:SetWidth(270); search:SetHeight(24)
@@ -139,10 +237,16 @@ local function CreateBuilder(self)
     row.toggle = CreateFrame("Button", nil, row, "UIPanelButtonTemplate")
     row.toggle:SetWidth(82); row.toggle:SetHeight(22); row.toggle:SetPoint("RIGHT", -3, 0)
     row.toggle:SetScript("OnClick", function()
-      if row.item then
+      if not row.item then return end
+      if type(RUI.OpenTrackerEditor) == "function" then
+        RUI:OpenTrackerEditor(row.item)
+      else
         RUI:ToggleTrackerSelection(row.item)
         RUI:RefreshTrackerBuilder()
       end
+    end)
+    row:SetScript("OnDoubleClick", function()
+      if row.item and type(RUI.OpenTrackerEditor) == "function" then RUI:OpenTrackerEditor(row.item) end
     end)
     frame.rows[index] = row
   end
@@ -162,7 +266,16 @@ local function CreateBuilder(self)
     RUI:RefreshTrackerBuilder()
   end
   search:SetScript("OnTextChanged", RefreshFromFilter)
-  for _, check in ipairs({frame.learned,frame.recommended,frame.advanced,frame.allEntries}) do check:SetScript("OnClick", RefreshFromFilter) end
+  frame.recommended:SetScript("OnClick", function()
+    if frame.recommended:GetChecked() then frame.learned:SetChecked(1) end
+    RefreshFromFilter()
+  end)
+  frame.learned:SetScript("OnClick", function()
+    if not frame.learned:GetChecked() and frame.recommended:GetChecked() then frame.recommended:SetChecked(nil) end
+    RefreshFromFilter()
+  end)
+  frame.advanced:SetScript("OnClick", RefreshFromFilter)
+  frame.allEntries:SetScript("OnClick", RefreshFromFilter)
 
   frame:Hide()
   self.trackerBuilderFrame = frame
@@ -174,6 +287,7 @@ function RUI:RefreshTrackerBuilder()
   if not frame then return end
   local db = EnsureState(self)
   local filters = db.filters
+  if frame.recommended:GetChecked() then frame.learned:SetChecked(1) end
   filters.learnedOnly = frame.learned:GetChecked() and true or false
   filters.recommendedOnly = frame.recommended:GetChecked() and true or false
   filters.includeAdvanced = frame.advanced:GetChecked() and true or false
@@ -203,10 +317,13 @@ function RUI:RefreshTrackerBuilder()
       row:Show()
       row.icon:SetTexture(item.icon or "Interface\\Icons\\INV_Misc_QuestionMark")
       row.name:SetText(item.name or "Unknown")
-      local kind = table.concat(item.trackingTypes or {}, " + ")
+      local selected = self:GetTrackerSelection(className, item.key)
+      local shownTypes = selected and selected.trackingTypes or item.trackingTypes
+      if type(shownTypes) ~= "table" and selected and selected.trackingType then shownTypes = {selected.trackingType} end
+      local kind = table.concat(shownTypes or {}, " + ")
       if kind == "" then kind = "choose type" end
       row.meta:SetText((item.specialization or "Shared").."  •  "..(item.category or "Uncategorized").."  •  ID "..tostring(item.spellID or "?").."  •  "..kind)
-      row.toggle:SetText(self:IsTrackerSelected(className, item.key) and "Remove" or "Add")
+      row.toggle:SetText(selected and "Edit" or "Add")
     else
       row:Hide()
     end
@@ -217,6 +334,7 @@ function RUI:OpenTrackerBuilder()
   local frame = CreateBuilder(self)
   if not frame then return false end
   local filters = EnsureState(self).filters
+  if filters.recommendedOnly then filters.learnedOnly = true end
   frame.learned:SetChecked(filters.learnedOnly and 1 or nil)
   frame.recommended:SetChecked(filters.recommendedOnly and 1 or nil)
   frame.advanced:SetChecked(filters.includeAdvanced and 1 or nil)
@@ -230,6 +348,10 @@ end
 function RUI:ToggleTrackerBuilder()
   local frame = CreateBuilder(self)
   if not frame then return false end
-  if frame:IsShown() then frame:Hide(); return false end
+  if frame:IsShown() then
+    if self.trackerEditorFrame then self.trackerEditorFrame:Hide() end
+    frame:Hide()
+    return false
+  end
   return self:OpenTrackerBuilder()
 end
