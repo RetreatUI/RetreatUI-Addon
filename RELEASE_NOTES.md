@@ -1,43 +1,44 @@
-# RetreatUI v1.1.7-beta.28 - Ascension Profile Adapter Audit
+# RetreatUI v1.1.7-beta.29 - Native WeakAuras Import Test
 
-This prerelease switches RetreatUI's profile integration assumptions to the exact Project Ascension addon builds supplied from the launcher environment.
+This prerelease is the first controlled bridge from Tracker Builder data into the exact Project Ascension WeakAuras 5.21.2 build supplied from the launcher environment.
 
-## Audited addon builds
+## Scope
 
-- WeakAuras 5.21.2 (`X-Flavor: 3.3.5`)
-- ElvUI 7.27
-- Details `#Details.20240508.12893.160`
-- TurboPlates 1.4.5
-- DBM 5.21 / revision 5021
+- Keeps all beta.27 Tracker Builder selection/editor/group-layout data.
+- Keeps the beta.28 Ascension addon profile adapters.
+- Adds `/ruiwatest` as an isolated proof-of-concept command.
+- Selects the first currently saved Tracker Builder entry that has Cooldown enabled.
+- Builds one sparse native WeakAuras icon display using the exact Ascension `Cooldown Progress (Spell)` trigger fields.
+- Uses the selected Spell ID directly with `use_exact_spellName = true`.
+- Uses the tracker icon size for the generated display.
+- Uses `showAlways` for this proof so the icon remains visible while the cooldown swipe can still be tested.
+- Sends `{ d = display, c = {}, v = 2000 }` to `WeakAuras.Import()`.
+- Lets WeakAuras run its own `PreAdd`, native defaults, options loading and import/update window.
 
-## What changed
+## Safety rules
 
-- Adds a shared Ascension profile adapter layer for ElvUI, Details, TurboPlates, WeakAuras and DBM.
-- Adds `/rui compat` as a read-only in-game capability check.
-- ElvUI capture/import now targets its native Distributor `!E1!` profile format.
-- Details capture/import now targets `ExportCurrentProfile` / `ImportProfile` directly and no longer assumes a `D!ProfileV2` prefix.
-- TurboPlates profile capture uses validated data-only `TurboPlatesDB` snapshots because the supplied 1.4.5 build keeps its native `!TP1!` import/export API private inside the addon namespace.
-- TurboPlates automatic apply is version-gated to the exact audited 1.4.5 build and backs up the previous DB first.
-- DBM core capture targets the actual Ascension variables `DBM_SavedOptions` and `DBT_SavedOptions`.
-- The separately supplied DBM SavedVariables update package is explicitly not used because it targets the newer `DBM_AllSavedOptions` / `DBT_AllPersistentOptions` model and does not match Ascension DBM 5.21.
-- Adds a native WeakAuras import-envelope bridge which uses `WeakAuras.Import` and never calls `WeakAuras.Add` for Tracker Builder generated content.
-- Removes the old bundled per-class WeakAura payloads and direct Add installer from the RetreatUI TOC load path.
-- Legacy installer WeakAura steps now safely tell the user to use `/rui tracker` instead of installing a bundled class package.
-- Adds a data-only unified profile snapshot API containing current tracker data plus native ElvUI and Details exports, TurboPlates data, and DBM core data.
+This test does **not** call `WeakAuras.Add`.
 
-## WeakAuras safety rule
+This test does **not** decode or encode a WeakAuras string itself.
 
-Tracker Builder generated WeakAuras will use the supplied Ascension WeakAuras 5.21.2 native import/update window. RetreatUI does not decode WA transmissions itself, does not call `WeakAuras.Add`, and does not generate custom trigger Lua for the basic tracker templates.
+This test does **not** use custom trigger Lua.
 
-## First in-game test
+This test does **not** automatically accept/install the aura. The user must confirm it in WeakAuras' own import window.
 
-1. Update to beta.28 through the Beta launcher channel.
-2. Log into CoA normally.
-3. Run `/rui compat`.
-4. Confirm the five addon lines show the expected versions and APIs.
-5. Open `/rui tracker` and confirm beta.27 selections/layout still work unchanged.
-6. Do not run a generated WeakAura import yet; beta.28 is the adapter/capability verification pass.
+If any required native WeakAuras API is missing, RetreatUI reports a normal chat error and stops before opening an import.
 
-Stable remains untouched.
+## Test steps
+
+1. Update to beta.29 through the Beta launcher channel.
+2. Run `/rui tracker` and ensure at least one selected tracker has Cooldown enabled.
+3. Close the Tracker Builder.
+4. Run `/ruiwatest` while out of combat.
+5. Confirm WeakAuras opens its normal import/update window without a Lua error.
+6. Verify the imported preview shows the selected ability name/icon and a native `Cooldown Progress (Spell)` trigger.
+7. Accept the import manually.
+8. Close WeakAuras and verify the icon is visible and reacts to the spell cooldown.
+9. Open `/wa` and confirm the aura is a normal editable WeakAura with no custom trigger code.
+
+Do not promote this build to Stable.
 
 Author: Retreat
