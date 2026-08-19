@@ -10,8 +10,7 @@ The format is based on **Keep a Changelog** and follows semantic versioning wher
 
 ### Added
 
-- Added the first launcher-ready Naowh-style CoA test build based on the validated beta.20 profile/import branch.
-- Added attribution for the Warmane Naowh UI Project reference used by the CoA layout port.
+- Added the next launcher-ready CoA test build based on the validated beta.20 profile/import branch.
 - Added a focused in-game validation plan for ElvUI, Details, TurboPlates and the General/class WeakAura packages.
 
 ### Changed
