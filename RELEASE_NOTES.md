@@ -1,6 +1,6 @@
-# RetreatUI v1.1.7-beta.21 — Naowh CoA Test
+# RetreatUI v1.1.7-beta.21 — CoA Test
 
-This prerelease is the first launcher-ready test build of the Naowh-style RetreatUI layout for Project Ascension: Conquest of Azeroth.
+This prerelease is the next launcher-ready RetreatUI test build for Project Ascension: Conquest of Azeroth.
 
 ## Test scope
 
@@ -12,12 +12,6 @@ This prerelease is the first launcher-ready test build of the Naowh-style Retrea
 - Keeps the compact installer flow: ElvUI -> Details -> TurboPlates -> General WeakAuras -> Class WeakAura -> Reload.
 - DBM is intentionally not part of the RetreatUI CoA package.
 - RetreatUI Buff Manager remains a separate optional addon and is disabled by default.
-
-## Naowh UI reference
-
-The visual and structural reference is the Warmane **Naowh UI Project (Retail-like)** by Lunminas/joaodaspica and Nethanos. The original project standardizes the UI around a shared ElvUI/WeakAuras/Details look and four class WeakAura groups. RetreatUI ports that philosophy to CoA rather than attempting to run the old Wrath addon builds directly on Ascension.
-
-See `NAOWH_UI_CREDITS.md` for attribution.
 
 ## Preserved CoA safety work
 
