@@ -129,6 +129,16 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
+  if command == "compat" or command == "compatibility" or command == "adapters" then
+    if type(RUI.PrintAscensionAddonCompatibility) == "function" then
+      local ok, err = pcall(RUI.PrintAscensionAddonCompatibility, RUI)
+      if not ok then Chat("Compatibility audit failed: " .. tostring(err)) end
+    else
+      Chat("The Ascension addon compatibility adapters did not finish loading.")
+    end
+    return
+  end
+
   if command == "build" or command == "profile" then
     if not RequireSupportedClass() then return end
     if type(RUI.GetBuildProfileStatus) == "function" then
@@ -196,5 +206,5 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
-  Chat("Commands: /rui | /rui hud | /rui tracker | /rui build | /rui utility | /rui buffs | /rui keybinds | /rui automation | /rui status | /rui changelog | /rui repair | /rui reset")
+  Chat("Commands: /rui | /rui hud | /rui tracker | /rui compat | /rui build | /rui utility | /rui buffs | /rui keybinds | /rui automation | /rui status | /rui changelog | /rui repair | /rui reset")
 end
