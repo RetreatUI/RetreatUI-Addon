@@ -1,13 +1,12 @@
 local RUI = RetreatUI
 if not RUI or RUI._weakAurasCountLayoutPolish then return end
 
--- Presentation-only wrapper around the already live-verified native WeakAuras
--- generator. Trigger semantics stay untouched here.
+-- Presentation-only wrapper around the live-verified native WeakAuras generator.
+-- Trigger semantics stay untouched here.
 --
--- Native stack/charge count (%s) belongs in the lower-right corner. For charge
--- abilities, the large OmniCC/countdown number is hidden while at least one
--- charge remains; it is only allowed back at zero charges, when the ability is
--- actually unavailable. This keeps 2/1 charge states clean and readable.
+-- Charge/stack count belongs in the lower-right corner. Charge trackers never
+-- use OmniCC / cooldown-frame countdown numbers; when charges reach zero, a
+-- small native WeakAuras %p text is shown in the center instead.
 
 local BaseBuildNativeTrackerImport = RUI.BuildNativeTrackerImport
 if type(BaseBuildNativeTrackerImport) ~= "function" then return end
@@ -47,7 +46,26 @@ local function FindCooldownTriggerIndex(data)
   return nil
 end
 
-local function AddZeroChargePresentationCondition(data, triggerIndex, countIndex, showCooldownText)
+local function AddNativeCooldownText(data)
+  data.subRegions = type(data.subRegions) == "table" and data.subRegions or {}
+  local text = {
+    type = "subtext",
+    text_text = "%p",
+    text_visible = false,
+    text_color = {1, 1, 1, 1},
+    text_fontSize = 12,
+    text_fontType = "OUTLINE",
+    text_justify = "CENTER",
+    text_selfPoint = "AUTO",
+    anchor_point = "CENTER",
+    text_anchorXOffset = 0,
+    text_anchorYOffset = 0,
+  }
+  data.subRegions[#data.subRegions + 1] = text
+  return #data.subRegions
+end
+
+local function AddZeroChargePresentationCondition(data, triggerIndex, countIndex, timerIndex)
   if not triggerIndex then return end
   data.conditions = type(data.conditions) == "table" and data.conditions or {}
 
@@ -61,18 +79,17 @@ local function AddZeroChargePresentationCondition(data, triggerIndex, countIndex
     changes = {},
   }
 
-  -- At zero charges the corner count is redundant. Hide it and, when the user
-  -- has Cooldown text enabled, let OmniCC/the native cooldown number appear.
   if countIndex then
     condition.changes[#condition.changes + 1] = {
       property = "sub." .. tostring(countIndex) .. ".text_visible",
       value = false,
     }
   end
-  if showCooldownText then
+
+  if timerIndex then
     condition.changes[#condition.changes + 1] = {
-      property = "cooldownTextDisabled",
-      value = false,
+      property = "sub." .. tostring(timerIndex) .. ".text_visible",
+      value = true,
     }
   end
 
@@ -85,13 +102,12 @@ local function PolishPresentation(envelope, entry)
   local countIndex, countText = FindCountSubRegion(data)
 
   if countText then
-    -- Compact ElvUI/Naowh-style corner count rather than a second centered value.
     countText.anchor_point = "INNER_BOTTOMRIGHT"
     countText.text_selfPoint = "AUTO"
     countText.text_anchorXOffset = -2
     countText.text_anchorYOffset = 2
     countText.text_justify = "RIGHT"
-    countText.text_fontSize = 11
+    countText.text_fontSize = 10
     countText.text_fontType = "OUTLINE"
     countText.text_color = {1, 1, 1, 1}
   end
@@ -100,15 +116,21 @@ local function PolishPresentation(envelope, entry)
     local settings = type(entry.settings) == "table" and entry.settings or {}
     local showCooldownText = settings.showCooldownText ~= false
 
-    -- Hide the giant recharge number while 1+ charges remain. The already
-    -- verified charge state still drives the icon and the lower-right %s count.
+    -- Always suppress OmniCC / cooldown-frame numbers on charge icons. This is
+    -- independent of charge state, so their external styling can never cover
+    -- the corner count.
     data.cooldownTextDisabled = true
+
+    local timerIndex
+    if showCooldownText then
+      timerIndex = AddNativeCooldownText(data)
+    end
 
     AddZeroChargePresentationCondition(
       data,
       FindCooldownTriggerIndex(data),
       countIndex,
-      showCooldownText
+      timerIndex
     )
   end
 end
