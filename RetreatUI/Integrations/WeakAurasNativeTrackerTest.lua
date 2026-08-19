@@ -5,12 +5,15 @@ if not RUI then return end
 -- Uses only native WeakAuras trigger data and WeakAuras' own Import() flow.
 -- No WeakAuras.Add, no custom decoder and no custom trigger Lua.
 --
--- Proven live paths retained unchanged:
+-- Live-verified paths retained:
 --   Cooldown
 --   Cooldown + active Buff duration
+--   Buff / Proc
+--   Charges
 --
--- beta.33 extends the same managed aura to native:
---   Buff / Proc, Debuff, Stacks and Charges.
+-- beta.34 mirrors Ascension WeakAuras' own Charge Tracking template behavior:
+-- while at least one charge remains, show the native charge count without a
+-- recharge swipe taking over the icon; at zero charges, show the cooldown swipe.
 
 local function HasType(entry, wanted)
   if type(entry) ~= "table" then return false end
@@ -61,17 +64,26 @@ local function WeakAurasAPI(self)
 end
 
 local function BuildCooldownTrigger(triggerCategory, entry)
+  local trigger = {
+    type = triggerCategory,
+    event = "Cooldown Progress (Spell)",
+    spellName = entry.spellID,
+    use_exact_spellName = true,
+    use_genericShowOn = true,
+    genericShowOn = "showAlways",
+  }
+
+  -- The Ascension WeakAuras Charge Tracking template deliberately does not set
+  -- use_track/track for showAlways charge abilities. Preserve the already
+  -- verified cooldown behavior for non-charge trackers, but mirror the native
+  -- charge template exactly when Charges is enabled.
+  if not HasType(entry, "charges") then
+    trigger.use_track = true
+    trigger.track = "auto"
+  end
+
   return {
-    trigger = {
-      type = triggerCategory,
-      event = "Cooldown Progress (Spell)",
-      spellName = entry.spellID,
-      use_exact_spellName = true,
-      use_genericShowOn = true,
-      genericShowOn = "showAlways",
-      use_track = true,
-      track = "auto",
-    },
+    trigger = trigger,
     untrigger = {},
   }
 end
@@ -106,9 +118,6 @@ local function BuildTriggers(triggerCategory, entry)
   local wantsDebuff = HasType(entry, "debuff")
   local wantsHelpfulAura = HasType(entry, "buff") or HasType(entry, "proc") or (HasType(entry, "stacks") and not wantsDebuff)
 
-  -- A single tracker has one curated aura identity. Requiring both helpful and
-  -- harmful aura semantics at the same time would be ambiguous, so fail safely
-  -- instead of silently generating two contradictory aura triggers.
   if wantsDebuff and (HasType(entry, "buff") or HasType(entry, "proc")) then
     return nil, "one tracker cannot use Buff/Proc and Debuff at the same time; choose the aura type that belongs to this spell"
   end
@@ -142,12 +151,41 @@ local function BuildSubRegions(entry)
   local wantsCount = settings.showStacks == true or HasType(entry, "stacks") or HasType(entry, "charges")
   if not wantsCount then return nil end
 
-  -- %s is WeakAuras' native dynamic stack/count placeholder. For aura2 it is
-  -- the aura stack count; for the cooldown/charges state it exposes the native
-  -- count supplied by WeakAuras. Missing style fields are filled by WA defaults.
   return {
     { type = "subbackground" },
     { type = "subtext", text_text = "%s", text_visible = true },
+  }
+end
+
+local function FindCooldownTriggerIndex(triggers)
+  for index, entry in ipairs(triggers or {}) do
+    if type(entry) == "table" and type(entry.trigger) == "table"
+      and entry.trigger.event == "Cooldown Progress (Spell)" then
+      return index
+    end
+  end
+  return nil
+end
+
+local function BuildChargeConditions(entry, triggers)
+  if not HasType(entry, "charges") then return nil end
+  local triggerIndex = FindCooldownTriggerIndex(triggers)
+  if not triggerIndex then return nil end
+
+  -- Mirrors WeakAurasTemplates/TriggerTemplates.lua hasChargesGrey() for icons:
+  -- the base icon has cooldownSwipe=false; only zero charges enables the swipe.
+  return {
+    {
+      check = {
+        trigger = triggerIndex,
+        variable = "charges",
+        op = "==",
+        value = "0",
+      },
+      changes = {
+        { property = "cooldownSwipe", value = true },
+      },
+    },
   }
 end
 
@@ -165,7 +203,7 @@ function RUI:BuildNativeTrackerImport(entry)
     return nil, "selected tracker has no valid Spell ID"
   end
   if not HasSupportedType(entry) then
-    return nil, "this tracker only uses Resource/Summon types, which are not generated in beta.33"
+    return nil, "this tracker only uses Resource/Summon types, which are not generated in beta.34"
   end
 
   local wa, reason = WeakAurasAPI(self)
@@ -209,6 +247,12 @@ function RUI:BuildNativeTrackerImport(entry)
     triggers = triggers,
   }
 
+  if HasType(entry, "charges") then
+    aura.cooldownSwipe = false
+    aura.cooldownEdge = true
+    aura.conditions = BuildChargeConditions(entry, triggers)
+  end
+
   local subRegions = BuildSubRegions(entry)
   if subRegions then aura.subRegions = subRegions end
 
@@ -220,7 +264,6 @@ function RUI:BuildNativeTrackerImport(entry)
   return envelope, nil, aura.id, ModeLabel(entry), isUpdate, uid
 end
 
--- Compatibility alias for beta.29-beta.32 callers.
 function RUI:BuildNativeCooldownTrackerTest(entry)
   return self:BuildNativeTrackerImport(entry)
 end
