@@ -1,37 +1,38 @@
-# RetreatUI v1.1.7-beta.21 — CoA Test
+# RetreatUI v1.1.7-beta.22 — Tracker Builder Test
 
-This prerelease is the next launcher-ready RetreatUI test build for Project Ascension: Conquest of Azeroth.
+This prerelease is an isolated Project Ascension: Conquest of Azeroth proof-of-concept for the new RetreatUI Tracker Builder.
 
-## Test scope
+## What this build adds
 
-- Builds directly on the validated beta.20 CoA profile/import branch.
-- Keeps the supplied 1440p and 1080p ElvUI exports and the validated Details profile import path.
-- Keeps the static WeakAuras package architecture: General package plus all 21 supported CoA class packages.
-- Keeps the beta.20 WeakAuras installer contract based on WeakAuras' own decode libraries plus `WeakAuras.Add()` / `WeakAuras.GetData()` verification.
-- Keeps TurboPlates integration and the RetreatUI CoA NPC spell/cooldown data.
-- Keeps the compact installer flow: ElvUI -> Details -> TurboPlates -> General WeakAuras -> Class WeakAura -> Reload.
-- DBM is intentionally not part of the RetreatUI CoA package.
-- RetreatUI Buff Manager remains a separate optional addon and is disabled by default.
+- Adds `/rui tracker`, a first 3.3.5-compatible ability/tracker browser.
+- Uses RetreatUI's existing CoA class records plus the Professional Audit spell database as the catalog source.
+- Adds full Professional Audit test catalogs for Barbarian, Bloodmage and Knight of Xoroth.
+- Adds search plus Learned only, Recommended, Advanced and All entries filters.
+- Adds Add/Remove selection for tracker definitions.
+- Stores selected trackers in `RetreatUIDB` so selections can survive reloads.
+- Adds a data-only tracker profile schema with validation for future RetreatUI profile import/export.
+- Adds safe tracker templates for cooldowns, charges, buffs, procs, stacks, debuffs, resources and summons.
 
-## Preserved CoA safety work
+## Important safety scope
 
-- beta.19 WeakAuras runtime performance protections remain intact.
-- beta.18 chat ownership protections remain intact.
-- beta.17 protected-frame and secure-taint protections remain intact.
-- Existing CoA class/resource/state handling from beta.20 remains unchanged for this first visual test build.
+This build does **not** generate, import, replace or modify WeakAuras when using the Tracker Builder. It only browses spell data and stores tracker definitions.
 
-## What to test in game
+The Tracker Builder does not use direct `WeakAuras.Add`, custom WeakAuras decoding, arbitrary imported Lua, runtime frame hooks or generated class WeakAura packs.
 
-1. Install/update through the RetreatUI Beta channel after the R2 prerelease is published.
-2. Fully close Project Ascension before launching the game again.
-3. Run `/rui` and apply the installer from start to finish.
-4. Verify ElvUI positioning, unit frames, action bars, minimap, chat and raid/party frames at the selected resolution.
-5. Verify the Details profile is present and active.
-6. Verify TurboPlates loads normally and NPC ability/cooldown data still works.
-7. Verify General WeakAuras and the detected CoA class package install without duplicate HUD elements.
-8. Verify the class UI layout, resources, procs, state/stance icons and cooldowns in combat.
-9. Report any layout mismatch separately from any class/spell logic problem so the port can be iterated without replacing the whole package.
+The existing beta.21 UI/install systems are otherwise left in place so this proof-of-concept can be tested independently.
 
-This is a Beta / prerelease test build and must not be promoted to Stable until the Vol'jin in-game pass is clean.
+## First in-game test
+
+1. Install/update through the RetreatUI Beta channel.
+2. Log into a supported CoA character, preferably Knight of Xoroth for the first pass.
+3. Run `/rui tracker`.
+4. Confirm the Tracker Builder opens without Lua errors.
+5. Test searching by spell name and Spell ID.
+6. Toggle Learned only, Recommended, Advanced and All entries.
+7. Add several trackers and remove one again.
+8. `/reload`, reopen `/rui tracker`, and confirm the selected count and choices persist.
+9. Confirm no new WeakAuras were created or changed by these actions.
+
+Do not promote this build to Stable until this browser/data pass is clean.
 
 Author: Retreat
