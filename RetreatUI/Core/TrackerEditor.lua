@@ -260,7 +260,7 @@ function RUI:OpenTrackerEditor(item)
   frame.learnedOnly:SetChecked(DefaultSetting(existing, "learnedOnly", true) and 1 or nil)
   frame.combatOnly:SetChecked(DefaultSetting(existing, "combatOnly", false) and 1 or nil)
 
-  frame.remove:SetShown(existing ~= nil)
+  if existing then frame.remove:Show() else frame.remove:Hide() end
   frame.save:SetText(existing and "Save Changes" or "Add Tracker")
   RefreshSummary(frame)
   frame:Show()
