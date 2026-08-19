@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.37",
-  "title": "RetreatUI v1.1.7-beta.37 Native Charge Text Test",
+  "version": "1.1.7-beta.38",
+  "title": "RetreatUI v1.1.7-beta.38 Charge Text Without Cooldown Frame",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
