@@ -1,40 +1,37 @@
-# RetreatUI v1.1.7-beta.19
+# RetreatUI v1.1.7-beta.21 — CoA Test
 
-This prerelease targets the remaining large CoA frame-time spikes reported with `RetreatUI_Classes` enabled. The established HUD layout and class curation are unchanged.
+This prerelease is the next launcher-ready RetreatUI test build for Project Ascension: Conquest of Azeroth.
 
-## WeakAuras runtime performance
+## Test scope
 
-- Removes RetreatUI's synthetic global `UNIT_POWER_FREQUENT` wake-up that previously called `WeakAuras.ScanEvents()` every 0.12 seconds.
-- Native Ascension resource polling now uses the RetreatUI-only `RETREATUI_RESOURCE_PULSE` event at a lower cadence and only for classes that actually expose a native custom resource.
-- Main, Utility, Proc, State and Target WeakAuras no longer all react directly to raw `UNIT_AURA` storms.
-- Adds a debounced RetreatUI event coordinator so combat event bursts produce at most one short refresh batch instead of multiple complete HUD recalculations.
-- Player aura updates are routed only to player-owned HUD elements; target aura updates are routed only to target debuffs.
-- Cooldown and usable-state events are collapsed into the RetreatUI row refresh path.
+- Builds directly on the validated beta.20 CoA profile/import branch.
+- Keeps the supplied 1440p and 1080p ElvUI exports and the validated Details profile import path.
+- Keeps the static WeakAuras package architecture: General package plus all 21 supported CoA class packages.
+- Keeps the beta.20 WeakAuras installer contract based on WeakAuras' own decode libraries plus `WeakAuras.Add()` / `WeakAuras.GetData()` verification.
+- Keeps TurboPlates integration and the RetreatUI CoA NPC spell/cooldown data.
+- Keeps the compact installer flow: ElvUI -> Details -> TurboPlates -> General WeakAuras -> Class WeakAura -> Reload.
+- DBM is intentionally not part of the RetreatUI CoA package.
+- RetreatUI Buff Manager remains a separate optional addon and is disabled by default.
 
-## Runtime state caching
+## Preserved CoA safety work
 
-- Main/Utility rows, Proc tracking, Class State tracking and Target Debuffs now cache their final snapshots until the relevant game state changes.
-- This prevents repeated 40-aura scans and repeated spell cooldown/usable queries when several WeakAura regions refresh during the same event burst.
-- Native custom-resource snapshots use a short shared cache so bar/segment displays do not independently rescan Ascension frames during the same update.
+- beta.19 WeakAuras runtime performance protections remain intact.
+- beta.18 chat ownership protections remain intact.
+- beta.17 protected-frame and secure-taint protections remain intact.
+- Existing CoA class/resource/state handling from beta.20 remains unchanged for this first visual test build.
 
-## Combat-log isolation
+## What to test in game
 
-- The Hellfire Imp runtime no longer listens to `COMBAT_LOG_EVENT_UNFILTERED` on every CoA class.
-- Its combat-log listener is enabled only while Knight of Xoroth is the active class.
-- Explicit resource WeakAuras no longer wake directly on every combat-log event; relevant Knight resource changes are debounced through a RetreatUI-specific refresh event.
+1. Install/update through the RetreatUI Beta channel after the R2 prerelease is published.
+2. Fully close Project Ascension before launching the game again.
+3. Run `/rui` and apply the installer from start to finish.
+4. Verify ElvUI positioning, unit frames, action bars, minimap, chat and raid/party frames at the selected resolution.
+5. Verify the Details profile is present and active.
+6. Verify TurboPlates loads normally and NPC ability/cooldown data still works.
+7. Verify General WeakAuras and the detected CoA class package install without duplicate HUD elements.
+8. Verify the class UI layout, resources, procs, state/stance icons and cooldowns in combat.
+9. Report any layout mismatch separately from any class/spell logic problem so the port can be iterated without replacing the whole package.
 
-## Preserved fixes
-
-- beta.18 chat ownership changes remain intact. RetreatUI still does not force-show, dock, undock or close chat tabs.
-- beta.17 protected-frame / secure-taint protections remain intact.
-- No HUD coordinates, icon sizes, class curation or target-aura policy were changed in this performance build.
-
-## Testing notes
-
-Close Project Ascension completely after installing this build and start it again.
-
-Please specifically compare frame pacing with `RetreatUI_Classes` enabled on Sun Cleric and Templar in a dungeon or battleground. Also verify normal resource updates, cooldowns, procs, class-state icons and Knight of Xoroth Hellfire Imp tracking.
-
-This is a Beta / prerelease build for live verification before promotion to Stable.
+This is a Beta / prerelease test build and must not be promoted to Stable until the Vol'jin in-game pass is clean.
 
 Author: Retreat

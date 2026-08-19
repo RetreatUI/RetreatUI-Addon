@@ -1,0 +1,1 @@
+beta.20 uses the exact D!ProfileV2 Details profile payload from the supplied reference package.

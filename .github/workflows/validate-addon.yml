@@ -2,18 +2,9 @@ name: Validate RetreatUI Addon
 
 on:
   pull_request:
-    paths:
-      - 'RetreatUI/**'
-      - 'RetreatUI_Classes/**'
-      - 'RELEASE_NOTES.md'
-      - '.github/workflows/validate-addon.yml'
+    branches: [main]
   push:
-    branches:
-      - main
-    paths:
-      - 'RetreatUI/**'
-      - 'RetreatUI_Classes/**'
-      - '.github/workflows/validate-addon.yml'
+    branches: [main, agent/beta20-coa-layout, agent/beta21-naowh-coa-test]
 
 permissions:
   contents: read
@@ -23,97 +14,135 @@ jobs:
     name: Lua 5.1 and package validation
     runs-on: ubuntu-latest
     timeout-minutes: 10
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Lua 5.1
-        shell: bash
         run: |
-          set -euo pipefail
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1 zip
 
-      - name: Validate Lua 5.1 syntax
+      - name: Validate Lua syntax and CoA data contracts
         shell: bash
         run: |
           set -euo pipefail
-          find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+          find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+          python3 tools/validate_beta20_weakauras.py
+          python3 tools/validate_beta20_reference_payloads.py
+          python3 tools/validate_beta20_buffmanager.py
+
+      - name: Validate runtime install contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import base64
+          import re
+          import zlib
+
+          details = Path('RetreatUI/Integrations/Details.lua').read_text(encoding='utf-8')
+          details_profile = Path('RetreatUI/Profiles/Details.lua').read_text(encoding='utf-8')
+          wa = Path('RetreatUI/Integrations/WeakAurasBeta20.lua').read_text(encoding='utf-8')
+
+          # Details: same proven contract as RetreatUI-TBC. Pass the complete
+          # D!ProfileV2 transmission, reject only explicit false, verify profile.
+          assert 'pcall(\n    details.ImportProfile' in details
+          assert 'payload,\n    profileName,\n    false,\n    false,\n    true' in details
+          assert 'if imported == false then' in details
+          assert 'ProfileExists(details, profileName)' in details
+          assert 'ApplyImportedProfile(details, profileName)' in details
+          assert 'RawProfilePayload' not in details
+          assert 'DetailsAPI' not in details
+
+          match = re.search(r'D!ProfileV2-([A-Za-z0-9+/=]+)', details_profile)
+          assert match, 'bundled Details D!ProfileV2 envelope missing'
+          compressed = base64.b64decode(match.group(1), validate=True)
+          decoded = zlib.decompress(compressed, -15)
+          assert len(decoded) > 1000, 'bundled Details profile body did not raw-deflate decode'
+
+          # WeakAuras: never use the broken options import path and never install
+          # by writing decoded displays straight into SavedVariables. Decode the
+          # static payload, add through the public Add API, and verify via GetData.
+          assert 'pcall(WeakAuras.Import' not in wa
+          assert 'WeakAuras.Import(' not in wa
+          assert 'LoadAddOn("WeakAurasOptions")' not in wa
+          assert '_G.WeakAurasOptions' not in wa
+          assert 'LibStub("LibDeflate", true)' in wa
+          assert 'LibStub("LibSerialize", true)' in wa
+          assert 'pcall(WeakAuras.Add, data)' in wa
+          assert 'WeakAuras.GetData(data.id)' in wa
+          assert 'WeakAuras.ScanForLoads' in wa
+          assert 'SaveTransmission' not in wa
+          assert 'displays[root.id] = root' not in wa
+          assert 'CLEANUP_REVISION = 37' in wa
+          assert 'INSTALL_REVISION = 37' in wa
+          assert 'installed and verified' in wa
+          print('Validated WeakAuras Add/GetData installer and proven Details import semantics')
+          PY
 
       - name: Validate versions and TOC references
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
+          import json
 
-          def toc_version(path: Path) -> str:
+          def toc_version(path):
               for line in path.read_text(encoding='utf-8').splitlines():
                   if line.startswith('## Version:'):
                       return line.split(':', 1)[1].strip()
-              raise AssertionError(f'Missing version in {path}')
+              raise AssertionError(path)
 
-          def validate_toc(path: Path) -> None:
+          def validate_toc(path):
               root = path.parent
               for raw in path.read_text(encoding='utf-8').splitlines():
                   line = raw.strip()
-                  if not line or line.startswith('##') or line.startswith('#'):
+                  if not line or line.startswith('#'):
                       continue
                   target = root / line.replace('\\', '/')
                   assert target.is_file(), f'Missing TOC file: {target}'
 
           core = Path('RetreatUI/RetreatUI.toc')
           classes = Path('RetreatUI_Classes/RetreatUI_Classes.toc')
-          core_version = toc_version(core)
-          class_version = toc_version(classes)
-          assert core_version == class_version, (core_version, class_version)
+          buff = Path('RetreatUI_BuffManager/RetreatUI_BuffManager.toc')
+          manifest = json.loads(Path('.github/release-manifest.json').read_text(encoding='utf-8'))
+          expected_version = str(manifest['version'])
+          versions = [toc_version(core), toc_version(classes), toc_version(buff)]
+          assert versions == [expected_version] * 3, versions
           validate_toc(core)
           validate_toc(classes)
+          validate_toc(buff)
 
           core_text = core.read_text(encoding='utf-8')
-          class_text = classes.read_text(encoding='utf-8')
           assert 'Core\\SpellbookScanThrottle.lua' in core_text
           assert 'Core\\PerformanceRefreshCoordinator.lua' in core_text
           assert 'Integrations\\CharacterAdvancementCrashGuard.lua' in core_text
+          assert 'Data\\WeakAurasBeta20Payloads.lua' in core_text
+          assert 'Integrations\\WeakAurasBeta20.lua' in core_text
           assert 'Core\\PartyUtility.lua' not in core_text
           assert 'Core\\PartyUtilityV4.lua' not in core_text
           assert 'Core\\RetreatCD.lua' not in core_text
-          assert 'PerformanceHotfixBeta17.lua' in class_text
-          print(f'Validated RetreatUI {core_version}')
+          print(f'Validated CoA TOCs and synchronized version {expected_version}')
           PY
 
-      - name: Validate secure-frame and class-driver safety
+      - name: Validate secure-frame cleanup safety
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
+          python3 - <<'PY'
           from pathlib import Path
-
           cleanup = Path('RetreatUI/Integrations/Cleanup.lua').read_text(encoding='utf-8')
           class_cleanup = Path('RetreatUI/Integrations/ClassResourceCleanup.lua').read_text(encoding='utf-8')
-          performance = Path('RetreatUI_Classes/PerformanceHotfixBeta17.lua').read_text(encoding='utf-8')
-
-          # Blizzard unit frames must never return to the generic cleanup allow-list.
-          for forbidden in ('"playerFrame"', '"PlayerFrame"', '"TargetFrame"',
-                            '"PartyMemberFrame1"', '"PartyMemberFrame2"',
-                            '"PartyMemberFrame3"', '"PartyMemberFrame4"'):
-              assert forbidden not in cleanup, f'Protected Blizzard frame returned to Cleanup.lua: {forbidden}'
-
-          # Both cleanup paths must reject protected frames before visual/mouse mutations.
+          for forbidden in ('"playerFrame"', '"PlayerFrame"', '"TargetFrame"', '"PartyMemberFrame1"', '"PartyMemberFrame2"', '"PartyMemberFrame3"', '"PartyMemberFrame4"'):
+              assert forbidden not in cleanup, forbidden
           assert 'if IsProtectedFrame(frame) then return false end' in cleanup
           assert 'if Protected(frame) then return false end' in class_cleanup
           assert 'secureFrameSafety = true' in cleanup
           assert 'secureFrameSafety = true' in class_cleanup
-
-          # Idle class helpers are gated, including Guardian's high-frequency combat log.
-          assert 'RetreatUIGuardianBannerTrackerDriver' in performance
-          assert 'COMBAT_LOG_EVENT_UNFILTERED' in performance
-          assert 'UnregisterAllEvents' in performance
-          assert 'RetreatUICultistWagoMechanicsDriver' in performance
-          assert 'RetreatUITinkerHealerPetDriver' in performance
-          assert 'RetreatUIGuardianReminderDriver' in performance
-          print('Validated beta.17 secure-frame and class-driver safety')
+          print('Validated secure-frame cleanup safety')
           PY
 
       - name: Validate package roots
@@ -123,10 +152,45 @@ jobs:
           rm -rf /tmp/retreatui-package
           mkdir -p /tmp/retreatui-package
           zip -qr /tmp/retreatui-package/RetreatUI.zip RetreatUI RetreatUI_Classes
-          python - <<'PY'
+          zip -qr /tmp/retreatui-package/RetreatUI_BuffManager.zip RetreatUI_BuffManager
+          python3 - <<'PY'
           import zipfile
           with zipfile.ZipFile('/tmp/retreatui-package/RetreatUI.zip') as archive:
               roots = sorted({name.split('/', 1)[0] for name in archive.namelist() if name})
               assert roots == ['RetreatUI', 'RetreatUI_Classes'], roots
+          with zipfile.ZipFile('/tmp/retreatui-package/RetreatUI_BuffManager.zip') as archive:
+              roots = sorted({name.split('/', 1)[0] for name in archive.namelist() if name})
+              assert roots == ['RetreatUI_BuffManager'], roots
           print('Validated package roots')
           PY
+
+      - name: Build validated CoA test packages
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(python3 -c 'import json; print(json.load(open(".github/release-manifest.json", encoding="utf-8"))["version"])')"
+          main_asset="RetreatUI_v${version}-test.zip"
+          buff_asset="RetreatUI_BuffManager_v${version}-test.zip"
+          rm -rf dist
+          mkdir -p dist/main dist/buff
+          cp -a RetreatUI dist/main/RetreatUI
+          cp -a RetreatUI_Classes dist/main/RetreatUI_Classes
+          cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager
+          (cd dist/main && zip -qr "../${main_asset}" RetreatUI RetreatUI_Classes)
+          (cd dist/buff && zip -qr "../${buff_asset}" RetreatUI_BuffManager)
+          (cd dist && sha256sum "${main_asset}" > "${main_asset}.sha256")
+          (cd dist && sha256sum "${buff_asset}" > "${buff_asset}.sha256")
+          test -s "dist/${main_asset}"
+          test -s "dist/${buff_asset}"
+
+      - name: Upload validated CoA test packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: RetreatUI-CoA-test
+          path: |
+            dist/RetreatUI_v*-test.zip
+            dist/RetreatUI_v*-test.zip.sha256
+            dist/RetreatUI_BuffManager_v*-test.zip
+            dist/RetreatUI_BuffManager_v*-test.zip.sha256
+          if-no-files-found: error
+          retention-days: 14

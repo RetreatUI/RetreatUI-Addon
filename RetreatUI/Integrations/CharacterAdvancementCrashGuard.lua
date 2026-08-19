@@ -2,27 +2,22 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- Ascension can terminate the entire client with a native assertion when
--- Character Advancement APIs or IsSpellKnown are queried while the active
--- build contains a stale/missing build entry. Lua pcall cannot catch that
--- native failure, so RetreatUI must not use those APIs in its live HUD path.
+-- Character Advancement/talent state contains a stale or missing build entry.
+-- Lua pcall cannot catch that native failure. beta.20 therefore never queries
+-- Character Advancement or talent-group APIs from RetreatUI's live path.
 --
--- Spell visibility is resolved from the live spellbook instead. This is the
--- same information the player can actually cast and is safe across broken or
--- partially migrated Character Advancement builds.
+-- Spell visibility is resolved only from the live spellbook: the same set of
+-- spells the client has actually exposed to the player.
 
 function RUI:GetActiveAdvancementSlot()
-  if type(GetActiveTalentGroup) == "function" then
-    local ok, slot = pcall(GetActiveTalentGroup)
-    if ok and tonumber(slot) then return tonumber(slot) end
-  end
+  -- beta.20 does not need an advancement slot. Returning a stable value keeps
+  -- legacy callers harmless without touching talent/advancement state.
   return 1
 end
 
 function RUI:IsAdvancementEntryLearned(_)
   -- Returning nil tells SpellDatabase.lua that Character Advancement did not
   -- provide an authoritative answer, so it falls back to spellbook name/ID.
-  -- Do not call C_CharacterAdvancement here: invalid build entries crash the
-  -- executable before Lua error handling can run.
   return nil
 end
 

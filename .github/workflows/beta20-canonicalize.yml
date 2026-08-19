@@ -1,0 +1,10 @@
+name: Retired beta.20 canonicalization helper
+
+on:
+  workflow_dispatch:
+
+jobs:
+  retired:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo 'Canonicalization is complete; permanent validators own beta.20 now.'

@@ -1,15 +1,17 @@
 ## Interface: 30300
 ## Title: RetreatUI
-## Notes: Core interface, installer, profiles and shared HUD engine for Project Ascension: Conquest of Azeroth.
+## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.19
+## Version: 1.1.7-beta.21
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
-## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, DBM-Core, WeakAuras
+## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
 
 Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
+Data\WeakAurasBeta20Payloads.lua
+Integrations\WeakAurasBeta20.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
 Core\SpellbookScanThrottle.lua
@@ -22,21 +24,6 @@ Core\BuildProfiles.lua
 Core\PerformanceRefreshCoordinator.lua
 Core\HUDEditor.lua
 Core\AscensionResources.lua
-Core\WeakAuraHUDRuntime.lua
-Core\WeakAuraStateSafety.lua
-Core\WeakAuraHUDPackage.lua
-Core\WeakAuraTBCParity.lua
-Core\WeakAuraCurationSafety.lua
-Core\WeakAuraIconStaticCompat.lua
-Core\WeakAuraAutoProgressSource.lua
-Core\WeakAuraBeta8Fixes.lua
-Core\WeakAuraBeta9Fixes.lua
-Core\WeakAuraBeta10Fixes.lua
-Core\WeakAuraBeta11Fixes.lua
-Core\WeakAuraBeta12Fixes.lua
-Core\WeakAuraBeta15StanceLane.lua
-Core\WeakAuraHUDPulse.lua
-Core\WeakAuraPerformanceBeta19.lua
 Core\HUDWidgets.lua
 Core\SpellRecordRuntime.lua
 Core\HUDDuplicateGuard.lua
@@ -47,33 +34,33 @@ Core\TrinketTrackerCompat.lua
 Core\TankFramework.lua
 Core\Modules.lua
 Core\ModularModules.lua
+Integrations\Beta20ClassSupport.lua
+Integrations\Beta20HUDOwnership.lua
 Core\RetiredPartyTrackers.lua
 Core\RecoverySafety.lua
 Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
+Profiles\ElvUIBeta20Exports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
 Integrations\ElvUI.lua
+Integrations\ElvUIBeta20.lua
 Integrations\ElvUIPartyText.lua
 Integrations\RaidFrameHotfix.lua
 Integrations\CVars.lua
 Integrations\CombatText.lua
 Integrations\TurboPlates.lua
+Integrations\TurboPlatesBeta20.lua
 Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
-Integrations\PyromancerAuraAndDetailsChat.lua
 Integrations\ChatOwnershipSafety.lua
-Integrations\DBM.lua
-Integrations\WeakAurasCompanion.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
-Integrations\WeakAuraHUDMigration.lua
 Integrations\ReleaseBaseline20260801.lua
-Installer\Installer.lua
-Installer\ModularInstaller.lua
-Installer\TBCStyleInstaller.lua
+Installer\Beta20Installer.lua
+Installer\Beta20WeakAurasBridge.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua

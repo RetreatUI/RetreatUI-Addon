@@ -1,83 +1,115 @@
 local RUI = RetreatUI
+if not RUI then return end
 
-function RUI:ApplyDetailsFont()
+local function DetailsObject()
   local details = _G.Details or _G._detalhes
-  if type(details) ~= "table" then return false, "Details is not loaded" end
-  local changed = 0
-  local profileName = self.DetailsProfileName or "RetreatUI"
+  return type(details) == "table" and details or nil
+end
 
+local function ProfileExists(details, profileName)
   if type(details.GetProfile) == "function" then
-    local ok, profile = pcall(details.GetProfile, details, profileName)
-    if ok and type(profile) == "table" then changed = changed + self:ForceFontFields(profile) end
+    local ok, profile = pcall(details.GetProfile, details, profileName, false)
+    if ok and type(profile) == "table" then return true end
+  end
+  if type(_G._detalhes_global) == "table"
+    and type(_G._detalhes_global.__profiles) == "table"
+    and type(_G._detalhes_global.__profiles[profileName]) == "table" then
+    return true
+  end
+  return false
+end
+
+local function ApplyImportedProfile(details, profileName)
+  if type(details.ApplyProfile) ~= "function" then return true end
+  local ok, result = pcall(details.ApplyProfile, details, profileName, true)
+  if not ok then return false, tostring(result) end
+  if result == false then return false, "Details refused to activate the imported profile" end
+  return true
+end
+
+local function ImportProfile(payload, profileName)
+  local details = DetailsObject()
+  if not details then return false, "Details is not loaded" end
+  if type(details.ImportProfile) ~= "function" then
+    return false, "The installed Details build does not expose ImportProfile"
+  end
+  if type(payload) ~= "string" or payload == "" then
+    return false, "Bundled Details profile payload is empty"
   end
 
-  if type(_detalhes_global) == "table" then
-    changed = changed + self:ForceFontFields(_detalhes_global)
+  -- Use the exact same contract as the working RetreatUI-TBC installer:
+  -- pass the complete D!ProfileV2 transmission to Details:ImportProfile.
+  -- Some Classic/CoA builds return nil even after a successful side-effect,
+  -- so only an explicit false means rejection. We then verify the profile
+  -- actually exists and activate it before reporting success.
+  local ok, imported, importError = pcall(
+    details.ImportProfile,
+    details,
+    payload,
+    profileName,
+    false,
+    false,
+    true
+  )
+
+  if not ok then return false, "Details import error: " .. tostring(imported) end
+  if imported == false then
+    return false, tostring(importError or "Details rejected the bundled profile")
+  end
+  if not ProfileExists(details, profileName) then
+    return false, "Details import returned without creating the RetreatUI profile"
   end
 
-  if type(details.GetInstance) == "function" then
-    for index = 1, 20 do
-      local ok, instance = pcall(details.GetInstance, details, index)
-      if ok and type(instance) == "table" then
-        instance.row_info = instance.row_info or {}
-        instance.row_info.font_face = self.fontName
-        instance.window_info = instance.window_info or {}
-        instance.window_info.font_face = self.fontName
-        changed = changed + 2
-      end
-    end
-  end
-
-  if type(details.RefreshMainWindow) == "function" then pcall(details.RefreshMainWindow, details, -1, true) end
-  return true, "Fira Sans Heavy applied to Details"
+  local applied, applyError = ApplyImportedProfile(details, profileName)
+  if not applied then return false, applyError end
+  return true
 end
 
 function RUI:InstallDetailsProfile()
   local loaded = self:EnsureAddOnLoaded("Details")
   if not loaded then return false, "Details is not installed or could not be loaded" end
-
-  local details = _G.Details or _G._detalhes
-  if type(details) ~= "table" or type(details.ImportProfile) ~= "function" then
-    return false, "Details profile API is unavailable"
-  end
+  local details = DetailsObject()
+  if not details then return false, "Details did not initialize" end
   if type(self.DetailsProfileString) ~= "string" or self.DetailsProfileString == "" then
     return false, "Bundled Details profile is missing"
   end
-
-  local profileName = self.DetailsProfileName or "RetreatUI"
-  local ok, imported, importError = pcall(details.ImportProfile, details, self.DetailsProfileString, profileName, false, false, true)
-  if not ok then return false, "Details import error: " .. tostring(imported) end
-  if imported == false then return false, tostring(importError or "Details rejected the profile") end
-
-  if type(details.ApplyProfile) == "function" then
-    local applyOK, applyResult = pcall(details.ApplyProfile, details, profileName)
-    if not applyOK or applyResult == false then
-      return false, "Profile imported, but activation failed: " .. tostring(applyResult)
-    end
+  if self.DetailsProfileFormat ~= "D!ProfileV2" and self.DetailsProfileString:sub(1, 11) ~= "D!ProfileV2-" then
+    return false, "Bundled Details profile is not D!ProfileV2"
   end
 
-  self:ApplyDetailsFont()
+  local profileName = self.DetailsProfileName or "RetreatUI"
+  local ok, message = ImportProfile(self.DetailsProfileString, profileName)
+  if not ok then return false, message end
+
   local db = self:EnsureDB()
+  db.integrations = db.integrations or {}
   db.integrations.details = {
     version = self.version,
     profile = profileName,
     imported = true,
+    format = "D!ProfileV2",
   }
-  return true, "RetreatUI Details profile imported with Fira Sans Heavy"
+  return true, "RetreatUI Details profile imported, verified and activated"
 end
 
 function RUI:ValidateDetailsProfile()
   local loaded = self:EnsureAddOnLoaded("Details")
-  if not loaded then return false, "Details! is required but could not be loaded" end
+  if not loaded then return false, "Details is required but could not be loaded" end
+  local details = DetailsObject()
+  if not details then return false, "Details did not initialize" end
+  if type(details.ImportProfile) ~= "function" then
+    return false, "The installed Details build does not expose ImportProfile"
+  end
 
-  local details = _G.Details or _G._detalhes
-  if type(details) ~= "table" then return false, "Details! did not initialize" end
+  local profileName = self.DetailsProfileName or "RetreatUI"
+  if not ProfileExists(details, profileName) then
+    return false, "The RetreatUI Details profile does not exist"
+  end
 
   local db = self:EnsureDB()
   local marker = db.integrations and db.integrations.details
-  if type(marker) ~= "table" or marker.version ~= self.version or marker.imported ~= true then
-    return false, "The RetreatUI Details profile was not imported"
+  if type(marker) ~= "table" or marker.version ~= self.version or marker.imported ~= true or marker.format ~= "D!ProfileV2" then
+    return false, "The RetreatUI Details profile was not installed by this version"
   end
-
   return true
 end

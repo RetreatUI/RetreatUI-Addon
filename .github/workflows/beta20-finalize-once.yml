@@ -1,0 +1,259 @@
+name: beta20 one-shot finalizer
+
+on:
+  push:
+    branches:
+      - agent/beta20-coa-layout
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/beta20-coa-layout
+          fetch-depth: 0
+
+      - name: Install Lua 5.1
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lua5.1
+
+      - name: Canonicalize beta.20 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          import shutil
+          import subprocess
+
+          root = Path('.')
+
+          # ElvUI: keep the approved payload bytes untouched; only canonicalize
+          # the surrounding RetreatUI registry symbols/comment.
+          elv = root / 'RetreatUI/Profiles/ElvUIBeta20Exports.lua'
+          text = elv.read_text(encoding='utf-8')
+          text = text.replace('-- Exact NaowhUI TBC ElvUI profile exports supplied by the user for beta.20.', '-- Exact approved beta.20 ElvUI profile exports supplied for RetreatUI.')
+          text = text.replace('RUI.NaowhElvUIExports', 'RUI.Beta20ElvUIExports')
+          text = text.replace('RUI.NaowhElvUIScales', 'RUI.Beta20ElvUIScales')
+          elv.write_text(text, encoding='utf-8')
+
+          # One canonical static WeakAuras registry only. Remove the abandoned
+          # shard/alias path completely so Lua syntax and runtime ownership have
+          # a single source of truth.
+          toc_path = root / 'RetreatUI/RetreatUI.toc'
+          toc_lines = toc_path.read_text(encoding='utf-8').splitlines()
+          drop = ('WeakAurasBeta20ShardBridge.lua', 'Data\\WeakAurasBeta20\\', 'WeakAurasBeta20Finalize.lua')
+          toc_lines = [line for line in toc_lines if not any(token in line for token in drop)]
+          toc_path.write_text('\n'.join(toc_lines) + '\n', encoding='utf-8')
+
+          shutil.rmtree(root / 'RetreatUI/Data/WeakAurasBeta20', ignore_errors=True)
+          for p in (root / 'RetreatUI/Data/WeakAurasBeta20Finalize.lua', root / 'RetreatUI/Data/WeakAurasBeta20ShardBridge.lua'):
+              if p.exists():
+                  p.unlink()
+
+          # Rebuild the canonical General + 21 class registry from the current
+          # class Data.lua files.
+          subprocess.run(['python3', 'tools/generate_beta20_weakauras.py'], check=True)
+
+          validator = r'''#!/usr/bin/env python3
+          from __future__ import annotations
+          from pathlib import Path
+          import importlib.util
+          import re
+
+          ROOT = Path(__file__).resolve().parents[1]
+          GENERATOR = ROOT / "tools/generate_beta20_weakauras.py"
+          OUTPUT = ROOT / "RetreatUI/Data/WeakAurasBeta20Payloads.lua"
+          TOC = ROOT / "RetreatUI/RetreatUI.toc"
+
+          spec = importlib.util.spec_from_file_location("beta20_generator", GENERATOR)
+          gen = importlib.util.module_from_spec(spec)
+          assert spec and spec.loader
+          spec.loader.exec_module(gen)
+
+          committed = OUTPUT.read_text(encoding="utf-8")
+          before = committed
+          try:
+              gen.main()
+              regenerated = OUTPUT.read_text(encoding="utf-8")
+          finally:
+              OUTPUT.write_text(before, encoding="utf-8")
+
+          assert committed == regenerated, "committed beta.20 WeakAuras registry is not generator-exact"
+          assert 'weakAurasVersion = "5.21.2"' in committed
+          assert 'classPayloadCount = 21' in committed
+          assert 'generatedFor = "1.1.7-beta.20"' in committed
+          assert 'general = "!WA:2!' in committed
+          classes = re.findall(r'^\s{4}\["([^"]+)"\]\s*=\s*"!WA:2!', committed, re.M)
+          assert len(classes) == 21, classes
+          assert set(classes) == set(gen.CLASS_NAMES), (set(gen.CLASS_NAMES) - set(classes), set(classes) - set(gen.CLASS_NAMES))
+          assert len(classes) == len(set(classes)), "duplicate class payload registrations"
+
+          source = GENERATOR.read_text(encoding="utf-8")
+          assert 'use_spellknown' not in source.lower()
+          assert 'spell known load condition' in source.lower()
+          assert 'yOffset": -189' in source
+          assert 'y=47' in source and 'y=-17' in source and 'y=-239' in source
+
+          toc = TOC.read_text(encoding="utf-8")
+          assert 'Data\\WeakAurasBeta20Payloads.lua' in toc
+          assert 'Data\\WeakAurasBeta20\\' not in toc
+          assert 'WeakAurasBeta20ShardBridge.lua' not in toc
+          assert 'WeakAurasBeta20Finalize.lua' not in toc
+          assert toc.index('Data\\WeakAurasBeta20Payloads.lua') < toc.index('Integrations\\WeakAurasBeta20.lua')
+
+          print('beta.20 WeakAuras validation passed: generator-exact General + 21/21 CoA payloads, canonical load path')
+          '''
+          validator = '\n'.join(line[10:] if line.startswith('          ') else line for line in validator.splitlines()) + '\n'
+          (root / 'tools/validate_beta20_weakauras.py').write_text(validator, encoding='utf-8')
+
+          # Current CI: validate the actual beta.20 architecture rather than
+          # retired beta.15/beta.19 runtime files.
+          workflows = {
+          '.github/workflows/validate-coa-weakaura-hud.yml': '''name: Validate CoA WeakAura HUD
+          on:
+            push:
+            pull_request:
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate beta.20 static WeakAuras and source package
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    find RetreatUI RetreatUI_Classes -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+                    python3 tools/validate_beta20_weakauras.py
+                    python3 tools/validate_beta20_reference_payloads.py
+                    ! grep -Rni --include='*.lua' --include='*.toc' --include='*.py' 'Naowh' RetreatUI RetreatUI_Classes tools
+          ''',
+          '.github/workflows/validate-final-stance-lane.yml': '''name: Validate Final CoA Stance Lane
+          on:
+            push:
+            pull_request:
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate native state lane against rendered trinkets
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    luac5.1 -p RetreatUI_Classes/GlobalStateAnchor.lua
+                    grep -Fq 'WeakAuras.GetRegion(TRINKET_SLOT_13)' RetreatUI_Classes/GlobalStateAnchor.lua
+                    grep -Fq 'WeakAuras.GetRegion(TRINKET_SLOT_14)' RetreatUI_Classes/GlobalStateAnchor.lua
+                    grep -Fq 'anchor:SetPoint("BOTTOMRIGHT", source, "BOTTOMRIGHT", 0, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
+                    grep -Fq 'frame:SetPoint("BOTTOMLEFT", anchor, "BOTTOMRIGHT", cursor, 0)' RetreatUI_Classes/GlobalStateAnchor.lua
+                    grep -Fq 'local STATE_ICON' RetreatUI/Core/Layout.lua || true
+                    grep -Fq 'GlobalStateAnchor.lua' RetreatUI_Classes/RetreatUI_Classes.toc
+                    core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+                    classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+                    buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
+                    test "$core_version" = '1.1.7-beta.20'
+                    test "$core_version" = "$classes_version"
+                    test "$core_version" = "$buff_version"
+          ''',
+          '.github/workflows/validate-beta18-chat-performance.yml': '''name: Validate Chat and Performance Safety
+          on:
+            push:
+            pull_request:
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate retained chat/performance safety
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    luac5.1 -p RetreatUI/Integrations/ElvUI.lua
+                    luac5.1 -p RetreatUI/Integrations/ChatOwnershipSafety.lua
+                    luac5.1 -p RetreatUI_Classes/AdvancedHUD.lua
+                    ! grep -Fq 'FCF_UnDockFrame' RetreatUI/Integrations/ElvUI.lua
+                    ! grep -Fq 'FCF_Close' RetreatUI/Integrations/ElvUI.lua
+                    grep -Fq 'FCF_DockUpdate' RetreatUI/Integrations/ChatOwnershipSafety.lua
+                    ! grep -Fq 'ACTIONBAR_UPDATE_COOLDOWN' RetreatUI_Classes/AdvancedHUD.lua
+                    ! grep -Fq 'UNIT_POWER_FREQUENT' RetreatUI_Classes/AdvancedHUD.lua
+                    core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+                    test "$core_version" = '1.1.7-beta.20'
+          ''',
+          '.github/workflows/validate-beta13-buffmanager-addon.yml': '''name: Validate Buff Manager Addon
+          on:
+            push:
+            pull_request:
+          jobs:
+            validate:
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - name: Install Lua 5.1
+                  run: |
+                    sudo apt-get update -qq
+                    sudo apt-get install -y -qq lua5.1
+                - name: Validate standalone Buff Manager package
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    luac5.1 -p RetreatUI_BuffManager/BuffManager.lua
+                    grep -Fq '## Title: RetreatUI Buff Manager' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## Author: Retreat' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## Dependencies: RetreatUI' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    grep -Fq '## DefaultState: Disabled' RetreatUI_BuffManager/RetreatUI_BuffManager.toc
+                    ! grep -Fq 'BuffManager.lua' RetreatUI/RetreatUI.toc
+                    grep -Fq 'cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager' .github/workflows/publish-release.yml
+                    grep -Fq '(cd dist/buff && zip -r "../$BUFF_ASSET" RetreatUI_BuffManager)' .github/workflows/publish-release.yml
+                    core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+                    classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+                    buff_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_BuffManager/RetreatUI_BuffManager.toc | head -1 | tr -d '\r')"
+                    test "$core_version" = '1.1.7-beta.20'
+                    test "$core_version" = "$classes_version"
+                    test "$core_version" = "$buff_version"
+          '''}
+          for name, body in workflows.items():
+              body = '\n'.join(line[10:] if line.startswith('          ') else line for line in body.splitlines()) + '\n'
+              (root / name).write_text(body, encoding='utf-8')
+
+          # This finalizer is intentionally one-shot; remove it from the branch
+          # before committing the canonical result.
+          Path('.github/workflows/beta20-finalize-once.yml').unlink(missing_ok=True)
+          PY
+
+      - name: Validate finalized tree before commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          find RetreatUI RetreatUI_Classes RetreatUI_BuffManager -type f -name '*.lua' -print0 | xargs -0 -n1 luac5.1 -p
+          python3 tools/validate_beta20_weakauras.py
+          python3 tools/validate_beta20_reference_payloads.py
+          ! grep -Rni --include='*.lua' --include='*.toc' --include='*.py' 'Naowh' RetreatUI RetreatUI_Classes tools
+
+      - name: Commit canonical beta.20 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'beta20: finalize canonical static package and validation'
+          git push origin HEAD:agent/beta20-coa-layout

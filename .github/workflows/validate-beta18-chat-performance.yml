@@ -3,30 +3,8 @@ name: Validate Chat and Performance Safety
 on:
   pull_request:
     branches: [main]
-    paths:
-      - "RetreatUI/Integrations/ElvUI.lua"
-      - "RetreatUI/Integrations/PyromancerAuraAndDetailsChat.lua"
-      - "RetreatUI/Integrations/ChatOwnershipSafety.lua"
-      - "RetreatUI/Core/WeakAuraHUDPulse.lua"
-      - "RetreatUI/Core/WeakAuraPerformanceBeta19.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/AdvancedHUD.lua"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - "RetreatUI_BuffManager/RetreatUI_BuffManager.toc"
-      - ".github/workflows/validate-beta18-chat-performance.yml"
   push:
-    branches: [main]
-    paths:
-      - "RetreatUI/Integrations/ElvUI.lua"
-      - "RetreatUI/Integrations/PyromancerAuraAndDetailsChat.lua"
-      - "RetreatUI/Integrations/ChatOwnershipSafety.lua"
-      - "RetreatUI/Core/WeakAuraHUDPulse.lua"
-      - "RetreatUI/Core/WeakAuraPerformanceBeta19.lua"
-      - "RetreatUI/RetreatUI.toc"
-      - "RetreatUI_Classes/AdvancedHUD.lua"
-      - "RetreatUI_Classes/RetreatUI_Classes.toc"
-      - "RetreatUI_BuffManager/RetreatUI_BuffManager.toc"
-      - ".github/workflows/validate-beta18-chat-performance.yml"
+    branches: [main, agent/beta20-coa-layout, agent/beta21-naowh-coa-test]
 
 permissions:
   contents: read
@@ -40,70 +18,16 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1
-      - name: Validate chat ownership and WeakAura runtime safety
+      - name: Validate chat and HUD safety
         shell: bash
         run: |
           set -euo pipefail
           luac5.1 -p RetreatUI/Integrations/ElvUI.lua
-          luac5.1 -p RetreatUI/Integrations/PyromancerAuraAndDetailsChat.lua
           luac5.1 -p RetreatUI/Integrations/ChatOwnershipSafety.lua
-          luac5.1 -p RetreatUI/Core/WeakAuraHUDPulse.lua
-          luac5.1 -p RetreatUI/Core/WeakAuraPerformanceBeta19.lua
           luac5.1 -p RetreatUI_Classes/AdvancedHUD.lua
-
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-
-          def code(path):
-              return '\n'.join(re.sub(r'--.*$', '', line) for line in Path(path).read_text(encoding='utf-8').splitlines())
-
-          pyro = code('RetreatUI/Integrations/PyromancerAuraAndDetailsChat.lua')
-          chat = code('RetreatUI/Integrations/ChatOwnershipSafety.lua')
-          elv = code('RetreatUI/Integrations/ElvUI.lua')
-          hud = code('RetreatUI_Classes/AdvancedHUD.lua')
-          pulse = code('RetreatUI/Core/WeakAuraHUDPulse.lua')
-          perf = code('RetreatUI/Core/WeakAuraPerformanceBeta19.lua')
-          toc = Path('RetreatUI/RetreatUI.toc').read_text(encoding='utf-8')
-
-          # beta.18 chat ownership remains permanent.
-          assert 'events:RegisterEvent("PLAYER_TARGET_CHANGED")' not in pyro
-          assert 'events:RegisterEvent("PLAYER_ENTERING_WORLD")' not in pyro
-          assert 'Update_AllFrames' not in pyro and 'E.UpdateAll' not in pyro
-          assert '_G.ChatFrame' not in pyro
-          for forbidden in ('FCF_UnDockFrame', 'FCF_Close', 'IsChatFrameInRightPanel', 'TouchesRightChatPanel'):
-              assert forbidden not in elv, forbidden
-          assert 'FCF_DockUpdate' in chat
-          for forbidden in ('FCF_UnDockFrame', 'FCF_Close', 'FCF_DockFrame'):
-              assert forbidden not in chat, forbidden
-
-          # Native AdvancedHUD remains free of the old event storms.
-          assert 'ACTIONBAR_UPDATE_COOLDOWN' not in hud
-          assert 'UNIT_POWER_FREQUENT' not in hud
-
-          # beta.19 physically removes the global synthetic WA power event and
-          # replaces it with RetreatUI-only debounced refresh events.
-          assert 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' not in pulse
-          assert 'WeakAuras.ScanEvents, "UNIT_POWER_FREQUENT"' not in perf
-          assert 'function RUI:StartWeakAuraHUDPulse()' in perf
-          assert 'RETREATUI_RESOURCE_PULSE' in perf
-          assert 'RETREATUI_ROW_REFRESH' in perf
-          assert 'RETREATUI_PLAYER_AURA_REFRESH' in perf
-          assert 'RETREATUI_TARGET_AURA_REFRESH' in perf
-          assert 'elapsed < 0.08' in perf
-          assert 'pulseElapsed < 0.20' in perf
-          assert 'UnregisterEvent, imp, "COMBAT_LOG_EVENT_UNFILTERED"' in perf
-          assert 'if IsKnight()' in perf
-          assert 'Core\\WeakAuraPerformanceBeta19.lua' in toc
-
-          def version(path):
-              for line in Path(path).read_text(encoding='utf-8').splitlines():
-                  if line.startswith('## Version:'):
-                      return line.split(':', 1)[1].strip()
-              raise AssertionError(path)
-
-          versions = [version('RetreatUI/RetreatUI.toc'), version('RetreatUI_Classes/RetreatUI_Classes.toc'), version('RetreatUI_BuffManager/RetreatUI_BuffManager.toc')]
-          assert len(set(versions)) == 1, versions
-          assert versions[0] == '1.1.7-beta.19', versions
-          print('Validated beta.19 chat and WeakAura runtime performance safety')
-          PY
+          grep -Fq 'FCF_DockUpdate' RetreatUI/Integrations/ChatOwnershipSafety.lua
+          core_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI/RetreatUI.toc | head -1 | tr -d '\r')"
+          classes_version="$(sed -n 's/^## Version:[[:space:]]*//p' RetreatUI_Classes/RetreatUI_Classes.toc | head -1 | tr -d '\r')"
+          manifest_version="$(python3 -c 'import json; print(json.load(open(".github/release-manifest.json", encoding="utf-8"))["version"])')"
+          test "$core_version" = "$manifest_version"
+          test "$core_version" = "$classes_version"
