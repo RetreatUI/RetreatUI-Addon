@@ -4,7 +4,7 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main, agent/beta20-coa-layout]
+    branches: [main, agent/beta20-coa-layout, agent/beta21-naowh-coa-test]
 
 permissions:
   contents: read
@@ -23,7 +23,7 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq lua5.1 zip
 
-      - name: Validate Lua syntax and beta.20 data contracts
+      - name: Validate Lua syntax and CoA data contracts
         shell: bash
         run: |
           set -euo pipefail
@@ -88,6 +88,7 @@ jobs:
           set -euo pipefail
           python3 - <<'PY'
           from pathlib import Path
+          import json
 
           def toc_version(path):
               for line in path.read_text(encoding='utf-8').splitlines():
@@ -107,8 +108,10 @@ jobs:
           core = Path('RetreatUI/RetreatUI.toc')
           classes = Path('RetreatUI_Classes/RetreatUI_Classes.toc')
           buff = Path('RetreatUI_BuffManager/RetreatUI_BuffManager.toc')
+          manifest = json.loads(Path('.github/release-manifest.json').read_text(encoding='utf-8'))
+          expected_version = str(manifest['version'])
           versions = [toc_version(core), toc_version(classes), toc_version(buff)]
-          assert versions == ['1.1.7-beta.20'] * 3, versions
+          assert versions == [expected_version] * 3, versions
           validate_toc(core)
           validate_toc(classes)
           validate_toc(buff)
@@ -122,7 +125,7 @@ jobs:
           assert 'Core\\PartyUtility.lua' not in core_text
           assert 'Core\\PartyUtilityV4.lua' not in core_text
           assert 'Core\\RetreatCD.lua' not in core_text
-          print('Validated beta.20 TOCs and versions')
+          print(f'Validated CoA TOCs and synchronized version {expected_version}')
           PY
 
       - name: Validate secure-frame cleanup safety
@@ -161,30 +164,33 @@ jobs:
           print('Validated package roots')
           PY
 
-      - name: Build validated beta.20 test packages
+      - name: Build validated CoA test packages
         shell: bash
         run: |
           set -euo pipefail
+          version="$(python3 -c 'import json; print(json.load(open(".github/release-manifest.json", encoding="utf-8"))["version"])')"
+          main_asset="RetreatUI_v${version}-test.zip"
+          buff_asset="RetreatUI_BuffManager_v${version}-test.zip"
           rm -rf dist
           mkdir -p dist/main dist/buff
           cp -a RetreatUI dist/main/RetreatUI
           cp -a RetreatUI_Classes dist/main/RetreatUI_Classes
           cp -a RetreatUI_BuffManager dist/buff/RetreatUI_BuffManager
-          (cd dist/main && zip -qr ../RetreatUI_v1.1.7-beta.20-test.zip RetreatUI RetreatUI_Classes)
-          (cd dist/buff && zip -qr ../RetreatUI_BuffManager_v1.1.7-beta.20-test.zip RetreatUI_BuffManager)
-          (cd dist && sha256sum RetreatUI_v1.1.7-beta.20-test.zip > RetreatUI_v1.1.7-beta.20-test.zip.sha256)
-          (cd dist && sha256sum RetreatUI_BuffManager_v1.1.7-beta.20-test.zip > RetreatUI_BuffManager_v1.1.7-beta.20-test.zip.sha256)
-          test -s dist/RetreatUI_v1.1.7-beta.20-test.zip
-          test -s dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip
+          (cd dist/main && zip -qr "../${main_asset}" RetreatUI RetreatUI_Classes)
+          (cd dist/buff && zip -qr "../${buff_asset}" RetreatUI_BuffManager)
+          (cd dist && sha256sum "${main_asset}" > "${main_asset}.sha256")
+          (cd dist && sha256sum "${buff_asset}" > "${buff_asset}.sha256")
+          test -s "dist/${main_asset}"
+          test -s "dist/${buff_asset}"
 
-      - name: Upload validated beta.20 test packages
+      - name: Upload validated CoA test packages
         uses: actions/upload-artifact@v4
         with:
-          name: RetreatUI-v1.1.7-beta.20-test
+          name: RetreatUI-CoA-test
           path: |
-            dist/RetreatUI_v1.1.7-beta.20-test.zip
-            dist/RetreatUI_v1.1.7-beta.20-test.zip.sha256
-            dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip
-            dist/RetreatUI_BuffManager_v1.1.7-beta.20-test.zip.sha256
+            dist/RetreatUI_v*-test.zip
+            dist/RetreatUI_v*-test.zip.sha256
+            dist/RetreatUI_BuffManager_v*-test.zip
+            dist/RetreatUI_BuffManager_v*-test.zip.sha256
           if-no-files-found: error
           retention-days: 14
