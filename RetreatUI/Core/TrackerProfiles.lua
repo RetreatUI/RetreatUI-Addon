@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-local PROFILE_SCHEMA = 2
+local PROFILE_SCHEMA = 3
 local ALLOWED_TEMPLATES = {
   cooldown=true, charges=true, buff=true, buff_stacks=true, proc=true, proc_stacks=true,
   debuff=true, cooldown_aura=true, resource=true, summon=true,
@@ -15,6 +15,7 @@ local ALLOWED_DISPLAYS = {icon=true, bar=true}
 local ALLOWED_GLOWS = {off=true, ready=true, active=true}
 local ALLOWED_GROUPS = {main=true, procs=true, defensives=true, utility=true, resources=true, target=true}
 local ALLOWED_GROWTH = {RIGHT=true, LEFT=true, UP=true, DOWN=true}
+local ALLOWED_DESTINATIONS = {hud=true, targetFrame=true, nameplates=true}
 local BOOLEAN_SETTINGS = {
   showCooldownText=true, showDuration=true, showStacks=true, learnedOnly=true, combatOnly=true,
 }
@@ -52,6 +53,19 @@ local function ValidateTrackingTypes(entry)
   return true
 end
 
+local function ValidateDestinations(entry)
+  if entry.destinations == nil then return true end
+  if type(entry.destinations) ~= "table" then return false, "tracker destinations are not a table" end
+  if #entry.destinations < 1 or #entry.destinations > 3 then return false, "invalid tracker destination count" end
+  local seen = {}
+  for _, value in ipairs(entry.destinations) do
+    if type(value) ~= "string" or not ALLOWED_DESTINATIONS[value] then return false, "unsupported tracker destination" end
+    if seen[value] then return false, "duplicate tracker destination" end
+    seen[value] = true
+  end
+  return true
+end
+
 local function ValidateSettings(settings)
   if settings == nil then return true end
   if type(settings) ~= "table" then return false, "tracker settings are not a table" end
@@ -83,6 +97,8 @@ local function ValidateTracker(entry, className)
   if entry.group ~= nil and (type(entry.group) ~= "string" or not ALLOWED_GROUPS[entry.group]) then return false, "unsupported tracker group" end
   local typesOK, typesReason = ValidateTrackingTypes(entry)
   if not typesOK then return false, typesReason end
+  local destinationsOK, destinationsReason = ValidateDestinations(entry)
+  if not destinationsOK then return false, destinationsReason end
   local settingsOK, settingsReason = ValidateSettings(entry.settings)
   if not settingsOK then return false, settingsReason end
   return true
@@ -118,7 +134,7 @@ end
 function RUI:ValidateTrackerProfileData(data)
   if type(data) ~= "table" then return false, "tracker profile is not a table" end
   local schema = tonumber(data.schema)
-  if schema ~= 1 and schema ~= PROFILE_SCHEMA then return false, "unsupported tracker profile schema" end
+  if schema ~= 1 and schema ~= 2 and schema ~= PROFILE_SCHEMA then return false, "unsupported tracker profile schema" end
   if type(data.className) ~= "string" or data.className == "" then return false, "tracker profile class is missing" end
   if type(data.trackers) ~= "table" then return false, "tracker list is missing" end
   if #data.trackers > 250 then return false, "tracker profile contains too many entries" end
