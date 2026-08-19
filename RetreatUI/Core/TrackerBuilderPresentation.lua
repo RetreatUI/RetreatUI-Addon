@@ -2,10 +2,24 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- Presentation-only polish for the Tracker Builder list. Keep the data model
--- untouched; simply give the metadata line enough horizontal room to display
--- multi-type selections such as cooldown + buff + resource without wrapping.
+-- untouched; give metadata enough horizontal room and expose the group layout
+-- editor without adding another permanent addon window.
 local originalOpen = RUI.OpenTrackerBuilder
 if type(originalOpen) ~= "function" then return end
+
+local function EnsureLayoutButton(frame)
+  if not frame or frame.trackerLayoutButton then return end
+  local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+  button:SetWidth(108); button:SetHeight(24)
+  button:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", -18, 18)
+  button:SetText("HUD Layout")
+  button:SetScript("OnClick", function()
+    if type(RUI.OpenTrackerGroupLayoutEditor) == "function" then
+      RUI:OpenTrackerGroupLayoutEditor()
+    end
+  end)
+  frame.trackerLayoutButton = button
+end
 
 function RUI:OpenTrackerBuilder(...)
   local opened = originalOpen(self, ...)
@@ -17,6 +31,7 @@ function RUI:OpenTrackerBuilder(...)
         if type(row.meta.SetHeight) == "function" then row.meta:SetHeight(14) end
       end
     end
+    EnsureLayoutButton(frame)
   end
   if self.RefreshTrackerBuilder then self:RefreshTrackerBuilder() end
   return opened

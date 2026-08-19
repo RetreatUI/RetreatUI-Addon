@@ -1,34 +1,41 @@
-# RetreatUI v1.1.7-beta.25 - Tracker Editor Polish Test
+# RetreatUI v1.1.7-beta.26 - Tracker HUD Layout Test
 
-This prerelease builds on the successful beta.24 Tracker Editor test.
+This prerelease builds on the successful beta.25 Tracker Editor/grouping test.
 
-## What changed from beta.24
+## What changed from beta.25
 
-- Keeps user-selected multi-type combinations exactly as saved.
-- Confirms curated Apotheosis defaults remain Cooldown + Buff; extra types such as Resource are only retained when the user explicitly selected them.
-- Adds a HUD Group field to every tracker definition.
-- Available groups: Main, Procs / Buffs, Defensives, Utility, Resources and Target.
-- New trackers receive a deterministic suggested group based on their curated category/tracking type, but the user can change the group freely.
-- Existing tracker group choices persist with the rest of the tracker profile data.
-- Gives the Tracker Builder metadata line more horizontal room so long multi-type selections no longer wrap into adjacent rows.
-- Keeps Recommended tied to Learned only.
+- Adds a dedicated data-driven Tracker HUD Layout editor.
+- Adds a `HUD Layout` button directly in the Tracker Builder.
+- Shows movable handles for Main, Procs / Buffs, Defensives, Utility, Resources and Target groups.
+- Group handles show the number of selected trackers assigned to that group.
+- Group positions can be moved by drag and drop.
+- Adds per-group Scale controls from 50% to 200%.
+- Adds per-group Spacing controls from 0 to 24 px.
+- Adds per-group growth direction: Right, Left, Up and Down.
+- Adds per-group Reset.
+- Stores group layout independently per CoA class.
+- Includes tracker group layout data in the validated Tracker profile schema for future unified RetreatUI profile import/export.
+- Keeps beta.25 Tracker Editor behavior and saved user choices intact.
 
 ## Important safety scope
 
-The Tracker Editor still does not generate, import, replace or modify WeakAuras. It only stores tracker/profile/layout intent as data in RetreatUIDB.
+The Tracker HUD Layout editor is still a preview/data editor only. It does not create, import, replace or modify WeakAuras and does not render live combat trackers yet.
 
 No custom WeakAuras decoding, direct WeakAuras.Add calls, arbitrary imported Lua or runtime tracker renderer is added in this build.
 
 ## What to test
 
-1. Open `/rui tracker` and confirm the browser still loads cleanly.
-2. Open Apotheosis as a fresh/new tracker and confirm the suggested types are Cooldown + Buff.
-3. Add an extra type manually if desired and confirm it is preserved after reopening the editor.
-4. Change Group and confirm the selected group is restored after reopening.
-5. Confirm long multi-type rows stay on one metadata line in the Builder.
-6. `/reload`, reopen `/rui tracker`, and confirm tracker types, group, size, glow and conditions persist.
-7. Confirm no WeakAuras were created or changed.
+1. Open `/rui tracker` and confirm the existing Tracker Builder still loads correctly.
+2. Confirm your beta.25 selected trackers and groups are still present.
+3. Click `HUD Layout` at the bottom-right of the Tracker Builder.
+4. Confirm all six group handles appear without Lua errors.
+5. Drag one or more group handles and close/reopen the editor.
+6. Select a handle and change Scale, Spacing and Growth.
+7. Use Reset on one group and confirm only that group returns to its default position/settings.
+8. `/reload`, reopen the HUD Layout editor, and confirm positions, scale, spacing and growth persist.
+9. Confirm the group count matches the trackers assigned in the Tracker Editor.
+10. Confirm no WeakAuras were created or changed.
 
-Do not promote this build to Stable. The next stage is the data-driven HUD layout/group editor before any WeakAura renderer is connected.
+Do not promote this build to Stable. If this data/layout pass is clean, the next stage is connecting these group definitions to a safe tracker rendering backend.
 
 Author: Retreat
