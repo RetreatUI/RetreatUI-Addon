@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.30",
-  "title": "RetreatUI v1.1.7-beta.30 Native WeakAuras Duration Test",
+  "version": "1.1.7-beta.31",
+  "title": "RetreatUI v1.1.7-beta.31 Tracker Editor WeakAuras Action",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
