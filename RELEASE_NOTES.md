@@ -1,28 +1,39 @@
-# RetreatUI v1.1.7-beta.33 - Native Tracker Types Test
+# RetreatUI v1.1.7-beta.34 - Charge and Debuff Data Test
 
-This prerelease keeps the fully verified managed WeakAura identity/update flow from beta.32 and extends the same native WeakAuras 5.21.2 generator to additional Tracker Builder types.
+This prerelease keeps the verified beta.33 native WeakAuras paths and narrows the next test to two issues found during live Bloodmage testing: charge presentation while a recharge is running, and a missing curated Spell ID for Bite Wound.
 
-## Native WeakAuras types in this build
+## What changed
 
-- Cooldown
-- Cooldown + Buff duration
-- Buff
-- Proc
-- Debuff
-- Stacks
-- Charges
+- Charge tracking now mirrors Ascension WeakAuras 5.21.2's own `Charge Tracking` template more closely.
+- For a tracker with Charges enabled, the base icon has cooldown swipe disabled while at least one charge remains.
+- A native WeakAuras condition enables cooldown swipe only when the trigger's `charges == 0`.
+- Charge count continues to use WeakAuras' native `%s` dynamic text.
+- The already verified non-charge cooldown behavior remains unchanged.
+- Adds a verified Bloodmage metadata override for Bite Wound: Spell/Aura ID `556234`, Unit `target`, native Debuff tracking.
+- Makes Bloodsores (`805591`, max 5 stacks) the explicit Bloodmage stacks proof case.
 
-Resource and Summon / Pet remain valid RetreatUI profile data but are deliberately not generated as WeakAuras in this build.
+## Expected charge behavior - Rotclaw
 
-## Implementation rules
+Rotclaw is a verified two-charge ability. After updating its managed WeakAura:
 
-- Buff / Proc use WeakAuras' native `aura2` HELPFUL trigger.
-- Debuff uses native `aura2` HARMFUL tracking on the tracker-selected unit.
-- Stacks use native aura state and WeakAuras' `%s` dynamic count text.
-- Charges use the native `Cooldown Progress (Spell)` state and `%s` count text.
-- Cooldown + Buff keeps the exact live-verified two-trigger behavior from beta.30-beta.32.
-- Managed class/spell ID + UID reuse remains unchanged, so rebuilding a tracker uses WeakAuras' Update flow.
-- Unsupported Resource/Summon selections are ignored only when another supported native type is also selected; a Resource/Summon-only tracker is refused safely.
+- 2/2 charges: show `2`.
+- After spending one charge: keep showing `1` rather than letting a recharge cooldown replace the charge count.
+- At 0 charges: show the cooldown/recharge swipe until a charge returns.
+- As charges recover: return to `1`, then `2`.
+
+This mirrors the native Ascension WeakAuras charge template behavior and uses no custom trigger Lua.
+
+## Focused Bloodmage test
+
+1. Update to beta.34 through the Beta launcher channel.
+2. Open `/rui tracker` and rebuild/update Rotclaw with Charges + `Stacks / charges` enabled.
+3. Confirm 2 -> 1 charge remains visible after spending one charge, and cooldown swipe is only used at zero charges.
+4. Find Bite Wound. It should now show Spell ID `556234` instead of `?`.
+5. Configure Bite Wound as Debuff, Unit: Target, Duration enabled. Do not enable Stacks for Bite Wound.
+6. Build/import the managed Bite Wound aura and confirm it appears while your Bite Wound debuff is active on the target.
+7. For stacks, use Bloodsores instead. Configure Proc + Stacks + `Stacks / charges`, build/import, and confirm its 1-5 native stack count is shown.
+8. Confirm rebuilds still open WeakAuras Update instead of creating duplicates.
+9. Confirm there are no Lua errors.
 
 ## Safety rules
 
@@ -30,21 +41,8 @@ Resource and Summon / Pet remain valid RetreatUI profile data but are deliberate
 - No custom trigger Lua.
 - No custom WeakAuras decoder.
 - No automatic import/update acceptance.
-- No automatic deletion of user or legacy WeakAuras.
-- Ambiguous Buff/Proc + Debuff combinations are refused instead of generating contradictory triggers.
-- Building is blocked in combat.
-
-## Focused test pass
-
-1. Update to beta.33 through the Beta launcher channel.
-2. Confirm the existing managed Apotheosis aura can still be rebuilt/updated and still shows active buff duration followed by cooldown.
-3. In Tracker Builder choose a learned ability/proc with a player buff, configure Buff or Proc and press `Build WeakAura`.
-4. Import manually and confirm it appears only while the aura is active and shows duration.
-5. Choose a target debuff, set Unit: Target + Debuff, build/import and confirm it follows the debuff on the target.
-6. For an aura that stacks, enable Stacks + `Stacks / charges`, build/import and confirm the native stack count is visible.
-7. For an ability with charges, enable Charges + `Stacks / charges`, build/import and confirm the native charge count changes when charges are consumed/recovered.
-8. Rebuild one of the above after changing icon size and confirm WeakAuras opens Update rather than creating a duplicate.
-9. Confirm there are no Lua errors.
+- No automatic deletion of existing WeakAuras.
+- Resource and Summon / Pet remain profile-only in this build.
 
 Do not promote this build to Stable.
 
