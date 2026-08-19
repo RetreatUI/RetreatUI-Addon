@@ -15,6 +15,7 @@ Data\GeneratedSpellAuditCatalog.lua
 Data\TrackerMetadata.lua
 Data\TrackerTemplates.lua
 Core\TrackerCatalog.lua
+Core\TrackerBuilder.lua
 Data\WeakAurasBeta20Payloads.lua
 Integrations\WeakAurasBeta20.lua
 Integrations\GuardianTooltipScannerSafety.lua
