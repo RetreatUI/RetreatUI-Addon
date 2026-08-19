@@ -1,47 +1,50 @@
-# RetreatUI v1.1.7-beta.32 - Managed WeakAuras Update Test
+# RetreatUI v1.1.7-beta.33 - Native Tracker Types Test
 
-This prerelease keeps the proven beta.31 Tracker Editor -> native WeakAuras flow and adds stable managed identity so rebuilding the same tracker updates the same WeakAura instead of creating another copy.
+This prerelease keeps the fully verified managed WeakAura identity/update flow from beta.32 and extends the same native WeakAuras 5.21.2 generator to additional Tracker Builder types.
 
-## What changed
+## Native WeakAuras types in this build
 
-- Adds a deterministic managed WeakAura id per Tracker Builder entry using class + spell name + Spell ID.
-- Stores the managed WeakAura id/uid mapping in `RetreatUIDB.weakAurasManaged`.
-- Reuses the existing WeakAura uid when the managed aura already exists.
-- Reuses the remembered uid if the import was prepared previously but not yet accepted.
-- Keeps the proven native Cooldown and Cooldown + Buff duration trigger paths unchanged.
-- Keeps `Build WeakAura` inside Configure Tracker.
-- Existing beta.29-beta.31 `RetreatUI Test - ...` auras are not automatically deleted or modified.
+- Cooldown
+- Cooldown + Buff duration
+- Buff
+- Proc
+- Debuff
+- Stacks
+- Charges
 
-## Expected behavior
+Resource and Summon / Pet remain valid RetreatUI profile data but are deliberately not generated as WeakAuras in this build.
 
-The first build of a tracker should open WeakAuras' normal Import flow for a stable name such as:
+## Implementation rules
 
-`RetreatUI - Bloodmage - Apotheosis [804203]`
-
-After that aura has been imported, changing the Tracker Builder configuration and pressing `Build WeakAura` again should open WeakAuras' native Update flow for that same aura rather than creating another entry.
+- Buff / Proc use WeakAuras' native `aura2` HELPFUL trigger.
+- Debuff uses native `aura2` HARMFUL tracking on the tracker-selected unit.
+- Stacks use native aura state and WeakAuras' `%s` dynamic count text.
+- Charges use the native `Cooldown Progress (Spell)` state and `%s` count text.
+- Cooldown + Buff keeps the exact live-verified two-trigger behavior from beta.30-beta.32.
+- Managed class/spell ID + UID reuse remains unchanged, so rebuilding a tracker uses WeakAuras' Update flow.
+- Unsupported Resource/Summon selections are ignored only when another supported native type is also selected; a Resource/Summon-only tracker is refused safely.
 
 ## Safety rules
 
-- No automatic deletion of existing or legacy WeakAuras.
 - No `WeakAuras.Add`.
-- No custom WeakAuras transmission decoder.
 - No custom trigger Lua.
+- No custom WeakAuras decoder.
 - No automatic import/update acceptance.
-- WeakAuras 5.21.2 performs its own native import/update validation.
-- Building remains blocked in combat.
+- No automatic deletion of user or legacy WeakAuras.
+- Ambiguous Buff/Proc + Debuff combinations are refused instead of generating contradictory triggers.
+- Building is blocked in combat.
 
-## Test steps
+## Focused test pass
 
-1. Update to beta.32 through the Beta launcher channel.
-2. Existing `RetreatUI Test - Apotheosis` proof auras may be deleted manually in `/wa` if desired; RetreatUI will not touch them.
-3. Run `/rui tracker` and edit Apotheosis.
-4. Press `Build WeakAura` and manually Import the new stable `RetreatUI - Bloodmage - Apotheosis [804203]` aura.
-5. Reopen `/rui tracker`, edit Apotheosis and change icon size.
-6. Press `Build WeakAura` again.
-7. Confirm WeakAuras presents an Update for the existing managed Apotheosis aura rather than a second new import.
-8. Accept the update and verify the icon size changed.
-9. Confirm only one managed `RetreatUI - Bloodmage - Apotheosis [804203]` entry exists.
-10. Confirm cooldown + active buff duration still work and there are no Lua errors.
+1. Update to beta.33 through the Beta launcher channel.
+2. Confirm the existing managed Apotheosis aura can still be rebuilt/updated and still shows active buff duration followed by cooldown.
+3. In Tracker Builder choose a learned ability/proc with a player buff, configure Buff or Proc and press `Build WeakAura`.
+4. Import manually and confirm it appears only while the aura is active and shows duration.
+5. Choose a target debuff, set Unit: Target + Debuff, build/import and confirm it follows the debuff on the target.
+6. For an aura that stacks, enable Stacks + `Stacks / charges`, build/import and confirm the native stack count is visible.
+7. For an ability with charges, enable Charges + `Stacks / charges`, build/import and confirm the native charge count changes when charges are consumed/recovered.
+8. Rebuild one of the above after changing icon size and confirm WeakAuras opens Update rather than creating a duplicate.
+9. Confirm there are no Lua errors.
 
 Do not promote this build to Stable.
 
