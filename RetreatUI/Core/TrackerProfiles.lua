@@ -7,6 +7,15 @@ local ALLOWED_TEMPLATES = {
   debuff=true, cooldown_aura=true, resource=true, summon=true,
 }
 local ALLOWED_UNITS = {player=true, target=true, focus=true, pet=true}
+local ALLOWED_TRACKING_TYPES = {
+  cooldown=true, buff=true, proc=true, debuff=true, stacks=true,
+  charges=true, resource=true, summon=true,
+}
+local ALLOWED_DISPLAYS = {icon=true, bar=true}
+local ALLOWED_GLOWS = {off=true, ready=true, active=true}
+local BOOLEAN_SETTINGS = {
+  showCooldownText=true, showDuration=true, showStacks=true, learnedOnly=true, combatOnly=true,
+}
 
 local function CopyValue(value, depth)
   depth = (depth or 0) + 1
@@ -25,6 +34,41 @@ local function CopyValue(value, depth)
   return result
 end
 
+local function ValidateTrackingTypes(entry)
+  if entry.trackingType ~= nil and (type(entry.trackingType) ~= "string" or not ALLOWED_TRACKING_TYPES[entry.trackingType]) then
+    return false, "unsupported legacy tracking type"
+  end
+  if entry.trackingTypes == nil then return true end
+  if type(entry.trackingTypes) ~= "table" then return false, "tracking types are not a table" end
+  if #entry.trackingTypes < 1 or #entry.trackingTypes > 8 then return false, "invalid tracking type count" end
+  local seen = {}
+  for _, value in ipairs(entry.trackingTypes) do
+    if type(value) ~= "string" or not ALLOWED_TRACKING_TYPES[value] then return false, "unsupported tracking type" end
+    if seen[value] then return false, "duplicate tracking type" end
+    seen[value] = true
+  end
+  return true
+end
+
+local function ValidateSettings(settings)
+  if settings == nil then return true end
+  if type(settings) ~= "table" then return false, "tracker settings are not a table" end
+  for key, value in pairs(settings) do
+    if key == "display" then
+      if type(value) ~= "string" or not ALLOWED_DISPLAYS[value] then return false, "unsupported display mode" end
+    elseif key == "iconSize" then
+      if type(value) ~= "number" or value < 20 or value > 80 then return false, "invalid icon size" end
+    elseif key == "glow" then
+      if type(value) ~= "string" or not ALLOWED_GLOWS[value] then return false, "unsupported glow mode" end
+    elseif BOOLEAN_SETTINGS[key] then
+      if type(value) ~= "boolean" then return false, "invalid boolean tracker setting" end
+    else
+      return false, "unsupported tracker setting: " .. tostring(key)
+    end
+  end
+  return true
+end
+
 local function ValidateTracker(entry, className)
   if type(entry) ~= "table" then return false, "tracker entry is not a table" end
   if type(entry.key) ~= "string" or entry.key == "" then return false, "tracker key is missing" end
@@ -34,6 +78,10 @@ local function ValidateTracker(entry, className)
   if entry.auraID ~= nil and (type(entry.auraID) ~= "number" or entry.auraID <= 0) then return false, "invalid aura ID" end
   if entry.template ~= nil and not ALLOWED_TEMPLATES[entry.template] then return false, "unsupported tracker template" end
   if entry.unit ~= nil and not ALLOWED_UNITS[entry.unit] then return false, "unsupported tracker unit" end
+  local typesOK, typesReason = ValidateTrackingTypes(entry)
+  if not typesOK then return false, typesReason end
+  local settingsOK, settingsReason = ValidateSettings(entry.settings)
+  if not settingsOK then return false, settingsReason end
   return true
 end
 
