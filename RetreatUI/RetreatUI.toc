@@ -10,6 +10,7 @@
 Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
+Data\SpellAuditCatalog.lua
 Data\TrackerMetadata.lua
 Data\TrackerTemplates.lua
 Core\TrackerCatalog.lua
