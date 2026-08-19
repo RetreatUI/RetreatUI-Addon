@@ -103,11 +103,24 @@ function RUI:InferTrackerMetadata(record, className)
 
   local recommended = explicit.recommended
   if recommended == nil then
-    recommended = trackable == true and advanced ~= true and (
-      record.hudRow ~= nil or record.auraTracker == true or record.targetDebuff == true or record.trackCharges == true
-      or record.interrupt == true or category == "interrupt" or category == "interrupts"
-      or category == "defensive" or category == "offensive" or category == "proc" or category == "resource"
-    )
+    if record.auditCatalog == true then
+      -- Raw audit categories such as Offensive/Defensive are intentionally not
+      -- enough on their own. Recommended should be a small, high-signal list.
+      local cooldown = tonumber(record.cooldownHint) or 0
+      local stacks = tonumber(record.maxStacks) or 0
+      local related = type(record.relatedSpellIDs) == "table" and #record.relatedSpellIDs > 0
+      recommended = trackable == true and advanced ~= true and (
+        record.interrupt == true or record.trackCharges == true or tonumber(record.chargesHint) ~= nil
+        or stacks > 1 or category == "proc" or category == "resource" or category == "interrupt" or category == "interrupts"
+        or cooldown >= 30 or (related and tonumber(record.durationHint) ~= nil)
+      )
+    else
+      recommended = trackable == true and advanced ~= true and (
+        record.hudRow ~= nil or record.auraTracker == true or record.targetDebuff == true or record.trackCharges == true
+        or record.interrupt == true or category == "interrupt" or category == "interrupts"
+        or category == "proc" or category == "resource"
+      )
+    end
   end
 
   local defaultUnit = explicit.defaultUnit
