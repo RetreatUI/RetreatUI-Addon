@@ -21,6 +21,7 @@ Data\TrackerTemplates.lua
 Core\TrackerCatalog.lua
 Core\TrackerProfiles.lua
 Core\AscensionProfileAdapters.lua
+Core\AscensionCompatibilityLoadGuard.lua
 Core\TrackerBuilder.lua
 Core\TrackerEditor.lua
 Core\TrackerGroupLayout.lua
@@ -71,6 +72,7 @@ Integrations\TurboPlatesBeta20.lua
 Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
 Integrations\Details.lua
+Integrations\LegacyFixedProfileGuard.lua
 Integrations\ChatOwnershipSafety.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
