@@ -6,7 +6,7 @@ This prerelease is an isolated Project Ascension: Conquest of Azeroth proof-of-c
 
 - Adds `/rui tracker`, a first 3.3.5-compatible ability/tracker browser.
 - Uses RetreatUI's existing CoA class records plus the Professional Audit spell database as the catalog source.
-- Adds full Professional Audit test catalogs for Barbarian, Bloodmage and Knight of Xoroth.
+- Adds full Professional Audit test catalogs for Barbarian, Bloodmage, Chronomancer and Knight of Xoroth.
 - Adds search plus Learned only, Recommended, Advanced and All entries filters.
 - Adds Add/Remove selection for tracker definitions.
 - Stores selected trackers in `RetreatUIDB` so selections can survive reloads.
