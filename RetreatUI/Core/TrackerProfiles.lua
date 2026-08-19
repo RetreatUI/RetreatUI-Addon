@@ -1,0 +1,93 @@
+local RUI = RetreatUI
+if not RUI then return end
+
+local PROFILE_SCHEMA = 1
+local ALLOWED_TEMPLATES = {
+  cooldown=true, charges=true, buff=true, buff_stacks=true, proc=true, proc_stacks=true,
+  debuff=true, cooldown_aura=true, resource=true, summon=true,
+}
+local ALLOWED_UNITS = {player=true, target=true, focus=true, pet=true}
+
+local function CopyValue(value, depth)
+  depth = (depth or 0) + 1
+  if depth > 12 then return nil end
+  local kind = type(value)
+  if kind == "string" or kind == "number" or kind == "boolean" then return value end
+  if kind ~= "table" then return nil end
+  local result = {}
+  for key, child in pairs(value) do
+    local keyType = type(key)
+    if keyType == "string" or keyType == "number" then
+      local copied = CopyValue(child, depth)
+      if copied ~= nil then result[key] = copied end
+    end
+  end
+  return result
+end
+
+local function ValidateTracker(entry, className)
+  if type(entry) ~= "table" then return false, "tracker entry is not a table" end
+  if type(entry.key) ~= "string" or entry.key == "" then return false, "tracker key is missing" end
+  if type(entry.name) ~= "string" or entry.name == "" then return false, "tracker name is missing" end
+  if entry.className ~= nil and entry.className ~= className then return false, "tracker class does not match profile class" end
+  if entry.spellID ~= nil and (type(entry.spellID) ~= "number" or entry.spellID <= 0) then return false, "invalid spell ID" end
+  if entry.auraID ~= nil and (type(entry.auraID) ~= "number" or entry.auraID <= 0) then return false, "invalid aura ID" end
+  if entry.template ~= nil and not ALLOWED_TEMPLATES[entry.template] then return false, "unsupported tracker template" end
+  if entry.unit ~= nil and not ALLOWED_UNITS[entry.unit] then return false, "unsupported tracker unit" end
+  return true
+end
+
+function RUI:GetTrackerProfileData(className)
+  className = className or (self.GetDetectedClass and self:GetDetectedClass())
+  if type(className) ~= "string" or className == "" then return nil end
+  local selected = self.GetSelectedTrackers and self:GetSelectedTrackers(className) or {}
+  return {
+    schema = PROFILE_SCHEMA,
+    className = className,
+    trackers = CopyValue(selected) or {},
+  }
+end
+
+function RUI:ValidateTrackerProfileData(data)
+  if type(data) ~= "table" then return false, "tracker profile is not a table" end
+  if tonumber(data.schema) ~= PROFILE_SCHEMA then return false, "unsupported tracker profile schema" end
+  if type(data.className) ~= "string" or data.className == "" then return false, "tracker profile class is missing" end
+  if type(data.trackers) ~= "table" then return false, "tracker list is missing" end
+  if #data.trackers > 250 then return false, "tracker profile contains too many entries" end
+  local seen = {}
+  for _, entry in ipairs(data.trackers) do
+    local ok, reason = ValidateTracker(entry, data.className)
+    if not ok then return false, reason end
+    if seen[entry.key] then return false, "tracker profile contains duplicate keys" end
+    seen[entry.key] = true
+  end
+  return true
+end
+
+function RUI:ApplyTrackerProfileData(data, options)
+  local valid, reason = self:ValidateTrackerProfileData(data)
+  if not valid then return false, reason end
+  options = type(options) == "table" and options or {}
+  local currentClass = self.GetDetectedClass and self:GetDetectedClass() or nil
+  if not options.allowOtherClass and currentClass and data.className ~= currentClass then
+    return false, "tracker profile belongs to " .. tostring(data.className) .. ", current class is " .. tostring(currentClass)
+  end
+
+  RetreatUIDB = RetreatUIDB or {}
+  RetreatUIDB.trackerBuilder = RetreatUIDB.trackerBuilder or {}
+  RetreatUIDB.trackerBuilder.selected = RetreatUIDB.trackerBuilder.selected or {}
+  local target = {}
+  for _, entry in ipairs(data.trackers) do
+    local copy = CopyValue(entry)
+    copy.className = data.className
+    target[copy.key] = copy
+  end
+  RetreatUIDB.trackerBuilder.selected[data.className] = target
+
+  if self.trackerBuilderFrame and self.trackerBuilderFrame:IsShown() and self.RefreshTrackerBuilder then
+    pcall(self.RefreshTrackerBuilder, self)
+  end
+  return true, #data.trackers
+end
+
+RUI.trackerProfileSchema = PROFILE_SCHEMA
