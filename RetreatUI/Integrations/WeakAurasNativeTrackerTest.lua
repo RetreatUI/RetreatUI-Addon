@@ -2,9 +2,15 @@ local RUI = RetreatUI
 if not RUI then return end
 
 -- Native Tracker Builder -> WeakAuras bridge for Ascension WeakAuras 5.21.2.
--- Cooldown + buff trackers use WeakAuras' own native two-trigger model.
--- beta.32 adds deterministic managed ids/uids so rebuilding a tracker updates
--- the same aura instead of creating another copy.
+-- Uses only native WeakAuras trigger data and WeakAuras' own Import() flow.
+-- No WeakAuras.Add, no custom decoder and no custom trigger Lua.
+--
+-- Proven live paths retained unchanged:
+--   Cooldown
+--   Cooldown + active Buff duration
+--
+-- beta.33 extends the same managed aura to native:
+--   Buff / Proc, Debuff, Stacks and Charges.
 
 local function HasType(entry, wanted)
   if type(entry) ~= "table" then return false end
@@ -17,26 +23,21 @@ local function HasType(entry, wanted)
   return false
 end
 
-local function FirstCooldownBuffTracker(self)
-  if type(self.GetSelectedTrackers) ~= "function" then return nil end
-  local className = self.GetDetectedClass and self:GetDetectedClass() or nil
-  local selected = self:GetSelectedTrackers(className)
-  for _, entry in ipairs(selected or {}) do
-    if type(entry.spellID) == "number" and entry.spellID > 0
-      and HasType(entry, "cooldown") and HasType(entry, "buff")
-      and type(entry.auraName) == "string" and entry.auraName ~= "" then
-      return entry
-    end
-  end
-  return nil
+local function HasSupportedType(entry)
+  return HasType(entry, "cooldown")
+      or HasType(entry, "buff")
+      or HasType(entry, "proc")
+      or HasType(entry, "debuff")
+      or HasType(entry, "stacks")
+      or HasType(entry, "charges")
 end
 
-local function FirstCooldownTracker(self)
+local function FirstSupportedTracker(self)
   if type(self.GetSelectedTrackers) ~= "function" then return nil end
   local className = self.GetDetectedClass and self:GetDetectedClass() or nil
   local selected = self:GetSelectedTrackers(className)
   for _, entry in ipairs(selected or {}) do
-    if type(entry.spellID) == "number" and entry.spellID > 0 and HasType(entry, "cooldown") then
+    if type(entry.spellID) == "number" and entry.spellID > 0 and HasSupportedType(entry) then
       return entry
     end
   end
@@ -75,25 +76,96 @@ local function BuildCooldownTrigger(triggerCategory, entry)
   }
 end
 
-local function BuildBuffTrigger(entry)
+local function AuraName(entry)
+  if type(entry.auraName) == "string" and entry.auraName ~= "" then return entry.auraName end
+  if type(entry.name) == "string" and entry.name ~= "" then return entry.name end
+  return nil
+end
+
+local function BuildAuraTrigger(entry, harmful)
+  local auraName = AuraName(entry)
+  if not auraName then return nil end
+  local unit = entry.unit or (harmful and "target" or "player")
   return {
     trigger = {
-      unit = entry.unit or "player",
+      unit = unit,
       type = "aura2",
       matchesShowOn = "showOnActive",
-      debuffType = "HELPFUL",
+      debuffType = harmful and "HARMFUL" or "HELPFUL",
       ownOnly = true,
       unitExists = false,
       useName = true,
-      auranames = { tostring(entry.auraName or entry.name) },
+      auranames = { tostring(auraName) },
     },
     untrigger = {},
   }
 end
 
-function RUI:BuildNativeCooldownTrackerTest(entry)
+local function BuildTriggers(triggerCategory, entry)
+  local wantsCooldown = HasType(entry, "cooldown") or HasType(entry, "charges")
+  local wantsDebuff = HasType(entry, "debuff")
+  local wantsHelpfulAura = HasType(entry, "buff") or HasType(entry, "proc") or (HasType(entry, "stacks") and not wantsDebuff)
+
+  -- A single tracker has one curated aura identity. Requiring both helpful and
+  -- harmful aura semantics at the same time would be ambiguous, so fail safely
+  -- instead of silently generating two contradictory aura triggers.
+  if wantsDebuff and (HasType(entry, "buff") or HasType(entry, "proc")) then
+    return nil, "one tracker cannot use Buff/Proc and Debuff at the same time; choose the aura type that belongs to this spell"
+  end
+
+  local triggers = {}
+  if wantsDebuff then
+    local trigger = BuildAuraTrigger(entry, true)
+    if not trigger then return nil, "the debuff tracker has no usable aura name" end
+    triggers[#triggers + 1] = trigger
+  elseif wantsHelpfulAura then
+    local trigger = BuildAuraTrigger(entry, false)
+    if not trigger then return nil, "the buff/proc/stacks tracker has no usable aura name" end
+    triggers[#triggers + 1] = trigger
+  end
+
+  if wantsCooldown then
+    triggers[#triggers + 1] = BuildCooldownTrigger(triggerCategory, entry)
+  end
+
+  if #triggers == 0 then
+    return nil, "this tracker has no native WeakAuras type enabled yet"
+  end
+
+  triggers.disjunctive = (#triggers > 1) and "any" or "all"
+  triggers.activeTriggerMode = -10
+  return triggers
+end
+
+local function BuildSubRegions(entry)
+  local settings = type(entry.settings) == "table" and entry.settings or {}
+  local wantsCount = settings.showStacks == true or HasType(entry, "stacks") or HasType(entry, "charges")
+  if not wantsCount then return nil end
+
+  -- %s is WeakAuras' native dynamic stack/count placeholder. For aura2 it is
+  -- the aura stack count; for the cooldown/charges state it exposes the native
+  -- count supplied by WeakAuras. Missing style fields are filled by WA defaults.
+  return {
+    { type = "subbackground" },
+    { type = "subtext", text_text = "%s", text_visible = true },
+  }
+end
+
+local function ModeLabel(entry)
+  local result = {}
+  local order = {"cooldown", "buff", "proc", "debuff", "stacks", "charges"}
+  for _, key in ipairs(order) do
+    if HasType(entry, key) then result[#result + 1] = key end
+  end
+  return table.concat(result, "+")
+end
+
+function RUI:BuildNativeTrackerImport(entry)
   if type(entry) ~= "table" or type(entry.spellID) ~= "number" or entry.spellID <= 0 then
     return nil, "selected tracker has no valid Spell ID"
+  end
+  if not HasSupportedType(entry) then
+    return nil, "this tracker only uses Resource/Summon types, which are not generated in beta.33"
   end
 
   local wa, reason = WeakAurasAPI(self)
@@ -115,26 +187,12 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
   local auraID, uid, isUpdate, identityReason = self:ResolveManagedWeakAuraIdentity(entry, wa)
   if not auraID then return nil, identityReason or "managed WeakAura identity could not be resolved" end
 
+  local triggers, triggerReason = BuildTriggers(triggerCategory, entry)
+  if not triggers then return nil, triggerReason end
+
   local settings = type(entry.settings) == "table" and entry.settings or {}
   local size = tonumber(settings.iconSize) or 36
   size = math.max(20, math.min(80, math.floor(size + 0.5)))
-
-  local hasBuff = HasType(entry, "buff") and type(entry.auraName) == "string" and entry.auraName ~= ""
-  local triggers
-  if hasBuff then
-    triggers = {
-      BuildBuffTrigger(entry),
-      BuildCooldownTrigger(triggerCategory, entry),
-      disjunctive = "any",
-      activeTriggerMode = -10,
-    }
-  else
-    triggers = {
-      BuildCooldownTrigger(triggerCategory, entry),
-      disjunctive = "all",
-      activeTriggerMode = -10,
-    }
-  end
 
   local aura = {
     id = auraID,
@@ -151,12 +209,20 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
     triggers = triggers,
   }
 
+  local subRegions = BuildSubRegions(entry)
+  if subRegions then aura.subRegions = subRegions end
+
   if type(self.BuildWeakAurasNativeImportEnvelope) ~= "function" then
     return nil, "RetreatUI WeakAuras native envelope adapter is unavailable"
   end
   local envelope, envelopeReason = self:BuildWeakAurasNativeImportEnvelope(aura, {})
   if not envelope then return nil, envelopeReason end
-  return envelope, nil, aura.id, hasBuff, isUpdate, uid
+  return envelope, nil, aura.id, ModeLabel(entry), isUpdate, uid
+end
+
+-- Compatibility alias for beta.29-beta.32 callers.
+function RUI:BuildNativeCooldownTrackerTest(entry)
+  return self:BuildNativeTrackerImport(entry)
 end
 
 function RUI:OpenNativeCooldownTrackerTest()
@@ -164,12 +230,12 @@ function RUI:OpenNativeCooldownTrackerTest()
     return false, "leave combat before opening the WeakAuras import test"
   end
 
-  local entry = FirstCooldownBuffTracker(self) or FirstCooldownTracker(self)
+  local entry = FirstSupportedTracker(self)
   if not entry then
-    return false, "select at least one Tracker Builder ability with Cooldown enabled first"
+    return false, "select at least one supported Tracker Builder ability first"
   end
 
-  local envelope, reason, auraID, hasBuff, isUpdate, uid = self:BuildNativeCooldownTrackerTest(entry)
+  local envelope, reason, auraID, mode, isUpdate, uid = self:BuildNativeTrackerImport(entry)
   if not envelope then return false, reason end
   if type(self.OpenWeakAurasNativeImport) ~= "function" then
     return false, "RetreatUI native WeakAuras import adapter is unavailable"
@@ -187,13 +253,12 @@ function RUI:OpenNativeCooldownTrackerTest()
     auraName = entry.auraName,
     auraID = auraID,
     uid = uid,
-    mode = hasBuff and "cooldown+buff" or "cooldown",
+    mode = mode,
     update = isUpdate == true,
   }
 
   local action = isUpdate and "update" or "import"
-  local detail = hasBuff and (" with native buff duration tracking (" .. tostring(entry.auraName) .. ")") or ""
-  return true, "WeakAuras native " .. action .. " opened for " .. tostring(entry.name) .. " (Spell ID " .. tostring(entry.spellID) .. ")" .. detail
+  return true, "WeakAuras native " .. action .. " opened for " .. tostring(entry.name) .. " (" .. tostring(mode) .. ")"
 end
 
 RUI._weakAurasNativeTrackerTest = true
