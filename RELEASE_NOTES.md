@@ -1,32 +1,31 @@
-# RetreatUI v1.1.7-beta.41 - Authoritative Tracker Destinations
+# RetreatUI v1.1.7-beta.42 - Bite Wound Aura Identity Fix
 
-This prerelease combines the beta.40 ElvUI target-debuff filter fix with authoritative TurboPlates destination control.
+This prerelease keeps the beta.41 destination-routing logic unchanged and fixes the actual applied aura identity used by ElvUI and TurboPlates.
 
 ## What changed
 
-- Keeps destination-aware routing: HUD (WeakAuras), Target Frame (ElvUI), Nameplates (TurboPlates).
-- Keeps the beta.40 ElvUI target-debuff filter compatibility fix.
-- Makes selected debuff tracker destinations authoritative in TurboPlates.
-- Nameplates ON removes any TurboPlates blacklist entry and whitelists the selected debuff.
-- Nameplates OFF removes any whitelist entry and actively blacklists the selected debuff so an older TurboPlates profile cannot keep showing it.
-- Removing the tracker entirely restores the TurboPlates whitelist/blacklist state that existed before RetreatUI took ownership.
+- Bite Wound tracker keeps source spell metadata at Spell ID 556234.
+- The applied target debuff is now correctly identified as Aura ID 706654.
+- Bloodfang Bite's live tooltip explicitly states that it creates Bite Wound [Spell ID 706654].
+- Ascension DB confirms 706654 is the 10-second Bite Wound target debuff.
+- ElvUI target-frame whitelist routing now uses the applied aura ID.
+- TurboPlates whitelist/blacklist routing now uses the applied aura ID.
+- beta.41 authoritative Nameplates ON/OFF behavior is otherwise unchanged.
 - WeakAuras behavior is unchanged.
 
 ## Focused live test
 
-1. Keep Bite Wound selected as a Debuff on Unit: Target.
-2. Enable Target Frame (ElvUI), disable HUD and disable Nameplates (TurboPlates).
-3. Save and apply Bite Wound. It must NOT appear on TurboPlates.
-4. Confirm Bite Wound appears on the ElvUI target frame.
-5. Re-enable Nameplates, save, and apply Bite Wound again. It must return to TurboPlates.
-6. Confirm no Bite Wound WeakAura is created and no Lua errors occur.
+1. Keep Bite Wound selected as Debuff / Unit: Target.
+2. Set HUD OFF, Target Frame ON, Nameplates OFF and save.
+3. Apply Bloodfang Bite. Bite Wound must be absent from TurboPlates and visible on the ElvUI target frame.
+4. Re-enable Nameplates, save and apply again. Bite Wound must return to TurboPlates.
+5. No Bite Wound WeakAura should be created.
 
 ## Safety rules
 
-- No custom aura runtime engine.
+- Data identity fix only; no custom aura scanning.
 - No custom WeakAuras trigger Lua.
 - No `WeakAuras.Add`.
-- No custom WeakAuras decoder.
 - Stable/main remains untouched.
 
 Author: Retreat

@@ -7,7 +7,7 @@ if not RUI or type(RUI.RegisterTrackerMetadata) ~= "function" then return end
 
 RUI:RegisterTrackerMetadata("Bloodmage", "name:bite wound", {
   spellID = 556234,
-  auraID = 556234,
+  auraID = 706654,
   auraName = "Bite Wound",
   category = "debuff",
   trackingTypes = {"debuff"},
@@ -15,7 +15,7 @@ RUI:RegisterTrackerMetadata("Bloodmage", "name:bite wound", {
   defaultUnit = "target",
   trackable = true,
   recommended = true,
-  source = "RetreatSpellDump live client scan 2026-08-04",
+  source = "Bloodfang Bite live tooltip: creates Bite Wound [Spell ID 706654]; Ascension DB confirms 706654 is the 10 sec target debuff",
 })
 
 -- Bloodsores is the canonical Bloodmage stacks proof case. The curated class
