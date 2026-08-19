@@ -77,7 +77,6 @@ local function ShowStatus()
     .. " | installed: " .. tostring(installed))
 end
 
-
 _G["SLASH_RETREATUI1"] = "/rui"
 _G["SLASH_RETREATUI2"] = "/retreatui"
 SlashCmdList = SlashCmdList or {}
@@ -106,7 +105,6 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
-
   if command == "hud" or command == "editor" then
     if not RequireSupportedClass() then return end
     if type(RUI.ToggleHUDEditor) == "function" then
@@ -114,6 +112,19 @@ SlashCmdList["RETREATUI"] = function(message)
       if not ok or opened == false then Chat("The HUD Editor could not open.") end
     else
       Chat("The HUD Editor did not finish loading. Reload the UI and try again.")
+    end
+    return
+  end
+
+  if command == "tracker" or command == "trackers" or command == "builder" then
+    if not RequireSupportedClass() then return end
+    if type(RUI.ToggleTrackerBuilder) == "function" then
+      local ok, opened = pcall(RUI.ToggleTrackerBuilder, RUI)
+      if not ok then
+        Chat("The Tracker Builder could not open: " .. tostring(opened))
+      end
+    else
+      Chat("The Tracker Builder did not finish loading. Reload the UI and try again.")
     end
     return
   end
@@ -128,7 +139,6 @@ SlashCmdList["RETREATUI"] = function(message)
     end
     return
   end
-
 
   if command == "utility" or command == "partyutility" then
     if not RequireSupportedClass() then return end
@@ -149,7 +159,6 @@ SlashCmdList["RETREATUI"] = function(message)
     end
     return
   end
-
 
   if command == "buffs" or command == "buffmanager" then
     if type(RUI.ToggleBuffAssignmentManager) == "function" then
@@ -187,5 +196,5 @@ SlashCmdList["RETREATUI"] = function(message)
     return
   end
 
-  Chat("Commands: /rui | /rui hud | /rui build | /rui utility | /rui buffs | /rui keybinds | /rui automation | /rui status | /rui changelog | /rui repair | /rui reset")
+  Chat("Commands: /rui | /rui hud | /rui tracker | /rui build | /rui utility | /rui buffs | /rui keybinds | /rui automation | /rui status | /rui changelog | /rui repair | /rui reset")
 end
