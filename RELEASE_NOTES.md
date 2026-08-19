@@ -1,38 +1,34 @@
-# RetreatUI v1.1.7-beta.24 - Tracker Editor Test
+# RetreatUI v1.1.7-beta.25 - Tracker Editor Polish Test
 
-This prerelease builds on the successful beta.23 Tracker Builder data/browser pass.
+This prerelease builds on the successful beta.24 Tracker Editor test.
 
-## What changed from beta.23
+## What changed from beta.24
 
-- Add now opens a dedicated Tracker Editor instead of immediately storing only the first inferred tracking type.
-- Existing selected trackers open as Edit and can be changed or removed from the editor.
-- Trackers can combine multiple tracking types: Cooldown, Buff, Proc, Debuff, Stacks, Charges, Resource and Summon/Pet.
-- Suggested tracking types are preselected from the spell metadata, but the user can change them.
-- Adds data-only settings for Unit, Icon/Bar display, icon size, glow, cooldown text, duration, stacks/charges, learned-only and combat-only.
-- Multi-type tracker definitions and settings are validated before future profile import/export.
-- Tightens Recommended so it is intended as a small high-signal learned-spell list rather than a broad class-wide list.
-- Recommended now automatically enables Learned only.
-- Folds the beta.23 footer-height hotfix directly into TrackerBuilder and removes the temporary wrapper file.
+- Keeps user-selected multi-type combinations exactly as saved.
+- Confirms curated Apotheosis defaults remain Cooldown + Buff; extra types such as Resource are only retained when the user explicitly selected them.
+- Adds a HUD Group field to every tracker definition.
+- Available groups: Main, Procs / Buffs, Defensives, Utility, Resources and Target.
+- New trackers receive a deterministic suggested group based on their curated category/tracking type, but the user can change the group freely.
+- Existing tracker group choices persist with the rest of the tracker profile data.
+- Gives the Tracker Builder metadata line more horizontal room so long multi-type selections no longer wrap into adjacent rows.
+- Keeps Recommended tied to Learned only.
 
 ## Important safety scope
 
-The Tracker Editor still does not generate, import, replace or modify WeakAuras. It only stores validated tracker definitions in RetreatUIDB.
+The Tracker Editor still does not generate, import, replace or modify WeakAuras. It only stores tracker/profile/layout intent as data in RetreatUIDB.
 
-No custom WeakAuras decoding, direct WeakAuras.Add calls, arbitrary imported Lua or runtime tracker rendering is added in this build.
+No custom WeakAuras decoding, direct WeakAuras.Add calls, arbitrary imported Lua or runtime tracker renderer is added in this build.
 
 ## What to test
 
 1. Open `/rui tracker` and confirm the browser still loads cleanly.
-2. Enable Recommended and confirm Learned only is enabled automatically and the result count is substantially smaller than beta.23.
-3. Click Add on Apotheosis and confirm Cooldown + Buff are preselected.
-4. Change one or more options, then Add Tracker.
-5. Confirm the row changes from Add to Edit and displays the saved tracking types.
-6. Reopen Edit and confirm the saved settings are restored.
-7. Test a multi-type ability such as Blood Tap and save Cooldown + Resource.
-8. Remove one tracker from inside the editor.
-9. `/reload`, reopen `/rui tracker`, and confirm the saved tracker types/settings still persist.
-10. Confirm no WeakAuras were created or changed.
+2. Open Apotheosis as a fresh/new tracker and confirm the suggested types are Cooldown + Buff.
+3. Add an extra type manually if desired and confirm it is preserved after reopening the editor.
+4. Change Group and confirm the selected group is restored after reopening.
+5. Confirm long multi-type rows stay on one metadata line in the Builder.
+6. `/reload`, reopen `/rui tracker`, and confirm tracker types, group, size, glow and conditions persist.
+7. Confirm no WeakAuras were created or changed.
 
-Do not promote this build to Stable. This is still a data/editor proof-of-concept.
+Do not promote this build to Stable. The next stage is the data-driven HUD layout/group editor before any WeakAura renderer is connected.
 
 Author: Retreat
