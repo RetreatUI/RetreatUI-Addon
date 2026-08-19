@@ -1,38 +1,38 @@
-# RetreatUI v1.1.7-beta.22 — Tracker Builder Test
+# RetreatUI v1.1.7-beta.23 — Tracker Builder Layout Test
 
-This prerelease is an isolated Project Ascension: Conquest of Azeroth proof-of-concept for the new RetreatUI Tracker Builder.
+This prerelease is a small follow-up to beta.22 for the new RetreatUI Tracker Builder proof-of-concept.
 
-## What this build adds
+## What changed from beta.22
 
-- Adds `/rui tracker`, a first 3.3.5-compatible ability/tracker browser.
-- Uses RetreatUI's existing CoA class records plus the Professional Audit spell database as the catalog source.
-- Adds full Professional Audit test catalogs for Barbarian, Bloodmage, Chronomancer and Knight of Xoroth.
-- Adds search plus Learned only, Recommended, Advanced and All entries filters.
-- Adds Add/Remove selection for tracker definitions.
-- Stores selected trackers in `RetreatUIDB` so selections can survive reloads.
-- Adds a data-only tracker profile schema with validation for future RetreatUI profile import/export.
-- Adds safe tracker templates for cooldowns, charges, buffs, procs, stacks, debuffs, resources and summons.
+- Fixes the bottom-row overlap visible in the first in-game Bloodmage test.
+- Keeps all 12 spell rows per page, but increases the Tracker Builder frame height so the final row no longer collides with Previous / Next / Page controls.
+- Keeps the exact same tracker catalog, filters, Add/Remove storage and safety scope as beta.22.
+
+## Tracker Builder test scope
+
+- `/rui tracker`
+- Search by spell name / Spell ID / category
+- Learned only
+- Recommended
+- Advanced
+- All entries
+- Add / Remove tracker definitions
+- Selected trackers persist in `RetreatUIDB`
+- Professional Audit test catalogs for Barbarian, Bloodmage, Chronomancer and Knight of Xoroth
 
 ## Important safety scope
 
-This build does **not** generate, import, replace or modify WeakAuras when using the Tracker Builder. It only browses spell data and stores tracker definitions.
+The Tracker Builder still does **not** generate, import, replace or modify WeakAuras. This build only browses spell data and stores tracker definitions.
 
-The Tracker Builder does not use direct `WeakAuras.Add`, custom WeakAuras decoding, arbitrary imported Lua, runtime frame hooks or generated class WeakAura packs.
+## What to test
 
-The existing beta.21 UI/install systems are otherwise left in place so this proof-of-concept can be tested independently.
+1. Open `/rui tracker` and confirm the footer no longer overlaps the final ability row.
+2. Search by spell name and by Spell ID.
+3. Toggle Learned only, Recommended, Advanced and All entries.
+4. Add several trackers and remove one.
+5. `/reload`, reopen `/rui tracker`, and confirm the selected trackers persist.
+6. Confirm no WeakAuras were created or changed.
 
-## First in-game test
-
-1. Install/update through the RetreatUI Beta channel.
-2. Log into a supported CoA character, preferably Knight of Xoroth for the first pass.
-3. Run `/rui tracker`.
-4. Confirm the Tracker Builder opens without Lua errors.
-5. Test searching by spell name and Spell ID.
-6. Toggle Learned only, Recommended, Advanced and All entries.
-7. Add several trackers and remove one again.
-8. `/reload`, reopen `/rui tracker`, and confirm the selected count and choices persist.
-9. Confirm no new WeakAuras were created or changed by these actions.
-
-Do not promote this build to Stable until this browser/data pass is clean.
+Do not promote this build to Stable until the Tracker Builder data/browser pass is clean.
 
 Author: Retreat
