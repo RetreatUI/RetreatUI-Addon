@@ -1,41 +1,33 @@
-# RetreatUI v1.1.7-beta.26 - Tracker HUD Layout Test
+# RetreatUI v1.1.7-beta.27 - Tracker HUD Layout Polish
 
-This prerelease builds on the successful beta.25 Tracker Editor/grouping test.
+This prerelease fixes the first beta.26 in-game Tracker HUD Layout pass.
 
-## What changed from beta.25
+## What changed from beta.26
 
-- Adds a dedicated data-driven Tracker HUD Layout editor.
-- Adds a `HUD Layout` button directly in the Tracker Builder.
-- Shows movable handles for Main, Procs / Buffs, Defensives, Utility, Resources and Target groups.
-- Group handles show the number of selected trackers assigned to that group.
-- Group positions can be moved by drag and drop.
-- Adds per-group Scale controls from 50% to 200%.
-- Adds per-group Spacing controls from 0 to 24 px.
-- Adds per-group growth direction: Right, Left, Up and Down.
-- Adds per-group Reset.
-- Stores group layout independently per CoA class.
-- Includes tracker group layout data in the validated Tracker profile schema for future unified RetreatUI profile import/export.
-- Keeps beta.25 Tracker Editor behavior and saved user choices intact.
+- Replaces the cramped vertical default stack with six clearly separated default group positions around the screen center.
+- Migrates only untouched beta.26 default positions to the new layout; groups the user already moved or customized are preserved.
+- Bumps the tracker group layout schema to 2.
+- Makes Tracker HUD Layout behave like a proper edit mode: opening it hides Tracker Builder, and Done returns to Tracker Builder.
+- Keeps Main, Procs / Buffs, Defensives, Utility, Resources and Target independently movable.
+- Keeps per-group Scale, Spacing, Growth and Reset.
+- Keeps class-specific persistence and validated profile layout data.
 
-## Important safety scope
+## Safety scope
 
-The Tracker HUD Layout editor is still a preview/data editor only. It does not create, import, replace or modify WeakAuras and does not render live combat trackers yet.
-
-No custom WeakAuras decoding, direct WeakAuras.Add calls, arbitrary imported Lua or runtime tracker renderer is added in this build.
+This remains a data/layout preview only. No WeakAuras are generated, imported, replaced or modified, and no live combat tracker renderer is connected yet.
 
 ## What to test
 
-1. Open `/rui tracker` and confirm the existing Tracker Builder still loads correctly.
-2. Confirm your beta.25 selected trackers and groups are still present.
-3. Click `HUD Layout` at the bottom-right of the Tracker Builder.
-4. Confirm all six group handles appear without Lua errors.
-5. Drag one or more group handles and close/reopen the editor.
-6. Select a handle and change Scale, Spacing and Growth.
-7. Use Reset on one group and confirm only that group returns to its default position/settings.
-8. `/reload`, reopen the HUD Layout editor, and confirm positions, scale, spacing and growth persist.
-9. Confirm the group count matches the trackers assigned in the Tracker Editor.
-10. Confirm no WeakAuras were created or changed.
+1. Open `/rui tracker` and click `HUD Layout`.
+2. Confirm Tracker Builder hides while edit mode is active.
+3. Confirm all six group handles start clearly separated with no overlapping labels.
+4. Drag a group, change Scale, Spacing and Growth, then press Done.
+5. Reopen HUD Layout and confirm the changes persist.
+6. `/reload`, reopen it again and confirm persistence.
+7. Reset one group and confirm only that group returns to its new default position/settings.
+8. Confirm Done returns to Tracker Builder.
+9. Confirm no WeakAuras were created or changed.
 
-Do not promote this build to Stable. If this data/layout pass is clean, the next stage is connecting these group definitions to a safe tracker rendering backend.
+Do not promote this build to Stable.
 
 Author: Retreat
