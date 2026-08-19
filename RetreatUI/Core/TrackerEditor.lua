@@ -17,6 +17,11 @@ local DISPLAYS = {"icon", "bar"}
 local DISPLAY_LABELS = {icon="Icon", bar="Bar"}
 local GLOWS = {"off", "ready", "active"}
 local GLOW_LABELS = {off="Off", ready="When ready", active="While active"}
+local GROUPS = {"main", "procs", "defensives", "utility", "resources", "target"}
+local GROUP_LABELS = {
+  main="Main", procs="Procs / Buffs", defensives="Defensives",
+  utility="Utility", resources="Resources", target="Target",
+}
 
 local function Backdrop(frame)
   if not frame or type(frame.SetBackdrop) ~= "function" then return end
@@ -68,6 +73,16 @@ local function DefaultSetting(existing, key, fallback)
   return fallback
 end
 
+local function SuggestedGroup(item, types)
+  local category = type(item.category) == "string" and string.lower(item.category) or ""
+  if Contains(types, "resource") then return "resources" end
+  if Contains(types, "debuff") then return "target" end
+  if category == "defensive" then return "defensives" end
+  if Contains(types, "proc") or (Contains(types, "buff") and not Contains(types, "cooldown")) or Contains(types, "stacks") then return "procs" end
+  if category == "interrupt" or category == "interrupts" or category == "taunt" or category == "control" or category == "mobility" or category == "utility" then return "utility" end
+  return "main"
+end
+
 local function CollectTypes(frame)
   local result = {}
   for _, option in ipairs(TYPE_OPTIONS) do
@@ -85,11 +100,15 @@ local function RefreshSummary(frame)
     frame.summary:SetText("Choose at least one tracking type.")
     frame.save:Disable()
   else
-    frame.summary:SetText("Track: |cffffffff"..table.concat(types, " + ").."|r  •  Unit: |cffffffff"..(UNIT_LABELS[frame.unit] or frame.unit).."|r  •  Display: |cffffffff"..(DISPLAY_LABELS[frame.display] or frame.display).."|r")
+    frame.summary:SetText(
+      "Track: |cffffffff"..table.concat(types, " + ").."|r  •  Group: |cffffffff"..(GROUP_LABELS[frame.group] or frame.group)..
+      "|r  •  Unit: |cffffffff"..(UNIT_LABELS[frame.unit] or frame.unit).."|r"
+    )
     frame.save:Enable()
   end
   frame.unitButton:SetText("Unit: " .. (UNIT_LABELS[frame.unit] or frame.unit))
   frame.displayButton:SetText("Display: " .. (DISPLAY_LABELS[frame.display] or frame.display))
+  frame.groupButton:SetText("Group: " .. (GROUP_LABELS[frame.group] or frame.group))
   frame.sizeText:SetText("Icon size: " .. tostring(frame.iconSize))
   frame.glowButton:SetText("Glow: " .. (GLOW_LABELS[frame.glow] or frame.glow))
 end
@@ -99,7 +118,7 @@ local function CreateEditor(self)
   if type(CreateFrame) ~= "function" or not UIParent then return nil end
 
   local frame = CreateFrame("Frame", "RetreatUITrackerEditor", UIParent)
-  frame:SetWidth(560); frame:SetHeight(535)
+  frame:SetWidth(560); frame:SetHeight(560)
   frame:SetPoint("CENTER")
   frame:SetFrameStrata("FULLSCREEN_DIALOG")
   frame:EnableMouse(true)
@@ -167,8 +186,15 @@ local function CreateEditor(self)
     RefreshSummary(frame)
   end)
 
+  frame.groupButton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
+  frame.groupButton:SetWidth(190); frame.groupButton:SetHeight(24); frame.groupButton:SetPoint("TOPLEFT", 24, -351)
+  frame.groupButton:SetScript("OnClick", function()
+    frame.group = NextValue(GROUPS, frame.group)
+    RefreshSummary(frame)
+  end)
+
   frame.sizeMinus = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
-  frame.sizeMinus:SetWidth(28); frame.sizeMinus:SetHeight(22); frame.sizeMinus:SetPoint("TOPLEFT", 24, -351); frame.sizeMinus:SetText("-")
+  frame.sizeMinus:SetWidth(28); frame.sizeMinus:SetHeight(22); frame.sizeMinus:SetPoint("TOPLEFT", 230, -352); frame.sizeMinus:SetText("-")
   frame.sizeText = MakeText(frame, "GameFontHighlightSmall", "Icon size: 36")
   frame.sizeText:SetPoint("LEFT", frame.sizeMinus, "RIGHT", 8, 0)
   frame.sizePlus = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -176,11 +202,11 @@ local function CreateEditor(self)
   frame.sizeMinus:SetScript("OnClick", function() frame.iconSize = math.max(20, (frame.iconSize or 36) - 2); RefreshSummary(frame) end)
   frame.sizePlus:SetScript("OnClick", function() frame.iconSize = math.min(80, (frame.iconSize or 36) + 2); RefreshSummary(frame) end)
 
-  frame.cooldownText = MakeCheck(frame, "Cooldown text", 24, -384)
-  frame.duration = MakeCheck(frame, "Duration", 185, -384)
-  frame.stacks = MakeCheck(frame, "Stacks / charges", 330, -384)
-  frame.learnedOnly = MakeCheck(frame, "Only when learned", 24, -416)
-  frame.combatOnly = MakeCheck(frame, "Combat only", 185, -416)
+  frame.cooldownText = MakeCheck(frame, "Cooldown text", 24, -391)
+  frame.duration = MakeCheck(frame, "Duration", 185, -391)
+  frame.stacks = MakeCheck(frame, "Stacks / charges", 330, -391)
+  frame.learnedOnly = MakeCheck(frame, "Only when learned", 24, -423)
+  frame.combatOnly = MakeCheck(frame, "Combat only", 185, -423)
 
   frame.summary = MakeText(frame, "GameFontHighlightSmall", "")
   frame.summary:SetPoint("BOTTOMLEFT", 24, 72)
@@ -222,6 +248,8 @@ local function CreateEditor(self)
       combatOnly = frame.combatOnly:GetChecked() and true or false,
     })
     if ok then
+      local saved = RUI:GetTrackerSelection(item.className, item.key)
+      if saved then saved.group = frame.group end
       frame:Hide()
       if RUI.RefreshTrackerBuilder then RUI:RefreshTrackerBuilder() end
     end
@@ -253,6 +281,7 @@ function RUI:OpenTrackerEditor(item)
   frame.display = DefaultSetting(existing, "display", Contains(types, "resource") and "bar" or "icon")
   frame.iconSize = tonumber(DefaultSetting(existing, "iconSize", 36)) or 36
   frame.glow = DefaultSetting(existing, "glow", "off")
+  frame.group = (existing and existing.group) or SuggestedGroup(item, types)
 
   frame.cooldownText:SetChecked(DefaultSetting(existing, "showCooldownText", Contains(types, "cooldown") or Contains(types, "charges")) and 1 or nil)
   frame.duration:SetChecked(DefaultSetting(existing, "showDuration", Contains(types, "buff") or Contains(types, "proc") or Contains(types, "debuff") or Contains(types, "stacks")) and 1 or nil)
