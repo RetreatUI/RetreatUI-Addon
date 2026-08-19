@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.32",
-  "title": "RetreatUI v1.1.7-beta.32 Managed WeakAuras Update Test",
+  "version": "1.1.7-beta.33",
+  "title": "RetreatUI v1.1.7-beta.33 Native Tracker Types Test",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null

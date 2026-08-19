@@ -1,11 +1,12 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.31: move the proven beta.30 native WeakAuras path into the actual
--- Tracker Editor flow. This wrapper only touches editor presentation/action;
--- the underlying tracker data model remains unchanged.
+-- Tracker Editor -> native WeakAuras action for Ascension WeakAuras 5.21.2.
+-- The action only saves RetreatUI profile data and opens WeakAuras' own native
+-- import/update UI. Nothing is auto-accepted and no custom trigger Lua is used.
 
 local TYPE_KEYS = {"cooldown", "buff", "proc", "debuff", "stacks", "charges", "resource", "summon"}
+local NATIVE_TYPES = {cooldown=true, buff=true, proc=true, debuff=true, stacks=true, charges=true}
 local originalOpen = RUI.OpenTrackerEditor
 if type(originalOpen) ~= "function" then return end
 
@@ -26,8 +27,8 @@ local function CollectTypes(frame)
   return result
 end
 
-local function HasType(types, wanted)
-  for _, value in ipairs(types or {}) do if value == wanted then return true end end
+local function HasNativeType(types)
+  for _, value in ipairs(types or {}) do if NATIVE_TYPES[value] then return true end end
   return false
 end
 
@@ -37,8 +38,8 @@ local function SaveCurrent(frame)
 
   local types = CollectTypes(frame)
   if #types == 0 then return nil, "choose at least one tracking type first" end
-  if not HasType(types, "cooldown") then
-    return nil, "beta.31 native WeakAuras build currently supports Cooldown, with optional Buff duration"
+  if not HasNativeType(types) then
+    return nil, "Resource and Summon / Pet are profile-ready but are not generated as WeakAuras in beta.33"
   end
 
   local ok, savedOrReason = RUI:SaveTrackerSelection(item, {
@@ -66,7 +67,7 @@ local function EnsureButton(frame)
 
   if frame.safety then
     frame.safety:SetWidth(330)
-    frame.safety:SetText("Native WA build opens WeakAuras' own import dialog; nothing is auto-accepted.")
+    frame.safety:SetText("Native WA build opens WeakAuras' own import/update dialog; nothing is auto-accepted.")
   end
 
   local button = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
@@ -85,12 +86,13 @@ local function EnsureButton(frame)
       return
     end
 
-    if type(RUI.BuildNativeCooldownTrackerTest) ~= "function" or type(RUI.OpenWeakAurasNativeImport) ~= "function" then
+    local builder = RUI.BuildNativeTrackerImport or RUI.BuildNativeCooldownTrackerTest
+    if type(builder) ~= "function" or type(RUI.OpenWeakAurasNativeImport) ~= "function" then
       Chat("The native WeakAuras generator did not finish loading.")
       return
     end
 
-    local envelope, buildReason = RUI:BuildNativeCooldownTrackerTest(saved)
+    local envelope, buildReason = builder(RUI, saved)
     if not envelope then
       Chat(buildReason or "WeakAura data could not be built.")
       return
@@ -105,7 +107,7 @@ local function EnsureButton(frame)
     if RUI.trackerBuilderFrame then RUI.trackerBuilderFrame:Hide() end
     frame:Hide()
     if type(RUI.RefreshTrackerBuilder) == "function" then RUI:RefreshTrackerBuilder() end
-    Chat("WeakAuras native import opened for " .. tostring(saved.name) .. ".")
+    Chat("WeakAuras native import/update opened for " .. tostring(saved.name) .. ".")
   end)
 
   frame.buildWeakAura = button
