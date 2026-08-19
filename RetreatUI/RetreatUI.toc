@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.38
+## Version: 1.1.7-beta.39
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -77,6 +77,8 @@ Integrations\TurboPlates.lua
 Integrations\TurboPlatesBeta20.lua
 Integrations\TurboPlatesThreat.lua
 Integrations\NPCSpellCooldowns.lua
+Integrations\TrackerDestinations.lua
+Integrations\TrackerDestinationTurboPlatesGuard.lua
 Integrations\Details.lua
 Integrations\LegacyFixedProfileGuard.lua
 Integrations\ChatOwnershipSafety.lua
