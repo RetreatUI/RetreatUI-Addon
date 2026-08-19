@@ -1,33 +1,73 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-RUI.trackerGroupLayoutSchema = 1
+RUI.trackerGroupLayoutSchema = 2
 RUI.trackerGroupDefinitions = {
-  {key="main", label="MAIN", x=0, y=-80, growth="RIGHT"},
-  {key="procs", label="PROCS / BUFFS", x=0, y=-128, growth="RIGHT"},
-  {key="defensives", label="DEFENSIVES", x=0, y=-176, growth="RIGHT"},
-  {key="utility", label="UTILITY", x=0, y=-224, growth="RIGHT"},
-  {key="resources", label="RESOURCES", x=0, y=-272, growth="RIGHT"},
-  {key="target", label="TARGET", x=0, y=70, growth="RIGHT"},
+  {key="main", label="MAIN", x=0, y=70, growth="RIGHT"},
+  {key="procs", label="PROCS / BUFFS", x=-250, y=70, growth="RIGHT"},
+  {key="defensives", label="DEFENSIVES", x=250, y=70, growth="RIGHT"},
+  {key="utility", label="UTILITY", x=-170, y=-40, growth="RIGHT"},
+  {key="resources", label="RESOURCES", x=170, y=-40, growth="RIGHT"},
+  {key="target", label="TARGET", x=0, y=180, growth="RIGHT"},
+}
+
+local LEGACY_DEFAULTS = {
+  main={x=0,y=-80},
+  procs={x=0,y=-128},
+  defensives={x=0,y=-176},
+  utility={x=0,y=-224},
+  resources={x=0,y=-272},
+  target={x=0,y=70},
 }
 
 local GROUP_KEYS = {}
 for _, definition in ipairs(RUI.trackerGroupDefinitions) do GROUP_KEYS[definition.key] = true end
 local GROWTH = {RIGHT=true, LEFT=true, UP=true, DOWN=true}
 
-local function EnsureStore(self, className)
-  RetreatUIDB = RetreatUIDB or {}
-  RetreatUIDB.trackerBuilder = RetreatUIDB.trackerBuilder or {}
-  RetreatUIDB.trackerBuilder.groupLayouts = RetreatUIDB.trackerBuilder.groupLayouts or {}
-  local all = RetreatUIDB.trackerBuilder.groupLayouts
-  className = className or (self.GetDetectedClass and self:GetDetectedClass()) or "Unknown"
-  all[className] = all[className] or {}
-  return all[className], className
-end
-
 local function Definition(key)
   for _, value in ipairs(RUI.trackerGroupDefinitions) do if value.key == key then return value end end
   return nil
+end
+
+local function IsUntouchedLegacy(entry, legacy)
+  if type(entry) ~= "table" or type(legacy) ~= "table" then return false end
+  return tonumber(entry.x) == legacy.x
+    and tonumber(entry.y) == legacy.y
+    and (entry.scale == nil or tonumber(entry.scale) == 1)
+    and (entry.spacing == nil or tonumber(entry.spacing) == 4)
+    and (entry.growth == nil or entry.growth == "RIGHT")
+end
+
+local function MigrateLegacyDefaults(db)
+  local version = tonumber(db.groupLayoutSchema) or 1
+  if version >= RUI.trackerGroupLayoutSchema then return end
+
+  local all = db.groupLayouts
+  if type(all) == "table" then
+    for _, classStore in pairs(all) do
+      if type(classStore) == "table" then
+        for key, legacy in pairs(LEGACY_DEFAULTS) do
+          if IsUntouchedLegacy(classStore[key], legacy) then
+            classStore[key] = nil
+          end
+        end
+      end
+    end
+  end
+  db.groupLayoutSchema = RUI.trackerGroupLayoutSchema
+end
+
+local function EnsureStore(self, className)
+  RetreatUIDB = RetreatUIDB or {}
+  RetreatUIDB.trackerBuilder = RetreatUIDB.trackerBuilder or {}
+  local db = RetreatUIDB.trackerBuilder
+  db.groupLayouts = db.groupLayouts or {}
+  MigrateLegacyDefaults(db)
+
+  local all = db.groupLayouts
+  className = className or (self.GetDetectedClass and self:GetDetectedClass()) or "Unknown"
+  all[className] = all[className] or {}
+  return all[className], className
 end
 
 function RUI:GetTrackerGroupLayout(className, key)
