@@ -1,9 +1,11 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.29 proof-of-concept: generate one sparse, native WeakAuras display from
+-- beta.30 proof-of-concept: generate one sparse, native WeakAuras display from
 -- Tracker Builder data and hand it to Ascension WeakAuras 5.21.2 through its
--- own Import() flow. No WeakAuras.Add, no custom decoder, no custom trigger Lua.
+-- own Import() flow. Cooldown + buff trackers use the same native two-trigger
+-- structure as WeakAuras' own "Show Cooldown and Buff" template.
+-- No WeakAuras.Add, no custom decoder, no custom trigger Lua.
 
 local function HasType(entry, wanted)
   if type(entry) ~= "table" then return false end
@@ -14,6 +16,20 @@ local function HasType(entry, wanted)
     end
   end
   return false
+end
+
+local function FirstCooldownBuffTracker(self)
+  if type(self.GetSelectedTrackers) ~= "function" then return nil end
+  local className = self.GetDetectedClass and self:GetDetectedClass() or nil
+  local selected = self:GetSelectedTrackers(className)
+  for _, entry in ipairs(selected or {}) do
+    if type(entry.spellID) == "number" and entry.spellID > 0
+      and HasType(entry, "cooldown") and HasType(entry, "buff")
+      and type(entry.auraName) == "string" and entry.auraName ~= "" then
+      return entry
+    end
+  end
+  return nil
 end
 
 local function FirstCooldownTracker(self)
@@ -49,13 +65,46 @@ local function WeakAurasAPI(self)
   return wa
 end
 
-local function SafeAuraID(wa, name)
+local function SafeAuraID(wa, name, suffix)
   local base = "RetreatUI Test - " .. tostring(name or "Cooldown")
+  if suffix and suffix ~= "" then base = base .. " - " .. suffix end
   if type(wa.FindUnusedId) == "function" then
     local ok, value = pcall(wa.FindUnusedId, base)
     if ok and type(value) == "string" and value ~= "" then return value end
   end
   return base .. " - " .. tostring(time and time() or math.floor(GetTime and GetTime() or 0))
+end
+
+local function BuildCooldownTrigger(triggerCategory, entry)
+  return {
+    trigger = {
+      type = triggerCategory,
+      event = "Cooldown Progress (Spell)",
+      spellName = entry.spellID,
+      use_exact_spellName = true,
+      use_genericShowOn = true,
+      genericShowOn = "showAlways",
+      use_track = true,
+      track = "auto",
+    },
+    untrigger = {},
+  }
+end
+
+local function BuildBuffTrigger(entry)
+  return {
+    trigger = {
+      unit = entry.unit or "player",
+      type = "aura2",
+      matchesShowOn = "showOnActive",
+      debuffType = "HELPFUL",
+      ownOnly = true,
+      unitExists = false,
+      useName = true,
+      auranames = { tostring(entry.auraName or entry.name) },
+    },
+    untrigger = {},
+  }
 end
 
 function RUI:BuildNativeCooldownTrackerTest(entry)
@@ -85,8 +134,25 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
   local size = tonumber(settings.iconSize) or 36
   size = math.max(20, math.min(80, math.floor(size + 0.5)))
 
+  local hasBuff = HasType(entry, "buff") and type(entry.auraName) == "string" and entry.auraName ~= ""
+  local triggers
+  if hasBuff then
+    triggers = {
+      BuildBuffTrigger(entry),
+      BuildCooldownTrigger(triggerCategory, entry),
+      disjunctive = "any",
+      activeTriggerMode = -10,
+    }
+  else
+    triggers = {
+      BuildCooldownTrigger(triggerCategory, entry),
+      disjunctive = "all",
+      activeTriggerMode = -10,
+    }
+  end
+
   local aura = {
-    id = SafeAuraID(wa, entry.name),
+    id = SafeAuraID(wa, entry.name, hasBuff and "Cooldown + Buff" or "Cooldown"),
     uid = uid,
     internalVersion = internalVersion,
     regionType = "icon",
@@ -97,21 +163,7 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
     anchorFrameType = "SCREEN",
     anchorPoint = "CENTER",
     selfPoint = "CENTER",
-    triggers = {
-      {
-        trigger = {
-          type = triggerCategory,
-          event = "Cooldown Progress (Spell)",
-          spellName = entry.spellID,
-          use_exact_spellName = true,
-          use_genericShowOn = true,
-          genericShowOn = "showAlways",
-          use_track = true,
-          track = "auto",
-        },
-        untrigger = {},
-      },
-    },
+    triggers = triggers,
   }
 
   if type(self.BuildWeakAurasNativeImportEnvelope) ~= "function" then
@@ -119,7 +171,7 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
   end
   local envelope, envelopeReason = self:BuildWeakAurasNativeImportEnvelope(aura, {})
   if not envelope then return nil, envelopeReason end
-  return envelope, nil, aura.id
+  return envelope, nil, aura.id, hasBuff
 end
 
 function RUI:OpenNativeCooldownTrackerTest()
@@ -127,12 +179,12 @@ function RUI:OpenNativeCooldownTrackerTest()
     return false, "leave combat before opening the WeakAuras import test"
   end
 
-  local entry = FirstCooldownTracker(self)
+  local entry = FirstCooldownBuffTracker(self) or FirstCooldownTracker(self)
   if not entry then
     return false, "select at least one Tracker Builder ability with Cooldown enabled first"
   end
 
-  local envelope, reason, auraID = self:BuildNativeCooldownTrackerTest(entry)
+  local envelope, reason, auraID, hasBuff = self:BuildNativeCooldownTrackerTest(entry)
   if not envelope then return false, reason end
   if type(self.OpenWeakAurasNativeImport) ~= "function" then
     return false, "RetreatUI native WeakAuras import adapter is unavailable"
@@ -147,10 +199,13 @@ function RUI:OpenNativeCooldownTrackerTest()
     className = entry.className,
     trackerKey = entry.key,
     spellID = entry.spellID,
+    auraName = entry.auraName,
     auraID = auraID,
+    mode = hasBuff and "cooldown+buff" or "cooldown",
   }
 
-  return true, "WeakAuras native import window opened for " .. tostring(entry.name) .. " (Spell ID " .. tostring(entry.spellID) .. ")"
+  local detail = hasBuff and (" with native buff duration tracking (" .. tostring(entry.auraName) .. ")") or ""
+  return true, "WeakAuras native import window opened for " .. tostring(entry.name) .. " (Spell ID " .. tostring(entry.spellID) .. ")" .. detail
 end
 
 RUI._weakAurasNativeTrackerTest = true
