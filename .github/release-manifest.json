@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.24",
-  "title": "RetreatUI v1.1.7-beta.24 Tracker Editor Test",
+  "version": "1.1.7-beta.25",
+  "title": "RetreatUI v1.1.7-beta.25 Tracker Editor Polish Test",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
