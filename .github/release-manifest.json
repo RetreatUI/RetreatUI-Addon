@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.39",
-  "title": "RetreatUI v1.1.7-beta.39 Destination Routing Test",
+  "version": "1.1.7-beta.40",
+  "title": "RetreatUI v1.1.7-beta.40 ElvUI Target Debuff Filter Fix",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
