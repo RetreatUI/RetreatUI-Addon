@@ -64,8 +64,28 @@ local function CatalogItem(self, className, record)
     maxStacks = metadata.maxStacks,
     cooldownHint = metadata.cooldownHint,
     source = metadata.source,
+    auditCatalog = record.auditCatalog == true,
+    relatedSpellIDs = record.relatedSpellIDs,
     record = record,
   }
+end
+
+local function AddIfVisible(self, result, seen, className, record, filters)
+  local item = CatalogItem(self, className, record)
+  if not item or not item.key or seen[item.key] then return end
+
+  local specOK = filters.specialization == "" or filters.specialization == "all" or Normalize(item.specialization) == filters.specialization
+  local queryOK = filters.query == "" or Contains(item.name, filters.query) or Contains(item.category, filters.query) or tostring(item.spellID or ""):find(filters.query, 1, true)
+  local learnedOK = not filters.learnedOnly or item.learned
+  local recommendedOK = not filters.recommendedOnly or item.recommended
+  local advancedOK = filters.includeAdvanced or not item.advanced
+  local trackableOK = filters.includeUntrackable or item.trackable
+  local typeOK = MatchesTypes(item, filters.trackingType)
+
+  if specOK and queryOK and learnedOK and recommendedOK and advancedOK and trackableOK and typeOK then
+    result[#result + 1] = item
+    seen[item.key] = true
+  end
 end
 
 function RUI:GetTrackerCatalog(className, options)
@@ -73,29 +93,29 @@ function RUI:GetTrackerCatalog(className, options)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
   if type(className) ~= "string" or className == "" then return {} end
 
-  local query = Normalize(options.query)
-  local specialization = Normalize(options.specialization)
-  local trackingType = Normalize(options.trackingType)
-  local learnedOnly = options.learnedOnly ~= false
-  local recommendedOnly = options.recommendedOnly == true
-  local includeAdvanced = options.includeAdvanced == true
-  local includeUntrackable = options.includeUntrackable == true
+  local filters = {
+    query = Normalize(options.query),
+    specialization = Normalize(options.specialization),
+    trackingType = Normalize(options.trackingType),
+    learnedOnly = options.learnedOnly ~= false,
+    recommendedOnly = options.recommendedOnly == true,
+    includeAdvanced = options.includeAdvanced == true,
+    includeUntrackable = options.includeUntrackable == true,
+  }
 
   local result, seen = {}, {}
+
+  -- Curated class records always win. They contain tester-approved spell/aura
+  -- relationships and explicit overrides that the raw professional audit does not.
   for _, record in ipairs(self:GetClassSpellRecords(className) or {}) do
-    local item = CatalogItem(self, className, record)
-    if item and item.key and not seen[item.key] then
-      local specOK = specialization == "" or specialization == "all" or Normalize(item.specialization) == specialization
-      local queryOK = query == "" or Contains(item.name, query) or Contains(item.category, query) or tostring(item.spellID or ""):find(query, 1, true)
-      local learnedOK = not learnedOnly or item.learned
-      local recommendedOK = not recommendedOnly or item.recommended
-      local advancedOK = includeAdvanced or not item.advanced
-      local trackableOK = includeUntrackable or item.trackable
-      local typeOK = MatchesTypes(item, trackingType)
-      if specOK and queryOK and learnedOK and recommendedOK and advancedOK and trackableOK and typeOK then
-        result[#result + 1] = item
-        seen[item.key] = true
-      end
+    AddIfVisible(self, result, seen, className, record, filters)
+  end
+
+  -- The generated professional-audit catalog supplies every remaining class
+  -- entry so the builder is not limited to the old hand-curated HUD list.
+  if self.GetAuditSpellCatalog then
+    for _, record in ipairs(self:GetAuditSpellCatalog(className) or {}) do
+      AddIfVisible(self, result, seen, className, record, filters)
     end
   end
 
@@ -113,23 +133,31 @@ function RUI:GetTrackerCatalogSpecializations(className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
   local database = self.GetClassSpellDatabase and self:GetClassSpellDatabase(className)
   local result, seen = {}, {}
-  for _, value in ipairs((database and database.tabs) or {}) do
+
+  local function Add(value)
     if type(value) == "string" and value ~= "" and not seen[value] then
       result[#result + 1] = value
       seen[value] = true
     end
   end
+
+  for _, value in ipairs((database and database.tabs) or {}) do Add(value) end
+  if self.GetAuditSpellCatalog then
+    for _, record in ipairs(self:GetAuditSpellCatalog(className) or {}) do Add(record.specialization or record.sourceTab) end
+  end
+  table.sort(result)
   return result
 end
 
 function RUI:GetTrackerCatalogSummary(className)
   local all = self:GetTrackerCatalog(className, {learnedOnly=false, includeAdvanced=true, includeUntrackable=true})
-  local summary = {total=#all, trackable=0, learned=0, recommended=0, advanced=0}
+  local summary = {total=#all, trackable=0, learned=0, recommended=0, advanced=0, audit=0}
   for _, item in ipairs(all) do
     if item.trackable then summary.trackable = summary.trackable + 1 end
     if item.learned then summary.learned = summary.learned + 1 end
     if item.recommended then summary.recommended = summary.recommended + 1 end
     if item.advanced then summary.advanced = summary.advanced + 1 end
+    if item.auditCatalog then summary.audit = summary.audit + 1 end
   end
   return summary
 end
