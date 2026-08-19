@@ -6,6 +6,29 @@ The format is based on **Keep a Changelog** and follows semantic versioning wher
 
 ---
 
+## [1.1.7-beta.21] - 2026-08-19
+
+### Added
+
+- Added the first launcher-ready Naowh-style CoA test build based on the validated beta.20 profile/import branch.
+- Added attribution for the Warmane Naowh UI Project reference used by the CoA layout port.
+- Added a focused in-game validation plan for ElvUI, Details, TurboPlates and the General/class WeakAura packages.
+
+### Changed
+
+- Bumped RetreatUI, RetreatUI Classes and the optional RetreatUI Buff Manager to `1.1.7-beta.21`.
+- Marked the build as a prerelease for the existing RetreatUI Launcher Beta channel.
+- Kept DBM outside the CoA package and kept Buff Manager separate and disabled by default.
+
+### Preserved
+
+- beta.19 WeakAura runtime performance protections.
+- beta.18 chat ownership protections.
+- beta.17 protected-frame and secure-taint protections.
+- The validated beta.20 static ElvUI, Details and WeakAura import contracts.
+
+---
+
 ## [1.1.4] - 2026-08-06
 
 ### Changed
