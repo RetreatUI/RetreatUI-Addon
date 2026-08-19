@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-local PROFILE_SCHEMA = 1
+local PROFILE_SCHEMA = 2
 local ALLOWED_TEMPLATES = {
   cooldown=true, charges=true, buff=true, buff_stacks=true, proc=true, proc_stacks=true,
   debuff=true, cooldown_aura=true, resource=true, summon=true,
@@ -13,6 +13,8 @@ local ALLOWED_TRACKING_TYPES = {
 }
 local ALLOWED_DISPLAYS = {icon=true, bar=true}
 local ALLOWED_GLOWS = {off=true, ready=true, active=true}
+local ALLOWED_GROUPS = {main=true, procs=true, defensives=true, utility=true, resources=true, target=true}
+local ALLOWED_GROWTH = {RIGHT=true, LEFT=true, UP=true, DOWN=true}
 local BOOLEAN_SETTINGS = {
   showCooldownText=true, showDuration=true, showStacks=true, learnedOnly=true, combatOnly=true,
 }
@@ -78,6 +80,7 @@ local function ValidateTracker(entry, className)
   if entry.auraID ~= nil and (type(entry.auraID) ~= "number" or entry.auraID <= 0) then return false, "invalid aura ID" end
   if entry.template ~= nil and not ALLOWED_TEMPLATES[entry.template] then return false, "unsupported tracker template" end
   if entry.unit ~= nil and not ALLOWED_UNITS[entry.unit] then return false, "unsupported tracker unit" end
+  if entry.group ~= nil and (type(entry.group) ~= "string" or not ALLOWED_GROUPS[entry.group]) then return false, "unsupported tracker group" end
   local typesOK, typesReason = ValidateTrackingTypes(entry)
   if not typesOK then return false, typesReason end
   local settingsOK, settingsReason = ValidateSettings(entry.settings)
@@ -85,20 +88,37 @@ local function ValidateTracker(entry, className)
   return true
 end
 
+local function ValidateGroupLayouts(groups)
+  if groups == nil then return true end
+  if type(groups) ~= "table" then return false, "tracker group layouts are not a table" end
+  for key, entry in pairs(groups) do
+    if not ALLOWED_GROUPS[key] then return false, "unsupported tracker layout group" end
+    if type(entry) ~= "table" then return false, "tracker layout entry is not a table" end
+    if type(entry.x) ~= "number" or type(entry.y) ~= "number" then return false, "tracker layout position is invalid" end
+    if type(entry.scale) ~= "number" or entry.scale < 0.5 or entry.scale > 2 then return false, "tracker layout scale is invalid" end
+    if type(entry.spacing) ~= "number" or entry.spacing < 0 or entry.spacing > 24 then return false, "tracker layout spacing is invalid" end
+    if type(entry.growth) ~= "string" or not ALLOWED_GROWTH[entry.growth] then return false, "tracker layout growth is invalid" end
+  end
+  return true
+end
+
 function RUI:GetTrackerProfileData(className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
   if type(className) ~= "string" or className == "" then return nil end
   local selected = self.GetSelectedTrackers and self:GetSelectedTrackers(className) or {}
+  local layoutData = self.GetTrackerGroupLayoutProfileData and self:GetTrackerGroupLayoutProfileData(className) or nil
   return {
     schema = PROFILE_SCHEMA,
     className = className,
     trackers = CopyValue(selected) or {},
+    groupLayouts = layoutData and CopyValue(layoutData.groups) or nil,
   }
 end
 
 function RUI:ValidateTrackerProfileData(data)
   if type(data) ~= "table" then return false, "tracker profile is not a table" end
-  if tonumber(data.schema) ~= PROFILE_SCHEMA then return false, "unsupported tracker profile schema" end
+  local schema = tonumber(data.schema)
+  if schema ~= 1 and schema ~= PROFILE_SCHEMA then return false, "unsupported tracker profile schema" end
   if type(data.className) ~= "string" or data.className == "" then return false, "tracker profile class is missing" end
   if type(data.trackers) ~= "table" then return false, "tracker list is missing" end
   if #data.trackers > 250 then return false, "tracker profile contains too many entries" end
@@ -109,6 +129,8 @@ function RUI:ValidateTrackerProfileData(data)
     if seen[entry.key] then return false, "tracker profile contains duplicate keys" end
     seen[entry.key] = true
   end
+  local groupsOK, groupsReason = ValidateGroupLayouts(data.groupLayouts)
+  if not groupsOK then return false, groupsReason end
   return true
 end
 
@@ -131,6 +153,11 @@ function RUI:ApplyTrackerProfileData(data, options)
     target[copy.key] = copy
   end
   RetreatUIDB.trackerBuilder.selected[data.className] = target
+
+  if type(data.groupLayouts) == "table" then
+    RetreatUIDB.trackerBuilder.groupLayouts = RetreatUIDB.trackerBuilder.groupLayouts or {}
+    RetreatUIDB.trackerBuilder.groupLayouts[data.className] = CopyValue(data.groupLayouts) or {}
+  end
 
   if self.trackerBuilderFrame and self.trackerBuilderFrame:IsShown() and self.RefreshTrackerBuilder then
     pcall(self.RefreshTrackerBuilder, self)
