@@ -10,6 +10,9 @@
 Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
+Data\TrackerMetadata.lua
+Data\TrackerTemplates.lua
+Core\TrackerCatalog.lua
 Data\WeakAurasBeta20Payloads.lua
 Integrations\WeakAurasBeta20.lua
 Integrations\GuardianTooltipScannerSafety.lua
