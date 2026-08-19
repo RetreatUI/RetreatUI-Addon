@@ -14,6 +14,7 @@ local function EnsureState(self)
 end
 
 local function ClassSelection(self, className)
+  if type(className) ~= "string" or className == "" then return {} end
   local db = EnsureState(self)
   db.selected[className] = db.selected[className] or {}
   return db.selected[className]
@@ -33,7 +34,7 @@ function RUI:IsTrackerSelected(className, key)
 end
 
 function RUI:ToggleTrackerSelection(item)
-  if type(item) ~= "table" or type(item.key) ~= "string" then return false end
+  if type(item) ~= "table" or type(item.key) ~= "string" or type(item.className) ~= "string" then return false end
   local selected = ClassSelection(self, item.className)
   if selected[item.key] then
     selected[item.key] = nil
@@ -49,6 +50,7 @@ function RUI:ToggleTrackerSelection(item)
 end
 
 local function Backdrop(frame)
+  if not frame or type(frame.SetBackdrop) ~= "function" then return end
   frame:SetBackdrop({bgFile="Interface\\Buttons\\WHITE8X8", edgeFile="Interface\\Buttons\\WHITE8X8", edgeSize=1})
   frame:SetBackdropColor(0.035,0.035,0.04,0.98)
   frame:SetBackdropBorderColor(0.16,0.16,0.18,1)
@@ -67,6 +69,7 @@ end
 
 local function CreateBuilder(self)
   if self.trackerBuilderFrame then return self.trackerBuilderFrame end
+  if type(CreateFrame) ~= "function" or not UIParent then return nil end
 
   local frame = CreateFrame("Frame", "RetreatUITrackerBuilder", UIParent)
   frame:SetWidth(690); frame:SetHeight(650)
@@ -86,7 +89,7 @@ local function CreateBuilder(self)
 
   local subtitle = frame:CreateFontString(nil, "OVERLAY", "GameFontHighlightSmall")
   subtitle:SetPoint("TOPLEFT", title, "BOTTOMLEFT", 0, -5)
-  subtitle:SetText("Choose what you want to track. RetreatUI stores definitions; WeakAuras rendering is handled separately.")
+  subtitle:SetText("Choose what you want to track. RetreatUI only stores the tracker definition in this test build.")
   frame.subtitle = subtitle
 
   local close = CreateFrame("Button", nil, frame, "UIPanelCloseButton")
@@ -95,7 +98,6 @@ local function CreateBuilder(self)
   local search = CreateFrame("EditBox", nil, frame, "InputBoxTemplate")
   search:SetAutoFocus(false); search:SetWidth(270); search:SetHeight(24)
   search:SetPoint("TOPLEFT", 20, -70)
-  search:SetTextInsets(8,8,0,0)
   frame.search = search
 
   local searchLabel = frame:CreateFontString(nil, "OVERLAY", "GameFontNormalSmall")
@@ -172,10 +174,10 @@ function RUI:RefreshTrackerBuilder()
   if not frame then return end
   local db = EnsureState(self)
   local filters = db.filters
-  filters.learnedOnly = frame.learned:GetChecked() == 1
-  filters.recommendedOnly = frame.recommended:GetChecked() == 1
-  filters.includeAdvanced = frame.advanced:GetChecked() == 1
-  filters.includeUntrackable = frame.allEntries:GetChecked() == 1
+  filters.learnedOnly = frame.learned:GetChecked() and true or false
+  filters.recommendedOnly = frame.recommended:GetChecked() and true or false
+  filters.includeAdvanced = frame.advanced:GetChecked() and true or false
+  filters.includeUntrackable = frame.allEntries:GetChecked() and true or false
 
   local className = self.GetDetectedClass and self:GetDetectedClass() or "Unknown"
   frame.classText:SetText("Class: |cffffffff"..tostring(className).."|r")
@@ -213,6 +215,7 @@ end
 
 function RUI:OpenTrackerBuilder()
   local frame = CreateBuilder(self)
+  if not frame then return false end
   local filters = EnsureState(self).filters
   frame.learned:SetChecked(filters.learnedOnly and 1 or nil)
   frame.recommended:SetChecked(filters.recommendedOnly and 1 or nil)
@@ -226,6 +229,7 @@ end
 
 function RUI:ToggleTrackerBuilder()
   local frame = CreateBuilder(self)
+  if not frame then return false end
   if frame:IsShown() then frame:Hide(); return false end
   return self:OpenTrackerBuilder()
 end
