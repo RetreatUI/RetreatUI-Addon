@@ -12,6 +12,9 @@ Core\Init.lua
 Data\SpellDatabase.lua
 Data\SpellAuditCatalog.lua
 Data\GeneratedSpellAuditCatalog.lua
+Data\AuditCatalog\Barbarian.lua
+Data\AuditCatalog\Bloodmage.lua
+Data\AuditCatalog\KnightofXoroth.lua
 Data\TrackerMetadata.lua
 Data\TrackerTemplates.lua
 Core\TrackerCatalog.lua
