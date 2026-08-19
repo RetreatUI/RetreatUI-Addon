@@ -17,13 +17,23 @@ local function ConfigureTargetDebuffs(profile, enabled)
   local debuffs = EnsureTargetDebuffs(profile)
   if not debuffs then return false end
 
+  -- Ascension's ElvUI 7.27 lineage uses the Classic/WotLK nested filter table
+  -- (`debuffs.filters.priority`). Older RetreatUI profile data also carries the
+  -- direct `debuffs.priority` fields. Write both so runtime and imported profile
+  -- data stay compatible without guessing which accessor the fork uses.
+  debuffs.filters = debuffs.filters or {}
+
   if enabled then
     -- Selected-only target row. The dedicated RetreatUI whitelist is the entire
     -- filter chain so ordinary target auras never turn this into a generic row.
     debuffs.enable = true
+    debuffs.filter = "HARMFUL"
     debuffs.priority = FILTER_NAME
     debuffs.minDuration = 0
     debuffs.maxDuration = 0
+    debuffs.filters.priority = FILTER_NAME
+    debuffs.filters.minDuration = 0
+    debuffs.filters.maxDuration = 0
     debuffs.perrow = 4
     debuffs.numrows = 1
   else
@@ -31,6 +41,9 @@ local function ConfigureTargetDebuffs(profile, enabled)
     debuffs.priority = ""
     debuffs.minDuration = 0
     debuffs.maxDuration = 0
+    debuffs.filters.priority = ""
+    debuffs.filters.minDuration = 0
+    debuffs.filters.maxDuration = 0
     debuffs.perrow = 4
     debuffs.numrows = 1
   end
@@ -158,5 +171,5 @@ end
 pcall(RUI.ApplyElvUITargetDebuffDestinations, RUI)
 
 RUI._elvUITargetDebuffsLoaded = true
-RUI._elvUITargetDebuffsRevision = 3
+RUI._elvUITargetDebuffsRevision = 4
 RUI.elvUITargetDebuffFilterName = FILTER_NAME
