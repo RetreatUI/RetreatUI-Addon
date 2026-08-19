@@ -1,11 +1,10 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.30 proof-of-concept: generate one sparse, native WeakAuras display from
--- Tracker Builder data and hand it to Ascension WeakAuras 5.21.2 through its
--- own Import() flow. Cooldown + buff trackers use the same native two-trigger
--- structure as WeakAuras' own "Show Cooldown and Buff" template.
--- No WeakAuras.Add, no custom decoder, no custom trigger Lua.
+-- Native Tracker Builder -> WeakAuras bridge for Ascension WeakAuras 5.21.2.
+-- Cooldown + buff trackers use WeakAuras' own native two-trigger model.
+-- beta.32 adds deterministic managed ids/uids so rebuilding a tracker updates
+-- the same aura instead of creating another copy.
 
 local function HasType(entry, wanted)
   if type(entry) ~= "table" then return false end
@@ -51,28 +50,13 @@ local function WeakAurasAPI(self)
   local wa = _G.WeakAuras
   if type(wa) ~= "table" then return nil, "WeakAuras core object is unavailable" end
 
-  local required = {
-    "Import",
-    "GetTriggerCategoryFor",
-    "GenerateUniqueID",
-    "InternalVersion",
-  }
+  local required = {"Import", "GetTriggerCategoryFor", "GenerateUniqueID", "InternalVersion"}
   for _, name in ipairs(required) do
     if type(wa[name]) ~= "function" then
       return nil, "Ascension WeakAuras is missing required native API: " .. name
     end
   end
   return wa
-end
-
-local function SafeAuraID(wa, name, suffix)
-  local base = "RetreatUI Test - " .. tostring(name or "Cooldown")
-  if suffix and suffix ~= "" then base = base .. " - " .. suffix end
-  if type(wa.FindUnusedId) == "function" then
-    local ok, value = pcall(wa.FindUnusedId, base)
-    if ok and type(value) == "string" and value ~= "" then return value end
-  end
-  return base .. " - " .. tostring(time and time() or math.floor(GetTime and GetTime() or 0))
 end
 
 local function BuildCooldownTrigger(triggerCategory, entry)
@@ -114,21 +98,22 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
 
   local wa, reason = WeakAurasAPI(self)
   if not wa then return nil, reason end
+  if type(self.ResolveManagedWeakAuraIdentity) ~= "function" then
+    return nil, "RetreatUI managed WeakAuras identity layer is unavailable"
+  end
 
   local categoryOK, triggerCategory = pcall(wa.GetTriggerCategoryFor, "Cooldown Progress (Spell)")
   if not categoryOK or type(triggerCategory) ~= "string" or triggerCategory == "" then
     return nil, "WeakAuras did not expose the native Cooldown Progress (Spell) trigger category"
   end
 
-  local uidOK, uid = pcall(wa.GenerateUniqueID)
-  if not uidOK or type(uid) ~= "string" or uid == "" then
-    return nil, "WeakAuras could not generate a native aura UID"
-  end
-
   local versionOK, internalVersion = pcall(wa.InternalVersion)
   if not versionOK or type(internalVersion) ~= "number" then
     return nil, "WeakAuras internal version is unavailable"
   end
+
+  local auraID, uid, isUpdate, identityReason = self:ResolveManagedWeakAuraIdentity(entry, wa)
+  if not auraID then return nil, identityReason or "managed WeakAura identity could not be resolved" end
 
   local settings = type(entry.settings) == "table" and entry.settings or {}
   local size = tonumber(settings.iconSize) or 36
@@ -152,7 +137,7 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
   end
 
   local aura = {
-    id = SafeAuraID(wa, entry.name, hasBuff and "Cooldown + Buff" or "Cooldown"),
+    id = auraID,
     uid = uid,
     internalVersion = internalVersion,
     regionType = "icon",
@@ -171,7 +156,7 @@ function RUI:BuildNativeCooldownTrackerTest(entry)
   end
   local envelope, envelopeReason = self:BuildWeakAurasNativeImportEnvelope(aura, {})
   if not envelope then return nil, envelopeReason end
-  return envelope, nil, aura.id, hasBuff
+  return envelope, nil, aura.id, hasBuff, isUpdate, uid
 end
 
 function RUI:OpenNativeCooldownTrackerTest()
@@ -184,7 +169,7 @@ function RUI:OpenNativeCooldownTrackerTest()
     return false, "select at least one Tracker Builder ability with Cooldown enabled first"
   end
 
-  local envelope, reason, auraID, hasBuff = self:BuildNativeCooldownTrackerTest(entry)
+  local envelope, reason, auraID, hasBuff, isUpdate, uid = self:BuildNativeCooldownTrackerTest(entry)
   if not envelope then return false, reason end
   if type(self.OpenWeakAurasNativeImport) ~= "function" then
     return false, "RetreatUI native WeakAuras import adapter is unavailable"
@@ -201,11 +186,14 @@ function RUI:OpenNativeCooldownTrackerTest()
     spellID = entry.spellID,
     auraName = entry.auraName,
     auraID = auraID,
+    uid = uid,
     mode = hasBuff and "cooldown+buff" or "cooldown",
+    update = isUpdate == true,
   }
 
+  local action = isUpdate and "update" or "import"
   local detail = hasBuff and (" with native buff duration tracking (" .. tostring(entry.auraName) .. ")") or ""
-  return true, "WeakAuras native import window opened for " .. tostring(entry.name) .. " (Spell ID " .. tostring(entry.spellID) .. ")" .. detail
+  return true, "WeakAuras native " .. action .. " opened for " .. tostring(entry.name) .. " (Spell ID " .. tostring(entry.spellID) .. ")" .. detail
 end
 
 RUI._weakAurasNativeTrackerTest = true
