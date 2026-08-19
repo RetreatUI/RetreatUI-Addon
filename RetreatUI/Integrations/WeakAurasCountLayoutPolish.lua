@@ -5,8 +5,9 @@ if not RUI or RUI._weakAurasCountLayoutPolish then return end
 -- Trigger semantics stay untouched here.
 --
 -- Charge/stack count belongs in the lower-right corner. Charge trackers never
--- use OmniCC / cooldown-frame countdown numbers; when charges reach zero, a
--- small native WeakAuras %p text is shown in the center instead.
+-- use the icon cooldown frame, so OmniCC cannot draw large recharge numbers on
+-- top of them. When charges reach zero, a small native WeakAuras %p text is
+-- shown in the center instead.
 
 local BaseBuildNativeTrackerImport = RUI.BuildNativeTrackerImport
 if type(BaseBuildNativeTrackerImport) ~= "function" then return end
@@ -116,9 +117,12 @@ local function PolishPresentation(envelope, entry)
     local settings = type(entry.settings) == "table" and entry.settings or {}
     local showCooldownText = settings.showCooldownText ~= false
 
-    -- Always suppress OmniCC / cooldown-frame numbers on charge icons. This is
-    -- independent of charge state, so their external styling can never cover
-    -- the corner count.
+    -- The cooldown frame itself is disabled for charge trackers. WeakAuras only
+    -- updates/shows that frame when data.cooldown is enabled, so this removes
+    -- OmniCC's large external recharge number at the source.
+    data.cooldown = false
+    data.cooldownSwipe = false
+    data.cooldownEdge = false
     data.cooldownTextDisabled = true
 
     local timerIndex
