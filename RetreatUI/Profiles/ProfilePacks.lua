@@ -62,28 +62,68 @@ function RUI:SetRetreatStyle(key, resolution)
   return true, state
 end
 
-local function DecodeElvPayload(payload)
+local function ElvUIEngine()
+  if type(ElvUI) ~= "table" then return nil end
+  if type(ElvUI[1]) == "table" then return ElvUI[1] end
+  local ok, engine = pcall(function() return unpack(ElvUI) end)
+  return ok and type(engine) == "table" and engine or nil
+end
+
+local function DecodeElvPayload(payload, expectedType)
   if type(payload) ~= "string" or payload == "" then return nil, "profile payload missing" end
-  if not ElvUI then return nil, "ElvUI is not loaded" end
-  local E = unpack(ElvUI)
+  local E = ElvUIEngine()
   if not E or type(E.GetModule) ~= "function" then return nil, "ElvUI engine unavailable" end
   local okModule, distributor = pcall(E.GetModule, E, "Distributor", true)
   if not okModule or not distributor or type(distributor.Decode) ~= "function" then
     return nil, "ElvUI Distributor is unavailable"
   end
-  local ok, profileType, _, data = pcall(distributor.Decode, distributor, payload)
+  local ok, profileType, sourceName, data = pcall(distributor.Decode, distributor, payload)
   if not ok or type(data) ~= "table" then return nil, "ElvUI profile decode failed" end
-  return {engine=E, distributor=distributor, profileType=profileType or "profile", data=data}
+  if expectedType and profileType ~= expectedType then
+    return nil, "Unexpected ElvUI payload type: " .. tostring(profileType)
+  end
+  return {engine=E, distributor=distributor, profileType=profileType, sourceName=sourceName, data=data}
 end
 
-local function ApplyPrivatePayload(distributor, payload)
+local function ApplyPrivatePayload(E, distributor, payload)
   if type(payload) ~= "string" or payload == "" then return true end
-  local ok, profileType, _, data = pcall(distributor.Decode, distributor, payload)
-  if not ok or type(data) ~= "table" then return false end
-  if type(distributor.SetImportedProfile) == "function" then
-    return pcall(distributor.SetImportedProfile, distributor, profileType or "private", "RetreatUI", data, true)
+  if not E or not distributor or type(distributor.Decode) ~= "function" then return false end
+
+  local ok, profileType, _, private = pcall(distributor.Decode, distributor, payload)
+  if not ok or profileType ~= "private" or type(private) ~= "table" then return false end
+
+  local filtered = private
+  local blacklist = distributor.blacklistedKeys and distributor.blacklistedKeys.private
+  if blacklist and type(E.FilterTableFromBlacklist) == "function" then
+    local filterOK, value = pcall(E.FilterTableFromBlacklist, E, private, blacklist)
+    if filterOK and type(value) == "table" then filtered = value end
   end
-  return false
+
+  ElvPrivateDB = ElvPrivateDB or {}
+  ElvPrivateDB.profileKeys = ElvPrivateDB.profileKeys or {}
+  ElvPrivateDB.profiles = ElvPrivateDB.profiles or {}
+  local privateName = "RetreatUI"
+  if E.mynameRealm then ElvPrivateDB.profileKeys[E.mynameRealm] = privateName end
+  ElvPrivateDB.profiles[privateName] = Copy(filtered)
+
+  if E.private then
+    if type(E.CopyTable) == "function" then pcall(E.CopyTable, E, E.private, filtered)
+    else
+      for key in pairs(E.private) do E.private[key] = nil end
+      for key, value in pairs(filtered) do E.private[key] = Copy(value) end
+    end
+    E.private.install_complete = E.version
+  end
+  return true
+end
+
+local function DisableElvDualSpec(E)
+  if type(ElvDB) ~= "table" or not E or not E.mynameRealm then return end
+  ElvDB.namespaces = ElvDB.namespaces or {}
+  ElvDB.namespaces["LibDualSpec-1.0"] = ElvDB.namespaces["LibDualSpec-1.0"] or {}
+  local dual = ElvDB.namespaces["LibDualSpec-1.0"]
+  dual.char = dual.char or {}
+  dual.char[E.mynameRealm] = {enabled=false}
 end
 
 local function EdgeFallback(base)
@@ -110,29 +150,38 @@ function RUI:InstallRetreatStyleElvUI(styleKey, resolution)
   local style = self.ProfileStyles[styleKey]
   if not style then return false, "Unknown profile style" end
   if not self:EnsureAddOnLoaded("ElvUI") then return false, "ElvUI is not loaded" end
+
+  resolution = resolution or ScreenPreset()
   local payloads = self.ProfileImportPayloads and self.ProfileImportPayloads[styleKey]
   local payload = payloads and payloads.elvui and payloads.elvui[resolution]
-  local decoded, decodeReason = payload and DecodeElvPayload(payload.profile)
+  local decoded, decodeReason = payload and DecodeElvPayload(payload.profile, "profile")
 
   if decoded and type(decoded.distributor.SetImportedProfile) == "function" then
     local ok, err = pcall(decoded.distributor.SetImportedProfile, decoded.distributor,
-      decoded.profileType or "profile", "RetreatUI", decoded.data, true)
+      "profile", "RetreatUI", decoded.data, true)
     if ok then
-      ApplyPrivatePayload(decoded.distributor, payload.private)
-      self.ElvUIProfile = Copy(decoded.data)
-      self.ElvUIProfile.nameplates = self.ElvUIProfile.nameplates or {}
-      self.ElvUIProfile.nameplates.enable = false
-      if decoded.engine and decoded.engine.data and type(decoded.engine.data.SetProfile) == "function" then
-        pcall(decoded.engine.data.SetProfile, decoded.engine.data, "RetreatUI")
+      if payload.private and not ApplyPrivatePayload(decoded.engine, decoded.distributor, payload.private) then
+        decodeReason = "ElvUI private profile import failed"
+      else
+        DisableElvDualSpec(decoded.engine)
+        self.ElvUIProfile = Copy(decoded.data)
+        self.ElvUIProfile.nameplates = self.ElvUIProfile.nameplates or {}
+        self.ElvUIProfile.nameplates.enable = false
+        if decoded.engine.data and type(decoded.engine.data.SetProfile) == "function" then
+          pcall(decoded.engine.data.SetProfile, decoded.engine.data, "RetreatUI")
+        end
+        if type(self.DisableElvUINamePlates) == "function" then pcall(self.DisableElvUINamePlates, self) end
+        if type(self.RepairElvUIAuraProfiles) == "function" then pcall(self.RepairElvUIAuraProfiles, self, false) end
+        if type(decoded.engine.UpdateAll) == "function" then pcall(decoded.engine.UpdateAll, decoded.engine, true) end
+        return true, style.label .. " ElvUI profile imported"
       end
-      if type(self.DisableElvUINamePlates) == "function" then pcall(self.DisableElvUINamePlates, self) end
-      if type(self.RepairElvUIAuraProfiles) == "function" then pcall(self.RepairElvUIAuraProfiles, self, false) end
-      if decoded.engine and type(decoded.engine.UpdateAll) == "function" then pcall(decoded.engine.UpdateAll, decoded.engine, true) end
-      return true, style.label .. " ElvUI profile imported"
+    else
+      decodeReason = tostring(err)
     end
-    decodeReason = tostring(err)
   end
 
+  -- Ascension's ElvUI fork may not decode a newer profile export. Never leave
+  -- the user with a half-installed UI: use the verified CoA profile baseline.
   local original = self.ElvUIProfile
   if styleKey == "edge" then self.ElvUIProfile = EdgeFallback(original) else self.ElvUIProfile = Copy(original) end
   local ok, message = self:InstallElvUIProfile()
@@ -142,8 +191,14 @@ end
 
 function RUI:InstallRetreatStyleDetails(styleKey, resolution)
   local payloads = self.ProfileImportPayloads and self.ProfileImportPayloads[styleKey]
-  local payload = payloads and payloads.details and payloads.details[resolution]
-  if type(payload) == "string" and payload ~= "" and DetailsAPI and type(DetailsAPI.ImportProfile) == "function" then
+  local payload = payloads and payloads.details and payloads.details[resolution or ScreenPreset()]
+  if self.EnsureAddOnLoaded then pcall(self.EnsureAddOnLoaded, self, "Details") end
+
+  if type(payload) == "string" and payload ~= "" and type(Details) == "table" and type(Details.ImportProfile) == "function" then
+    local ok, result = pcall(Details.ImportProfile, Details, payload, "RetreatUI", nil, nil, true)
+    if ok and result ~= false then return true, "RetreatUI Details profile imported" end
+  end
+  if type(payload) == "string" and payload ~= "" and type(DetailsAPI) == "table" and type(DetailsAPI.ImportProfile) == "function" then
     local ok, result = pcall(DetailsAPI.ImportProfile, payload, "RetreatUI")
     if ok and result ~= false then return true, "RetreatUI Details profile imported" end
   end
@@ -168,6 +223,10 @@ function RUI:InstallRetreatStyleTurboPlates(styleKey)
     local ok, message = self:ApplyTurboPlatesRuntime()
     if not ok then return false, message end
   end
+  if type(self.RetireLegacyTrackerDestinationState) == "function" then
+    pcall(self.RetireLegacyTrackerDestinationState, self)
+  end
+
   local style = TURBO_STYLE[styleKey]
   local db = TurboPlatesDB
   db.font = self.fontName or db.font
@@ -232,4 +291,4 @@ function RUI:ReapplyRetreatStyle()
 end
 
 RUI._profilePacksLoaded = true
-RUI.profilePackSchema = 1
+RUI.profilePackSchema = 2
