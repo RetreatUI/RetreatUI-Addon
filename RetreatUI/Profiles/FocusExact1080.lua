@@ -1,0 +1,62 @@
+local RUI = RetreatUI
+if not RUI then return end
+
+-- Exact supplied 1080p ElvUI profile, decoded once outside the game from the
+-- newer export format. Source-only media names were translated to stock ElvUI
+-- media; layout/settings remain the supplied profile data.
+local PAYLOAD = [==[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]==]
+
+local function DecodeBase64(data)
+  local alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+  local map = {}
+  for i = 1, #alphabet do map[string.byte(alphabet, i)] = i - 1 end
+  local out, acc, bits = {}, 0, 0
+  for i = 1, #data do
+    local byte = string.byte(data, i)
+    local value = map[byte]
+    if value ~= nil then
+      acc = (acc * 64) + value
+      bits = bits + 6
+      while bits >= 8 do
+        bits = bits - 8
+        local divisor = 2 ^ bits
+        out[#out + 1] = string.char(math.floor(acc / divisor) % 256)
+        acc = acc % divisor
+      end
+    end
+  end
+  return table.concat(out)
+end
+
+local function DecodeExactProfile()
+  local E = ElvUI and unpack(ElvUI)
+  local deflate = E and E.Libs and E.Libs.Deflate
+  if not deflate or type(deflate.DecompressDeflate) ~= "function" then
+    return nil, "ElvUI Deflate library unavailable"
+  end
+  local compressed = DecodeBase64(PAYLOAD)
+  local serialized = deflate:DecompressDeflate(compressed)
+  if type(serialized) ~= "string" or serialized == "" then
+    return nil, "Exact Focus profile decompression failed"
+  end
+  local loader, err = loadstring("return " .. serialized)
+  if not loader then return nil, tostring(err or "Exact Focus profile parse failed") end
+  local ok, profile = pcall(loader)
+  if not ok or type(profile) ~= "table" then
+    return nil, ok and "Exact Focus profile did not return a table" or tostring(profile)
+  end
+  return profile
+end
+
+RUI.ExactElvUIProfiles = RUI.ExactElvUIProfiles or {}
+RUI.ExactElvUIProfiles.focus = RUI.ExactElvUIProfiles.focus or {}
+local profile, reason = DecodeExactProfile()
+if profile then
+  RUI.ExactElvUIProfiles.focus["1080p"] = profile
+  -- On the beta.52 legacy client use the exact 1080 source profile when the
+  -- newer 1440 export cannot be decoded by Ascension's !E1! Distributor.
+  RUI.ExactElvUIProfiles.focus["1440p"] = profile
+  RUI._exactFocus1080Loaded = true
+else
+  RUI._exactFocus1080Error = reason
+end
