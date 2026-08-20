@@ -114,6 +114,7 @@ UI\HUDBarUnlock.lua
 UI\Beta51Shell.lua
 Integrations\Beta50Architecture.lua
 Integrations\Beta50Navigation.lua
+Integrations\Beta51ExactProfileGuard.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
