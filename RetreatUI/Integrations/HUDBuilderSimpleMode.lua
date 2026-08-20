@@ -1,7 +1,15 @@
 local RUI = RetreatUI
 if not RUI then return end
 
--- beta.45: the public HUD builder owns WeakAuras only. ElvUI/TurboPlates are profile-owned.
+-- beta.45 public model:
+--   * ElvUI / TurboPlates / Details are owned by the selected RetreatUI profile.
+--   * The HUD builder owns WeakAuras only.
+-- Legacy beta.42-.44 tracker destination metadata is retained for migration, but
+-- it must never write into the profile-owned addons again.
+function RUI:ApplyTrackerDestinations()
+  return true, "ElvUI and TurboPlates are owned by the active RetreatUI profile"
+end
+
 local BaseSaveTrackerSelection = RUI.SaveTrackerSelection
 if type(BaseSaveTrackerSelection) == "function" then
   function RUI:SaveTrackerSelection(item, config)
@@ -20,7 +28,7 @@ if type(BaseOpenTrackerEditor) == "function" then
       if frame and frame.destinationChecks then
         for key, check in pairs(frame.destinationChecks) do
           check:SetChecked(key == "hud" and 1 or nil)
-          if key ~= "hud" then check:Hide() end
+          if key ~= "hud" then check:Hide() else check:Show() end
         end
         if frame.destinationLabel then frame.destinationLabel:SetText("HUD output") end
         if frame.destinationHint then frame.destinationHint:SetText("RetreatUI builds a native WeakAura for this HUD element.") end
@@ -44,3 +52,4 @@ function RUI:CloseSimpleHUDBuilder()
 end
 
 RUI._hudBuilderSimpleModeLoaded = true
+RUI.hudBuilderSimpleModeSchema = 2
