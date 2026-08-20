@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-RUI.trackerMetadataVersion = 2
+RUI.trackerMetadataVersion = 3
 RUI.trackerMetadata = RUI.trackerMetadata or {}
 
 local function Normalize(value)
@@ -37,6 +37,38 @@ function RUI:GetExplicitTrackerMetadata(className, record)
   return nil
 end
 
+-- Curated class records sometimes intentionally omit an ID. Resolve those from
+-- the generated Professional Audit only when the spell name is unique inside
+-- the same CoA class. Ambiguous names are never auto-linked.
+local AUDIT_NAME_CACHE = {}
+local function AuditForRecord(self, className, record)
+  local id = tonumber(record and record.id)
+  if id and self.GetAuditSpellRecordByID then
+    local direct = self:GetAuditSpellRecordByID(className, id)
+    if direct then return direct end
+  end
+  if type(className) ~= "string" or type(record) ~= "table" or not self.GetAuditSpellCatalog then return nil end
+  local wanted = Normalize(record.name)
+  if wanted == "" then return nil end
+
+  local classCache = AUDIT_NAME_CACHE[className]
+  if classCache == nil then
+    classCache = {}
+    local duplicates = {}
+    for _, candidate in ipairs(self:GetAuditSpellCatalog(className) or {}) do
+      local key = Normalize(candidate and candidate.name)
+      if key ~= "" then
+        if classCache[key] ~= nil then duplicates[key] = true else classCache[key] = candidate end
+      end
+    end
+    for key in pairs(duplicates) do classCache[key] = false end
+    AUDIT_NAME_CACHE[className] = classCache
+  end
+
+  local candidate = classCache[wanted]
+  return type(candidate) == "table" and candidate or nil
+end
+
 local CATEGORY_TYPE = {
   buff = "buff", proc = "proc", debuff = "debuff", resource = "resource", summon = "summon",
   interrupt = "cooldown", interrupts = "cooldown", taunt = "cooldown", control = "cooldown",
@@ -56,7 +88,7 @@ function RUI:InferTrackerMetadata(record, className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
 
   local explicit = self:GetExplicitTrackerMetadata(className, record) or {}
-  local audit = self.GetAuditSpellRecordByID and self:GetAuditSpellRecordByID(className, tonumber(record.id)) or nil
+  local audit = AuditForRecord(self, className, record)
   local category = Normalize(explicit.category or record.category)
   local types, seen = {}, {}
 
@@ -131,16 +163,16 @@ function RUI:InferTrackerMetadata(record, className)
   return {
     schema = self.trackerMetadataVersion,
     className = className,
-    spellID = tonumber(explicit.spellID or record.id),
+    spellID = tonumber(explicit.spellID or record.id or (audit and audit.id)),
     cooldownID = tonumber(explicit.cooldownID or explicit.runtimeID or record.runtimeID),
     effectID = effectID,
     auraID = auraID,
     effectKind = effectKind,
     effectConfidence = effectConfidence,
     name = explicit.name or record.name,
-    auraName = explicit.auraName or record.buff,
+    auraName = explicit.auraName or record.buff or (audit and audit.effectName),
     category = explicit.category or record.category,
-    specialization = explicit.specialization or record.sourceTab or record.specialization,
+    specialization = explicit.specialization or record.sourceTab or record.specialization or (audit and audit.specialization),
     trackingTypes = types,
     template = template,
     defaultUnit = defaultUnit,
