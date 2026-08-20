@@ -11,8 +11,6 @@ local function Copy(value, seen)
   return result
 end
 
-local FOCUS_BASELINE = Copy(RUI.ElvUIProfile or {})
-
 local function Engine()
   if type(ElvUI) ~= "table" then return nil end
   if type(ElvUI[1]) == "table" then return ElvUI[1] end
@@ -46,43 +44,6 @@ local function SanitizeScale(profile)
   return profile
 end
 
-local function EdgeFallback(base)
-  local profile = Copy(base or {})
-  profile.movers = profile.movers or {}
-  profile.movers.ElvUF_PlayerMover = "BOTTOM,ElvUIParent,BOTTOM,-345,365"
-  profile.movers.ElvUF_TargetMover = "BOTTOM,ElvUIParent,BOTTOM,345,365"
-  profile.movers.ElvUF_PlayerCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,-345,326"
-  profile.movers.ElvUF_TargetCastbarMover = "BOTTOM,ElvUIParent,BOTTOM,345,326"
-  profile.movers.ElvUF_PartyMover = "TOPLEFT,ElvUIParent,BOTTOMLEFT,265,690"
-  profile.unitframe = profile.unitframe or {}
-  profile.unitframe.units = profile.unitframe.units or {}
-  local player = profile.unitframe.units.player or {}; profile.unitframe.units.player = player
-  local target = profile.unitframe.units.target or {}; profile.unitframe.units.target = target
-  local party = profile.unitframe.units.party or {}; profile.unitframe.units.party = party
-  player.width, player.height = 300, 52
-  target.width, target.height = 300, 52
-  party.width, party.height = 210, 42
-  if player.castbar then player.castbar.width = 300 end
-  if target.castbar then target.castbar.width = 300 end
-  profile.chat = profile.chat or {}; profile.chat.panelWidth = 390
-  profile.general = profile.general or {}; profile.general.minimap = profile.general.minimap or {}; profile.general.minimap.size = 220
-  profile.actionbar = profile.actionbar or {}
-  if profile.actionbar.bar1 then profile.actionbar.bar1.buttonsize = 32 end
-  if profile.actionbar.bar2 then profile.actionbar.bar2.buttonsize = 28 end
-  return profile
-end
-
-local function DecodeProfile(payload)
-  if type(payload) ~= "string" or payload == "" then return nil end
-  local E = Engine()
-  if not E or type(E.GetModule) ~= "function" then return nil end
-  local okModule, D = pcall(E.GetModule, E, "Distributor", true)
-  if not okModule or type(D) ~= "table" or type(D.Decode) ~= "function" then return nil end
-  local ok, profileType, _, data = pcall(D.Decode, D, payload)
-  if not ok or profileType ~= "profile" or type(data) ~= "table" then return nil end
-  return Copy(data)
-end
-
 local function InstallProfileTable(self, profileName, profile)
   local E = Engine()
   if not E or not E.mynameRealm then return false, "ElvUI engine is unavailable" end
@@ -94,7 +55,6 @@ local function InstallProfileTable(self, profileName, profile)
   ElvDB.profileKeys = ElvDB.profileKeys or {}
   ElvDB.profiles = ElvDB.profiles or {}
   ElvDB.profiles[profileName] = profile
-  ElvDB.profileKeys[E.mynameRealm] = profileName
 
   local scale = PreserveScale()
   local switched = false
@@ -106,6 +66,9 @@ local function InstallProfileTable(self, profileName, profile)
     local ok = pcall(E.db.SetProfile, E.db, profileName)
     switched = ok == true
   end
+  if not switched then
+    ElvDB.profileKeys[E.mynameRealm] = profileName
+  end
   RestoreScale(scale)
 
   if type(self.DisableElvUINamePlates) == "function" then pcall(self.DisableElvUINamePlates, self) end
@@ -113,6 +76,12 @@ local function InstallProfileTable(self, profileName, profile)
   elseif type(E.UpdateAll) == "function" then pcall(E.UpdateAll, E, true) end
 
   local active = ElvDB.profileKeys and ElvDB.profileKeys[E.mynameRealm]
+  if active ~= profileName and switched then
+    -- Older Ascension ElvUI builds may update AceDB before profileKeys. Keep the
+    -- saved-variable view in sync after a successful native profile switch.
+    ElvDB.profileKeys[E.mynameRealm] = profileName
+    active = profileName
+  end
   if active ~= profileName then return false, "ElvUI did not activate " .. profileName end
   return true
 end
@@ -141,34 +110,27 @@ function RUI:IsRetreatStyleActuallyActive(styleKey)
   return style and self:GetActiveElvUIProfileName() == style.elvProfileName or false
 end
 
-function RUI:InstallRetreatStyleElvUI(styleKey, resolution)
+function RUI:InstallRetreatStyleElvUI(styleKey)
   local style = self.ProfileStyles and self.ProfileStyles[styleKey]
   if not style then return false, "Unknown profile style" end
   if not self:EnsureAddOnLoaded("ElvUI") then return false, "ElvUI is not loaded" end
+  if type(self.GetNativeElvUIProfile) ~= "function" then return false, "RetreatUI native profile pack is unavailable" end
 
+  local profile = self:GetNativeElvUIProfile(styleKey)
+  if type(profile) ~= "table" then return false, "Native profile data is missing for " .. tostring(styleKey) end
   local profileName = style.elvProfileName or (styleKey == "focus" and "Retreat Focus" or "Retreat Edge")
-  local payloads = self.ProfileImportPayloads and self.ProfileImportPayloads[styleKey]
-  local payload = payloads and payloads.elvui and payloads.elvui[resolution or self:GetRetreatStyleResolution()]
-  local profile = payload and DecodeProfile(payload.profile)
-  local mode = "reference"
-
-  if type(profile) ~= "table" then
-    mode = "CoA compatibility"
-    profile = styleKey == "edge" and EdgeFallback(FOCUS_BASELINE) or Copy(FOCUS_BASELINE)
-  end
-
   local ok, reason = InstallProfileTable(self, profileName, profile)
   if not ok then return false, reason end
 
   self.ElvUIProfile = Copy(profile)
-  local state = self:EnsureDB(); state.profileStyle = state.profileStyle or {}
-  state.profileStyle.key = styleKey
-  state.profileStyle.elvProfileName = profileName
-  state.profileStyle.elvMode = mode
-  state.profileStyle.version = self.version
+  local db = self:EnsureDB(); db.profileStyle = db.profileStyle or {}
+  db.profileStyle.key = styleKey
+  db.profileStyle.elvProfileName = profileName
+  db.profileStyle.elvMode = "native CoA"
+  db.profileStyle.version = self.version
 
-  return true, style.label .. " activated as ElvUI profile '" .. profileName .. "' (" .. mode .. ")"
+  return true, style.label .. " activated as ElvUI profile '" .. profileName .. "'"
 end
 
 RUI._profileSwitchFix = true
-RUI.profileSwitchFixSchema = 2
+RUI.profileSwitchFixSchema = 3
