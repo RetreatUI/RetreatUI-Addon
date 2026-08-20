@@ -1,41 +1,26 @@
-# RetreatUI v1.1.7-beta.43 - Full CoA Spell Effect Audit
+# RetreatUI v1.1.7-beta.44 - Aura Destination Hotfix
 
-This prerelease replaces the one-off beta.42 aura correction with a generated, class-wide source-to-runtime effect audit for Conquest of Azeroth.
+This prerelease fixes the beta.43 regression where curated CoA tracker records without a source Spell ID could lose their Professional Audit effect identity before ElvUI/TurboPlates destination routing.
 
-## What changed
+## Fixed
 
-- Professional Audit coverage now loads for all 21 CoA classes.
-- Source/cast `spellID` remains the canonical ability identity.
-- Ascension cooldown/replacement identity is kept separately as `cooldownID`.
-- High-confidence applied runtime states are stored separately as `effectID` / `auraID`.
-- Secondary `[Spell ID ...]` tooltip references are classified instead of being assumed to be auras.
-- Transform, teaching, triggered-cast, summon and other non-aura relationships remain audit metadata and are not automatically routed as buffs/debuffs.
-- Curated class records inherit generated high-confidence effect identity by source Spell ID, so presentation/layout data cannot hide the audit mapping.
-- Tracker Builder persists the separated source, cooldown and effect identities.
-- ElvUI target debuff routing and TurboPlates nameplate routing continue to consume `auraID` first.
-- Aura-based WeakAura builds use the high-confidence applied `auraID` while cooldown triggers continue to use the source/runtime cooldown identity.
-- Handwritten Bite Wound / Bloodsores effect overrides are retired.
+- Curated class records with no hand-pinned source ID now resolve against the generated Professional Audit by a unique same-class spell name.
+- Ambiguous duplicate names are never auto-linked.
+- The resolved audit record supplies the canonical source `spellID` and high-confidence `effectID` / `auraID`.
+- Existing beta.43 saved selections with name-only keys are enriched and migrated to their canonical `spell:<sourceID>` key.
+- Existing destination choices and tracking types are preserved during migration.
+- Target Frame and Nameplates routing can once again consume the saved applied aura ID.
 
-## Verification cases
+## Primary verification case
 
-- Bite Wound: source Spell ID `556234`, applied target Aura ID `706654`.
-- Bloodsores: source Spell ID `805591`, applied Bloodsore runtime effect `805592`.
-- Non-aura secondary references remain relations only and do not become ElvUI/TurboPlates/WeakAura aura IDs automatically.
+- Bite Wound resolves from the curated name-only record to source Spell ID `556234` and applied target Aura ID `706654` without restoring a handwritten metadata override.
 
-## Live-test focus
+## Unchanged safety rules
 
-1. Open Tracker Builder on several CoA classes and confirm source spell IDs remain the ability IDs.
-2. For audited debuffs, confirm ElvUI Target Frame and TurboPlates receive the applied aura/effect ID rather than the cast/source ID.
-3. For cooldown + aura trackers, confirm the cooldown follows the ability/runtime cooldown ID while the native WeakAuras aura trigger follows the applied aura ID.
-4. Confirm unrelated tooltip references such as transforms, teaching, triggered casts and summons do not create automatic aura tracking.
-5. Confirm no duplicate trackers, Lua errors or regressions in the beta.42 destination ON/OFF behavior.
-
-## Safety rules
-
+- Professional Audit remains the source of effect identity.
 - No custom aura runtime engine.
 - No custom WeakAuras trigger Lua.
-- No `WeakAuras.Add`.
-- Native WeakAuras Import flow only.
-- Stable/main remains untouched until live testing is approved.
+- No direct WeakAuras insertion API.
+- Stable/main remains untouched pending live-test approval.
 
 Author: Retreat
