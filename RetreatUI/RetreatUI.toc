@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.45
+## Version: 1.1.7-beta.46
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -41,6 +41,7 @@ Core\AscensionProfileAdapters.lua
 Core\AscensionCompatibilityLoadGuard.lua
 Core\TrackerBuilder.lua
 Integrations\Beta43SpellEffectRouting.lua
+Core\HUDWorkspace.lua
 Core\TrackerEditor.lua
 Core\TrackerGroupLayout.lua
 Core\TrackerGroupLayoutEditor.lua
@@ -49,6 +50,7 @@ Core\TrackerBuilderPresentation.lua
 Integrations\WeakAurasTrackerBuilderBridge.lua
 Integrations\WeakAurasManagedIdentity.lua
 Integrations\WeakAurasNativeTrackerTest.lua
+Integrations\WeakAurasHUDBars.lua
 Integrations\WeakAurasCountLayoutPolish.lua
 Integrations\WeakAurasNativeTrackerTestSlash.lua
 Integrations\TrackerEditorWeakAurasAction.lua
@@ -121,7 +123,9 @@ Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
 Installer\Beta20Installer.lua
 Installer\Beta20WeakAurasBridge.lua
+UI\HUDWorkspace.lua
 UI\RetreatShell.lua
+Integrations\HUDWorkspaceSlash.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
