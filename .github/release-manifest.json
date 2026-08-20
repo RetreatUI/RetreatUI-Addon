@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.50",
-  "title": "RetreatUI v1.1.7-beta.50 Unified Installer and HUD Unlock",
+  "version": "1.1.7-beta.51",
+  "title": "RetreatUI v1.1.7-beta.51 Installer Redesign",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
