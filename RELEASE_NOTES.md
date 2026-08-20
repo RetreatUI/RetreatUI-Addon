@@ -1,41 +1,56 @@
-# RetreatUI v1.1.7-beta.45 - Profile Shell
+# RetreatUI v1.1.7-beta.46 - Integrated HUD Bars
 
-This prerelease replaces the old step-by-step profile/tracker workflow with the new RetreatUI profile shell.
+This prerelease replaces the separate Tracker Builder workflow with a large integrated HUD workspace inside RetreatUI.
 
-## New profile flow
+## HUD workspace
 
-- Choose between two RetreatUI-owned UI styles: **Retreat Focus** and **Retreat Edge**.
-- One profile action configures ElvUI, TurboPlates and Details together.
-- 1080p / 1440p source payloads are selected automatically from the current screen height.
-- Imported profile payloads are integrity-checked before use. If Ascension's ElvUI fork cannot decode a payload, RetreatUI falls back to the verified CoA-compatible profile instead of leaving a partial installation.
-- ElvUI private profile data uses the native private-profile storage path; Details uses its native profile importer.
+- HUD configuration now lives directly inside the main RetreatUI window.
+- The workspace is substantially larger and resizable, with a dedicated sidebar and full editor area.
+- Search is intentionally minimal: enter a spell name or Spell ID and only matching results are shown.
+- Selecting a spell exposes its HUD behavior without exposing source/aura implementation details.
 
-## HUD and WeakAuras
+## Action-bar style HUD bars
 
-- WeakAuras are no longer part of the full UI profile installation.
-- The HUD page is the user-facing path for creating native WeakAura elements from the CoA spell database and Professional Audit.
-- Source/cooldown IDs and applied aura/effect IDs remain separated behind the scenes.
-- The existing HUD mover is exposed as **Unlock Mode** for positioning and scaling.
+- HUD bars are now slot-based like action bars.
+- New bars choose a name, slot count and Horizontal or Vertical orientation.
+- Default bars are `Main Rotation 1` and `Utility Bar 1`.
+- Users can create additional bars such as Main Rotation 2, Utility Bar 2, Proc Bar or any custom name.
+- Each bar controls icon size, spacing, scale and position independently.
+- Empty slots are preserved instead of compacting active icons together.
+- Search results can be dragged directly into an exact slot.
+- Existing HUD icons can be dragged between slots; dropping onto another occupied slot swaps their positions.
+- Bars can be moved as one unit through Unlock Mode.
 
-## Profile ownership
+## Tracker behavior
 
-- ElvUI and TurboPlates are profile-owned in beta.45.
-- The old per-spell Target Frame / Nameplates destination routing no longer writes into those addons.
-- Existing beta.42-beta.44 TurboPlates destination state is retired and previously managed user values are restored where possible.
-- CoA-specific TurboPlates compatibility, NPC cast handling and runtime safety remain available independently of tracker destinations.
+Each spell can be assigned one of these user-facing behaviors:
 
-## Interface
+- Main Ability
+- Buff / Proc
+- Utility
+- Defensive
+- Target Debuff
 
-- New page-based RetreatUI shell with Home, Profiles, HUD, Unit Frames, Nameplates, Damage Meter and Settings pages.
-- Profile installation, component repair, reload and Unlock Mode are available from one window.
-- Installed UI/profile names are RetreatUI-owned.
+RetreatUI continues to keep source/cooldown IDs separate from applied aura/effect IDs behind the UI.
+
+## WeakAuras
+
+- Each HUD bar generates a native WeakAuras group with explicit child positions per slot.
+- Horizontal and Vertical bars preserve exact slot geometry.
+- No prebuilt class WeakAura package is installed.
+- No custom WeakAuras trigger Lua is generated.
+- No direct WeakAuras insertion API is used.
+- `/rui tracker`, `/rui builder` and `/rui hud` now route into the same integrated RetreatUI HUD page rather than opening separate configuration windows.
+
+## Profile system
+
+- Retreat Focus and Retreat Edge remain the two complete UI choices.
+- ElvUI, TurboPlates and Details remain separate from the user-built HUD.
+- The Details installation path is being kept on the CoA-compatible profile path instead of forcing an incompatible reference payload.
 
 ## Safety
 
-- Professional Audit remains the source of CoA spell/effect identity for the HUD builder.
-- No custom aura runtime engine.
-- No custom WeakAuras trigger Lua.
-- No direct WeakAuras insertion API.
+- Professional Audit remains the canonical source for CoA spell/effect identity.
 - Stable/main remains untouched pending live-test approval.
 
 Author: Retreat
