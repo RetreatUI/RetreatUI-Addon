@@ -1,16 +1,32 @@
-# RetreatUI v1.1.7-beta.47 - Visual Scale Fix
+# RetreatUI v1.1.7-beta.48 - Real Profile Switching
 
-This prerelease keeps the beta.46 integrated HUD workflow but corrects the visual scale of the RetreatUI workspace.
+This prerelease fixes the two beta.47 regressions reported during live testing: profile selection did not visibly switch ElvUI layouts, and the RetreatUI workspace still felt incorrectly scaled.
 
-## Visual scale correction
+## Real ElvUI profile switching
 
-- RetreatUI no longer looks artificially zoomed out on 1080p-class UI canvases.
-- The global WoW UI scale and ElvUI UI scale are not modified.
-- Only the RetreatUI main workspace receives a local visual scale correction.
-- Fonts, navigation, buttons, profile cards and HUD slots are visually larger and easier to read.
-- The workspace keeps a large editor footprint while remaining inside the visible screen area.
+- Retreat Focus now installs and activates as its own ElvUI profile: `Retreat Focus`.
+- Retreat Edge now installs and activates as its own ElvUI profile: `Retreat Edge`.
+- The two choices no longer overwrite the same `RetreatUI` ElvUI profile.
+- The ACTIVE state is derived from the ElvUI profile that is actually active, not merely the last RetreatUI card clicked.
+- If Ascension ElvUI can decode the bundled reference profile, that decoded profile is used.
+- If the reference payload cannot be decoded, RetreatUI creates two visibly different CoA-compatible profile conversions instead of falling back to the same layout.
 
-## HUD retained from beta.46
+## UI scale safety
+
+- beta.47's non-1 workspace scale layer is no longer loaded.
+- RetreatUI runs at native frame scale (`1.0`).
+- Profile switching snapshots and restores the existing WoW `useUiScale` and `uiScale` CVars.
+- Imported ElvUI profile data has profile-level autoscale/custom-scale fields removed before activation.
+- RetreatUI does not intentionally change the user's global WoW or ElvUI UI scale.
+
+## Workspace readability
+
+- The large integrated workspace remains available and resizable.
+- Default workspace dimensions are kept within the current UI canvas rather than using an extra zoom factor.
+- Small labels are promoted to readable native font sizes without scaling the entire frame.
+- The current page is reflowed immediately after the native workspace size is applied.
+
+## HUD retained
 
 - Search by spell name or Spell ID.
 - Choose Main Ability, Buff / Proc, Utility, Defensive or Target Debuff.
@@ -19,11 +35,6 @@ This prerelease keeps the beta.46 integrated HUD workflow but corrects the visua
 - Empty slots remain empty.
 - Existing HUD icons can be reordered between slots.
 - Source/cooldown IDs remain separate from applied aura/effect IDs.
-
-## Profiles
-
-- Retreat Focus and Retreat Edge remain the two complete UI profile choices.
-- ElvUI, TurboPlates and Details remain separate from the user-built WeakAuras HUD.
 
 ## Safety
 
