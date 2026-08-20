@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.42
+## Version: 1.1.7-beta.43
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -11,11 +11,27 @@ Loader.lua
 Core\Init.lua
 Data\SpellDatabase.lua
 Data\SpellAuditCatalog.lua
-Data\GeneratedSpellAuditCatalog.lua
-Data\AuditCatalog\Barbarian.lua
-Data\AuditCatalog\Bloodmage.lua
-Data\AuditCatalog\Chronomancer.lua
-Data\AuditCatalog\KnightofXoroth.lua
+Data\AuditCatalog\Schema4_01.lua
+Data\AuditCatalog\Schema4_02.lua
+Data\AuditCatalog\Schema4_03.lua
+Data\AuditCatalog\Schema4_04.lua
+Data\AuditCatalog\Schema4_05.lua
+Data\AuditCatalog\Schema4_06.lua
+Data\AuditCatalog\Schema4_07.lua
+Data\AuditCatalog\Schema4_08.lua
+Data\AuditCatalog\Schema4_09.lua
+Data\AuditCatalog\Schema4_10.lua
+Data\AuditCatalog\Schema4_11.lua
+Data\AuditCatalog\Schema4_12.lua
+Data\AuditCatalog\Schema4_13.lua
+Data\AuditCatalog\Schema4_14.lua
+Data\AuditCatalog\Schema4_15.lua
+Data\AuditCatalog\Schema4_16.lua
+Data\AuditCatalog\Schema4_17.lua
+Data\AuditCatalog\Schema4_18.lua
+Data\AuditCatalog\Schema4_19.lua
+Data\AuditCatalog\Schema4_20.lua
+Data\AuditCatalog\Schema4_21.lua
 Data\TrackerMetadata.lua
 Data\TrackerMetadataOverrides.lua
 Data\TrackerTemplates.lua
@@ -24,6 +40,7 @@ Core\TrackerProfiles.lua
 Core\AscensionProfileAdapters.lua
 Core\AscensionCompatibilityLoadGuard.lua
 Core\TrackerBuilder.lua
+Integrations\Beta43SpellEffectRouting.lua
 Core\TrackerEditor.lua
 Core\TrackerGroupLayout.lua
 Core\TrackerGroupLayoutEditor.lua
