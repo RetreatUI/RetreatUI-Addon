@@ -89,6 +89,25 @@ local function ParseSparseExtras(value)
   return result
 end
 
+local function BlockedAutomaticEffect(record)
+  local effectID = tonumber(record and record.effectID)
+  if not effectID then return false end
+  for _, relation in ipairs(record.spellEffectRelations or {}) do
+    if tonumber(relation.spellID) == effectID then
+      local kind = relation.relation
+      if kind == "T" or kind == "E" or kind == "S" then return true end
+    end
+  end
+  return false
+end
+
+local function ApplyEffectSafety(record)
+  if BlockedAutomaticEffect(record) then
+    record.effectID=nil; record.auraID=nil; record.effectKind=nil; record.effectConfidence=nil
+  end
+  return record
+end
+
 function RUI:RegisterRawAuditSpellCatalog(className, raw)
   if type(className) ~= "string" or className == "" or type(raw) ~= "string" then return false end
   self.auditSpellCatalogRaw[className]=raw; self.auditSpellCatalogCache[className]=nil; self.auditSpellCatalogByID[className]=nil
@@ -142,6 +161,7 @@ local function ParseCompact(container)
         }
         if f[5] and string.find(f[5], "[cdrhsel]", 1) then
           local extras=ParseSparseExtras(f[5]); for key,value in pairs(extras) do record[key]=value end
+          ApplyEffectSafety(record)
         else
           record.cooldownHint=tonumber(f[5]); record.durationHint=tonumber(f[6]); record.chargesHint=tonumber(f[7])
           record.rechargeHint=tonumber(f[8]); record.maxStacks=tonumber(f[9]); record.relatedSpellIDs=ParseRelated(f[10])
