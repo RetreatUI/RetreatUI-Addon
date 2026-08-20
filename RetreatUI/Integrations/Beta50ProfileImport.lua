@@ -57,15 +57,13 @@ local function Decode(payload)
   if profileType ~= "profile" or type(data) ~= "table" then
     return nil, "Original ElvUI profile was rejected by this ElvUI version"
   end
-  return Copy(data), nil, E
+  return Copy(data), nil
 end
 
 local function InstallTable(self, profileName, profile)
   local E = Engine()
   if not E or not E.mynameRealm then return false, "ElvUI engine unavailable" end
 
-  -- Store the decoded source profile unchanged. RetreatUI does not rebuild,
-  -- normalize or restyle the profile table.
   local exactProfile = Copy(profile or {})
   ElvDB = ElvDB or {}
   ElvDB.profiles = ElvDB.profiles or {}
@@ -86,19 +84,13 @@ local function InstallTable(self, profileName, profile)
 
   if not switched then
     RestoreScale(scale)
-    return false, "Original profile was decoded but ElvUI could not activate it"
+    return false, "Original profile data was loaded but ElvUI could not activate it"
   end
 
-  -- TurboPlates is the RetreatUI nameplate system, so only the conflicting
-  -- ElvUI nameplate module is disabled after the exact profile is activated.
   if type(self.DisableElvUINamePlates) == "function" then pcall(self.DisableElvUINamePlates, self) end
-
   if type(E.UpdateMoverPositions) == "function" then pcall(E.UpdateMoverPositions, E) end
   if type(E.StaggeredUpdateAll) == "function" then pcall(E.StaggeredUpdateAll, E)
   elseif type(E.UpdateAll) == "function" then pcall(E.UpdateAll, E, true) end
-
-  -- Never let importing somebody else's ElvUI profile change the user's WoW
-  -- global UI scale. Layout data itself remains untouched.
   RestoreScale(scale)
   return true, exactProfile
 end
@@ -109,15 +101,26 @@ function RUI:InstallRetreatStyleElvUI(styleKey, requestedResolution)
   if not self:EnsureAddOnLoaded("ElvUI") then return false, "ElvUI is not loaded" end
 
   local resolution = requestedResolution or Resolution()
-  local source = self.ReferenceElvUIProfiles and self.ReferenceElvUIProfiles[styleKey]
-  local reference = source and source[resolution]
-  if not reference or type(reference.profile) ~= "string" or reference.profile == "" then
-    return false, style.label .. " has no original ElvUI profile available for " .. resolution
-  end
+  local profile, reason, mode
 
-  local profile, reason = Decode(reference.profile)
-  if type(profile) ~= "table" then
-    return false, reason or "Original ElvUI profile could not be decoded"
+  -- beta.52: newer supplied exports are decoded once into an exact legacy table
+  -- so Ascension's !E1! Distributor is not required to understand !E2! data.
+  local exact = self.ExactElvUIProfiles and self.ExactElvUIProfiles[styleKey]
+  local exactProfile = exact and exact[resolution]
+  if type(exactProfile) == "table" then
+    profile = Copy(exactProfile)
+    mode = "exact legacy table " .. resolution
+  else
+    local source = self.ReferenceElvUIProfiles and self.ReferenceElvUIProfiles[styleKey]
+    local reference = source and source[resolution]
+    if not reference or type(reference.profile) ~= "string" or reference.profile == "" then
+      return false, style.label .. " has no original ElvUI profile available for " .. resolution
+    end
+    profile, reason = Decode(reference.profile)
+    if type(profile) ~= "table" then
+      return false, reason or "Original ElvUI profile could not be decoded"
+    end
+    mode = "original " .. resolution
   end
 
   local profileName = style.elvProfileName or (styleKey == "focus" and "Retreat Focus" or "Retreat Edge")
@@ -130,11 +133,11 @@ function RUI:InstallRetreatStyleElvUI(styleKey, requestedResolution)
   db.profileStyle.key = styleKey
   db.profileStyle.resolution = resolution
   db.profileStyle.elvProfileName = profileName
-  db.profileStyle.elvMode = "original " .. resolution
+  db.profileStyle.elvMode = mode
   db.profileStyle.version = self.version
 
   return true, style.label .. " original ElvUI profile activated"
 end
 
 RUI._beta50ProfileImportLoaded = true
-RUI.beta50ProfileImportSchema = 2
+RUI.beta50ProfileImportSchema = 3
