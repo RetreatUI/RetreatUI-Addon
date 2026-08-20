@@ -127,6 +127,7 @@ Installer\Beta20Installer.lua
 Installer\Beta20WeakAurasBridge.lua
 UI\HUDWorkspace.lua
 UI\RetreatShell.lua
+Integrations\WorkspaceNativeVisuals.lua
 Integrations\HUDWorkspaceSlash.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
