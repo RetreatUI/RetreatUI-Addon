@@ -1,31 +1,42 @@
-# RetreatUI v1.1.7-beta.42 - Bite Wound Aura Identity Fix
+# RetreatUI v1.1.7-beta.43 - Full CoA Spell Effect Audit
 
-This prerelease keeps the beta.41 destination-routing logic unchanged and fixes the actual applied aura identity used by ElvUI and TurboPlates.
+This prerelease replaces the one-off beta.42 aura correction with a generated, class-wide source-to-runtime effect audit for Conquest of Azeroth.
 
 ## What changed
 
-- Bite Wound tracker keeps source spell metadata at Spell ID 556234.
-- The applied target debuff is now correctly identified as Aura ID 706654.
-- Bloodfang Bite's live tooltip explicitly states that it creates Bite Wound [Spell ID 706654].
-- Ascension DB confirms 706654 is the 10-second Bite Wound target debuff.
-- ElvUI target-frame whitelist routing now uses the applied aura ID.
-- TurboPlates whitelist/blacklist routing now uses the applied aura ID.
-- beta.41 authoritative Nameplates ON/OFF behavior is otherwise unchanged.
-- WeakAuras behavior is unchanged.
+- Professional Audit coverage now loads for all 21 CoA classes.
+- Source/cast `spellID` remains the canonical ability identity.
+- Ascension cooldown/replacement identity is kept separately as `cooldownID`.
+- High-confidence applied runtime states are stored separately as `effectID` / `auraID`.
+- Secondary `[Spell ID ...]` tooltip references are classified instead of being assumed to be auras.
+- Transform, teaching, triggered-cast, summon and other non-aura relationships remain audit metadata and are not automatically routed as buffs/debuffs.
+- Curated class records inherit generated high-confidence effect identity by source Spell ID, so presentation/layout data cannot hide the audit mapping.
+- Tracker Builder persists the separated source, cooldown and effect identities.
+- ElvUI target debuff routing and TurboPlates nameplate routing continue to consume `auraID` first.
+- Aura-based WeakAura builds use the high-confidence applied `auraID` while cooldown triggers continue to use the source/runtime cooldown identity.
+- Handwritten Bite Wound / Bloodsores effect overrides are retired.
 
-## Focused live test
+## Verification cases
 
-1. Keep Bite Wound selected as Debuff / Unit: Target.
-2. Set HUD OFF, Target Frame ON, Nameplates OFF and save.
-3. Apply Bloodfang Bite. Bite Wound must be absent from TurboPlates and visible on the ElvUI target frame.
-4. Re-enable Nameplates, save and apply again. Bite Wound must return to TurboPlates.
-5. No Bite Wound WeakAura should be created.
+- Bite Wound: source Spell ID `556234`, applied target Aura ID `706654`.
+- Bloodsores: source Spell ID `805591`, applied Bloodsore runtime effect `805592`.
+- Non-aura secondary references remain relations only and do not become ElvUI/TurboPlates/WeakAura aura IDs automatically.
+
+## Live-test focus
+
+1. Open Tracker Builder on several CoA classes and confirm source spell IDs remain the ability IDs.
+2. For audited debuffs, confirm ElvUI Target Frame and TurboPlates receive the applied aura/effect ID rather than the cast/source ID.
+3. For cooldown + aura trackers, confirm the cooldown follows the ability/runtime cooldown ID while the native WeakAuras aura trigger follows the applied aura ID.
+4. Confirm unrelated tooltip references such as transforms, teaching, triggered casts and summons do not create automatic aura tracking.
+5. Confirm no duplicate trackers, Lua errors or regressions in the beta.42 destination ON/OFF behavior.
 
 ## Safety rules
 
-- Data identity fix only; no custom aura scanning.
+- No custom aura runtime engine.
 - No custom WeakAuras trigger Lua.
 - No `WeakAuras.Add`.
-- Stable/main remains untouched.
+- Native WeakAuras Import flow only.
+- No CoA references to Naowh.
+- Stable/main remains untouched until live testing is approved.
 
 Author: Retreat
