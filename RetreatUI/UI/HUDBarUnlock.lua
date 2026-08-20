@@ -34,9 +34,8 @@ local function SaveMoverPosition(mover)
   local cx, cy = mover:GetCenter()
   local ux, uy = UIParent:GetCenter()
   if not cx or not cy or not ux or not uy then return end
-  local scale = UIParent:GetEffectiveScale() or 1
-  local x = (cx - ux) / scale
-  local y = (cy - uy) / scale
+  local x = cx - ux
+  local y = cy - uy
   RUI:UpdateHUDBar(mover.barID, {x=x, y=y}, mover.className)
   if mover.coords then mover.coords:SetText(string.format("%d, %d", math.floor(x + .5), math.floor(y + .5))) end
 end
@@ -196,4 +195,4 @@ function RUI:ToggleHUDBarUnlockMode(className)
 end
 
 RUI._hudBarUnlockLoaded = true
-RUI.hudBarUnlockSchema = 1
+RUI.hudBarUnlockSchema = 2
