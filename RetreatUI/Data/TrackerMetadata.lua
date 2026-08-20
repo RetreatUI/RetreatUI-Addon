@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-RUI.trackerMetadataVersion = 1
+RUI.trackerMetadataVersion = 2
 RUI.trackerMetadata = RUI.trackerMetadata or {}
 
 local function Normalize(value)
@@ -43,7 +43,6 @@ local CATEGORY_TYPE = {
   mobility = "cooldown", defensive = "cooldown", offensive = "cooldown", rotation = "cooldown",
   utility = "cooldown", stance = "buff", form = "buff",
 }
-
 local HIDDEN_CATEGORIES = {visual=true, hidden=true, internal=true, trigger=true}
 
 local function AddType(list, seen, value)
@@ -57,43 +56,37 @@ function RUI:InferTrackerMetadata(record, className)
   className = className or (self.GetDetectedClass and self:GetDetectedClass())
 
   local explicit = self:GetExplicitTrackerMetadata(className, record) or {}
+  local audit = self.GetAuditSpellRecordByID and self:GetAuditSpellRecordByID(className, tonumber(record.id)) or nil
   local category = Normalize(explicit.category or record.category)
   local types, seen = {}, {}
 
   if type(explicit.trackingType) == "string" then AddType(types, seen, explicit.trackingType) end
-  if type(explicit.trackingTypes) == "table" then
-    for _, value in ipairs(explicit.trackingTypes) do AddType(types, seen, value) end
-  end
+  if type(explicit.trackingTypes) == "table" then for _, value in ipairs(explicit.trackingTypes) do AddType(types, seen, value) end end
 
-  if record.trackCooldown == true or tonumber(record.cooldownHint) or record.trackCharges == true or record.interrupt == true then
-    AddType(types, seen, "cooldown")
-  end
+  if record.trackCooldown == true or tonumber(record.cooldownHint) or record.trackCharges == true or record.interrupt == true then AddType(types, seen, "cooldown") end
   if record.trackCharges == true or tonumber(record.chargesHint) then AddType(types, seen, "charges") end
-  if record.auraTracker == true or record.buff or category == "buff" or category == "proc" then
-    AddType(types, seen, category == "proc" and "proc" or "buff")
-  end
+  if record.auraTracker == true or record.buff or category == "buff" or category == "proc" then AddType(types, seen, category == "proc" and "proc" or "buff") end
   if record.targetDebuff == true or category == "debuff" then AddType(types, seen, "debuff") end
   if tonumber(record.maxStacks) and tonumber(record.maxStacks) > 1 then AddType(types, seen, "stacks") end
   if category == "resource" then AddType(types, seen, "resource") end
   if category == "summon" then AddType(types, seen, "summon") end
 
-  -- Curated records may use category alone as an intentional default. Raw audit
-  -- categories are broad and must not turn thousands of passives into cooldown trackers.
-  if #types == 0 and record.auditCatalog ~= true and CATEGORY_TYPE[category] then
-    AddType(types, seen, CATEGORY_TYPE[category])
+  local effectID = tonumber(explicit.effectID or record.effectID or (audit and audit.effectID))
+  local auraID = tonumber(explicit.auraID or record.auraID or (audit and audit.auraID) or effectID)
+  local effectKind = explicit.effectKind or record.effectKind or (audit and audit.effectKind)
+  local effectConfidence = explicit.effectConfidence or record.effectConfidence or (audit and audit.effectConfidence)
+
+  -- Only the generator's high-confidence applied effects automatically become aura tracking.
+  -- Triggered casts, transforms, teaches and summons remain relation metadata only.
+  if auraID and effectConfidence == "high" then
+    if effectKind == "debuff" then AddType(types, seen, "debuff")
+    elseif effectKind == "buff" then AddType(types, seen, "buff") end
   end
 
-  -- A passive audit entry that explicitly references another spell is a useful
-  -- proc/aura candidate, but it stays Advanced until it has a curated override.
-  if record.auditCatalog == true and record.passive == true and type(record.relatedSpellIDs) == "table" and #record.relatedSpellIDs > 0 then
-    AddType(types, seen, "proc")
-    if tonumber(record.maxStacks) and tonumber(record.maxStacks) > 1 then AddType(types, seen, "stacks") end
-  end
+  if #types == 0 and record.auditCatalog ~= true and CATEGORY_TYPE[category] then AddType(types, seen, CATEGORY_TYPE[category]) end
 
   local trackable = explicit.trackable
-  if trackable == nil then
-    trackable = #types > 0 and record.disabled ~= true and HIDDEN_CATEGORIES[category] ~= true and record.internal ~= true and record.visualOnly ~= true
-  end
+  if trackable == nil then trackable = #types > 0 and record.disabled ~= true and HIDDEN_CATEGORIES[category] ~= true and record.internal ~= true and record.visualOnly ~= true end
 
   local advanced = explicit.advanced
   if advanced == nil then
@@ -104,27 +97,22 @@ function RUI:InferTrackerMetadata(record, className)
   local recommended = explicit.recommended
   if recommended == nil then
     if record.auditCatalog == true then
-      -- Raw audit categories such as Offensive/Defensive are intentionally not
-      -- enough on their own. Recommended should be a small, high-signal list.
       local cooldown = tonumber(record.cooldownHint) or 0
       local stacks = tonumber(record.maxStacks) or 0
-      local related = type(record.relatedSpellIDs) == "table" and #record.relatedSpellIDs > 0
       recommended = trackable == true and advanced ~= true and (
-        record.interrupt == true or record.trackCharges == true or tonumber(record.chargesHint) ~= nil
-        or stacks > 1 or category == "proc" or category == "resource" or category == "interrupt" or category == "interrupts"
-        or cooldown >= 30 or (related and tonumber(record.durationHint) ~= nil)
+        record.interrupt == true or record.trackCharges == true or tonumber(record.chargesHint) ~= nil or stacks > 1
+        or effectConfidence == "high" or category == "proc" or category == "resource" or category == "interrupt" or category == "interrupts" or cooldown >= 30
       )
     else
       recommended = trackable == true and advanced ~= true and (
         record.hudRow ~= nil or record.auraTracker == true or record.targetDebuff == true or record.trackCharges == true
-        or record.interrupt == true or category == "interrupt" or category == "interrupts"
-        or category == "proc" or category == "resource"
+        or record.interrupt == true or effectConfidence == "high" or category == "interrupt" or category == "interrupts" or category == "proc" or category == "resource"
       )
     end
   end
 
   local defaultUnit = explicit.defaultUnit
-  if not defaultUnit then defaultUnit = (record.targetDebuff == true or category == "debuff") and "target" or "player" end
+  if not defaultUnit then defaultUnit = (seen.debuff or record.targetDebuff == true or category == "debuff") and "target" or "player" end
 
   local template = explicit.template
   if not template then
@@ -144,7 +132,11 @@ function RUI:InferTrackerMetadata(record, className)
     schema = self.trackerMetadataVersion,
     className = className,
     spellID = tonumber(explicit.spellID or record.id),
-    auraID = tonumber(explicit.auraID or record.auraID),
+    cooldownID = tonumber(explicit.cooldownID or explicit.runtimeID or record.runtimeID),
+    effectID = effectID,
+    auraID = auraID,
+    effectKind = effectKind,
+    effectConfidence = effectConfidence,
     name = explicit.name or record.name,
     auraName = explicit.auraName or record.buff,
     category = explicit.category or record.category,
@@ -155,10 +147,11 @@ function RUI:InferTrackerMetadata(record, className)
     trackable = trackable == true,
     recommended = recommended == true,
     advanced = advanced == true,
-    maxStacks = tonumber(explicit.maxStacks or record.maxStacks),
-    cooldownHint = tonumber(explicit.cooldownHint or record.cooldownHint),
-    durationHint = tonumber(explicit.durationHint or record.durationHint),
-    relatedSpellIDs = explicit.relatedSpellIDs or record.relatedSpellIDs,
-    source = explicit.source or record.source,
+    maxStacks = tonumber(explicit.maxStacks or record.maxStacks or (audit and audit.maxStacks)),
+    cooldownHint = tonumber(explicit.cooldownHint or record.cooldownHint or (audit and audit.cooldownHint)),
+    durationHint = tonumber(explicit.durationHint or record.durationHint or (audit and audit.durationHint)),
+    relatedSpellIDs = explicit.relatedSpellIDs or record.relatedSpellIDs or (audit and audit.relatedSpellIDs),
+    spellEffectRelations = explicit.spellEffectRelations or record.spellEffectRelations or (audit and audit.spellEffectRelations),
+    source = explicit.source or record.source or (audit and "Professional Audit schema v4"),
   }
 end
