@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.50
+## Version: 1.1.7-beta.51
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -110,9 +110,8 @@ Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
 UI\HUDWorkspace.lua
-UI\RetreatShell.lua
 UI\HUDBarUnlock.lua
-UI\Beta50Shell.lua
+UI\Beta51Shell.lua
 Integrations\Beta50Architecture.lua
 Integrations\Beta50Navigation.lua
 Core\Compatibility.lua
