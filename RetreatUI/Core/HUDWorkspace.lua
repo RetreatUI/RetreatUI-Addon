@@ -1,7 +1,7 @@
 local RUI = RetreatUI
 if not RUI then return end
 
-RUI.hudWorkspaceSchema = 1
+RUI.hudWorkspaceSchema = 2
 
 local ORIENTATIONS = {HORIZONTAL=true, VERTICAL=true}
 local ROLE_ORDER = {"main", "proc", "utility", "defensive", "target"}
@@ -43,6 +43,11 @@ local function EnsureRoot()
   return root
 end
 
+local function ClampSlots(value)
+  value = math.floor((tonumber(value) or 8) + 0.5)
+  return math.max(1, math.min(24, value))
+end
+
 local function DefaultPosition(kind, ordinal)
   ordinal = tonumber(ordinal) or 1
   if kind == "main" then return 0, -183 - ((ordinal - 1) * 48) end
@@ -71,7 +76,7 @@ local function CountKind(state, kind)
   return count
 end
 
-local function NewBar(state, className, kind, name, orientation)
+local function NewBar(state, className, kind, name, orientation, slotCount)
   kind = ROLE_DEFINITIONS[kind] and kind or (kind == "custom" and "custom" or "custom")
   local ordinal = CountKind(state, kind) + 1
   local id = "bar" .. tostring(state.nextID or 1)
@@ -79,12 +84,14 @@ local function NewBar(state, className, kind, name, orientation)
   local x, y = DefaultPosition(kind, ordinal)
   local cleanName = Trim(name)
   if cleanName == "" then cleanName = KindLabel(kind) .. " " .. tostring(ordinal) end
+  local defaultSlots = kind == "main" and 8 or (kind == "utility" and 6 or 5)
   local bar = {
     id = id,
     className = className,
     kind = kind,
     name = cleanName,
     orientation = ORIENTATIONS[orientation] and orientation or "HORIZONTAL",
+    slotCount = ClampSlots(slotCount or defaultSlots),
     x = x,
     y = y,
     scale = 1,
@@ -112,43 +119,38 @@ local function EnsureClass(self, className)
   state.bars = state.bars or {}
   state.order = state.order or {}
 
-  local compact = {}
-  local seen = {}
+  local compact, seen = {}, {}
   for _, id in ipairs(state.order) do
-    if type(id) == "string" and state.bars[id] and not seen[id] then
-      compact[#compact + 1] = id
-      seen[id] = true
-    end
+    if type(id) == "string" and state.bars[id] and not seen[id] then compact[#compact + 1] = id; seen[id] = true end
   end
-  for id in pairs(state.bars) do
-    if not seen[id] then compact[#compact + 1] = id; seen[id] = true end
-  end
+  for id in pairs(state.bars) do if not seen[id] then compact[#compact + 1] = id; seen[id] = true end end
   state.order = compact
 
+  for _, id in ipairs(state.order) do
+    local bar = state.bars[id]
+    bar.slotCount = ClampSlots(bar.slotCount or (bar.kind == "main" and 8 or 6))
+    bar.orientation = ORIENTATIONS[bar.orientation] and bar.orientation or "HORIZONTAL"
+    bar.iconSize = math.max(20, math.min(80, tonumber(bar.iconSize) or 36))
+    bar.spacing = math.max(0, math.min(24, tonumber(bar.spacing) or 4))
+  end
+
   if #state.order == 0 then
-    NewBar(state, className, "main", "Main Rotation 1", "HORIZONTAL")
-    NewBar(state, className, "utility", "Utility Bar 1", "HORIZONTAL")
+    NewBar(state, className, "main", "Main Rotation 1", "HORIZONTAL", 8)
+    NewBar(state, className, "utility", "Utility Bar 1", "HORIZONTAL", 6)
   end
   return state, className
 end
 
 function RUI:GetHUDRoleDefinitions()
   local result = {}
-  for _, key in ipairs(ROLE_ORDER) do
-    local definition = Copy(ROLE_DEFINITIONS[key])
-    definition.key = key
-    result[#result + 1] = definition
-  end
+  for _, key in ipairs(ROLE_ORDER) do local definition = Copy(ROLE_DEFINITIONS[key]); definition.key = key; result[#result + 1] = definition end
   return result
 end
 
 function RUI:GetHUDBars(className)
   local state = EnsureClass(self, className)
   local result = {}
-  for _, id in ipairs(state.order) do
-    local bar = state.bars[id]
-    if bar then result[#result + 1] = bar end
-  end
+  for _, id in ipairs(state.order) do local bar = state.bars[id]; if bar then result[#result + 1] = bar end end
   return result
 end
 
@@ -157,19 +159,17 @@ function RUI:GetHUDBar(className, barID)
   return type(barID) == "string" and state.bars[barID] or nil
 end
 
-function RUI:CreateHUDBar(kind, name, orientation, className)
+function RUI:CreateHUDBar(kind, name, orientation, slotCount, className)
   local state, resolved = EnsureClass(self, className)
-  return NewBar(state, resolved, kind, name, orientation)
+  return NewBar(state, resolved, kind, name, orientation, slotCount)
 end
 
 function RUI:UpdateHUDBar(barID, values, className)
   local bar = self:GetHUDBar(className, barID)
   if not bar or type(values) ~= "table" then return false, "HUD bar not found" end
-  if values.name ~= nil then
-    local name = Trim(values.name)
-    if name ~= "" then bar.name = name end
-  end
+  if values.name ~= nil then local name = Trim(values.name); if name ~= "" then bar.name = name end end
   if ORIENTATIONS[values.orientation] then bar.orientation = values.orientation end
+  if values.slotCount ~= nil then bar.slotCount = ClampSlots(values.slotCount) end
   if tonumber(values.x) then bar.x = math.floor(tonumber(values.x) + 0.5) end
   if tonumber(values.y) then bar.y = math.floor(tonumber(values.y) + 0.5) end
   if tonumber(values.scale) then bar.scale = math.max(0.5, math.min(2, tonumber(values.scale))) end
@@ -184,15 +184,12 @@ function RUI:DeleteHUDBar(barID, className)
   local bar = type(barID) == "string" and state.bars[barID]
   if not bar then return false, "HUD bar not found" end
   if #state.order <= 1 then return false, "At least one HUD bar must remain" end
-
-  local replacement
-  for _, id in ipairs(state.order) do if id ~= barID and state.bars[id] then replacement = id; break end end
   for _, tracker in ipairs(self.GetSelectedTrackers and self:GetSelectedTrackers(resolved) or {}) do
-    if tracker.hudBarID == barID then tracker.hudBarID = replacement end
+    if tracker.hudBarID == barID then self:RemoveTrackerSelection(resolved, tracker.key) end
   end
   state.bars[barID] = nil
   for index=#state.order,1,-1 do if state.order[index] == barID then table.remove(state.order, index) end end
-  return true, replacement
+  return true
 end
 
 local function HasType(item, wanted)
@@ -209,25 +206,39 @@ local function RoleConfig(item, roleKey)
   if roleKey == "target" then
     return {trackingTypes={"debuff"}, unit="target", showDuration=true, showStacks=tonumber(item and item.maxStacks) and tonumber(item.maxStacks) > 1 or false, glow="off"}
   end
-
   local types = {"cooldown"}
   if HasType(item, "charges") then types[#types + 1] = "charges" end
-  return {
-    trackingTypes=types,
-    unit="player",
-    showCooldownText=true,
-    showDuration=false,
-    showStacks=HasType(item, "charges"),
-    glow=roleKey == "main" and "ready" or "off",
-  }
+  return {trackingTypes=types, unit="player", showCooldownText=true, showDuration=false, showStacks=HasType(item,"charges"), glow=roleKey == "main" and "ready" or "off"}
 end
 
-function RUI:SaveHUDWorkspaceTracker(item, roleKey, barID, options)
+function RUI:GetHUDSlotAssignments(barID, className)
+  local bar = self:GetHUDBar(className, barID)
+  if not bar then return {} end
+  className = DetectedClass(self, className)
+  local slots = {}
+  for _, tracker in ipairs(self.GetSelectedTrackers and self:GetSelectedTrackers(className) or {}) do
+    if tracker.hudBarID == barID then
+      local slot = math.floor(tonumber(tracker.hudSlot) or 0)
+      if slot >= 1 and slot <= bar.slotCount and slots[slot] == nil then slots[slot] = tracker end
+    end
+  end
+  return slots
+end
+
+function RUI:GetHUDTrackerAtSlot(barID, slotIndex, className)
+  return self:GetHUDSlotAssignments(barID, className)[math.floor(tonumber(slotIndex) or 0)]
+end
+
+function RUI:SaveHUDWorkspaceTracker(item, roleKey, barID, slotIndex, options)
   if type(item) ~= "table" then return false, "Select a spell first" end
-  local definition = ROLE_DEFINITIONS[roleKey]
-  if not definition then return false, "Choose what this spell should track" end
+  if not ROLE_DEFINITIONS[roleKey] then return false, "Choose what this spell should track" end
   local bar = self:GetHUDBar(item.className, barID)
   if not bar then return false, "Choose a HUD bar" end
+  slotIndex = math.floor(tonumber(slotIndex) or 0)
+  if slotIndex < 1 or slotIndex > bar.slotCount then return false, "Choose a valid HUD slot" end
+
+  local occupied = self:GetHUDTrackerAtSlot(barID, slotIndex, item.className)
+  if occupied and occupied.key ~= item.key then self:RemoveTrackerSelection(item.className, occupied.key) end
 
   local config = RoleConfig(item, roleKey)
   options = type(options) == "table" and options or {}
@@ -240,10 +251,32 @@ function RUI:SaveHUDWorkspaceTracker(item, roleKey, barID, options)
   if not ok or type(saved) ~= "table" then return false, saved or "Tracker could not be saved" end
   saved.hudRole = roleKey
   saved.hudBarID = bar.id
+  saved.hudSlot = slotIndex
   saved.group = nil
   saved.destinations = {"hud"}
   bar.dirty = true
   return true, saved
+end
+
+function RUI:MoveHUDWorkspaceTracker(key, targetBarID, targetSlot, className)
+  className = DetectedClass(self, className)
+  local tracker = self.GetTrackerSelection and self:GetTrackerSelection(className, key)
+  if not tracker then return false, "HUD spell not found" end
+  local bar = self:GetHUDBar(className, targetBarID)
+  targetSlot = math.floor(tonumber(targetSlot) or 0)
+  if not bar or targetSlot < 1 or targetSlot > bar.slotCount then return false, "Invalid target slot" end
+
+  local oldBarID, oldSlot = tracker.hudBarID, tonumber(tracker.hudSlot)
+  local occupied = self:GetHUDTrackerAtSlot(targetBarID, targetSlot, className)
+  if occupied and occupied.key ~= key then
+    occupied.hudBarID = oldBarID
+    occupied.hudSlot = oldSlot
+  end
+  tracker.hudBarID = targetBarID
+  tracker.hudSlot = targetSlot
+  if oldBarID then local oldBar = self:GetHUDBar(className, oldBarID); if oldBar then oldBar.dirty = true end end
+  bar.dirty = true
+  return true, tracker
 end
 
 function RUI:RemoveHUDWorkspaceTracker(key, className)
@@ -257,17 +290,9 @@ function RUI:RemoveHUDWorkspaceTracker(key, className)
 end
 
 function RUI:GetHUDTrackersForBar(barID, className)
-  className = DetectedClass(self, className)
+  local slots = self:GetHUDSlotAssignments(barID, className)
   local result = {}
-  for _, tracker in ipairs(self.GetSelectedTrackers and self:GetSelectedTrackers(className) or {}) do
-    if tracker.hudBarID == barID then result[#result + 1] = tracker end
-  end
-  table.sort(result, function(a,b)
-    local ai = tonumber(a.hudOrder) or 9999
-    local bi = tonumber(b.hudOrder) or 9999
-    if ai ~= bi then return ai < bi end
-    return tostring(a.name or "") < tostring(b.name or "")
-  end)
+  for slot=1,24 do if slots[slot] then result[#result + 1] = slots[slot] end end
   return result
 end
 
@@ -279,14 +304,7 @@ function RUI:SearchHUDSpells(query, maxResults, className)
   query = Trim(query)
   if query == "" then return {} end
   className = DetectedClass(self, className)
-  local catalog = self.GetTrackerCatalog and self:GetTrackerCatalog(className, {
-    query=query,
-    learnedOnly=false,
-    recommendedOnly=false,
-    includeAdvanced=true,
-    includeUntrackable=true,
-  }) or {}
-
+  local catalog = self.GetTrackerCatalog and self:GetTrackerCatalog(className, {query=query, learnedOnly=false, recommendedOnly=false, includeAdvanced=true, includeUntrackable=true}) or {}
   local numeric = tonumber(query)
   table.sort(catalog, function(a,b)
     local aExactID = numeric and tonumber(a.spellID) == numeric or false
@@ -298,7 +316,6 @@ function RUI:SearchHUDSpells(query, maxResults, className)
     if a.learned ~= b.learned then return a.learned == true end
     return tostring(a.name or "") < tostring(b.name or "")
   end)
-
   maxResults = math.max(1, math.min(20, tonumber(maxResults) or 8))
   local result = {}
   for index=1, math.min(#catalog, maxResults) do result[#result + 1] = catalog[index] end
@@ -306,8 +323,7 @@ function RUI:SearchHUDSpells(query, maxResults, className)
 end
 
 function RUI:GetHUDWorkspaceState(className)
-  local state, resolved = EnsureClass(self, className)
-  return state, resolved
+  return EnsureClass(self, className)
 end
 
 RUI._hudWorkspaceLoaded = true
