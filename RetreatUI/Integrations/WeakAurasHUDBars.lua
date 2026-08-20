@@ -54,16 +54,16 @@ end
 local function BuildCooldownTrigger(category, entry)
   local spellID = tonumber(entry.cooldownID) or tonumber(entry.spellID)
   if not spellID then return nil end
-  return {trigger={
+  local trigger = {
     type=category,
     event="Cooldown Progress (Spell)",
     spellName=spellID,
     use_exact_spellName=true,
     use_genericShowOn=true,
     genericShowOn="showAlways",
-    use_track=not HasType(entry,"charges"),
-    track="auto",
-  }, untrigger={}}
+  }
+  if not HasType(entry,"charges") then trigger.use_track=true; trigger.track="auto" end
+  return {trigger=trigger, untrigger={}}
 end
 
 local function BuildTriggers(category, entry)
@@ -110,42 +110,35 @@ local function BuildRoot(wa, bar, childIDs, internalVersion)
     id=id,
     uid=ExistingUID(wa,id),
     internalVersion=internalVersion,
-    regionType="dynamicgroup",
+    regionType="group",
     controlledChildren=childIDs,
     anchorFrameType="SCREEN",
     anchorPoint="CENTER",
     selfPoint="CENTER",
     xOffset=tonumber(bar.x) or 0,
     yOffset=tonumber(bar.y) or 0,
-    grow=bar.orientation == "VERTICAL" and "VERTICAL" or "HORIZONTAL",
-    align="CENTER",
-    sort="none",
-    space=tonumber(bar.spacing) or 4,
-    stagger=0,
-    animate=false,
     scale=tonumber(bar.scale) or 1,
-    gridType="RD",
-    centerType="LR",
-    gridWidth=24,
-    rowSpace=tonumber(bar.spacing) or 4,
-    columnSpace=tonumber(bar.spacing) or 4,
-    useLimit=false,
-    limit=24,
-    fullCircle=true,
-    rotation=0,
-    radius=200,
-    stepAngle=15,
-    constantFactor="RADIUS",
     subRegions={},
     triggers=DummyGroupTrigger(),
   }
 end
 
-local function BuildChild(self, wa, category, internalVersion, entry, parentID, size)
+local function SlotOffset(bar, slot, size)
+  local count = math.max(1, tonumber(bar.slotCount) or 1)
+  local spacing = tonumber(bar.spacing) or 0
+  local step = size + spacing
+  local origin = -((count - 1) * step) / 2
+  if bar.orientation == "VERTICAL" then return 0, -(origin + ((slot - 1) * step)) end
+  return origin + ((slot - 1) * step), 0
+end
+
+local function BuildChild(self, wa, category, internalVersion, entry, parentID, size, bar)
   local managedID, uid, _, reason = self:ResolveManagedWeakAuraIdentity(entry, wa)
   if not managedID then return nil, reason end
   local triggers, triggerReason = BuildTriggers(category,entry)
   if not triggers then return nil, triggerReason end
+  local slot = math.max(1, math.floor(tonumber(entry.hudSlot) or 1))
+  local x, y = SlotOffset(bar, slot, size)
   local child = {
     id=managedID,
     uid=uid,
@@ -154,8 +147,8 @@ local function BuildChild(self, wa, category, internalVersion, entry, parentID, 
     regionType="icon",
     width=size,
     height=size,
-    xOffset=0,
-    yOffset=0,
+    xOffset=x,
+    yOffset=y,
     anchorFrameType="SCREEN",
     anchorPoint="CENTER",
     selfPoint="CENTER",
@@ -174,8 +167,10 @@ end
 function RUI:BuildHUDBarWeakAurasImport(barID, className)
   local bar = self:GetHUDBar(className,barID)
   if not bar then return nil,"HUD bar not found" end
-  local entries = self:GetHUDTrackersForBar(barID,className)
-  if #entries == 0 then return nil,"Add at least one spell to this bar first" end
+  local slots = self:GetHUDSlotAssignments(barID,className)
+  local count = 0
+  for _ in pairs(slots) do count = count + 1 end
+  if count == 0 then return nil,"Add at least one spell to this bar first" end
   local wa, reason = WeakAurasAPI(self); if not wa then return nil,reason end
   if type(self.ResolveManagedWeakAuraIdentity) ~= "function" then return nil,"WeakAuras identity layer unavailable" end
   local okCategory, category = pcall(wa.GetTriggerCategoryFor,"Cooldown Progress (Spell)")
@@ -186,11 +181,14 @@ function RUI:BuildHUDBarWeakAurasImport(barID, className)
   local size = math.max(20,math.min(80,math.floor((tonumber(bar.iconSize) or 36)+0.5)))
   local children, childIDs = {}, {}
   local rootID = bar.waID or ("RetreatUI HUD - "..tostring(bar.id))
-  for _, entry in ipairs(entries) do
-    local child, childReason = BuildChild(self,wa,category,internalVersion,entry,rootID,size)
-    if not child then return nil,tostring(entry.name or "Spell")..": "..tostring(childReason) end
-    children[#children+1] = child
-    childIDs[#childIDs+1] = child.id
+  for slot=1, math.max(1, tonumber(bar.slotCount) or 1) do
+    local entry = slots[slot]
+    if entry then
+      local child, childReason = BuildChild(self,wa,category,internalVersion,entry,rootID,size,bar)
+      if not child then return nil,tostring(entry.name or "Spell")..": "..tostring(childReason) end
+      children[#children+1] = child
+      childIDs[#childIDs+1] = child.id
+    end
   end
   local root = BuildRoot(wa,bar,childIDs,internalVersion)
   local envelope, envelopeReason = self:BuildWeakAurasNativeImportEnvelope(root,children)
@@ -210,4 +208,4 @@ function RUI:OpenHUDBarWeakAurasImport(barID,className)
 end
 
 RUI._weakAurasHUDBarsLoaded=true
-RUI.weakAurasHUDBarsSchema=1
+RUI.weakAurasHUDBarsSchema=2
