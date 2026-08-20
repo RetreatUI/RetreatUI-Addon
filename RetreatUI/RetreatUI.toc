@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.49
+## Version: 1.1.7-beta.50
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -44,16 +44,10 @@ Integrations\Beta43SpellEffectRouting.lua
 Core\HUDWorkspace.lua
 Core\TrackerEditor.lua
 Core\TrackerGroupLayout.lua
-Core\TrackerGroupLayoutEditor.lua
-Core\TrackerGroupLayoutEditorPolish.lua
-Core\TrackerBuilderPresentation.lua
-Integrations\WeakAurasTrackerBuilderBridge.lua
 Integrations\WeakAurasManagedIdentity.lua
 Integrations\WeakAurasNativeTrackerTest.lua
 Integrations\WeakAurasHUDBars.lua
 Integrations\WeakAurasCountLayoutPolish.lua
-Integrations\WeakAurasNativeTrackerTestSlash.lua
-Integrations\TrackerEditorWeakAurasAction.lua
 Integrations\GuardianTooltipScannerSafety.lua
 Core\ClassRegistry.lua
 Core\SpellbookScanThrottle.lua
@@ -64,7 +58,6 @@ Core\Version.lua
 Core\Layout.lua
 Core\BuildProfiles.lua
 Core\PerformanceRefreshCoordinator.lua
-Core\HUDEditor.lua
 Core\AscensionResources.lua
 Core\HUDWidgets.lua
 Core\SpellRecordRuntime.lua
@@ -87,8 +80,14 @@ Profiles\NativeElvUIProfiles.lua
 Profiles\ElvUIBeta20Exports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
+Profiles\PayloadChunks\f_e1440_1.lua
+Profiles\PayloadChunks\f_e1080_1.lua
+Profiles\PayloadChunks\e_e1080_1.lua
+Profiles\PayloadChunks\e_private_1.lua
+Profiles\Beta50ReferenceProfileLoader.lua
 Profiles\ProfilePacks.lua
 Integrations\ProfileSwitchFix.lua
+Integrations\Beta50ProfileImport.lua
 Integrations\ElvUI.lua
 Integrations\ElvUIBeta20.lua
 Integrations\ElvUIPartyText.lua
@@ -110,12 +109,12 @@ Integrations\ChatOwnershipSafety.lua
 Integrations\Cleanup.lua
 Integrations\ClassResourceCleanup.lua
 Integrations\ReleaseBaseline20260801.lua
-Installer\Beta20Installer.lua
-Installer\Beta20WeakAurasBridge.lua
 UI\HUDWorkspace.lua
 UI\RetreatShell.lua
-Integrations\WorkspaceNativeVisuals.lua
-Integrations\HUDWorkspaceSlash.lua
+UI\HUDBarUnlock.lua
+UI\Beta50Shell.lua
+Integrations\Beta50Architecture.lua
+Integrations\Beta50Navigation.lua
 Core\Compatibility.lua
 Core\CompatibilityChangelog.lua
 Core\ReleaseChangelog112.lua
