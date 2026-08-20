@@ -36,7 +36,6 @@ This prerelease replaces the one-off beta.42 aura correction with a generated, c
 - No custom WeakAuras trigger Lua.
 - No `WeakAuras.Add`.
 - Native WeakAuras Import flow only.
-- No CoA references to Naowh.
 - Stable/main remains untouched until live testing is approved.
 
 Author: Retreat
