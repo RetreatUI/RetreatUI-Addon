@@ -116,6 +116,7 @@ Integrations\TrackerDestinations.lua
 Integrations\HUDBuilderSimpleMode.lua
 Integrations\TrackerDestinationTurboPlatesGuard.lua
 Integrations\Details.lua
+Integrations\ProfileDetailsCompatibility.lua
 Integrations\LegacyFixedProfileGuard.lua
 Integrations\ChatOwnershipSafety.lua
 Integrations\Cleanup.lua
