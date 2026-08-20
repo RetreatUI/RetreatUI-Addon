@@ -2,7 +2,7 @@ local RUI = RetreatUI
 if not RUI then return end
 
 local function ResizeNative(frame)
-  if not frame or frame:GetName() ~= "RetreatUIMainWindow" then return end
+  if not frame or frame:GetName() ~= "RetreatUIMainWindow" then return false end
   frame:SetScale(1)
   local sw = UIParent and UIParent.GetWidth and UIParent:GetWidth() or 1280
   local sh = UIParent and UIParent.GetHeight and UIParent:GetHeight() or 800
@@ -10,7 +10,9 @@ local function ResizeNative(frame)
   local height = math.min(740, math.max(620, sh - 90))
   if width > sw - 30 then width = math.max(820, sw - 30) end
   if height > sh - 30 then height = math.max(580, sh - 30) end
-  frame:SetSize(width, height)
+  local changed = math.abs((frame:GetWidth() or 0) - width) > 1 or math.abs((frame:GetHeight() or 0) - height) > 1
+  if changed then frame:SetSize(width, height) end
+  return changed
 end
 
 local function ReadableFonts(frame)
@@ -40,20 +42,14 @@ local function ReadableFonts(frame)
   Visit(frame)
 end
 
-local function Apply()
-  local frame = _G.RetreatUIMainWindow
-  if not frame then return end
-  ResizeNative(frame)
-  ReadableFonts(frame)
-end
-
 local BaseOpen = RUI.OpenRetreatUI
 if type(BaseOpen) == "function" then
   function RUI:OpenRetreatUI(pageKey)
     local ok = BaseOpen(self, pageKey)
-    Apply()
     local frame = _G.RetreatUIMainWindow
-    if frame and type(frame.ShowPage) == "function" and not frame._nativeVisualWrapped then
+    if not frame then return ok end
+
+    if type(frame.ShowPage) == "function" and not frame._nativeVisualWrapped then
       local BaseShowPage = frame.ShowPage
       function frame:ShowPage(key)
         BaseShowPage(self, key)
@@ -61,9 +57,13 @@ if type(BaseOpen) == "function" then
       end
       frame._nativeVisualWrapped = true
     end
+
+    local changed = ResizeNative(frame)
+    if changed and type(frame.RefreshPage) == "function" then frame:RefreshPage() end
+    ReadableFonts(frame)
     return ok
   end
 end
 
 RUI._workspaceNativeVisuals = true
-RUI.workspaceNativeVisualsSchema = 1
+RUI.workspaceNativeVisualsSchema = 2
