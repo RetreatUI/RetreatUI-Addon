@@ -2,7 +2,7 @@
 ## Title: RetreatUI
 ## Notes: Core interface, installer, profiles and shared CoA data for Project Ascension: Conquest of Azeroth.
 ## Author: Retreat
-## Version: 1.1.7-beta.48
+## Version: 1.1.7-beta.49
 ## SavedVariables: RetreatUIDB, RetreatUIAutomationDB
 ## OptionalDeps: ElvUI, TurboPlates, MobSpells, Details, WeakAuras
 ## DefaultState: Enabled
@@ -83,24 +83,10 @@ Core\RecoverySafety.lua
 Core\TotemBarMover.lua
 Integrations\TotemBarReferencePlacement.lua
 Profiles\ElvUI.lua
+Profiles\NativeElvUIProfiles.lua
 Profiles\ElvUIBeta20Exports.lua
 Profiles\ElvUITargetDebuffs.lua
 Profiles\Details.lua
-Profiles\PayloadChunks\f_e1440_1.lua
-Profiles\PayloadChunks\f_e1080_1.lua
-Profiles\PayloadChunks\f_details_1.lua
-Profiles\PayloadChunks\f_details_2.lua
-Profiles\PayloadChunks\e_e1440_1.lua
-Profiles\PayloadChunks\e_e1080_1.lua
-Profiles\PayloadChunks\e_private_1.lua
-Profiles\PayloadChunks\e_details_1080p_1.lua
-Profiles\PayloadChunks\e_details_1080p_2.lua
-Profiles\PayloadChunks\e_details_1080p_3.lua
-Profiles\PayloadChunks\e_details_1440p_1.lua
-Profiles\PayloadChunks\e_details_1440p_2.lua
-Profiles\PayloadChunks\e_details_1440p_3.lua
-Profiles\ProfilePayloadFocus.lua
-Profiles\ProfilePayloadEdge.lua
 Profiles\ProfilePacks.lua
 Integrations\ProfileSwitchFix.lua
 Integrations\ElvUI.lua
