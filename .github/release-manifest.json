@@ -1,7 +1,7 @@
 {
   "publish": true,
-  "version": "1.1.7-beta.44",
-  "title": "RetreatUI v1.1.7-beta.44 Aura Destination Hotfix",
+  "version": "1.1.7-beta.45",
+  "title": "RetreatUI v1.1.7-beta.45 Profile Shell",
   "notes_file": "RELEASE_NOTES.md",
   "prerelease": true,
   "release_trigger": null
