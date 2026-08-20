@@ -11,6 +11,8 @@ local function Copy(value, seen)
   return result
 end
 
+local FOCUS_BASELINE = Copy(RUI.ElvUIProfile or {})
+
 local function Engine()
   if type(ElvUI) ~= "table" then return nil end
   if type(ElvUI[1]) == "table" then return ElvUI[1] end
@@ -152,7 +154,7 @@ function RUI:InstallRetreatStyleElvUI(styleKey, resolution)
 
   if type(profile) ~= "table" then
     mode = "CoA compatibility"
-    profile = styleKey == "edge" and EdgeFallback(self.ElvUIProfile) or Copy(self.ElvUIProfile)
+    profile = styleKey == "edge" and EdgeFallback(FOCUS_BASELINE) or Copy(FOCUS_BASELINE)
   end
 
   local ok, reason = InstallProfileTable(self, profileName, profile)
@@ -169,4 +171,4 @@ function RUI:InstallRetreatStyleElvUI(styleKey, resolution)
 end
 
 RUI._profileSwitchFix = true
-RUI.profileSwitchFixSchema = 1
+RUI.profileSwitchFixSchema = 2
