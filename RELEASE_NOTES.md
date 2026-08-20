@@ -1,46 +1,53 @@
-# RetreatUI v1.1.7-beta.48 - Real Profile Switching
+# RetreatUI v1.1.7-beta.49 - Native Profile Packs
 
-This prerelease fixes the two beta.47 regressions reported during live testing: profile selection did not visibly switch ElvUI layouts, and the RetreatUI workspace still felt incorrectly scaled.
+This prerelease replaces the fragile compressed reference-profile runtime with two deterministic native CoA profile packs.
 
-## Real ElvUI profile switching
+## Profile runtime
 
-- Retreat Focus now installs and activates as its own ElvUI profile: `Retreat Focus`.
-- Retreat Edge now installs and activates as its own ElvUI profile: `Retreat Edge`.
-- The two choices no longer overwrite the same `RetreatUI` ElvUI profile.
-- The ACTIVE state is derived from the ElvUI profile that is actually active, not merely the last RetreatUI card clicked.
-- If Ascension ElvUI can decode the bundled reference profile, that decoded profile is used.
-- If the reference payload cannot be decoded, RetreatUI creates two visibly different CoA-compatible profile conversions instead of falling back to the same layout.
+- Retreat Focus and Retreat Edge are now built as native Ascension-compatible ElvUI profile tables.
+- The compressed Focus/Edge payload chunks are no longer loaded at runtime.
+- This removes the `unfinished long string` failure reported from `PayloadChunks/e_e1440_1.lua`.
+- Profile switching no longer depends on a newer Retail ElvUI Distributor decoder.
+- Focus and Edge remain separate ElvUI profiles and ACTIVE reflects the profile actually selected by ElvUI.
+
+## Retreat Focus
+
+- Compact, centered combat layout.
+- Smaller player/target frames with tighter spacing.
+- Compact party, boss and focus frames.
+- Smaller minimap, chat footprint, action buttons and TurboPlates aura icons.
+- Dark restrained unit-frame presentation intended to minimize visual clutter.
+- Compact Details rows and meter scale.
+
+## Retreat Edge
+
+- Significantly larger player/target frames with wider separation.
+- Larger party, boss, focus, raid and target-of-target frames.
+- Larger minimap, chat footprint, action buttons and TurboPlates aura icons.
+- Class-colored ElvUI health frames for a more information-rich presentation.
+- Wider nameplates and more generous nameplate overlap spacing.
+- Larger Details rows and meter scale.
 
 ## UI scale safety
 
-- beta.47's non-1 workspace scale layer is no longer loaded.
-- RetreatUI runs at native frame scale (`1.0`).
-- Profile switching snapshots and restores the existing WoW `useUiScale` and `uiScale` CVars.
-- Imported ElvUI profile data has profile-level autoscale/custom-scale fields removed before activation.
-- RetreatUI does not intentionally change the user's global WoW or ElvUI UI scale.
-
-## Workspace readability
-
-- The large integrated workspace remains available and resizable.
-- Default workspace dimensions are kept within the current UI canvas rather than using an extra zoom factor.
-- Small labels are promoted to readable native font sizes without scaling the entire frame.
-- The current page is reflowed immediately after the native workspace size is applied.
+- RetreatUI does not change WoW's global `uiScale` or `useUiScale` values.
+- ElvUI profile activation snapshots and restores the existing scale CVars.
+- Profile-level auto/custom UI-scale fields are stripped from the native packs.
+- The RetreatUI workspace remains at native frame scale 1.0.
 
 ## HUD retained
 
+- HUD configuration stays inside the main RetreatUI window.
 - Search by spell name or Spell ID.
 - Choose Main Ability, Buff / Proc, Utility, Defensive or Target Debuff.
-- Drag spells into exact action-bar style slots.
-- User-created bars with custom slot count and Horizontal / Vertical orientation.
-- Empty slots remain empty.
-- Existing HUD icons can be reordered between slots.
-- Source/cooldown IDs remain separate from applied aura/effect IDs.
+- Drag spells into exact action-bar-style slots.
+- Create multiple custom Horizontal or Vertical HUD bars.
+- No prebuilt class WeakAura package is installed.
+- No custom WeakAuras trigger Lua and no direct WeakAuras insertion API.
 
 ## Safety
 
-- Professional Audit remains the canonical CoA spell/effect source.
-- No custom WeakAuras trigger Lua.
-- No direct WeakAuras insertion API.
+- Professional Audit remains the canonical CoA spell/effect identity source.
 - Stable/main remains untouched pending live-test approval.
 
 Author: Retreat
