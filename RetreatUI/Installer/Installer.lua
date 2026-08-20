@@ -196,7 +196,7 @@ local function CreateReadinessPage()
     end
     if type(RUI.IsSupportedCharacter) == "function" and not RUI:IsSupportedCharacter() then ready = false end
     SetStatus(summary.state, ready and "ready" or "error", ready and "READY" or "ACTION REQUIRED")
-    SetStatus(page.notice, ready and "ready" or "error", ready and "All required components are ready." or "Resolve the red requirement before continuing.")
+    SetStatus(page.notice, ready and "ready" or "error", ready and "All required components are ready to install." or "Resolve the red requirement before continuing.")
     page.ready = ready
     if frame and frame.next and currentPage == 1 then frame.next:SetEnabled(ready) end
   end
